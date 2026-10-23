@@ -344,6 +344,40 @@ def glossary_section(ch, page):
                                                     "ar": "القاموس &mdash; %s" % E(ch["title"]["ar"])}), key))
 
 
+def trace_specs(key):
+    """[(id, spec)] for every src/traces/<key>-*.json, sorted by id."""
+    out = []
+    for f in sorted(glob.glob(os.path.join(ROOT, "src", "traces", "%s-*.json" % key))):
+        spec = json.loads(io.open(f, encoding="utf-8").read())
+        out.append((spec.get("id") or os.path.splitext(os.path.basename(f))[0], spec))
+    return out
+
+
+def lab_section(ch, page):
+    """The execution lab: every trace of the chapter, each with its title and lede."""
+    key = ch["key"]
+    traces = trace_specs(key)
+    h = ['\n  <span class="kicker">Execution Lab</span>',
+         '  <h1>%s</h1>' % bi({"en": "Execution Lab &mdash; watch the code run", "ar": "مختبر التنفيذ &mdash; شاهد الكود يُنفَّذ"}),
+         '  <p class="lede en">Step through the programs of this chapter one line at a time. The highlighted line is about to run; '
+         'beside it you see what exists <em>right now</em> &mdash; variables, lists, tables, trees and the call stack &mdash; with what just '
+         'changed flagged, and a note on what is happening. Use <strong>Next</strong> and <strong>Back</strong>, press <strong>Run</strong>, '
+         'drag the slider, or click a line to jump to it.</p>',
+         '  <p class="lede ar">تنقّل في برامج هذا الفصل سطرًا سطرًا. السطر المظلَّل على وشك أن يُنفَّذ؛ وبجانبه ترى ما هو موجود <em>الآن</em> '
+         '&mdash; المتغيرات والقوائم والجداول والأشجار ومكدّس الاستدعاءات &mdash; مع تمييز ما تغيّر للتو وملاحظة عمّا يجري. استخدم '
+         '<strong>التالي</strong> و<strong>السابق</strong>، أو اضغط <strong>تشغيل</strong>، أو اسحب المنزلق، أو انقر سطرًا للانتقال إليه.</p>']
+    if not traces:
+        h.append('  <p class="en">No traces yet.</p><p class="ar">لا توجد تتبّعات بعد.</p>')
+    for i, (tid, spec) in enumerate(traces, 1):
+        title = spec.get("title") or {"en": tid, "ar": tid}
+        lede = spec.get("lede")
+        h.append('  <h2 id="%slab-h%d">%s</h2>' % (key, i, bi({"en": E(title["en"]), "ar": E(title["ar"])})))
+        if lede:
+            h.append('  <p class="en">%s</p>\n  <p class="ar">%s</p>' % (lede["en"], lede["ar"]))
+        h.append('  <div data-trace-id="%s"></div>' % tid)
+    return "\n".join(h) + "\n"
+
+
 def home_default_section():
     return '\n  <span class="kicker">Data Analysis</span>\n  <h1>Data Analysis &amp; Implementation</h1>\n  <!--GEN:tracks-->\n'
 
@@ -482,17 +516,19 @@ def page_assets(reg, ch, page, body):
         css.append("assets/css/diagram.css")
 
     if page.get("bank"):
-        css.append("assets/css/assess.css")
-        topic_files = sorted(os.path.relpath(f, ROOT).replace(os.sep, "/")
-                             for f in glob.glob(os.path.join(ROOT, "assets", "data", "topics", "*.js")))
-        if not topic_files:
-            warn("%s: no topic files in assets/data/topics/" % page["href"])
-        js.extend(topic_files)
         bank = "assets/data/questions/%s.js" % page["bank"]
         if not exists(bank):
+            # An unwritten bank: the page says so (see bank_notice) and loads no engine.
             warn("%s: question bank %s does not exist" % (page["href"], bank))
-        js.append(bank)
-        js.append("assets/js/assess.js")
+        else:
+            css.append("assets/css/assess.css")
+            topic_files = sorted(os.path.relpath(f, ROOT).replace(os.sep, "/")
+                                 for f in glob.glob(os.path.join(ROOT, "assets", "data", "topics", "*.js")))
+            if not topic_files:
+                warn("%s: no topic files in assets/data/topics/" % page["href"])
+            js.extend(topic_files)
+            js.append(bank)
+            js.append("assets/js/assess.js")
 
     traces = TRACE_RE.findall(body)
     if traces or kind == "lab":
@@ -711,6 +747,8 @@ def build():
                 bodies[pid] = exam_section(ch, page)
             elif k == "glossary":
                 bodies[pid] = glossary_section(ch, page)
+            elif k == "lab" and pid not in authored:
+                bodies[pid] = lab_section(ch, page)
             else:  # lesson, lab: authored
                 if pid not in authored:
                     if ch["ready"]:
@@ -720,6 +758,18 @@ def build():
                                    % (k, tbi(page["title"])))
                 else:
                     bodies[pid] = authored[pid]
+
+    # A test or exam whose question bank is not written yet says so instead of
+    # loading a script that does not exist.
+    for pid, (ch, page) in owner.items():
+        if page.get("bank") and not exists("assets/data/questions/%s.js" % page["bank"]):
+            bodies[pid] = re.sub(
+                r'<div class="assess"[^>]*></div>',
+                '<div class="note"><h4>%s</h4><p class="en">The questions for this test are still being written. '
+                'Come back soon &mdash; the lesson and its exercises are ready to use in the meantime.</p>'
+                '<p class="ar">ما زالت أسئلة هذا الاختبار قيد الكتابة. عُد قريبًا &mdash; أما الدرس وتمارينه '
+                'فجاهزان للاستعمال في الوقت نفسه.</p></div>' % bi({"en": "Being written", "ar": "قيد الكتابة"}),
+                bodies[pid])
 
     extra = [pid for pid in authored if pid not in expected]
     if extra:

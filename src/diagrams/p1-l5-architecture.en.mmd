@@ -1,0 +1,9 @@
+%% alt: Power BI architecture. Data sources (CSV, Excel, SQL, web) feed Power Query, which connects and cleans. The cleaned tables go into the data model, with relationships and DAX measures. The report page draws visuals from the model. These three stages live inside Power BI Desktop. Publishing sends the file to the Power BI Service, which shares it with browsers and the mobile app and can refresh it on a schedule through a gateway.
+flowchart TD
+  S["Sources<br/>CSV, Excel, SQL, web"] --> Q
+  subgraph D["Power BI Desktop (Windows, free)"]
+    Q["Power Query<br/>connect and clean"] --> M["Data model<br/>relationships, DAX"] --> R["Report<br/>visuals and pages"]
+  end
+  R -- "Publish (needs an account)" --> V["Power BI Service<br/>share, schedule refresh"]
+  V --> B["Browsers and<br/>mobile app"]
+  V -. "scheduled refresh<br/>through a gateway" .-> S

@@ -1,0 +1,299 @@
+{
+ "id": "p1-l5-relationship-filter",
+ "title": {
+  "en": "How a filter travels through a relationship",
+  "ar": "كيف يعبر المرشِّح العلاقة"
+ },
+ "lede": {
+  "en": "A slicer on the Menu table narrows the Orders table through the relationship, and the measures answer for what is left. Then a slicer on Orders shows that the filter does not flow backwards. All counts are from the cleaned cafeteria data.",
+  "ar": "يضيّق مقطِّع على جدول Menu جدولَ Orders عبر العلاقة، وتجيب المقاييس عمّا تبقّى. ثم يُظهر مقطِّع على Orders أن المرشِّح لا يجري إلى الخلف. كل الأعداد من بيانات الكافتيريا المنظَّفة."
+ },
+ "manual": true,
+ "lang": "dax",
+ "code": "// slicer on Menu[category] = \"Drink\"\n// 1. the Menu table (the \"one\" side) is filtered first\n// 2. the relationship Menu[item] -> Orders[item] passes the filter on\nTotal Revenue = SUMX(Orders, Orders[qty] * Orders[unit_price])\nOrders Count = DISTINCTCOUNT(Orders[order_id])\n// slicer on Orders[customer_type] = \"Staff\": Menu is NOT filtered back",
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "flow": {
+     "t": "flow",
+     "nodes": [
+      "Slicer",
+      "Menu (one)",
+      "Relationship",
+      "Orders (many)",
+      "Measure"
+     ],
+     "active": 0
+    },
+    "slicer": {
+     "t": "str",
+     "v": "Menu[category] = Drink"
+    },
+    "Menu rows": {
+     "t": "num",
+     "v": "16"
+    },
+    "Orders lines": {
+     "t": "num",
+     "v": "748"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "A reader clicks Drink in a slicer built from Menu[category]. A filter is created on the Menu table, not on Orders.",
+    "ar": "ينقر قارئ على Drink في مقطِّع مبني من Menu[category]. يُنشأ المرشِّح على جدول Menu لا على Orders."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "flow": {
+     "t": "flow",
+     "nodes": [
+      "Slicer",
+      "Menu (one)",
+      "Relationship",
+      "Orders (many)",
+      "Measure"
+     ],
+     "active": 1
+    },
+    "slicer": {
+     "t": "str",
+     "v": "Menu[category] = Drink"
+    },
+    "Menu": {
+     "t": "sheet",
+     "cols": [
+      "item",
+      "category",
+      "list_price"
+     ],
+     "rows": [
+      [
+       "Espresso",
+       "Drink",
+       "6"
+      ],
+      [
+       "Latte",
+       "Drink",
+       "9"
+      ],
+      [
+       "Tea",
+       "Drink",
+       "3"
+      ],
+      [
+       "Karak Tea",
+       "Drink",
+       "5"
+      ],
+      [
+       "Orange Juice",
+       "Drink",
+       "8"
+      ],
+      [
+       "... 1 more drink",
+       "Drink",
+       "..."
+      ]
+     ],
+     "hl": [
+      "A2:C7"
+     ],
+     "result": "6 of 16 menu rows remain"
+    },
+    "Menu rows": {
+     "t": "num",
+     "v": "6"
+    },
+    "Orders lines": {
+     "t": "num",
+     "v": "748"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Only the six drink rows of Menu survive (the other ten are filtered out). Menu is the 'one' side of the relationship: each item appears once, so its filter is unambiguous.",
+    "ar": "لا ينجو من جدول Menu إلا صفوف المشروبات الستة (تُرشَّح الصفوف العشرة الأخرى). وجدول Menu هو الطرف «الواحد» في العلاقة: كل صنف يظهر مرة واحدة، فمرشِّحه لا لبس فيه."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "flow": {
+     "t": "flow",
+     "nodes": [
+      "Slicer",
+      "Menu (one)",
+      "Relationship",
+      "Orders (many)",
+      "Measure"
+     ],
+     "active": 2
+    },
+    "slicer": {
+     "t": "str",
+     "v": "Menu[category] = Drink"
+    },
+    "allowed items": {
+     "t": "str",
+     "v": "Espresso, Karak Tea, Latte, Orange Juice, Tea, Water 500ml"
+    },
+    "Menu rows": {
+     "t": "num",
+     "v": "6"
+    },
+    "Orders lines": {
+     "t": "num",
+     "v": "748"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "The relationship Menu[item] -> Orders[item] (many to one, single direction) hands that list of six items to Orders. The filter flows from the one side to the many side, never the other way.",
+    "ar": "تسلّم العلاقة Menu[item] ← Orders[item] (متعدد إلى واحد، باتجاه واحد) قائمة الأصناف الستة إلى Orders. ويجري المرشِّح من الطرف «الواحد» إلى الطرف «المتعدد» ولا يجري عكس ذلك أبدًا."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "flow": {
+     "t": "flow",
+     "nodes": [
+      "Slicer",
+      "Menu (one)",
+      "Relationship",
+      "Orders (many)",
+      "Measure"
+     ],
+     "active": 3
+    },
+    "slicer": {
+     "t": "str",
+     "v": "Menu[category] = Drink"
+    },
+    "Menu rows": {
+     "t": "num",
+     "v": "6"
+    },
+    "Orders lines": {
+     "t": "num",
+     "v": "347"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Orders now shows only the lines whose item is one of the six drinks: 347 of the 748 cleaned lines. The measures below are evaluated on these rows and nothing else.",
+    "ar": "يعرض Orders الآن الأسطر التي صنفها أحد المشروبات الستة فقط: 347 من 748 سطرًا منظَّفًا. وتُحسب المقاييس أدناه على هذه الصفوف دون غيرها."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "flow": {
+     "t": "flow",
+     "nodes": [
+      "Slicer",
+      "Menu (one)",
+      "Relationship",
+      "Orders (many)",
+      "Measure"
+     ],
+     "active": 4
+    },
+    "Menu rows": {
+     "t": "num",
+     "v": "6"
+    },
+    "Orders lines": {
+     "t": "num",
+     "v": "347"
+    },
+    "Total Revenue": {
+     "t": "num",
+     "v": "2769.00"
+    }
+   },
+   "out": "Total Revenue = 2,769.00",
+   "note": {
+    "en": "SUMX adds qty * unit_price over the 347 lines: Total Revenue = 2,769.00, exactly the Drink row of the category table (Food 4,205.00, Drink 2,769.00, Snack 747.00, Dessert 341.00).",
+    "ar": "تجمع SUMX قيمة qty * unit_price على الأسطر الـ 347: Total Revenue = 2,769.00، وهو بالضبط صف Drink في جدول الفئات (Food 4,205.00 وDrink 2,769.00 وSnack 747.00 وDessert 341.00)."
+   }
+  },
+  {
+   "line": 5,
+   "vars": {
+    "flow": {
+     "t": "flow",
+     "nodes": [
+      "Slicer",
+      "Menu (one)",
+      "Relationship",
+      "Orders (many)",
+      "Measure"
+     ],
+     "active": 4
+    },
+    "Menu rows": {
+     "t": "num",
+     "v": "6"
+    },
+    "Orders lines": {
+     "t": "num",
+     "v": "347"
+    },
+    "Total Revenue": {
+     "t": "num",
+     "v": "2769.00"
+    },
+    "Orders Count": {
+     "t": "num",
+     "v": "311"
+    }
+   },
+   "out": "Total Revenue = 2,769.00\nOrders Count = 311",
+   "note": {
+    "en": "DISTINCTCOUNT gives 311 distinct orders that contain at least one drink. 311 is not 347: some orders hold two drink lines. The order counts of the four categories would not add up to 611 either, for the same reason.",
+    "ar": "تعطي DISTINCTCOUNT قيمة 311 طلبًا مختلفًا يحوي مشروبًا واحدًا على الأقل. و311 ليست 347: بعض الطلبات تضم سطرَي مشروب. ولن يساوي مجموع الطلبات في الفئات الأربع 611 للسبب نفسه."
+   }
+  },
+  {
+   "line": 6,
+   "vars": {
+    "flow": {
+     "t": "flow",
+     "nodes": [
+      "Slicer",
+      "Menu (one)",
+      "Relationship",
+      "Orders (many)",
+      "Measure"
+     ],
+     "active": 3
+    },
+    "slicer": {
+     "t": "str",
+     "v": "Orders[customer_type] = Staff"
+    },
+    "Menu rows": {
+     "t": "num",
+     "v": "16"
+    },
+    "Orders lines": {
+     "t": "num",
+     "v": "158"
+    }
+   },
+   "out": "Total Revenue = 2,769.00\nOrders Count = 311\n--- new slicer: Orders[customer_type] = Staff ---",
+   "note": {
+    "en": "Now filter Orders itself, with a slicer on Orders[customer_type] = Staff: 158 lines remain. Menu still has all 16 rows, because with a single cross-filter direction a filter on the many side does not travel back to the one side. A slicer built from Menu[item] would still list every item.",
+    "ar": "رشِّح الآن Orders نفسه بمقطِّع على Orders[customer_type] = Staff: تبقى 158 سطرًا. أما Menu فيحتفظ بصفوفه الـ 16 كلها، لأنه مع اتجاه ترشيح واحد لا يعود مرشِّح الطرف «المتعدد» إلى الطرف «الواحد». ولو بنيت مقطِّعًا من Menu[item] لبقيت فيه كل الأصناف."
+   }
+  }
+ ]
+}

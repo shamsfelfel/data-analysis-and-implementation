@@ -1,7 +1,7 @@
 /**
  * Shared helpers for the end-to-end suite.
  *
- * The page list is read out of assets/js/course.js rather than written here,
+ * The page list is read out of src/registry.json rather than written here,
  * so a chapter added to the course is a chapter the suite starts walking
  * without anyone remembering to add it.
  */
@@ -11,29 +11,25 @@ const { expect } = require('@playwright/test');
 
 const ROOT = path.join(__dirname, '..');
 
-/** Every page of the site, as {chapter, id, kind, href, bank, en, ar}. */
+/** Every page of the site, as {chapter, track, id, kind, href, bank, n, en, ar}; read from the registry. */
 function sitePages() {
-  const src = fs.readFileSync(path.join(ROOT, 'assets/js/course.js'), 'utf8');
-  const out = [{ chapter: null, id: 'home', kind: 'home', href: 'index.html', en: 'Course home' }];
-
-  const chapterRe = /\{\s*\n\s*num:\s*(\d+),([\s\S]*?)\n    \}/g;
-  let ch;
-  while ((ch = chapterRe.exec(src)) !== null) {
-    const num = Number(ch[1]);
-    const pageRe = /\{\s*id:\s*"([^"]+)",\s*kind:\s*"([^"]+)"([\s\S]*?)\}/g;
-    let m;
-    while ((m = pageRe.exec(ch[2])) !== null) {
-      const tail = m[3];
-      const href = /href:\s*"([^"]+)"/.exec(tail);
-      const bank = /bank:\s*"([^"]+)"/.exec(tail);
-      const en = /\ben:\s*"((?:[^"\\]|\\.)*)"/.exec(tail);
+  const reg = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/registry.json'), 'utf8'));
+  const dirs = { lesson: 'lessons', test: 'tests', exam: 'exams', lab: 'labs', glossary: 'glossary' };
+  const out = [{ chapter: null, track: null, id: 'home', kind: 'home', href: 'index.html',
+                 en: reg.site.name.en, ar: reg.site.name.ar }];
+  for (const ch of reg.chapters) {
+    for (const p of ch.pages) {
       out.push({
-        chapter: num,
-        id: m[1],
-        kind: m[2],
-        href: href ? href[1] : null,
-        bank: bank ? bank[1] : null,
-        en: en ? en[1] : m[1],
+        chapter: ch.key,
+        track: ch.track,
+        id: p.id,
+        kind: p.kind,
+        n: p.n || null,
+        of: p.of || null,
+        bank: p.bank || null,
+        href: p.kind === 'chapter' ? `chapters/${ch.key}.html` : `${dirs[p.kind]}/${p.id}.html`,
+        en: p.title.en,
+        ar: p.title.ar,
       });
     }
   }

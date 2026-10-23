@@ -1,0 +1,74 @@
+{
+ "id": "t1-l6-capstone-load",
+ "title": {
+  "en": "Loading the school-damage file, step by step",
+  "ar": "تحميل ملف أضرار المدارس خطوة بخطوة"
+ },
+ "lede": {
+  "en": "Watch the nine-row capstone file change type by type: lost zeros come back, the two date formats merge, and false zeros become missing values.",
+  "ar": "راقب ملف المشروع الختامي (تسعة صفوف) وهو يتغيّر نوعًا بعد نوع: تعود الأصفار المفقودة، وتندمج صيغتا التاريخ، وتتحوّل الأصفار الكاذبة إلى قيم مفقودة."
+ },
+ "files": {
+  "school_damage_assessment.csv": "school_id,school_name,governorate,damage_level,assessment_date,students_count,classrooms,avg_temp_c\n0071,مدرسة الزيتون الأساسية للبنات,غزة,جزئي,2024-03-05,842,18,21\n0072,مدرسة بيت لاهيا المشتركة,الشمال,كلي,05/04/2024,0,24,22\n0073,مدرسة خان يونس الثانوية للبنين,خان يونس,طفيف,2024-03-11,1130,30,20\n0074,مدرسة دير البلح الإعدادية,الوسطى,جزئي,12/03/2024,675,,21\n0075,مدرسة رفح الأساسية (أ),رفح,كلي,2024-04-02,0,16,23\n0076,مدرسة الشجاعية المشتركة,غزة,جزئي,18/03/2024,910,22,21\n0077,مدرسة جباليا الجديدة للبنات,الشمال,طفيف,2024-03-22,1265,28,22\n0078,مدرسة النصيرات الإعدادية (ب),الوسطى,كلي,01/04/2024,0,20,20\n0079,مدرسة القرارة الأساسية,خان يونس,طفيف,2024-03-28,588,14,19\n"
+ },
+ "code": "import pandas as pd\n\ndf = pd.read_csv(\"school_damage_assessment.csv\")\nprint(df[\"school_id\"].tolist())\n\ntypes = {\"school_id\": \"string\", \"students_count\": \"Int64\", \"classrooms\": \"Int64\"}\ndf = pd.read_csv(\"school_damage_assessment.csv\", dtype=types)\nprint(df[\"school_id\"].tolist())\n\niso = pd.to_datetime(df[\"assessment_date\"], format=\"%Y-%m-%d\", errors=\"coerce\")\ndmy = pd.to_datetime(df[\"assessment_date\"], format=\"%d/%m/%Y\", errors=\"coerce\")\ndf[\"assessment_date\"] = iso.fillna(dmy)\n\nprint(\"mean before:\", round(df[\"students_count\"].mean(), 1))\ndf[\"students_count\"] = df[\"students_count\"].mask(df[\"students_count\"].eq(0))\nprint(\"mean after:\", round(df[\"students_count\"].mean(), 1))\n",
+ "notes": {
+  "3": {
+   "en": "The default call. Look at the dtypes: <code>school_id</code> became <code>int64</code>, and <code>classrooms</code> became <code>float64</code> because one cell is empty.",
+   "ar": "الاستدعاء الافتراضي. انظر إلى الأنواع: صار <code>school_id</code> من النوع <code>int64</code>، وصار <code>classrooms</code> من النوع <code>float64</code> لأن إحدى خلاياه فارغة."
+  },
+  "4": {
+   "en": "The identifiers have lost their leading zeros: <code>0071</code> is now <code>71</code>. No error, no warning.",
+   "ar": "فقدت المعرّفات أصفارها البادئة: صارت <code>0071</code> هي <code>71</code>. لا خطأ ولا تحذير."
+  },
+  "6": {
+   "en": "The same decisions, written down: identifiers are text, counts are nullable integers.",
+   "ar": "القرارات نفسها لكن مكتوبة صراحةً: المعرّفات نصوص، والأعداد أعداد صحيحة تقبل الفراغ."
+  },
+  "7": {
+   "en": "Read again with <code>dtype=types</code>. <code>school_id</code> is now <code>string</code>, <code>classrooms</code> is <code>Int64</code> with one <code>&lt;NA&gt;</code>.",
+   "ar": "قراءة ثانية مع <code>dtype=types</code>. صار <code>school_id</code> من النوع <code>string</code> وصار <code>classrooms</code> من النوع <code>Int64</code> وفيه قيمة <code>&lt;NA&gt;</code> واحدة."
+  },
+  "8": {
+   "en": "The leading zeros are back.",
+   "ar": "عادت الأصفار البادئة."
+  },
+  "10": {
+   "en": "First pass: only the ISO dates parse; the four <code>dd/mm/yyyy</code> rows become <code>NaT</code> (not a time).",
+   "ar": "المحاولة الأولى: تُقرأ التواريخ بصيغة ISO فقط؛ أما الصفوف الأربعة بصيغة <code>dd/mm/yyyy</code> فتصبح <code>NaT</code> (ليست وقتًا)."
+  },
+  "11": {
+   "en": "Second pass with the other format: now the ISO rows are <code>NaT</code> and the slash rows are dates.",
+   "ar": "المحاولة الثانية بالصيغة الأخرى: صارت صفوف ISO هي <code>NaT</code> وصفوف الشرطة المائلة تواريخ."
+  },
+  "12": {
+   "en": "<code>fillna</code> merges the two: every row has a date, and the column is now <code>datetime64</code>.",
+   "ar": "تدمج <code>fillna</code> النتيجتين: لكل صف تاريخ، وصار العمود من النوع <code>datetime64</code>."
+  },
+  "14": {
+   "en": "The mean with three zeros that are really \"not counted\".",
+   "ar": "المتوسط مع ثلاثة أصفار هي في الحقيقة «لم تُحصَ»."
+  },
+  "15": {
+   "en": "<code>mask</code> turns the zeros into <code>&lt;NA&gt;</code>: the three schools are now explicitly missing instead of falsely empty.",
+   "ar": "تحوّل <code>mask</code> الأصفار إلى <code>&lt;NA&gt;</code>: صارت المدارس الثلاث مفقودة صراحةً بدل أن تُعدّ خطأً بلا طلاب."
+  },
+  "16": {
+   "en": "The mean of the six schools that were actually counted. Same column, a third higher.",
+   "ar": "متوسط المدارس الست التي حُصرت فعلًا. العمود نفسه، والرقم أعلى بثلث."
+  },
+  "end": {
+   "en": "Four lines changed the answer from 601.1 to 901.7 without deleting a row.",
+   "ar": "أربعة أسطر غيّرت الجواب من 601.1 إلى 901.7 دون حذف أي صف."
+  }
+ },
+ "watch": [
+  "df",
+  "iso",
+  "dmy"
+ ],
+ "viz": {
+  "df": "table"
+ },
+ "max_steps": 60
+}

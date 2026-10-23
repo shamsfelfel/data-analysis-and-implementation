@@ -1,0 +1,13 @@
+%% alt: Decision tree for choosing a data format. If a person produces the data by hand, use an Excel workbook. If a web service produces it, call the API when you need fresh data on every run, otherwise save the reply as JSON and work from the file. If another program or database produces it, nested records call for JSON; a flat table is CSV when it is small and simple, Parquet when types must survive, and a database when many users read and update it all the time.
+flowchart TD
+  Q1{"Who or what<br/>produces the data?"}
+  Q1 -- "a person, by hand" --> E["Excel workbook<br/>read the header row,<br/>parse dates explicitly"]
+  Q1 -- "a web service" --> Q2{"Fresh data<br/>on every run?"}
+  Q2 -- "yes" --> A["API<br/>timeout, retries, pages"]
+  Q2 -- "no" --> J1["Save the reply as JSON<br/>then work from the file"]
+  Q1 -- "a program or database" --> Q3{"Nested records?"}
+  Q3 -- "yes" --> J2["JSON<br/>flatten when needed"]
+  Q3 -- "no, one flat table" --> Q4{"What matters most?"}
+  Q4 -- "small, simple, shareable" --> C["CSV<br/>UTF-8, ISO dates"]
+  Q4 -- "types must survive" --> P["Parquet<br/>a next step"]
+  Q4 -- "many users, constant updates" --> D["Database<br/>SQL"]

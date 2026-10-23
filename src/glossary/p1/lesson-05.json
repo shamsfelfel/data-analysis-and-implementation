@@ -1,0 +1,162 @@
+[
+  {
+    "id": "powerbi-desktop",
+    "term": {"en": "Power BI Desktop", "ar": "Power BI Desktop"},
+    "def": {
+      "en": "The free Windows application in which you build a Power BI report: connect to data, clean it with Power Query, model it and draw the visuals. It saves everything in one .pbix file, and signing in is not needed to use it.",
+      "ar": "تطبيق ويندوز المجاني الذي تبني فيه تقرير Power BI: تتصل بالبيانات وتنظّفها بـ Power Query وتنمذجها وترسم العناصر المرئية. يحفظ كل شيء في ملف واحد بامتداد pbix، ولا يلزم تسجيل الدخول لاستعماله."
+    },
+    "cat": {"en": "Power BI", "ar": "Power BI"},
+    "see": ["powerbi-service", "power-query"]
+  },
+  {
+    "id": "powerbi-service",
+    "term": {"en": "Power BI Service", "ar": "خدمة Power BI (Power BI Service)"},
+    "def": {
+      "en": "The website hosted by Microsoft where a published report lives so that others can open it, where a refresh can be scheduled and a report shared. It needs an account, normally a work or school one; Desktop does not.",
+      "ar": "الموقع الذي تستضيفه Microsoft ويعيش فيه التقرير المنشور ليفتحه الآخرون، وفيه يمكن جدولة التحديث ومشاركة التقرير. يحتاج حسابًا، عادةً حساب عمل أو مدرسة؛ بخلاف Desktop."
+    },
+    "cat": {"en": "Power BI", "ar": "Power BI"},
+    "see": ["powerbi-desktop"]
+  },
+  {
+    "id": "power-query",
+    "term": {"en": "Power Query", "ar": "Power Query"},
+    "def": {
+      "en": "The part of Power BI (and of Excel's Get & Transform) that connects to a source and cleans it as a list of recorded steps, opened with Transform Data. Example: it turns the 771-line cafeteria CSV into 748 clean lines without touching the file.",
+      "ar": "الجزء من Power BI (ومن Get & Transform في Excel) الذي يتصل بمصدر وينظّفه على شكل قائمة خطوات مسجّلة، ويُفتح بـ Transform Data. مثال: يحوّل ملف CSV الكافتيريا ذا 771 سطرًا إلى 748 سطرًا نظيفًا دون أن يلمس الملف."
+    },
+    "cat": {"en": "Power Query", "ar": "Power Query"},
+    "see": ["applied-steps", "m-language", "query-folding"]
+  },
+  {
+    "id": "applied-steps",
+    "term": {"en": "Applied Steps", "ar": "الخطوات المطبَّقة (Applied Steps)"},
+    "def": {
+      "en": "The ordered list in the Query Settings pane that records every transformation of a query, one entry per step. Click an old step to see the table as it was then; delete a step and the pipeline runs without it. The order matters.",
+      "ar": "القائمة المرتَّبة في لوحة Query Settings التي تسجّل كل تحويل في الاستعلام، مدخلًا لكل خطوة. انقر خطوة قديمة لترى الجدول كما كان حينها؛ واحذف خطوة فيعمل الخط بدونها. والترتيب مهم."
+    },
+    "cat": {"en": "Power Query", "ar": "Power Query"},
+    "see": ["power-query", "m-language"]
+  },
+  {
+    "id": "m-language",
+    "term": {"en": "M language", "ar": "لغة M"},
+    "def": {
+      "en": "The formula language Power Query writes for you, one line per Applied Step, inside a let ... in block. Example: Table.Distinct(Valid) removes lines identical in every column. Reading M is how you audit a query.",
+      "ar": "لغة الصيغ التي تكتبها Power Query لك، سطرًا لكل خطوة مطبَّقة، داخل كتلة let ... in. مثال: Table.Distinct(Valid) تحذف الأسطر المتطابقة في كل عمود. وقراءة M هي طريقة تدقيق الاستعلام."
+    },
+    "cat": {"en": "Power Query", "ar": "Power Query"},
+    "see": ["applied-steps", "power-query"]
+  },
+  {
+    "id": "query-folding",
+    "term": {"en": "Query folding", "ar": "طيّ الاستعلام (Query Folding)"},
+    "def": {
+      "en": "Power Query handing its steps to a database as one SQL query, so the database does the work and only the answer travels. CSV and Excel files cannot fold: Power Query runs every step itself.",
+      "ar": "تسليم Power Query خطواتها إلى قاعدة بيانات في استعلام SQL واحد، فتعمل القاعدة ولا يسافر إلا الجواب. لا يمكن لملفات CSV وExcel أن تُطوى: تنفذ Power Query كل خطوة بنفسها."
+    },
+    "cat": {"en": "Power Query", "ar": "Power Query"},
+    "see": ["power-query"]
+  },
+  {
+    "id": "data-model",
+    "term": {"en": "Data model", "ar": "نموذج البيانات (Data Model)"},
+    "def": {
+      "en": "The tables, columns, relationships and measures that a Power BI report draws from, loaded by Close & Apply. In this lesson: Orders (748 lines) and Menu (16 items) joined by a relationship.",
+      "ar": "الجداول والأعمدة والعلاقات والمقاييس التي يرسم منها تقرير Power BI، وتُحمَّل بـ Close & Apply. في هذا الدرس: Orders (748 سطرًا) وMenu (16 صنفًا) تربطهما علاقة."
+    },
+    "cat": {"en": "Modelling", "ar": "النمذجة"},
+    "see": ["pbi-relationship", "star-schema", "pbi-measure"]
+  },
+  {
+    "id": "pbi-relationship",
+    "term": {"en": "Relationship", "ar": "علاقة (Relationship)"},
+    "def": {
+      "en": "A link between a key column of one table and a key column of another that lets a filter on one reach the other. Example: Orders[item] to Menu[item], so a slicer on Menu[category] narrows the order lines.",
+      "ar": "ربط بين عمود مفتاح في جدول وعمود مفتاح في جدول آخر يتيح لمرشِّح على أحدهما أن يصل إلى الآخر. مثال: Orders[item] إلى Menu[item] فيضيّق مقطِّع على Menu[category] أسطر الطلبات."
+    },
+    "cat": {"en": "Modelling", "ar": "النمذجة"},
+    "see": ["cardinality", "star-schema", "filter-context"]
+  },
+  {
+    "id": "cardinality",
+    "term": {"en": "Cardinality", "ar": "تعدّدية العلاقة (Cardinality)"},
+    "def": {
+      "en": "How many rows on each side of a relationship may share one key value: many to one, one to one or many to many. Orders to Menu is many to one, because the menu lists each item exactly once.",
+      "ar": "كم صفًّا في كل جهة من العلاقة يمكن أن يشترك في قيمة مفتاح واحدة: متعدد إلى واحد أو واحد إلى واحد أو متعدد إلى متعدد. الطلبات إلى القائمة متعدد إلى واحد لأن القائمة تسرد كل صنف مرة واحدة بالضبط."
+    },
+    "cat": {"en": "Modelling", "ar": "النمذجة"},
+    "see": ["pbi-relationship"]
+  },
+  {
+    "id": "star-schema",
+    "term": {"en": "Star schema", "ar": "المخطط النجمي (Star Schema)"},
+    "def": {
+      "en": "A model with one fact table of events (Orders: one row per order line) in the middle and dimension tables that describe them (Menu, later a Calendar) around it. Filters flow from the dimensions to the fact table.",
+      "ar": "نموذج فيه جدول حقائق واحد للأحداث (Orders: صف لكل سطر طلب) في الوسط، وحوله جداول أبعاد تصفها (Menu، ثم لاحقًا Calendar). وتجري المرشِّحات من الأبعاد إلى جدول الحقائق."
+    },
+    "cat": {"en": "Modelling", "ar": "النمذجة"},
+    "see": ["data-model", "pbi-relationship"]
+  },
+  {
+    "id": "pbi-measure",
+    "term": {"en": "Measure", "ar": "مقياس (Measure)"},
+    "def": {
+      "en": "A named DAX formula, stored as a formula and calculated for each cell of a visual in that cell's filter context. Example: Total Revenue = SUMX(Orders, Orders[qty] * Orders[unit_price]) gives 8,062.00 overall and 917.00 for Falafel Sandwich.",
+      "ar": "صيغة DAX مسمّاة، تُخزَّن صيغةً وتُحسب لكل خلية في عنصر مرئي في سياق مرشِّح تلك الخلية. مثال: Total Revenue = SUMX(Orders, Orders[qty] * Orders[unit_price]) تعطي 8,062.00 إجمالًا و917.00 لـ Falafel Sandwich."
+    },
+    "cat": {"en": "DAX", "ar": "DAX"},
+    "see": ["dax", "pbi-calculated-column", "filter-context"]
+  },
+  {
+    "id": "pbi-calculated-column",
+    "term": {"en": "Calculated column", "ar": "عمود محسوب (Calculated Column)"},
+    "def": {
+      "en": "A column whose value is computed for every row when the data loads or refreshes and then stored, such as line_total = qty * unit_price. A column can be written in DAX or, earlier and usually better, in Power Query.",
+      "ar": "عمود تُحسب قيمته لكل صف عند تحميل البيانات أو تحديثها ثم تُخزَّن، مثل line_total = qty * unit_price. ويمكن كتابة العمود بـ DAX أو، في وقت أبكر وغالبًا أفضل، في Power Query."
+    },
+    "cat": {"en": "DAX", "ar": "DAX"},
+    "see": ["pbi-measure", "dax"]
+  },
+  {
+    "id": "dax",
+    "term": {"en": "DAX", "ar": "DAX"},
+    "def": {
+      "en": "Data Analysis Expressions: the formula language of the Power BI model, used for measures and calculated columns. Examples: SUMX, DISTINCTCOUNT, DIVIDE. Practical Chapter 10 teaches it properly.",
+      "ar": "Data Analysis Expressions: لغة صيغ نموذج Power BI، تُستعمل للمقاييس والأعمدة المحسوبة. أمثلة: SUMX وDISTINCTCOUNT وDIVIDE. ويعلّمها الفصل العملي 10 تعليمًا وافيًا."
+    },
+    "cat": {"en": "DAX", "ar": "DAX"},
+    "see": ["pbi-measure", "pbi-calculated-column"]
+  },
+  {
+    "id": "filter-context",
+    "term": {"en": "Filter context", "ar": "سياق المرشِّح (Filter Context)"},
+    "def": {
+      "en": "The set of filters in force when one cell of a visual is calculated: the bar's own category, slicers, page and visual filters, and what relationships pass along. The same measure gives different answers in different contexts.",
+      "ar": "مجموعة المرشِّحات السارية حين تُحسب خلية واحدة من عنصر مرئي: فئة العمود نفسه والمقطِّعات ومرشِّحات الصفحة والعنصر وما تمرره العلاقات. ويعطي المقياس نفسه أجوبة مختلفة في سياقات مختلفة."
+    },
+    "cat": {"en": "DAX", "ar": "DAX"},
+    "see": ["pbi-measure", "pbi-relationship"]
+  },
+  {
+    "id": "pbi-visual",
+    "term": {"en": "Visual", "ar": "عنصر مرئي (Visual)"},
+    "def": {
+      "en": "One chart, card, table or matrix on a report page, built by dragging fields into its wells. The question decides the visual: a card for one number, a bar chart for a ranking, a line chart for change over dates.",
+      "ar": "مخطط أو بطاقة أو جدول أو مصفوفة واحدة على صفحة تقرير، تُبنى بسحب الحقول إلى خاناتها. والسؤال هو الذي يحدد العنصر المرئي: بطاقة لرقم واحد، ومخطط شريطي لترتيب، ومخطط خطي لتغير عبر التواريخ."
+    },
+    "cat": {"en": "Report", "ar": "التقرير"},
+    "see": ["pbi-slicer"]
+  },
+  {
+    "id": "pbi-slicer",
+    "term": {"en": "Slicer", "ar": "مقطِّع (Slicer)"},
+    "def": {
+      "en": "A visual whose only job is to filter the other visuals on the page: click Staff and every connected card and chart recalculates for Staff (1,716.50 in revenue).",
+      "ar": "عنصر مرئي وظيفته الوحيدة ترشيح العناصر المرئية الأخرى في الصفحة: انقر Staff فتعيد كل بطاقة ومخطط متصل الحساب لـ Staff (إيرادات 1,716.50)."
+    },
+    "cat": {"en": "Report", "ar": "التقرير"},
+    "see": ["pbi-visual", "filter-context"]
+  }
+]

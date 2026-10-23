@@ -1,0 +1,24 @@
+%% alt: مخطط كيانات لنموذج Power BI. صف واحد في جدول القائمة (Menu) يرتبط بصفوف كثيرة في جدول الطلبات (Orders) عبر العمود item: كل صنف يظهر في بنود طلبات كثيرة. ويمكن ربط جدول تقويم (Calendar) بالطلبات عبر order_date، ويضاف لاحقًا في المقرر. جدول الطلبات هو جدول الحقائق، وجدولا القائمة والتقويم جدولا أبعاد، ومعًا يشكلان نجمة.
+erDiagram
+  MENU ||--o{ ORDERS : "العمود item (واحد إلى متعدد)"
+  CALENDAR ||..o{ ORDERS : "العمود order_date (يضاف لاحقًا)"
+  MENU["القائمة (بُعد)"] {
+    string item PK
+    string category
+    float list_price
+  }
+  ORDERS["الطلبات (حقائق)"] {
+    int order_id
+    datetime order_time
+    string item FK
+    int qty
+    float unit_price
+    string payment
+    string customer_type
+    float line_total
+  }
+  CALENDAR["التقويم (بُعد)"] {
+    date date PK
+    int month
+    string weekday
+  }

@@ -1,0 +1,24 @@
+%% alt: Entity diagram of the Power BI model. One Menu row relates to many Orders rows through the item column: each item appears in many order lines. A Calendar table could relate to Orders through order_date; it is added later in the course. Orders is the fact table, Menu and Calendar are dimension tables, which together form a star.
+erDiagram
+  MENU ||--o{ ORDERS : "item (one to many)"
+  CALENDAR ||..o{ ORDERS : "order_date (added later)"
+  MENU {
+    string item PK
+    string category
+    float list_price
+  }
+  ORDERS {
+    int order_id
+    datetime order_time
+    string item FK
+    int qty
+    float unit_price
+    string payment
+    string customer_type
+    float line_total
+  }
+  CALENDAR {
+    date date PK
+    int month
+    string weekday
+  }

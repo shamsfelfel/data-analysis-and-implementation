@@ -1,0 +1,15 @@
+%% alt: Decision flowchart for choosing a tool. Start with a new job. If it will not be repeated and the data fits on a screen, use Excel. If it will not be repeated and the data is large, use pandas. If it will be repeated, ask whether other people need to click and filter it. If yes and the data fits in Power BI, use Power BI; if yes but it needs code or API calls first, prepare it with pandas and show it in Power BI. If nobody needs to filter it, ask whether it feeds a model or a test: then use a pandas script with checks; otherwise ask whether a colleague edits the numbers, which suggests Excel with a Table, and if not, a pandas script.
+flowchart TD
+  Q(["A new job"]) --> A{"Will it run again?"}
+  A -- "once" --> B{"Fits on a screen?"}
+  B -- "yes" --> XL1["Excel"]
+  B -- "no" --> PY1["pandas"]
+  A -- "again and again" --> C{"Do others click<br/>and filter it?"}
+  C -- "yes" --> D{"Needs code or APIs<br/>first?"}
+  D -- "no" --> PB["Power BI"]
+  D -- "yes" --> PY2["pandas, then<br/>Power BI"]
+  C -- "no" --> E{"Feeds a model<br/>or a test?"}
+  E -- "yes" --> PY3["pandas script<br/>with asserts"]
+  E -- "no" --> F{"Does a colleague<br/>edit the numbers?"}
+  F -- "yes" --> XL2["Excel with<br/>a Table"]
+  F -- "no" --> PY4["pandas script"]

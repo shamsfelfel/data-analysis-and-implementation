@@ -1,0 +1,23 @@
+%% alt: Sequence diagram of load_listings. The caller asks load_listings for a file. The function reads every column as text with pandas, calls coerce for each column to get typed values and the cells that failed to parse, calls validate with the schema, and returns the typed DataFrame together with a report. The caller then decides: on STOP it raises an error that carries the report; otherwise it goes on with the analysis.
+sequenceDiagram
+  autonumber
+  participant U as Caller
+  participant L as load_listings
+  participant P as pandas
+  participant C as coerce
+  participant V as validate
+  U->>+L: load_listings(path)
+  L->>P: read_csv(dtype=str)
+  P-->>L: every cell as text
+  loop each column
+    L->>C: coerce(text, rule)
+    C-->>L: typed column, failed cells
+  end
+  L->>V: validate(df, schema)
+  V-->>L: list of problems
+  L-->>-U: df, report
+  alt decide(problems) is STOP
+    Note over U: raise an error<br/>that carries the report
+  else GO or GO WITH CARE
+    Note over U: continue with the analysis
+  end

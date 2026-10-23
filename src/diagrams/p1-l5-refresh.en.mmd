@@ -1,0 +1,21 @@
+%% alt: Sequence diagram of a refresh. In Desktop you press Refresh and Power Query re-runs every applied step against the source file, so the model and visuals update on your own computer. After you publish the .pbix, the Power BI Service repeats this on a schedule: it asks the gateway, the gateway reads the file with saved credentials, the rows come back after the same steps, and the service rebuilds the model. If the gateway is offline or the file path has moved, the refresh fails and the service emails you.
+sequenceDiagram
+  autonumber
+  participant U as You in Desktop
+  participant F as Source file
+  participant S as Power BI Service
+  participant G as Gateway
+  U->>F: Refresh: re-run every applied step
+  F-->>U: current rows
+  Note over U: model and visuals update on your PC only
+  U->>S: Publish the .pbix (needs an account)
+  loop on the schedule, for example every night
+    S->>G: refresh request
+    G->>F: read the file with saved credentials
+    F-->>G: raw rows
+    G-->>S: rows after the same steps
+    S->>S: rebuild the model and visuals
+  end
+  alt gateway offline or path moved
+    S-->>U: refresh failed, email sent
+  end

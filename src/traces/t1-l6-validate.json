@@ -1,0 +1,83 @@
+{
+ "id": "t1-l6-validate",
+ "title": {
+  "en": "validate() collects problems instead of stopping",
+  "ar": "validate() تجمع المشكلات بدل أن تتوقف عند أولها"
+ },
+ "lede": {
+  "en": "Step through a validator over a four-row frame and watch the list of problems grow, one rule at a time.",
+  "ar": "تنقّل خطوة خطوة في دالة تحقّق على جدول من أربعة صفوف، وراقب قائمة المشكلات تكبر قاعدةً بعد قاعدة."
+ },
+ "code": "import pandas as pd\n\ndf = pd.DataFrame({\n    \"listing_id\": [\"1001\", \"1002\", \"1002\", \"1004\"],\n    \"city\": [\"Gaza\", \"Rafah\", \"Rafah\", \"gaza \"],\n    \"monthly_rent\": [415.0, -20.0, 300.0, None],\n})\nSCHEMA = {\n    \"listing_id\": {\"unique\": True},\n    \"city\": {\"allowed\": [\"Gaza\", \"Rafah\"]},\n    \"monthly_rent\": {\"min\": 50, \"max_missing\": 0},\n}\n\n\ndef validate(df, schema):\n    problems = []\n\n    def add(col, message):\n        problems.append(f\"{col}: {message}\")\n\n    for col, rule in schema.items():\n        s = df[col]\n        if rule.get(\"unique\") and s.duplicated().any():\n            add(col, f\"{s.duplicated().sum()} repeated value(s)\")\n        if \"allowed\" in rule and (~s.isin(rule[\"allowed\"])).any():\n            add(col, f\"{(~s.isin(rule['allowed'])).sum()} outside the allowed set\")\n        if \"min\" in rule and (s < rule[\"min\"]).any():\n            add(col, f\"{(s < rule['min']).sum()} below {rule['min']}\")\n        if s.isna().mean() > rule.get(\"max_missing\", 0):\n            add(col, f\"{s.isna().sum()} missing\")\n    return problems\n\n\nproblems = validate(df, SCHEMA)\nprint(len(problems), \"problem(s)\")\nfor p in problems:\n    print(\" -\", p)\n",
+ "notes": {
+  "3": {
+   "en": "A tiny frame with four planted defects: a repeated id, a mis-spelled city, a negative rent, a missing rent.",
+   "ar": "جدول صغير فيه أربعة عيوب مزروعة عمدًا: معرّف مكرّر، واسم مدينة مكتوب خطأً، وإيجار سالب، وإيجار مفقود."
+  },
+  "8": {
+   "en": "The schema is plain data: one dictionary of rules per column. Nothing is checked yet.",
+   "ar": "المخطط (schema) بيانات عادية: قاموس قواعد لكل عمود. لم يُفحص شيء حتى الآن."
+  },
+  "15": {
+   "en": "<code>validate</code> is only defined here. Nothing runs until line 34 calls it.",
+   "ar": "هنا تُعرَّف <code>validate</code> فقط. لا يُنفَّذ شيء حتى يستدعيها السطر 34."
+  },
+  "34": {
+   "en": "The call. Watch the call stack: a new frame for <code>validate</code> appears.",
+   "ar": "الاستدعاء. راقب مكدّس الاستدعاءات: يظهر إطار جديد لـ <code>validate</code>."
+  },
+  "16": {
+   "en": "<code>problems</code> starts as an empty list. The function will only ever append to it, never raise.",
+   "ar": "تبدأ <code>problems</code> قائمة فارغة. ستُضاف إليها المشكلات فقط، ولن تُرفع أي استثناءات."
+  },
+  "18": {
+   "en": "<code>add</code> is a small helper defined inside <code>validate</code>; it remembers <code>problems</code>.",
+   "ar": "<code>add</code> دالة مساعدة صغيرة معرَّفة داخل <code>validate</code>، وتتذكّر القائمة <code>problems</code>."
+  },
+  "21": {
+   "en": "One pass of the loop per column: <code>col</code> is the column name, <code>rule</code> its dictionary of rules.",
+   "ar": "دورة واحدة من الحلقة لكل عمود: <code>col</code> اسم العمود و<code>rule</code> قاموس قواعده."
+  },
+  "23": {
+   "en": "Uniqueness rule. For <code>listing_id</code> the answer is True (id 1002 appears twice), so the problem will be recorded.",
+   "ar": "قاعدة التفرّد. في <code>listing_id</code> الجواب True (المعرّف 1002 يظهر مرتين) فستُسجَّل المشكلة."
+  },
+  "24": {
+   "en": "<code>add</code> runs in its own frame (see the stack) and appends one string. The first problem is on the list.",
+   "ar": "تُنفَّذ <code>add</code> في إطارها الخاص (انظر المكدّس) وتضيف نصًّا واحدًا. المشكلة الأولى صارت في القائمة."
+  },
+  "25": {
+   "en": "Allowed-set rule, only for columns that have one. <code>\"gaza \"</code> (lower case, trailing space) is not in the set.",
+   "ar": "قاعدة المجموعة المسموحة، للأعمدة التي لها قاعدة كهذه فقط. القيمة <code>\"gaza \"</code> (حرف صغير ومسافة زائدة) ليست في المجموعة."
+  },
+  "27": {
+   "en": "Range rule: one rent is below 50. The missing rent is not counted here, because a comparison with NaN is False.",
+   "ar": "قاعدة المدى: إيجار واحد أقل من 50. الإيجار المفقود لا يُحسب هنا لأن المقارنة مع NaN تعطي False."
+  },
+  "29": {
+   "en": "Completeness rule: the share of missing cells is compared with the allowed share (default 0).",
+   "ar": "قاعدة الاكتمال: تُقارَن نسبة الخلايا المفقودة بالنسبة المسموحة (الافتراضي 0)."
+  },
+  "31": {
+   "en": "All three columns checked. The function hands back the whole list, so the caller sees every problem at once.",
+   "ar": "فُحصت الأعمدة الثلاثة. تُعيد الدالة القائمة كاملة، فيرى المستدعي كل المشكلات دفعة واحدة."
+  },
+  "35": {
+   "en": "Back at module level, <code>problems</code> now holds four strings.",
+   "ar": "عدنا إلى المستوى الأعلى، وتحمل <code>problems</code> الآن أربعة نصوص."
+  },
+  "end": {
+   "en": "A first assertion would have stopped at the repeated id and said nothing about the other three.",
+   "ar": "أول عبارة <code>assert</code> كانت ستتوقف عند المعرّف المكرّر ولا تقول شيئًا عن الثلاثة الأخرى."
+  }
+ },
+ "watch": [
+  "df",
+  "problems"
+ ],
+ "viz": {
+  "df": "table",
+  "SCHEMA": "tree"
+ },
+ "max_steps": 140
+}

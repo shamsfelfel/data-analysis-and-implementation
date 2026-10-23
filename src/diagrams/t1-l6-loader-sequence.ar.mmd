@@ -1,0 +1,23 @@
+%% alt: مخطط تسلسلي لدالة load_listings. يطلب المستدعي من load_listings ملفًّا. تقرأ الدالة كل عمود كنص بواسطة pandas، ثم تستدعي coerce لكل عمود لتحصل على القيم المنمَّطة والخلايا التي فشل تحويلها، ثم تستدعي validate مع المخطط، وتُعيد الجدول المنمَّط مع تقرير. بعدها يقرّر المستدعي: عند STOP يرفع خطأً يحمل التقرير، وإلا تابع التحليل.
+sequenceDiagram
+  autonumber
+  participant U as المستدعي
+  participant L as `load_listings`
+  participant P as pandas
+  participant C as `coerce`
+  participant V as `validate`
+  U->>+L: `load_listings(path)`
+  L->>P: `read_csv(dtype=str)`
+  P-->>L: كل خلية كنص
+  loop لكل عمود
+    L->>C: `coerce(text, rule)`
+    C-->>L: عمود منمَّط، وخلايا فاشلة
+  end
+  L->>V: `validate(df, schema)`
+  V-->>L: قائمة المشكلات
+  L-->>-U: `df, report`
+  alt القرار STOP
+    Note over U: ارفع خطأً<br/>يحمل التقرير
+  else GO أو GO WITH CARE
+    Note over U: تابع التحليل
+  end

@@ -1,0 +1,545 @@
+{
+ "id": "p1-l5-measure-context",
+ "title": {
+  "en": "One measure, many answers: filter context",
+  "ar": "مقياس واحد وإجابات كثيرة: سياق المرشِّح"
+ },
+ "lede": {
+  "en": "The Falafel Sandwich bar and the three measures of this lesson. Watch the filter context decide which rows SUMX may see, then watch the same formulas give different numbers when the filter is removed. The rows are real; only the first six of the 84 Falafel lines are drawn.",
+  "ar": "عمود Falafel Sandwich والمقاييس الثلاثة في هذا الدرس. شاهد سياق المرشِّح يقرر أي الصفوف تراها SUMX، ثم شاهد الصيغ نفسها تعطي أرقامًا مختلفة عند إزالة المرشِّح. الصفوف حقيقية؛ ورُسمت فقط أول ستة من أسطر الفلافل الـ 84."
+ },
+ "manual": true,
+ "lang": "dax",
+ "code": "// the Falafel Sandwich bar sets the filter context\nTotal Revenue = SUMX(Orders, Orders[qty] * Orders[unit_price])\nOrders Count = DISTINCTCOUNT(Orders[order_id])\nRevenue per Order = DIVIDE([Total Revenue], [Orders Count])",
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "pipeline": {
+     "t": "flow",
+     "nodes": [
+      "Bar sets filter",
+      "Rows kept",
+      "Row by row",
+      "Add up",
+      "Measure value"
+     ],
+     "active": 0
+    },
+    "filter": {
+     "t": "str",
+     "v": "Menu[item] = \"Falafel Sandwich\""
+    },
+    "Orders lines kept": {
+     "t": "num",
+     "v": "748"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "The report has a bar for Falafel Sandwich. Drawing that bar means asking the model for the measure with one filter switched on: item = Falafel Sandwich. Nothing is calculated yet, and the formula below does not change - only the context it runs in.",
+    "ar": "في التقرير عمود لـ Falafel Sandwich. ورسم هذا العمود يعني أن نطلب من النموذج قيمة المقياس مع تفعيل مرشِّح واحد: item = Falafel Sandwich. لم يُحسب شيء بعد، والصيغة أدناه لا تتغير؛ الذي يتغير هو السياق الذي تعمل فيه."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "pipeline": {
+     "t": "flow",
+     "nodes": [
+      "Bar sets filter",
+      "Rows kept",
+      "Row by row",
+      "Add up",
+      "Measure value"
+     ],
+     "active": 1
+    },
+    "filter": {
+     "t": "str",
+     "v": "Menu[item] = \"Falafel Sandwich\""
+    },
+    "Orders lines kept": {
+     "t": "num",
+     "v": "84"
+    },
+    "Orders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "qty",
+      "unit_price",
+      "qty*price"
+     ],
+     "rows": [
+      [
+       "5017",
+       "2",
+       "7",
+       ""
+      ],
+      [
+       "5022",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5023",
+       "2",
+       "7",
+       ""
+      ],
+      [
+       "5026",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5029",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5048",
+       "2",
+       "7",
+       ""
+      ],
+      [
+       "...",
+       "...",
+       "...",
+       "..."
+      ]
+     ],
+     "formula": "= SUMX(Orders, Orders[qty] * Orders[unit_price])"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "The relationship Menu[item] to Orders[item] carries the filter into Orders: only the 84 Falafel lines (of 748) are visible to the formula. SUMX will walk over those 84 rows and no others.",
+    "ar": "تنقل العلاقة بين Menu[item] وOrders[item] المرشِّح إلى جدول Orders: فلا يرى الصيغةَ إلا أسطر الفلافل الـ 84 (من 748). وستمرّ SUMX على هذه الصفوف الـ 84 دون غيرها."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "pipeline": {
+     "t": "flow",
+     "nodes": [
+      "Bar sets filter",
+      "Rows kept",
+      "Row by row",
+      "Add up",
+      "Measure value"
+     ],
+     "active": 2
+    },
+    "filter": {
+     "t": "str",
+     "v": "Menu[item] = \"Falafel Sandwich\""
+    },
+    "Orders lines kept": {
+     "t": "num",
+     "v": "84"
+    },
+    "Orders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "qty",
+      "unit_price",
+      "qty*price"
+     ],
+     "rows": [
+      [
+       "5017",
+       "2",
+       "7",
+       "14"
+      ],
+      [
+       "5022",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5023",
+       "2",
+       "7",
+       ""
+      ],
+      [
+       "5026",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5029",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5048",
+       "2",
+       "7",
+       ""
+      ],
+      [
+       "...",
+       "...",
+       "...",
+       "..."
+      ]
+     ],
+     "hl": [
+      "D2"
+     ],
+     "formula": "= qty * unit_price for row 1",
+     "result": "14"
+    },
+    "running total": {
+     "t": "num",
+     "v": "14"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Row 1 (order 5017): 2 * 7 = 14. The running total is 14.",
+    "ar": "الصف 1 (الطلب 5017): 2 * 7 = 14. المجموع الجاري 14."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "pipeline": {
+     "t": "flow",
+     "nodes": [
+      "Bar sets filter",
+      "Rows kept",
+      "Row by row",
+      "Add up",
+      "Measure value"
+     ],
+     "active": 2
+    },
+    "filter": {
+     "t": "str",
+     "v": "Menu[item] = \"Falafel Sandwich\""
+    },
+    "Orders lines kept": {
+     "t": "num",
+     "v": "84"
+    },
+    "Orders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "qty",
+      "unit_price",
+      "qty*price"
+     ],
+     "rows": [
+      [
+       "5017",
+       "2",
+       "7",
+       "14"
+      ],
+      [
+       "5022",
+       "1",
+       "7",
+       "7"
+      ],
+      [
+       "5023",
+       "2",
+       "7",
+       ""
+      ],
+      [
+       "5026",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5029",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5048",
+       "2",
+       "7",
+       ""
+      ],
+      [
+       "...",
+       "...",
+       "...",
+       "..."
+      ]
+     ],
+     "hl": [
+      "D3"
+     ],
+     "formula": "= qty * unit_price for row 2",
+     "result": "7"
+    },
+    "running total": {
+     "t": "num",
+     "v": "21"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Row 2 (order 5022): 1 * 7 = 7. The running total is 21.",
+    "ar": "الصف 2 (الطلب 5022): 1 * 7 = 7. المجموع الجاري 21."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "pipeline": {
+     "t": "flow",
+     "nodes": [
+      "Bar sets filter",
+      "Rows kept",
+      "Row by row",
+      "Add up",
+      "Measure value"
+     ],
+     "active": 2
+    },
+    "filter": {
+     "t": "str",
+     "v": "Menu[item] = \"Falafel Sandwich\""
+    },
+    "Orders lines kept": {
+     "t": "num",
+     "v": "84"
+    },
+    "Orders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "qty",
+      "unit_price",
+      "qty*price"
+     ],
+     "rows": [
+      [
+       "5017",
+       "2",
+       "7",
+       "14"
+      ],
+      [
+       "5022",
+       "1",
+       "7",
+       "7"
+      ],
+      [
+       "5023",
+       "2",
+       "7",
+       "14"
+      ],
+      [
+       "5026",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5029",
+       "1",
+       "7",
+       ""
+      ],
+      [
+       "5048",
+       "2",
+       "7",
+       ""
+      ],
+      [
+       "...",
+       "...",
+       "...",
+       "..."
+      ]
+     ],
+     "hl": [
+      "D4"
+     ],
+     "formula": "= qty * unit_price for row 3",
+     "result": "14"
+    },
+    "running total": {
+     "t": "num",
+     "v": "35"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Row 3 (order 5023): 2 * 7 = 14. The running total is 35.",
+    "ar": "الصف 3 (الطلب 5023): 2 * 7 = 14. المجموع الجاري 35."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "pipeline": {
+     "t": "flow",
+     "nodes": [
+      "Bar sets filter",
+      "Rows kept",
+      "Row by row",
+      "Add up",
+      "Measure value"
+     ],
+     "active": 3
+    },
+    "filter": {
+     "t": "str",
+     "v": "Menu[item] = \"Falafel Sandwich\""
+    },
+    "Orders lines kept": {
+     "t": "num",
+     "v": "84"
+    },
+    "running total": {
+     "t": "num",
+     "v": "917"
+    }
+   },
+   "out": "Total Revenue = 917.00",
+   "note": {
+    "en": "The other 81 rows are added in the same way: 35 + 882 = 917. SUMX multiplies first and adds afterwards, row by row, so a price that differs between rows is handled correctly (here every Falafel line costs 7).",
+    "ar": "تُجمع الصفوف الـ 81 الباقية بالطريقة نفسها: 35 + 882 = 917. تضرب SUMX أولًا ثم تجمع، صفًّا صفًّا، فيُعامَل اختلاف السعر بين الصفوف معاملة صحيحة (هنا كل أسطر الفلافل بسعر 7)."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "pipeline": {
+     "t": "flow",
+     "nodes": [
+      "Bar sets filter",
+      "Rows kept",
+      "Row by row",
+      "Add up",
+      "Measure value"
+     ],
+     "active": 4
+    },
+    "filter": {
+     "t": "str",
+     "v": "Menu[item] = \"Falafel Sandwich\""
+    },
+    "Orders lines kept": {
+     "t": "num",
+     "v": "84"
+    },
+    "Total Revenue": {
+     "t": "num",
+     "v": "917.00"
+    },
+    "distinct order_id": {
+     "t": "num",
+     "v": "84"
+    }
+   },
+   "out": "Total Revenue = 917.00\nOrders Count = 84",
+   "note": {
+    "en": "DISTINCTCOUNT counts different order_id values among the same 84 lines: 84, because no order has two Falafel lines. Compare Chicken Rice: 40 lines but only 39 orders, since one order holds two of them. Counting lines and counting orders are different questions.",
+    "ar": "تعدّ DISTINCTCOUNT قيم order_id المختلفة بين الأسطر الـ 84 نفسها: 84، لأن أي طلب لا يحوي سطرَي فلافل. قارن بـ Chicken Rice: 40 سطرًا و39 طلبًا فقط، لأن طلبًا واحدًا يضم سطرين منه. عدّ الأسطر وعدّ الطلبات سؤالان مختلفان."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "pipeline": {
+     "t": "flow",
+     "nodes": [
+      "Bar sets filter",
+      "Rows kept",
+      "Row by row",
+      "Add up",
+      "Measure value"
+     ],
+     "active": 4
+    },
+    "filter": {
+     "t": "str",
+     "v": "Menu[item] = \"Falafel Sandwich\""
+    },
+    "Total Revenue": {
+     "t": "num",
+     "v": "917.00"
+    },
+    "Orders Count": {
+     "t": "num",
+     "v": "84"
+    },
+    "Revenue per Order": {
+     "t": "num",
+     "v": "10.9167"
+    }
+   },
+   "out": "Total Revenue = 917.00\nOrders Count = 84\nRevenue per Order = 10.92",
+   "note": {
+    "en": "DIVIDE(917, 84) = 10.9167, shown as 10.92 on the card. The measure reuses the other two by name, in square brackets, and DIVIDE returns blank instead of an error if the denominator were 0.",
+    "ar": "DIVIDE(917, 84) = 10.9167، وتظهر 10.92 في البطاقة. يعيد المقياس استعمال المقياسين الآخرين باسميهما بين قوسين مربعين، وتُرجع DIVIDE فراغًا بدل خطأ لو كان المقسوم عليه 0."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "pipeline": {
+     "t": "flow",
+     "nodes": [
+      "Bar sets filter",
+      "Rows kept",
+      "Row by row",
+      "Add up",
+      "Measure value"
+     ],
+     "active": 4
+    },
+    "filter": {
+     "t": "str",
+     "v": "(none)"
+    },
+    "Total Revenue": {
+     "t": "num",
+     "v": "8062.00"
+    },
+    "Orders Count": {
+     "t": "num",
+     "v": "611"
+    },
+    "Revenue per Order": {
+     "t": "num",
+     "v": "13.1948"
+    }
+   },
+   "out": "Total Revenue = 917.00\nOrders Count = 84\nRevenue per Order = 10.92\n--- filter removed ---\n8062.00 / 611 / 13.19",
+   "note": {
+    "en": "Remove the filter (no bar selected, no slicer) and the same three formulas give 8,062.00, 611 and 13.19. Nothing was edited: only the filter context changed. That is what 'a measure is a question asked in a context' means.",
+    "ar": "أزِل المرشِّح (بلا عمود محدّد ولا مقطِّع) فتعطي الصيغ الثلاث نفسها 8,062.00 و611 و13.19. لم يُعدَّل شيء: تغيّر سياق المرشِّح وحده. وهذا معنى قولنا إن «المقياس سؤال يُطرح في سياق»."
+   }
+  }
+ ]
+}

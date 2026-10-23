@@ -1,0 +1,11 @@
+%% alt: Flowchart of the validation pipeline. A raw file is loaded as text, coerced to types while counting blank cells and cells that failed to parse, then checked by validate(), which returns a list of problems. If any problem has error severity the decision is STOP and the report is printed; if there are only warnings the decision is GO WITH CARE; if there are none the typed DataFrame goes to the analysis.
+flowchart TD
+  F["Raw file or API reply"] --> L["Load as text<br/>nothing guessed"]
+  L --> C["Coerce to types<br/>count blank and failed"]
+  C --> V["`validate(df, schema)`<br/>returns a list of problems"]
+  V --> S{"Any problem<br/>with severity error?"}
+  S -- "yes" --> X["STOP<br/>print the report<br/>fix the source or the schema"]
+  S -- "only warnings" --> W["GO WITH CARE<br/>log the warnings"]
+  S -- "none" --> G["GO<br/>typed DataFrame"]
+  W --> G
+  G --> A["Analysis or model training"]

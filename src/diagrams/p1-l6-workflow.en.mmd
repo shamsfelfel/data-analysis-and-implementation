@@ -1,0 +1,26 @@
+%% alt: Swim-lane style flowchart of the whole chapter workflow. In the analyst lane, Lesson 1 gives the question and success criteria, which with the cleaning rules goes to three tool lanes. The pandas lane (Lesson 3) runs clean and answer. The Excel lane (Lesson 4) adds helper columns and a PivotTable. The Power BI lane (Lesson 5) applies Power Query steps and measures. All three answers return to the analyst lane in Lesson 6 for reconciliation, then the brief, and finally a re-run from the raw file that starts the loop again.
+flowchart LR
+  subgraph AN["Analyst lane"]
+    direction LR
+    Q["L1 Question +<br/>success criteria"] --> RU["L6 Rules R1-R5<br/>written once"]
+    RC["L6 Reconcile<br/>three answers"] --> BR["L6 The brief"] --> RR["Re-run from<br/>the raw file"]
+  end
+  subgraph PY["pandas lane"]
+    direction LR
+    P1["L3 clean(df)"] --> P2["L3 answer(df)"]
+  end
+  subgraph XL["Excel lane"]
+    direction LR
+    X1["L4 Table + helper<br/>columns"] --> X2["L4 PivotTable<br/>and SUMIFS"]
+  end
+  subgraph PB["Power BI lane"]
+    direction LR
+    B1["L5 Power Query<br/>steps"] --> B2["L5 Measures<br/>+ visuals"]
+  end
+  RU --> P1
+  RU --> X1
+  RU --> B1
+  P2 --> RC
+  X2 --> RC
+  B2 --> RC
+  RR -. "next month, new question" .-> Q

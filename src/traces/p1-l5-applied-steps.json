@@ -1,0 +1,857 @@
+{
+ "id": "p1-l5-applied-steps",
+ "title": {
+  "en": "Applied Steps, one at a time",
+  "ar": "الخطوات المطبَّقة، خطوة بخطوة"
+ },
+ "lede": {
+  "en": "Step through the Orders query line by line. The grid is a real excerpt of the file: ten of the 771 lines and five of the eight columns, so you can see exactly which row each step touches; the counters are for the whole file. Highlighted cells are what the step just changed, and the output pane lists the Applied Steps recorded so far.",
+  "ar": "تابع استعلام الطلبات سطرًا بسطر. الشبكة مقتطف حقيقي من الملف: عشرة من 771 سطرًا وخمسة من ثمانية أعمدة، لترى بالضبط أي صف تلمسه كل خطوة؛ أما العدّادات فللملف كله. الخلايا المظلَّلة هي ما غيّرته الخطوة للتو، وتسرد لوحة المُخرَجات الخطوات المطبَّقة حتى الآن."
+ },
+ "manual": true,
+ "lang": "m",
+ "code": "let\n    Source = Csv.Document(File.Contents(DataFolder & \"cafeteria_orders.csv\"),\n        [Delimiter = \",\", Columns = 8, Encoding = 65001]),\n    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),\n    Typed = Table.TransformColumnTypes(Promoted,\n        {{\"order_id\", Int64.Type}, {\"order_time\", type datetime},\n         {\"item\", type text}, {\"category\", type text},\n         {\"qty\", Int64.Type}, {\"unit_price\", type number},\n         {\"payment\", type text}, {\"customer_type\", type text}},\n        \"en-US\"),\n    NoErrors = Table.ReplaceErrorValues(Typed, {{\"unit_price\", null}}),\n    Tidy = Table.TransformColumns(NoErrors,\n        {{\"item\", each Text.Proper(Text.Trim(Text.Clean(_))), type text}}),\n    Valid = Table.SelectRows(Tidy,\n        each [qty] > 0 and [unit_price] <> null and [unit_price] < 50),\n    Unique = Table.Distinct(Valid),\n    WithTotal = Table.AddColumn(Unique, \"line_total\",\n        each [qty] * [unit_price], type number)\nin\n    WithTotal",
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "rows_in_file": {
+     "t": "none"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "A query is a let ... in recipe: a list of named steps, and each step takes the table produced by the step before it. Nothing has been read yet, and the source file is never modified by any of them.",
+    "ar": "الاستعلام وصفة على شكل let ... in: قائمة خطوات مسمّاة، وكل خطوة تأخذ الجدول الذي أنتجته الخطوة التي قبلها. لم يُقرأ شيء بعد، ولا تعدّل أي خطوة ملف المصدر."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "preview": {
+     "t": "sheet",
+     "cols": [
+      "Column1",
+      "Column3",
+      "Column5",
+      "Column6",
+      "Column7"
+     ],
+     "rows": [
+      [
+       "order_id",
+       "item",
+       "qty",
+       "unit_price",
+       "payment"
+      ],
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120.0",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12.0",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9.0",
+       "Wallet"
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "Wallet"
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3.0",
+       ""
+      ],
+      [
+       "5050",
+       "Latte ",
+       "1",
+       "9.0",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5089",
+       "espresso",
+       "1",
+       "6.0",
+       "Card"
+      ],
+      [
+       "5454",
+       "tea",
+       "1",
+       "3.0",
+       "Cash"
+      ]
+     ],
+     "hl": [
+      "A2:E2"
+     ],
+     "formula": "= Csv.Document(File.Contents(DataFolder & \"cafeteria_orders.csv\"), ...)",
+     "result": "772 text lines"
+    },
+    "rows_in_file": {
+     "t": "num",
+     "v": "772"
+    }
+   },
+   "out": "Source",
+   "note": {
+    "en": "Csv.Document reads the file as plain text. Every cell is text, the columns are called Column1 ... Column8 (five of them are drawn here), and the header is still an ordinary first row.",
+    "ar": "تقرأ Csv.Document الملف نصًّا خامًّا. كل خلية نص، وأسماء الأعمدة Column1 ... Column8 (رُسمت خمسة منها هنا)، وصف العناوين ما زال صفًّا عاديًّا أول."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "preview": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "payment"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120.0",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12.0",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9.0",
+       "Wallet"
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "Wallet"
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3.0",
+       ""
+      ],
+      [
+       "5050",
+       "Latte ",
+       "1",
+       "9.0",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5089",
+       "espresso",
+       "1",
+       "6.0",
+       "Card"
+      ],
+      [
+       "5454",
+       "tea",
+       "1",
+       "3.0",
+       "Cash"
+      ]
+     ],
+     "hl": [
+      "A1:E1"
+     ],
+     "formula": "= Table.PromoteHeaders(Source, [PromoteAllScalars = true])",
+     "result": "771 lines"
+    },
+    "rows_in_file": {
+     "t": "num",
+     "v": "771"
+    }
+   },
+   "out": "Source\nPromoted",
+   "note": {
+    "en": "Table.PromoteHeaders turns the first row into column names, leaving 771 data lines. They are still all text: 12.0 is just the characters 1, 2, a dot and 0.",
+    "ar": "تحوّل Table.PromoteHeaders الصف الأول إلى أسماء أعمدة، فتبقى 771 سطر بيانات. وهي ما زالت نصًّا كلها: 12.0 مجرد الأحرف 1 و2 ونقطة و0."
+   }
+  },
+  {
+   "line": 5,
+   "vars": {
+    "preview": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "payment"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "Wallet"
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "Error",
+       "Wallet"
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       ""
+      ],
+      [
+       "5050",
+       "Latte ",
+       "1",
+       "9",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5089",
+       "espresso",
+       "1",
+       "6",
+       "Card"
+      ],
+      [
+       "5454",
+       "tea",
+       "1",
+       "3",
+       "Cash"
+      ]
+     ],
+     "hl": [
+      "D2:D11"
+     ],
+     "formula": "= Table.TransformColumnTypes(Promoted, {...}, \"en-US\")",
+     "result": "1 Error cell"
+    },
+    "rows_in_file": {
+     "t": "num",
+     "v": "771"
+    }
+   },
+   "out": "Source\nPromoted\nTyped",
+   "note": {
+    "en": "Each column gets its type, read with the English (US) culture so that the dot is the decimal mark: 120.0 becomes the number 120. The text n/a cannot be a number, so that one cell turns into an Error value. This is why the type step must come before any step that compares or multiplies.",
+    "ar": "يأخذ كل عمود نوعه، ويُقرأ بثقافة الإنجليزية (الولايات المتحدة) لتكون النقطة هي الفاصلة العشرية: يصبح 120.0 العدد 120. أما النص n/a فلا يمكن أن يكون عددًا، فتتحول تلك الخلية وحدها إلى قيمة خطأ (Error). ولهذا يجب أن تأتي خطوة الأنواع قبل أي خطوة تقارن أو تضرب."
+   }
+  },
+  {
+   "line": 11,
+   "vars": {
+    "preview": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "payment"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "Wallet"
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "null",
+       "Wallet"
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       ""
+      ],
+      [
+       "5050",
+       "Latte ",
+       "1",
+       "9",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5089",
+       "espresso",
+       "1",
+       "6",
+       "Card"
+      ],
+      [
+       "5454",
+       "tea",
+       "1",
+       "3",
+       "Cash"
+      ]
+     ],
+     "hl": [
+      "D5"
+     ],
+     "formula": "= Table.ReplaceErrorValues(Typed, {{\"unit_price\", null}})",
+     "result": "Error to null"
+    },
+    "rows_in_file": {
+     "t": "num",
+     "v": "771"
+    }
+   },
+   "out": "Source\nPromoted\nTyped\nNoErrors",
+   "note": {
+    "en": "Table.ReplaceErrorValues swaps the Error for null (a blank). It only works after the type step: before it there is no error to replace. The line itself is still in the table; a later step decides what to do with a missing price.",
+    "ar": "تستبدل Table.ReplaceErrorValues قيمة الخطأ بـ null (فراغ). وهي لا تعمل إلا بعد خطوة الأنواع: قبلها لا يوجد خطأ لتستبدله. والسطر نفسه ما زال في الجدول؛ وتقرر خطوة لاحقة ما يُفعل بسعر مفقود."
+   }
+  },
+  {
+   "line": 12,
+   "vars": {
+    "preview": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "payment"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "Wallet"
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "null",
+       "Wallet"
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       ""
+      ],
+      [
+       "5050",
+       "Latte",
+       "1",
+       "9",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5089",
+       "Espresso",
+       "1",
+       "6",
+       "Card"
+      ],
+      [
+       "5454",
+       "Tea",
+       "1",
+       "3",
+       "Cash"
+      ]
+     ],
+     "hl": [
+      "B7",
+      "B10",
+      "B11"
+     ],
+     "formula": "= Table.TransformColumns(NoErrors, {{\"item\", each Text.Proper(Text.Trim(Text.Clean(_))), type text}})",
+     "result": "3 fixed"
+    },
+    "rows_in_file": {
+     "t": "num",
+     "v": "771"
+    }
+   },
+   "out": "Source\nPromoted\nTyped\nNoErrors\nTidy",
+   "note": {
+    "en": "Text.Trim, Text.Clean and Text.Proper turn 'Latte ' (with a trailing space that the grid cannot show), 'espresso' and 'tea' into Latte, Espresso and Tea. Now the same item is the same text everywhere, which the merge and the relationship will need.",
+    "ar": "تحوّل Text.Trim وText.Clean وText.Proper القيم 'Latte ' (بمسافة في آخرها لا تظهرها الشبكة) و'espresso' و'tea' إلى Latte وEspresso وTea. فيصبح الصنف الواحد نصًّا واحدًا في كل مكان، وهو ما سيحتاجه الدمج والعلاقة."
+   }
+  },
+  {
+   "line": 14,
+   "vars": {
+    "preview": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "payment"
+     ],
+     "rows": [
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "Wallet"
+      ],
+      [
+       "5050",
+       "Latte",
+       "1",
+       "9",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5089",
+       "Espresso",
+       "1",
+       "6",
+       "Card"
+      ],
+      [
+       "5454",
+       "Tea",
+       "1",
+       "3",
+       "Cash"
+      ]
+     ],
+     "hl": [
+      "D2:D8"
+     ],
+     "formula": "= Table.SelectRows(Tidy, each [qty] > 0 and [unit_price] <> null and [unit_price] < 50)",
+     "result": "-3 (file: -7)"
+    },
+    "rows_in_file": {
+     "t": "num",
+     "v": "764"
+    }
+   },
+   "out": "Source\nPromoted\nTyped\nNoErrors\nTidy\nValid",
+   "note": {
+    "en": "Table.SelectRows keeps a line only if qty is above 0, the price is not null and the price is below 50. Out go 5001 (price 120, the typo), 5004 (no price) and 5012 (a refund, qty -1). Across the file 771 become 764. The null test is written out, so the result never depends on how a blank compares with 50.",
+    "ar": "تُبقي Table.SelectRows السطر فقط إذا كانت qty أكبر من 0 والسعر ليس null والسعر أقل من 50. فيخرج 5001 (سعر 120، الخطأ المطبعي) و5004 (بلا سعر) و5012 (استرداد، qty = -1). وعلى الملف كله تصبح 771 سطرًا 764. واختبار null مكتوب صراحةً فلا تعتمد النتيجة على كيفية مقارنة الفراغ مع 50."
+   }
+  },
+  {
+   "line": 16,
+   "vars": {
+    "preview": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "payment"
+     ],
+     "rows": [
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "Cash"
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "Wallet"
+      ],
+      [
+       "5050",
+       "Latte",
+       "1",
+       "9",
+       "Cash"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash"
+      ],
+      [
+       "5089",
+       "Espresso",
+       "1",
+       "6",
+       "Card"
+      ],
+      [
+       "5454",
+       "Tea",
+       "1",
+       "3",
+       "Cash"
+      ]
+     ],
+     "hl": [
+      "A5:E5"
+     ],
+     "formula": "= Table.Distinct(Valid)",
+     "result": "-1 (file: -16)"
+    },
+    "rows_in_file": {
+     "t": "num",
+     "v": "748"
+    }
+   },
+   "out": "Source\nPromoted\nTyped\nNoErrors\nTidy\nValid\nUnique",
+   "note": {
+    "en": "Table.Distinct keeps the first of two completely identical lines: order 5076 now appears once. Across the whole file 764 lines become 748 (the 16 duplicates). It compares every column, which is why it runs before any column that would make lines unique, and why applied to a single column alone it would delete real lines.",
+    "ar": "تُبقي Table.Distinct أول سطرين متطابقين تمامًا: الطلب 5076 يظهر الآن مرة واحدة. وعلى الملف كله تصبح 764 سطرًا 748 (المكرَّرات الـ 16). وهي تقارن كل الأعمدة، ولهذا تعمل قبل أي عمود يجعل الأسطر فريدة، ولهذا أيضًا لو طُبقت على عمود واحد لحذفت أسطرًا حقيقية."
+   }
+  },
+  {
+   "line": 17,
+   "vars": {
+    "preview": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "payment",
+      "line_total"
+     ],
+     "rows": [
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "Cash",
+       "12"
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "Wallet",
+       "27"
+      ],
+      [
+       "5050",
+       "Latte",
+       "1",
+       "9",
+       "Cash",
+       "9"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash",
+       "3.5"
+      ],
+      [
+       "5089",
+       "Espresso",
+       "1",
+       "6",
+       "Card",
+       "6"
+      ],
+      [
+       "5454",
+       "Tea",
+       "1",
+       "3",
+       "Cash",
+       "3"
+      ]
+     ],
+     "hl": [
+      "F2:F7"
+     ],
+     "formula": "= Table.AddColumn(Valid, \"line_total\", each [qty] * [unit_price], type number)",
+     "result": "sum 60.5"
+    },
+    "rows_in_file": {
+     "t": "num",
+     "v": "748"
+    }
+   },
+   "out": "Source\nPromoted\nTyped\nNoErrors\nTidy\nUnique\nValid\nWithTotal",
+   "note": {
+    "en": "Table.AddColumn adds line_total = qty * unit_price to every remaining line. Over the whole file these 748 values add up to 8,062.00: the number every tool in this chapter has to reproduce.",
+    "ar": "تضيف Table.AddColumn العمود line_total = qty * unit_price لكل سطر متبقٍّ. وعلى الملف كله يبلغ مجموع هذه القيم الـ 748 مبلغ 8,062.00: الرقم الذي يجب أن تعيد كل أداة في هذا الفصل إنتاجه."
+   }
+  },
+  {
+   "line": 20,
+   "vars": {
+    "preview": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "payment",
+      "line_total"
+     ],
+     "rows": [
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "Cash",
+       "12"
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "Wallet",
+       "27"
+      ],
+      [
+       "5050",
+       "Latte",
+       "1",
+       "9",
+       "Cash",
+       "9"
+      ],
+      [
+       "5076",
+       "Date Cookie",
+       "1",
+       "3.5",
+       "Cash",
+       "3.5"
+      ],
+      [
+       "5089",
+       "Espresso",
+       "1",
+       "6",
+       "Card",
+       "6"
+      ],
+      [
+       "5454",
+       "Tea",
+       "1",
+       "3",
+       "Cash",
+       "3"
+      ]
+     ],
+     "formula": "WithTotal",
+     "result": "6 lines"
+    },
+    "rows_in_file": {
+     "t": "num",
+     "v": "748"
+    },
+    "revenue_in_file": {
+     "t": "str",
+     "v": "8062.00"
+    }
+   },
+   "out": "Source\nPromoted\nTyped\nNoErrors\nTidy\nUnique\nValid\nWithTotal",
+   "note": {
+    "en": "The query returns its last step. Close & Apply loads these 748 rows into the model; the CSV on disk is untouched. Next month, Refresh runs the same steps on the new file.",
+    "ar": "يُرجِع الاستعلام خطوته الأخيرة. ويحمّل «إغلاق وتطبيق» (Close & Apply) هذه الصفوف الـ 748 في النموذج، بينما يبقى ملف CSV على القرص دون مساس. وفي الشهر القادم يشغّل التحديث (Refresh) الخطوات نفسها على الملف الجديد."
+   }
+  }
+ ]
+}

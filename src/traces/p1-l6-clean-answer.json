@@ -1,0 +1,133 @@
+{
+ "id": "p1-l6-clean-answer",
+ "title": {
+  "en": "clean() then answer(): the table shrinks rule by rule",
+  "ar": "clean() ثم answer(): الجدول يتقلّص قاعدةً بعد قاعدة"
+ },
+ "lede": {
+  "en": "Twelve real lines from the cafeteria file: one exact duplicate, one refund, one price typo, one 'n/a' price, three spellings of Latte and one of Espresso, and a blank payment. Watch which rule removes which line, then how the answer is computed from what is left.",
+  "ar": "اثنا عشر سطرًا حقيقيًّا من ملف الكافتيريا: تكرار تامّ واحد، واسترجاع واحد، وخطأ طباعي في سعر، وسعر «n/a»، وثلاث كتابات لـ Latte وأخرى لـ Espresso، ودفع فارغ. راقب أي قاعدة تُزيل أي سطر، ثم كيف تُحسب الإجابة ممّا تبقّى."
+ },
+ "files": {
+  "excerpt.csv": "order_id,order_time,item,category,qty,unit_price,payment,customer_type\n5001,2026-09-01 13:43:29,Shawarma Wrap,Food,1,120.0,Cash,Student\n5002,2026-09-01 09:25:59,Shawarma Wrap,Food,1,12.0,Cash,Visitor\n5002,2026-09-01 09:25:59,Latte,Drink,3,9.0,Wallet,Student\n5004,2026-09-01 09:37:30,Tea,Drink,1,n/a,Wallet,Visitor\n5007,2026-09-01 11:12:51,Tea,Drink,1,3.0,Wallet,Student\n5012,2026-09-01 16:40:46,Tea,Drink,-1,3.0,,Student\n5050,2026-09-02 10:54:52,Latte ,Drink,1,9.0,Cash,Staff\n5076,2026-09-03 09:26:10,Date Cookie,Snack,1,3.5,Cash,Student\n5076,2026-09-03 09:26:10,Date Cookie,Snack,1,3.5,Cash,Student\n5089,2026-09-06 12:01:44,espresso,Drink,1,6.0,Card,Student\n5341,2026-09-17 09:05:37,Water 500ml,Drink,2,2.0,,Visitor\n5474,2026-09-24 14:16:40,latte,Drink,3,9.0,Cash,Staff\n"
+ },
+ "code": "import pandas as pd\n\ndef clean(df):\n    removed = {}\n    before = len(df)\n    df = df.drop_duplicates()                                  # R1\n    removed[\"R1\"] = before - len(df)\n    before = len(df)\n    df = df[df[\"qty\"] > 0]                                     # R2\n    removed[\"R2\"] = before - len(df)\n    before = len(df)\n    price = pd.to_numeric(df[\"unit_price\"], errors=\"coerce\")   # R3\n    keep = price.notna() & (price <= 50)\n    df = df[keep].assign(unit_price=price[keep])\n    removed[\"R3\"] = before - len(df)\n    df = df.assign(item=df[\"item\"].str.strip().str.title(),    # R4\n                   payment=df[\"payment\"].fillna(\"Unknown\"))    # R5\n    return df, removed\n\ndef answer(df):\n    d = df.assign(line_total=df[\"qty\"] * df[\"unit_price\"],\n                  hour=pd.to_datetime(df[\"order_time\"]).dt.hour)\n    by_item = d.groupby(\"item\")[\"line_total\"].sum().sort_values(ascending=False)\n    by_hour = d.groupby(\"hour\")[\"order_id\"].nunique().sort_values(ascending=False)\n    return {\"lines\": len(d), \"revenue\": float(d[\"line_total\"].sum()),\n            \"top\": by_item.index[0], \"busiest\": int(by_hour.index[0])}\n\nraw = pd.read_csv(\"excerpt.csv\")\ndf, removed = clean(raw)\nresult = answer(df)\nprint(removed)\nprint(result)\n",
+ "watch": [
+  "raw",
+  "df",
+  "removed",
+  "result"
+ ],
+ "watch_locals": [
+  "df",
+  "removed",
+  "before",
+  "price",
+  "keep",
+  "d",
+  "by_item",
+  "by_hour"
+ ],
+ "viz": {
+  "raw": "table",
+  "df": "table",
+  "d": "table",
+  "removed": "dict",
+  "result": "dict"
+ },
+ "max_steps": 120,
+ "notes": {
+  "3": {
+   "en": "Defining clean(): nothing runs yet. The five rules will be steps inside it, in a fixed order.",
+   "ar": "تعريف clean(): لا يُنفَّذ شيء بعد. القواعد الخمس ستكون خطوات داخلها، بترتيب ثابت."
+  },
+  "20": {
+   "en": "Defining answer(): it will only ever see CLEAN lines.",
+   "ar": "تعريف answer(): لن ترى إلا الأسطر النظيفة."
+  },
+  "28": {
+   "en": "Read the 12-line excerpt. read_csv treats the text n/a as missing by default, so the price of order 5004 arrives as NaN and unit_price is a float64 column - pandas has already decided something about that cell.",
+   "ar": "قراءة المقتطف. تعامل read_csv النص n/a على أنه قيمة مفقودة افتراضيًّا، فيصل سعر الطلب 5004 بصيغة NaN ويكون العمود unit_price من نوع float64 — أي أن pandas قرّرت أمرًا بشأن تلك الخلية قبل أن تتدخل."
+  },
+  "29": {
+   "en": "raw holds all 12 lines. Spot the problems: order 5001 has a price of 120.0, 5004 has a NaN price (it was n/a in the file), 5012 has qty -1, the two 5076 lines are identical, and Latte appears as 'Latte', 'Latte ' and 'latte'. Now clean(raw) is called.",
+   "ar": "raw يحمل الأسطر الاثني عشر. ابحث عن المشكلات: الطلب 5001 سعره 120.0، و5004 سعره NaN (كان n/a في الملف)، و5012 كميته -1، وسطرا 5076 متطابقان، وLatte يظهر بثلاث صور. الآن يُستدعى clean(raw)."
+  },
+  "4": {
+   "en": "Inside clean(): the call stack has two frames, <module> and clean. The parameter df is the 12-line table.",
+   "ar": "داخل clean(): في مكدّس الاستدعاء إطاران هما <module> وclean. والمعامل df هو الجدول ذو الاثني عشر سطرًا."
+  },
+  "6": {
+   "en": "R1: drop_duplicates() removes a line only when all eight columns equal an earlier line.",
+   "ar": "R1: تحذف drop_duplicates() السطر فقط إذا تطابقت أعمدته الثمانية مع سطر سابق."
+  },
+  "7": {
+   "en": "df now has 11 lines: the second 5076 line is gone. The log will record the difference.",
+   "ar": "صار في df أحد عشر سطرًا: اختفى سطر 5076 الثاني. وسيسجّل السجل الفرق."
+  },
+  "9": {
+   "en": "R2: keep only lines with qty > 0.",
+   "ar": "R2: نُبقي الأسطر التي كميتها qty > 0 فقط."
+  },
+  "10": {
+   "en": "df has 10 lines: order 5012 (qty -1, a refund) is gone.",
+   "ar": "صار في df عشرة أسطر: اختفى الطلب 5012 (كمية -1، استرجاع)."
+  },
+  "12": {
+   "en": "R3, first half: to_numeric(errors='coerce') is a safety net. Any other text in the column (say 'free') would become NaN instead of raising an error; here the column is already numeric, so nothing changes.",
+   "ar": "R3، النصف الأول: to_numeric(errors='coerce') شبكة أمان. أي نص آخر في العمود (مثل «free») سيصير NaN بدل أن يرفع خطأً؛ وهنا العمود رقمي أصلًا فلا يتغير شيء."
+  },
+  "13": {
+   "en": "price holds numbers, with one NaN (order 5004). Next: a True/False mask - NaN must fail and so must anything above 50.",
+   "ar": "يحمل price أرقامًا فيها قيمة NaN واحدة (الطلب 5004). التالي: قناع صح/خطأ — يجب أن يرسب NaN وأي سعر فوق 50."
+  },
+  "14": {
+   "en": "keep is False for exactly two lines: the NaN (order 5004) and the 120.0 (order 5001). Keep only the True rows and store the numeric prices.",
+   "ar": "قيمة keep هي False لسطرين فقط: NaN (الطلب 5004) و120.0 (الطلب 5001). نُبقي الصفوف True ونخزّن الأسعار الرقمية."
+  },
+  "15": {
+   "en": "df has 8 lines. 12 - 1 - 1 - 2 = 8: the three rules removed 1, 1 and 2 lines.",
+   "ar": "صار في df ثمانية أسطر. 12 - 1 - 1 - 2 = 8: أزالت القواعد الثلاث 1 و1 و2 من الأسطر."
+  },
+  "16": {
+   "en": "R4 and R5 change values, not the number of rows: strip spaces and Title Case the names (Latte, 'Latte ' and latte become one Latte), and fill the blank payment with 'Unknown'.",
+   "ar": "R4 وR5 تغيّران القيم لا عدد الصفوف: نزيل المسافات ونحوّل الأسماء إلى Title Case (فتصير Latte و«Latte » وlatte اسمًا واحدًا)، ونملأ الدفع الفارغ بـ «Unknown»."
+  },
+  "18": {
+   "en": "The names are standardised and the blank payment of order 5341 is 'Unknown'. Look at 'Water 500Ml': Title Case capitalises the letter after a digit - harmless here, but it no longer matches the menu spelling.",
+   "ar": "صارت الأسماء موحَّدة وصار الدفع الفارغ في الطلب 5341 «Unknown». انظر إلى «Water 500Ml»: يكبّر Title Case الحرف بعد الرقم — لا ضرر هنا، لكنها لم تعد تطابق كتابة القائمة."
+  },
+  "18@ret": {
+   "en": "clean() returns two things: the CLEAN table (8 lines) and the log {R1: 1, R2: 1, R3: 2}.",
+   "ar": "تُرجع clean() شيئين: الجدول النظيف (8 أسطر) والسجل {R1: 1, R2: 1, R3: 2}."
+  },
+  "30": {
+   "en": "Now answer() is called on the 8 clean lines only.",
+   "ar": "الآن تُستدعى answer() على الأسطر الثمانية النظيفة فقط."
+  },
+  "21": {
+   "en": "line_total = qty x unit_price for each line, and hour is read out of order_time.",
+   "ar": "line_total = qty × unit_price لكل سطر، وتُستخرج hour من order_time."
+  },
+  "23": {
+   "en": "d has two new columns. Revenue per item, largest first: all three spellings of Latte now sit in one row.",
+   "ar": "صار في d عمودان جديدان. الإيراد لكل صنف مرتبًا من الأكبر: كتابات Latte الثلاث في صف واحد."
+  },
+  "24": {
+   "en": "by_item starts with Latte at 63.00. Next: nunique() counts DISTINCT order_ids per hour, so an order with two lines counts once.",
+   "ar": "يبدأ by_item بـ Latte عند 63.00. التالي: تعدّ nunique() أرقام الطلبات المختلفة لكل ساعة، فالطلب ذو السطرين يُعدّ مرة واحدة."
+  },
+  "25": {
+   "en": "Hour 9 has 3 distinct orders (5002, 5076, 5341) although it has 4 lines. answer() returns a plain dict: the result is data, not text that was printed and lost.",
+   "ar": "الساعة 9 فيها 3 طلبات مختلفة (5002 و5076 و5341) مع أن فيها 4 أسطر. تُرجع answer() قاموسًا عاديًّا: النتيجة بيانات لا نصًّا طُبع وضاع."
+  },
+  "31": {
+   "en": "Printing the log: how many lines each rule removed.",
+   "ar": "طباعة السجل: كم سطرًا أزالت كل قاعدة."
+  },
+  "32": {
+   "en": "And the answer for this 12-line excerpt. On the full file the same two functions give 748 lines, 8,062.00 and 12:00.",
+   "ar": "والإجابة لهذا المقتطف. وعلى الملف الكامل تعطي الدالتان نفسهما 748 سطرًا و8,062.00 والساعة 12:00."
+  }
+ }
+}

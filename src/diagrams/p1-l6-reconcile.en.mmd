@@ -1,0 +1,22 @@
+%% alt: Sequence diagram of the reconciliation. The raw file and the five cleaning rules go to pandas, Excel and Power BI separately. Each tool sends back its answer: 748 lines, 8,062.00, the top three items and the busiest hour, plus how many lines each rule removed. You compare the three answers within a tolerance of half a piastre. If every row matches, you write the brief. If one row differs, you look at the per-rule column to find which rule that tool is missing, fix that step and run again.
+sequenceDiagram
+  autonumber
+  participant R as Raw file + rules
+  participant P as pandas
+  participant X as Excel
+  participant B as Power BI
+  participant C as You (reconcile)
+  R->>P: 771 lines, rules R1-R5
+  R->>X: 771 lines, rules R1-R5
+  R->>B: 771 lines, rules R1-R5
+  P-->>C: 748 lines, 8,062.00, top 3, 12:00
+  X-->>C: 748 lines, 8,062.00, top 3, 12:00
+  B-->>C: 748 lines, 8,062.00, top 3, 12:00
+  Note over C: compare, tolerance 0.005
+  alt every row matches
+    C->>C: write the brief
+  else one row differs
+    C->>X: which rule's count differs?
+    X-->>C: R1 removed 0, not 16
+    Note over C,X: add the missing step, re-run
+  end

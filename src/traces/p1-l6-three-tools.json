@@ -1,0 +1,3169 @@
+{
+ "id": "p1-l6-three-tools",
+ "manual": true,
+ "lang": "text",
+ "title": {
+  "en": "Three tools, one answer, one reconciliation",
+  "ar": "ثلاث أدوات، إجابة واحدة، ومطابقة واحدة"
+ },
+ "lede": {
+  "en": "Step through the same 12-line excerpt in pandas, Excel and Power BI, line the three answers up in a reconciliation table, then break one rule in one tool and see how the table points at it.",
+  "ar": "تتبّع المقتطف نفسه ذا الاثني عشر سطرًا في pandas وإكسل وPower BI، وصُفّ الإجابات الثلاث في جدول مطابقة، ثم اكسر قاعدة واحدة في أداة واحدة وانظر كيف يدلّك الجدول عليها."
+ },
+ "code": "1  QUESTION   top 3 items by revenue + busiest hour (Sept 2026)\n2  RULES      R1 duplicates  R2 refunds  R3 bad price  R4 names  R5 payment\n3  pandas     clean(raw) then answer(df)\n4  Excel      helper columns dup_n and status - nothing is deleted\n5  Excel      line_total = IF(status = \"ok\", qty * unit_price, 0)\n6  Excel      PivotTable by item_clean; first_in_order by hour\n7  Power BI   Power Query: Distinct, qty > 0, price filter, Text.Proper, Unknown\n8  Power BI   measures Total Revenue and Orders Count, then the two visuals\n9  RECONCILE  three answers side by side, per-rule rows removed\n10 PERTURB    leave R1 out of ONE tool and look at the table\n11 RE-RUN     the same answer from the raw file, next month",
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Everything starts with one written question - the same words for all three tools.",
+    "ar": "كل شيء يبدأ بسؤال مكتوب واحد — بالكلمات نفسها للأدوات الثلاث."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "The five cleaning rules are written once, in plain language, before any tool is opened. Each tool must implement exactly these.",
+    "ar": "القواعد الخمس للتنظيف تُكتب مرة واحدة بلغة بسيطة قبل فتح أي أداة. وعلى كل أداة أن تنفّذ هذه القواعد بالضبط."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    },
+    "tool": {
+     "t": "flow",
+     "nodes": [
+      "pandas",
+      "Excel",
+      "Power BI",
+      "Reconcile"
+     ],
+     "active": 0
+    },
+    "pandas": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "lines"
+       },
+       {
+        "t": "num",
+        "v": "8"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "top"
+       },
+       {
+        "t": "str",
+        "v": "Latte 63.00"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "busiest"
+       },
+       {
+        "t": "str",
+        "v": "09:00 (3 orders)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "removed"
+       },
+       {
+        "t": "str",
+        "v": "R1 1, R2 1, R3 2"
+       }
+      ]
+     ]
+    }
+   },
+   "out": "pandas : 8 lines | 91.50 | Latte 63.00 | 09:00 (3 orders)",
+   "note": {
+    "en": "pandas, on the same 12-line excerpt as the previous trace: 8 clean lines, 91.50, Latte first, and hour 9 with 3 distinct orders.",
+    "ar": "pandas على المقتطف نفسه ذي الاثني عشر سطرًا من التتبع السابق: 8 أسطر نظيفة، و91.50، وLatte أولًا، والساعة 9 فيها 3 طلبات مختلفة."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    },
+    "tool": {
+     "t": "flow",
+     "nodes": [
+      "pandas",
+      "Excel",
+      "Power BI",
+      "Reconcile"
+     ],
+     "active": 1
+    },
+    "pandas": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "lines"
+       },
+       {
+        "t": "num",
+        "v": "8"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "top"
+       },
+       {
+        "t": "str",
+        "v": "Latte 63.00"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "busiest"
+       },
+       {
+        "t": "str",
+        "v": "09:00 (3 orders)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "removed"
+       },
+       {
+        "t": "str",
+        "v": "R1 1, R2 1, R3 2"
+       }
+      ]
+     ]
+    },
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "dup_n",
+      "status",
+      "line_total"
+     ],
+     "rows": [
+      [
+       5001,
+       "Shawarma Wrap",
+       1,
+       120,
+       1,
+       "bad price",
+       ""
+      ],
+      [
+       5002,
+       "Shawarma Wrap",
+       1,
+       12,
+       1,
+       "ok",
+       ""
+      ],
+      [
+       5002,
+       "Latte",
+       3,
+       9,
+       1,
+       "ok",
+       ""
+      ],
+      [
+       5004,
+       "Tea",
+       1,
+       "n/a",
+       1,
+       "bad price",
+       ""
+      ],
+      [
+       5007,
+       "Tea",
+       1,
+       3,
+       1,
+       "ok",
+       ""
+      ],
+      [
+       5012,
+       "Tea",
+       -1,
+       3,
+       1,
+       "refund",
+       ""
+      ],
+      [
+       5050,
+       "Latte ",
+       1,
+       9,
+       1,
+       "ok",
+       ""
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       1,
+       "ok",
+       ""
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       2,
+       "duplicate",
+       ""
+      ],
+      [
+       5089,
+       "espresso",
+       1,
+       6,
+       1,
+       "ok",
+       ""
+      ],
+      [
+       5341,
+       "Water 500ml",
+       2,
+       2,
+       1,
+       "ok",
+       ""
+      ],
+      [
+       5474,
+       "latte",
+       3,
+       9,
+       1,
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "E2:F13"
+     ],
+     "active": "F2",
+     "formula": "=IF([@[dup_n]]>1,\"duplicate\",IF([@qty]<=0,\"refund\",IF(ISNUMBER([@[unit_price]]),IF([@[unit_price]]>50,\"bad price\",\"ok\"),\"bad price\")))",
+     "result": "bad price"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Excel: two helper columns on the Table. dup_n numbers each identical line (the second 5076 line gets 2); status turns the rules R1-R3 into one word per line: ok, duplicate, refund or bad price. Nothing is deleted - the lines stay, labelled. (The same 5004 cell is the text n/a here, NaN in pandas and an Error in Power Query until a rule handles it.)",
+    "ar": "إكسل: عمودان مساعدان في الجدول. يرقّم dup_n كل سطر متطابق (يأخذ سطر 5076 الثاني الرقم 2)؛ ويحوّل status القواعد R1–R3 إلى كلمة واحدة لكل سطر: ok أو duplicate أو refund أو bad price. لا يُحذف شيء — تبقى الأسطر لكنها موسومة. (خلية 5004 نفسها نصّ n/a هنا، وNaN في pandas، وخطأ Error في Power Query إلى أن تعالجها قاعدة.)"
+   }
+  },
+  {
+   "line": 5,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    },
+    "tool": {
+     "t": "flow",
+     "nodes": [
+      "pandas",
+      "Excel",
+      "Power BI",
+      "Reconcile"
+     ],
+     "active": 1
+    },
+    "pandas": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "lines"
+       },
+       {
+        "t": "num",
+        "v": "8"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "top"
+       },
+       {
+        "t": "str",
+        "v": "Latte 63.00"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "busiest"
+       },
+       {
+        "t": "str",
+        "v": "09:00 (3 orders)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "removed"
+       },
+       {
+        "t": "str",
+        "v": "R1 1, R2 1, R3 2"
+       }
+      ]
+     ]
+    },
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "dup_n",
+      "status",
+      "line_total"
+     ],
+     "rows": [
+      [
+       5001,
+       "Shawarma Wrap",
+       1,
+       120,
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5002,
+       "Shawarma Wrap",
+       1,
+       12,
+       1,
+       "ok",
+       12
+      ],
+      [
+       5002,
+       "Latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ],
+      [
+       5004,
+       "Tea",
+       1,
+       "n/a",
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5007,
+       "Tea",
+       1,
+       3,
+       1,
+       "ok",
+       3
+      ],
+      [
+       5012,
+       "Tea",
+       -1,
+       3,
+       1,
+       "refund",
+       0
+      ],
+      [
+       5050,
+       "Latte ",
+       1,
+       9,
+       1,
+       "ok",
+       9
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       1,
+       "ok",
+       3.5
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       2,
+       "duplicate",
+       0
+      ],
+      [
+       5089,
+       "espresso",
+       1,
+       6,
+       1,
+       "ok",
+       6
+      ],
+      [
+       5341,
+       "Water 500ml",
+       2,
+       2,
+       1,
+       "ok",
+       4
+      ],
+      [
+       5474,
+       "latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ]
+     ],
+     "hl": [
+      "G2:G13"
+     ],
+     "active": "G3",
+     "formula": "=IF([@status]=\"ok\",[@qty]*[@[unit_price]],0)",
+     "result": "12"
+    }
+   },
+   "out": "Excel  : SUM(line_total) = 91.5 | COUNTIF(status, ok) = 8",
+   "note": {
+    "en": "line_total is qty x unit_price only where status = ok, otherwise 0. The refund line (5012, qty -1) is 0 because its status is refund - rule R2 lives inside status.",
+    "ar": "line_total يساوي qty × unit_price حيث status = ok فقط، وإلا فصفر. سطر الاسترجاع (5012، كمية -1) صفر لأن حالته refund — فالقاعدة R2 داخل status."
+   }
+  },
+  {
+   "line": 6,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    },
+    "tool": {
+     "t": "flow",
+     "nodes": [
+      "pandas",
+      "Excel",
+      "Power BI",
+      "Reconcile"
+     ],
+     "active": 1
+    },
+    "pandas": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "lines"
+       },
+       {
+        "t": "num",
+        "v": "8"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "top"
+       },
+       {
+        "t": "str",
+        "v": "Latte 63.00"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "busiest"
+       },
+       {
+        "t": "str",
+        "v": "09:00 (3 orders)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "removed"
+       },
+       {
+        "t": "str",
+        "v": "R1 1, R2 1, R3 2"
+       }
+      ]
+     ]
+    },
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "dup_n",
+      "status",
+      "line_total"
+     ],
+     "rows": [
+      [
+       5001,
+       "Shawarma Wrap",
+       1,
+       120,
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5002,
+       "Shawarma Wrap",
+       1,
+       12,
+       1,
+       "ok",
+       12
+      ],
+      [
+       5002,
+       "Latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ],
+      [
+       5004,
+       "Tea",
+       1,
+       "n/a",
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5007,
+       "Tea",
+       1,
+       3,
+       1,
+       "ok",
+       3
+      ],
+      [
+       5012,
+       "Tea",
+       -1,
+       3,
+       1,
+       "refund",
+       0
+      ],
+      [
+       5050,
+       "Latte ",
+       1,
+       9,
+       1,
+       "ok",
+       9
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       1,
+       "ok",
+       3.5
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       2,
+       "duplicate",
+       0
+      ],
+      [
+       5089,
+       "espresso",
+       1,
+       6,
+       1,
+       "ok",
+       6
+      ],
+      [
+       5341,
+       "Water 500ml",
+       2,
+       2,
+       1,
+       "ok",
+       4
+      ],
+      [
+       5474,
+       "latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ]
+     ],
+     "hl": [
+      "G2:G13"
+     ],
+     "active": "G3",
+     "formula": "=IF([@status]=\"ok\",[@qty]*[@[unit_price]],0)",
+     "result": "12"
+    },
+    "pivot": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "Sum of line_total",
+      "",
+      "hour",
+      "Orders"
+     ],
+     "rows": [
+      [
+       "Latte",
+       63,
+       "",
+       9,
+       3
+      ],
+      [
+       "Shawarma Wrap",
+       12,
+       "",
+       10,
+       1
+      ],
+      [
+       "Espresso",
+       6,
+       "",
+       11,
+       1
+      ],
+      [
+       "Water 500Ml",
+       4,
+       "",
+       12,
+       1
+      ],
+      [
+       "Date Cookie",
+       3.5,
+       "",
+       14,
+       1
+      ],
+      [
+       "Tea",
+       3,
+       "",
+       "",
+       ""
+      ],
+      [
+       "Grand Total",
+       91.5,
+       "",
+       "",
+       7
+      ]
+     ],
+     "hl": [
+      "A2:B4",
+      "D2:E3"
+     ],
+     "active": "B2",
+     "formula": "PivotTable: Rows item_clean, Values Sum of line_total, Top 10 filter = 3",
+     "result": "Latte 63"
+    }
+   },
+   "out": "Excel  : top Latte 63.00 | hour 9 -> 3 orders",
+   "note": {
+    "en": "A PivotTable on item_clean (Sum of line_total, Top 3) and a second one that sums first_in_order by hour: Latte 63.00 first; hour 9 has 3 distinct orders. Same answer as pandas.",
+    "ar": "جدول محوري على item_clean (مجموع line_total، أعلى 3) وآخر يجمع first_in_order حسب الساعة: Latte أولًا بـ 63.00؛ والساعة 9 فيها 3 طلبات مختلفة. الإجابة نفسها كما في pandas."
+   }
+  },
+  {
+   "line": 7,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    },
+    "tool": {
+     "t": "flow",
+     "nodes": [
+      "pandas",
+      "Excel",
+      "Power BI",
+      "Reconcile"
+     ],
+     "active": 2
+    },
+    "pandas": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "lines"
+       },
+       {
+        "t": "num",
+        "v": "8"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "top"
+       },
+       {
+        "t": "str",
+        "v": "Latte 63.00"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "busiest"
+       },
+       {
+        "t": "str",
+        "v": "09:00 (3 orders)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "removed"
+       },
+       {
+        "t": "str",
+        "v": "R1 1, R2 1, R3 2"
+       }
+      ]
+     ]
+    },
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "dup_n",
+      "status",
+      "line_total"
+     ],
+     "rows": [
+      [
+       5001,
+       "Shawarma Wrap",
+       1,
+       120,
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5002,
+       "Shawarma Wrap",
+       1,
+       12,
+       1,
+       "ok",
+       12
+      ],
+      [
+       5002,
+       "Latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ],
+      [
+       5004,
+       "Tea",
+       1,
+       "n/a",
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5007,
+       "Tea",
+       1,
+       3,
+       1,
+       "ok",
+       3
+      ],
+      [
+       5012,
+       "Tea",
+       -1,
+       3,
+       1,
+       "refund",
+       0
+      ],
+      [
+       5050,
+       "Latte ",
+       1,
+       9,
+       1,
+       "ok",
+       9
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       1,
+       "ok",
+       3.5
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       2,
+       "duplicate",
+       0
+      ],
+      [
+       5089,
+       "espresso",
+       1,
+       6,
+       1,
+       "ok",
+       6
+      ],
+      [
+       5341,
+       "Water 500ml",
+       2,
+       2,
+       1,
+       "ok",
+       4
+      ],
+      [
+       5474,
+       "latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ]
+     ],
+     "hl": [
+      "G2:G13"
+     ],
+     "active": "G3",
+     "formula": "=IF([@status]=\"ok\",[@qty]*[@[unit_price]],0)",
+     "result": "12"
+    },
+    "pivot": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "Sum of line_total",
+      "",
+      "hour",
+      "Orders"
+     ],
+     "rows": [
+      [
+       "Latte",
+       63,
+       "",
+       9,
+       3
+      ],
+      [
+       "Shawarma Wrap",
+       12,
+       "",
+       10,
+       1
+      ],
+      [
+       "Espresso",
+       6,
+       "",
+       11,
+       1
+      ],
+      [
+       "Water 500Ml",
+       4,
+       "",
+       12,
+       1
+      ],
+      [
+       "Date Cookie",
+       3.5,
+       "",
+       14,
+       1
+      ],
+      [
+       "Tea",
+       3,
+       "",
+       "",
+       ""
+      ],
+      [
+       "Grand Total",
+       91.5,
+       "",
+       "",
+       7
+      ]
+     ],
+     "hl": [
+      "A2:B4",
+      "D2:E3"
+     ],
+     "active": "B2",
+     "formula": "PivotTable: Rows item_clean, Values Sum of line_total, Top 10 filter = 3",
+     "result": "Latte 63"
+    },
+    "applied_steps": {
+     "t": "flow",
+     "nodes": [
+      "Source (12)",
+      "R1 Distinct (11)",
+      "R2 qty > 0 (10)",
+      "R3 price (8)",
+      "R4 Text.Proper",
+      "R5 Unknown"
+     ],
+     "active": 5
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Power BI: the Applied Steps list in Power Query. The number in brackets is the row count after the step (12, 11, 10, 8). A step is recorded, named and repeatable - but its position in the list matters.",
+    "ar": "Power BI: قائمة الخطوات المطبّقة في Power Query. الرقم بين القوسين هو عدد الصفوف بعد الخطوة (12 و11 و10 و8). الخطوة مسجّلة ومسمّاة وقابلة للتكرار — لكن موضعها في القائمة مهم."
+   }
+  },
+  {
+   "line": 8,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    },
+    "tool": {
+     "t": "flow",
+     "nodes": [
+      "pandas",
+      "Excel",
+      "Power BI",
+      "Reconcile"
+     ],
+     "active": 2
+    },
+    "pandas": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "lines"
+       },
+       {
+        "t": "num",
+        "v": "8"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "top"
+       },
+       {
+        "t": "str",
+        "v": "Latte 63.00"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "busiest"
+       },
+       {
+        "t": "str",
+        "v": "09:00 (3 orders)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "removed"
+       },
+       {
+        "t": "str",
+        "v": "R1 1, R2 1, R3 2"
+       }
+      ]
+     ]
+    },
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "dup_n",
+      "status",
+      "line_total"
+     ],
+     "rows": [
+      [
+       5001,
+       "Shawarma Wrap",
+       1,
+       120,
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5002,
+       "Shawarma Wrap",
+       1,
+       12,
+       1,
+       "ok",
+       12
+      ],
+      [
+       5002,
+       "Latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ],
+      [
+       5004,
+       "Tea",
+       1,
+       "n/a",
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5007,
+       "Tea",
+       1,
+       3,
+       1,
+       "ok",
+       3
+      ],
+      [
+       5012,
+       "Tea",
+       -1,
+       3,
+       1,
+       "refund",
+       0
+      ],
+      [
+       5050,
+       "Latte ",
+       1,
+       9,
+       1,
+       "ok",
+       9
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       1,
+       "ok",
+       3.5
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       2,
+       "duplicate",
+       0
+      ],
+      [
+       5089,
+       "espresso",
+       1,
+       6,
+       1,
+       "ok",
+       6
+      ],
+      [
+       5341,
+       "Water 500ml",
+       2,
+       2,
+       1,
+       "ok",
+       4
+      ],
+      [
+       5474,
+       "latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ]
+     ],
+     "hl": [
+      "G2:G13"
+     ],
+     "active": "G3",
+     "formula": "=IF([@status]=\"ok\",[@qty]*[@[unit_price]],0)",
+     "result": "12"
+    },
+    "pivot": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "Sum of line_total",
+      "",
+      "hour",
+      "Orders"
+     ],
+     "rows": [
+      [
+       "Latte",
+       63,
+       "",
+       9,
+       3
+      ],
+      [
+       "Shawarma Wrap",
+       12,
+       "",
+       10,
+       1
+      ],
+      [
+       "Espresso",
+       6,
+       "",
+       11,
+       1
+      ],
+      [
+       "Water 500Ml",
+       4,
+       "",
+       12,
+       1
+      ],
+      [
+       "Date Cookie",
+       3.5,
+       "",
+       14,
+       1
+      ],
+      [
+       "Tea",
+       3,
+       "",
+       "",
+       ""
+      ],
+      [
+       "Grand Total",
+       91.5,
+       "",
+       "",
+       7
+      ]
+     ],
+     "hl": [
+      "A2:B4",
+      "D2:E3"
+     ],
+     "active": "B2",
+     "formula": "PivotTable: Rows item_clean, Values Sum of line_total, Top 10 filter = 3",
+     "result": "Latte 63"
+    },
+    "applied_steps": {
+     "t": "flow",
+     "nodes": [
+      "Source (12)",
+      "R1 Distinct (11)",
+      "R2 qty > 0 (10)",
+      "R3 price (8)",
+      "R4 Text.Proper",
+      "R5 Unknown"
+     ],
+     "active": 5
+    },
+    "power_bi": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "Total Revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Orders Count"
+       },
+       {
+        "t": "num",
+        "v": "7"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Busiest Hour"
+       },
+       {
+        "t": "num",
+        "v": "9"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Top 3"
+       },
+       {
+        "t": "str",
+        "v": "Latte, Shawarma Wrap, Espresso"
+       }
+      ]
+     ]
+    }
+   },
+   "out": "Power BI: Total Revenue 91.50 | Orders Count (hour 9) 3",
+   "note": {
+    "en": "Two DAX measures - Total Revenue = SUMX(Orders, Orders[qty] * Orders[unit_price]) and Orders Count = DISTINCTCOUNT(Orders[order_id]) - drive a Top 3 bar visual and an hour column chart. Same numbers again.",
+    "ar": "قياسان بـ DAX — Total Revenue = SUMX(Orders, Orders[qty] * Orders[unit_price]) و Orders Count = DISTINCTCOUNT(Orders[order_id]) — يغذيان رسمًا شريطيًّا لأعلى 3 ورسمًا عموديًّا للساعات. الأرقام نفسها مرة أخرى."
+   }
+  },
+  {
+   "line": 9,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    },
+    "tool": {
+     "t": "flow",
+     "nodes": [
+      "pandas",
+      "Excel",
+      "Power BI",
+      "Reconcile"
+     ],
+     "active": 3
+    },
+    "pandas": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "lines"
+       },
+       {
+        "t": "num",
+        "v": "8"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "top"
+       },
+       {
+        "t": "str",
+        "v": "Latte 63.00"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "busiest"
+       },
+       {
+        "t": "str",
+        "v": "09:00 (3 orders)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "removed"
+       },
+       {
+        "t": "str",
+        "v": "R1 1, R2 1, R3 2"
+       }
+      ]
+     ]
+    },
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "dup_n",
+      "status",
+      "line_total"
+     ],
+     "rows": [
+      [
+       5001,
+       "Shawarma Wrap",
+       1,
+       120,
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5002,
+       "Shawarma Wrap",
+       1,
+       12,
+       1,
+       "ok",
+       12
+      ],
+      [
+       5002,
+       "Latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ],
+      [
+       5004,
+       "Tea",
+       1,
+       "n/a",
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5007,
+       "Tea",
+       1,
+       3,
+       1,
+       "ok",
+       3
+      ],
+      [
+       5012,
+       "Tea",
+       -1,
+       3,
+       1,
+       "refund",
+       0
+      ],
+      [
+       5050,
+       "Latte ",
+       1,
+       9,
+       1,
+       "ok",
+       9
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       1,
+       "ok",
+       3.5
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       2,
+       "duplicate",
+       0
+      ],
+      [
+       5089,
+       "espresso",
+       1,
+       6,
+       1,
+       "ok",
+       6
+      ],
+      [
+       5341,
+       "Water 500ml",
+       2,
+       2,
+       1,
+       "ok",
+       4
+      ],
+      [
+       5474,
+       "latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ]
+     ],
+     "hl": [
+      "G2:G13"
+     ],
+     "active": "G3",
+     "formula": "=IF([@status]=\"ok\",[@qty]*[@[unit_price]],0)",
+     "result": "12"
+    },
+    "pivot": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "Sum of line_total",
+      "",
+      "hour",
+      "Orders"
+     ],
+     "rows": [
+      [
+       "Latte",
+       63,
+       "",
+       9,
+       3
+      ],
+      [
+       "Shawarma Wrap",
+       12,
+       "",
+       10,
+       1
+      ],
+      [
+       "Espresso",
+       6,
+       "",
+       11,
+       1
+      ],
+      [
+       "Water 500Ml",
+       4,
+       "",
+       12,
+       1
+      ],
+      [
+       "Date Cookie",
+       3.5,
+       "",
+       14,
+       1
+      ],
+      [
+       "Tea",
+       3,
+       "",
+       "",
+       ""
+      ],
+      [
+       "Grand Total",
+       91.5,
+       "",
+       "",
+       7
+      ]
+     ],
+     "hl": [
+      "A2:B4",
+      "D2:E3"
+     ],
+     "active": "B2",
+     "formula": "PivotTable: Rows item_clean, Values Sum of line_total, Top 10 filter = 3",
+     "result": "Latte 63"
+    },
+    "applied_steps": {
+     "t": "flow",
+     "nodes": [
+      "Source (12)",
+      "R1 Distinct (11)",
+      "R2 qty > 0 (10)",
+      "R3 price (8)",
+      "R4 Text.Proper",
+      "R5 Unknown"
+     ],
+     "active": 5
+    },
+    "power_bi": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "Total Revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Orders Count"
+       },
+       {
+        "t": "num",
+        "v": "7"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Busiest Hour"
+       },
+       {
+        "t": "num",
+        "v": "9"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Top 3"
+       },
+       {
+        "t": "str",
+        "v": "Latte, Shawarma Wrap, Espresso"
+       }
+      ]
+     ]
+    },
+    "reconcile": {
+     "t": "df",
+     "cols": [
+      "tool",
+      "lines",
+      "revenue",
+      "top item",
+      "busiest hour",
+      "R1",
+      "R2",
+      "R3"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2"
+     ],
+     "rows": [
+      [
+       "pandas",
+       "8",
+       "91.50",
+       "Latte 63.00",
+       "09:00 (3)",
+       "1",
+       "1",
+       "2"
+      ],
+      [
+       "Excel",
+       "8",
+       "91.50",
+       "Latte 63.00",
+       "09:00 (3)",
+       "1",
+       "1",
+       "2"
+      ],
+      [
+       "Power BI",
+       "8",
+       "91.50",
+       "Latte 63.00",
+       "09:00 (3)",
+       "1",
+       "1",
+       "2"
+      ]
+     ],
+     "shape": [
+      3,
+      8
+     ],
+     "dtypes": [
+      "object",
+      "object",
+      "object",
+      "object",
+      "object",
+      "object",
+      "object",
+      "object"
+     ]
+    }
+   },
+   "out": "reconciled: 3 tools, 8 lines, 91.50",
+   "note": {
+    "en": "The reconciliation table: one row per tool, one column per number, and one column per rule with the lines it removed. All three rows are identical.",
+    "ar": "جدول المطابقة: صف لكل أداة، وعمود لكل رقم، وعمود لكل قاعدة بعدد الأسطر التي أزالتها. الصفوف الثلاثة متطابقة."
+   }
+  },
+  {
+   "line": 10,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    },
+    "tool": {
+     "t": "flow",
+     "nodes": [
+      "pandas",
+      "Excel",
+      "Power BI",
+      "Reconcile"
+     ],
+     "active": 3
+    },
+    "pandas": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "lines"
+       },
+       {
+        "t": "num",
+        "v": "8"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "top"
+       },
+       {
+        "t": "str",
+        "v": "Latte 63.00"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "busiest"
+       },
+       {
+        "t": "str",
+        "v": "09:00 (3 orders)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "removed"
+       },
+       {
+        "t": "str",
+        "v": "R1 1, R2 1, R3 2"
+       }
+      ]
+     ]
+    },
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "dup_n",
+      "status",
+      "line_total"
+     ],
+     "rows": [
+      [
+       5001,
+       "Shawarma Wrap",
+       1,
+       120,
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5002,
+       "Shawarma Wrap",
+       1,
+       12,
+       1,
+       "ok",
+       12
+      ],
+      [
+       5002,
+       "Latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ],
+      [
+       5004,
+       "Tea",
+       1,
+       "n/a",
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5007,
+       "Tea",
+       1,
+       3,
+       1,
+       "ok",
+       3
+      ],
+      [
+       5012,
+       "Tea",
+       -1,
+       3,
+       1,
+       "refund",
+       0
+      ],
+      [
+       5050,
+       "Latte ",
+       1,
+       9,
+       1,
+       "ok",
+       9
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       1,
+       "ok",
+       3.5
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       2,
+       "duplicate",
+       0
+      ],
+      [
+       5089,
+       "espresso",
+       1,
+       6,
+       1,
+       "ok",
+       6
+      ],
+      [
+       5341,
+       "Water 500ml",
+       2,
+       2,
+       1,
+       "ok",
+       4
+      ],
+      [
+       5474,
+       "latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ]
+     ],
+     "hl": [
+      "G2:G13"
+     ],
+     "active": "G3",
+     "formula": "=IF([@status]=\"ok\",[@qty]*[@[unit_price]],0)",
+     "result": "12"
+    },
+    "pivot": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "Sum of line_total",
+      "",
+      "hour",
+      "Orders"
+     ],
+     "rows": [
+      [
+       "Latte",
+       63,
+       "",
+       9,
+       3
+      ],
+      [
+       "Shawarma Wrap",
+       12,
+       "",
+       10,
+       1
+      ],
+      [
+       "Espresso",
+       6,
+       "",
+       11,
+       1
+      ],
+      [
+       "Water 500Ml",
+       4,
+       "",
+       12,
+       1
+      ],
+      [
+       "Date Cookie",
+       3.5,
+       "",
+       14,
+       1
+      ],
+      [
+       "Tea",
+       3,
+       "",
+       "",
+       ""
+      ],
+      [
+       "Grand Total",
+       91.5,
+       "",
+       "",
+       7
+      ]
+     ],
+     "hl": [
+      "A2:B4",
+      "D2:E3"
+     ],
+     "active": "B2",
+     "formula": "PivotTable: Rows item_clean, Values Sum of line_total, Top 10 filter = 3",
+     "result": "Latte 63"
+    },
+    "applied_steps": {
+     "t": "flow",
+     "nodes": [
+      "Source (12)",
+      "R1 Distinct (11)",
+      "R2 qty > 0 (10)",
+      "R3 price (8)",
+      "R4 Text.Proper",
+      "R5 Unknown"
+     ],
+     "active": 5
+    },
+    "power_bi": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "Total Revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Orders Count"
+       },
+       {
+        "t": "num",
+        "v": "7"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Busiest Hour"
+       },
+       {
+        "t": "num",
+        "v": "9"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Top 3"
+       },
+       {
+        "t": "str",
+        "v": "Latte, Shawarma Wrap, Espresso"
+       }
+      ]
+     ]
+    },
+    "reconcile": {
+     "t": "df",
+     "cols": [
+      "tool",
+      "lines",
+      "revenue",
+      "top item",
+      "busiest hour",
+      "R1",
+      "R2",
+      "R3"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2"
+     ],
+     "rows": [
+      [
+       "pandas",
+       "8",
+       "91.50",
+       "Latte 63.00",
+       "09:00 (3)",
+       "1",
+       "1",
+       "2"
+      ],
+      [
+       "Excel (R1 missing)",
+       "9",
+       "95.00",
+       "Latte 63.00",
+       "09:00 (3)",
+       "0",
+       "1",
+       "2"
+      ],
+      [
+       "Power BI",
+       "8",
+       "91.50",
+       "Latte 63.00",
+       "09:00 (3)",
+       "1",
+       "1",
+       "2"
+      ]
+     ],
+     "shape": [
+      3,
+      8
+     ],
+     "dtypes": [
+      "object",
+      "object",
+      "object",
+      "object",
+      "object",
+      "object",
+      "object",
+      "object"
+     ]
+    }
+   },
+   "out": "MISMATCH: Excel lines 9 != 8, revenue 95.00 != 91.50, R1 0 != 1",
+   "note": {
+    "en": "Now leave R1 out of Excel only. The row for Excel differs in lines (9), revenue (95.00) - and in the R1 column (0 instead of 1). The table does not just say 'wrong'; it says which rule is missing.",
+    "ar": "الآن أهمل R1 في إكسل وحده. يختلف صف إكسل في الأسطر (9) والإيراد (95.00) — وفي عمود R1 (0 بدل 1). الجدول لا يقول «خطأ» فقط، بل يقول أي قاعدة ناقصة."
+   }
+  },
+  {
+   "line": 11,
+   "vars": {
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue, and in which hour are we busiest?"
+    },
+    "rules": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "R1"
+       },
+       {
+        "t": "str",
+        "v": "drop exact duplicate lines"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R2"
+       },
+       {
+        "t": "str",
+        "v": "drop refunds (qty <= 0)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R3"
+       },
+       {
+        "t": "str",
+        "v": "drop price missing / > 50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R4"
+       },
+       {
+        "t": "str",
+        "v": "strip + Title Case item names"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "R5"
+       },
+       {
+        "t": "str",
+        "v": "blank payment -> Unknown"
+       }
+      ]
+     ]
+    },
+    "tool": {
+     "t": "flow",
+     "nodes": [
+      "pandas",
+      "Excel",
+      "Power BI",
+      "Reconcile"
+     ],
+     "active": 3
+    },
+    "pandas": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "lines"
+       },
+       {
+        "t": "num",
+        "v": "8"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "top"
+       },
+       {
+        "t": "str",
+        "v": "Latte 63.00"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "busiest"
+       },
+       {
+        "t": "str",
+        "v": "09:00 (3 orders)"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "removed"
+       },
+       {
+        "t": "str",
+        "v": "R1 1, R2 1, R3 2"
+       }
+      ]
+     ]
+    },
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "dup_n",
+      "status",
+      "line_total"
+     ],
+     "rows": [
+      [
+       5001,
+       "Shawarma Wrap",
+       1,
+       120,
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5002,
+       "Shawarma Wrap",
+       1,
+       12,
+       1,
+       "ok",
+       12
+      ],
+      [
+       5002,
+       "Latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ],
+      [
+       5004,
+       "Tea",
+       1,
+       "n/a",
+       1,
+       "bad price",
+       0
+      ],
+      [
+       5007,
+       "Tea",
+       1,
+       3,
+       1,
+       "ok",
+       3
+      ],
+      [
+       5012,
+       "Tea",
+       -1,
+       3,
+       1,
+       "refund",
+       0
+      ],
+      [
+       5050,
+       "Latte ",
+       1,
+       9,
+       1,
+       "ok",
+       9
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       1,
+       "ok",
+       3.5
+      ],
+      [
+       5076,
+       "Date Cookie",
+       1,
+       3.5,
+       2,
+       "duplicate",
+       0
+      ],
+      [
+       5089,
+       "espresso",
+       1,
+       6,
+       1,
+       "ok",
+       6
+      ],
+      [
+       5341,
+       "Water 500ml",
+       2,
+       2,
+       1,
+       "ok",
+       4
+      ],
+      [
+       5474,
+       "latte",
+       3,
+       9,
+       1,
+       "ok",
+       27
+      ]
+     ],
+     "hl": [
+      "G2:G13"
+     ],
+     "active": "G3",
+     "formula": "=IF([@status]=\"ok\",[@qty]*[@[unit_price]],0)",
+     "result": "12"
+    },
+    "pivot": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "Sum of line_total",
+      "",
+      "hour",
+      "Orders"
+     ],
+     "rows": [
+      [
+       "Latte",
+       63,
+       "",
+       9,
+       3
+      ],
+      [
+       "Shawarma Wrap",
+       12,
+       "",
+       10,
+       1
+      ],
+      [
+       "Espresso",
+       6,
+       "",
+       11,
+       1
+      ],
+      [
+       "Water 500Ml",
+       4,
+       "",
+       12,
+       1
+      ],
+      [
+       "Date Cookie",
+       3.5,
+       "",
+       14,
+       1
+      ],
+      [
+       "Tea",
+       3,
+       "",
+       "",
+       ""
+      ],
+      [
+       "Grand Total",
+       91.5,
+       "",
+       "",
+       7
+      ]
+     ],
+     "hl": [
+      "A2:B4",
+      "D2:E3"
+     ],
+     "active": "B2",
+     "formula": "PivotTable: Rows item_clean, Values Sum of line_total, Top 10 filter = 3",
+     "result": "Latte 63"
+    },
+    "applied_steps": {
+     "t": "flow",
+     "nodes": [
+      "Source (12)",
+      "R1 Distinct (11)",
+      "R2 qty > 0 (10)",
+      "R3 price (8)",
+      "R4 Text.Proper",
+      "R5 Unknown"
+     ],
+     "active": 5
+    },
+    "power_bi": {
+     "t": "dict",
+     "v": [
+      [
+       {
+        "t": "str",
+        "v": "Total Revenue"
+       },
+       {
+        "t": "str",
+        "v": "91.50"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Orders Count"
+       },
+       {
+        "t": "num",
+        "v": "7"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Busiest Hour"
+       },
+       {
+        "t": "num",
+        "v": "9"
+       }
+      ],
+      [
+       {
+        "t": "str",
+        "v": "Top 3"
+       },
+       {
+        "t": "str",
+        "v": "Latte, Shawarma Wrap, Espresso"
+       }
+      ]
+     ]
+    },
+    "reconcile": {
+     "t": "df",
+     "cols": [
+      "tool",
+      "lines",
+      "revenue",
+      "top item",
+      "busiest hour",
+      "R1",
+      "R2",
+      "R3"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2"
+     ],
+     "rows": [
+      [
+       "pandas",
+       "748",
+       "8,062.00",
+       "Shawarma Wrap 1,368.00",
+       "12:00 (119)",
+       "16",
+       "5",
+       "2"
+      ],
+      [
+       "Excel",
+       "748",
+       "8,062.00",
+       "Shawarma Wrap 1,368.00",
+       "12:00 (119)",
+       "16",
+       "5",
+       "2"
+      ],
+      [
+       "Power BI",
+       "748",
+       "8,062.00",
+       "Shawarma Wrap 1,368.00",
+       "12:00 (119)",
+       "16",
+       "5",
+       "2"
+      ]
+     ],
+     "shape": [
+      3,
+      8
+     ],
+     "dtypes": [
+      "object",
+      "object",
+      "object",
+      "object",
+      "object",
+      "object",
+      "object",
+      "object"
+     ]
+    }
+   },
+   "out": "reconciled: 3 tools, 748 lines, 8,062.00, 12:00 (119 orders)",
+   "note": {
+    "en": "Restore R1 and run all three from the raw file: 771 lines in, 748 out (16 + 5 + 2 removed), 8,062.00, Shawarma Wrap first, 12:00 busiest. Doing this again next month, from the raw file, is what 'done' means.",
+    "ar": "أعد R1 وشغّل الأدوات الثلاث من الملف الخام: دخل 771 سطرًا وخرج 748 (أُزيل 16 + 5 + 2)، و8,062.00، وShawarma Wrap أولًا، والساعة 12:00 الأكثر ازدحامًا. أن تكرر هذا الشهر القادم من الملف الخام هو معنى «تم»."
+   }
+  }
+ ]
+}

@@ -1,0 +1,62 @@
+{
+ "id": "t1-l6-coerce",
+ "title": {
+  "en": "Blank versus could-not-parse",
+  "ar": "فراغ أم فشل في التحويل؟"
+ },
+ "lede": {
+  "en": "Step through coerce(): how comparing missing cells before and after parsing separates a legitimate blank from a value that failed to parse.",
+  "ar": "تنقّل في دالة coerce(): كيف تفصل مقارنة الخلايا المفقودة قبل التحويل وبعده بين الفراغ المشروع والقيمة التي فشل تحويلها."
+ },
+ "files": {
+  "mini.csv": "listing_id,monthly_rent\n1001,415\n1002,\n1004,\"1,150\"\n1005,300\n1006,n/a\n"
+ },
+ "code": "import pandas as pd\n\n\ndef coerce(text):\n    blank = text.str.strip().eq(\"\")\n    cells = text.mask(blank)\n    typed = pd.to_numeric(cells, errors=\"coerce\")\n    failed = typed.isna() & ~blank\n    return typed, text[failed]\n\n\nraw = pd.read_csv(\"mini.csv\", dtype=str, keep_default_na=False)\nrent, bad = coerce(raw[\"monthly_rent\"])\nprint(rent.isna().sum(), \"missing,\", len(bad), \"could not be parsed:\", list(bad))\n",
+ "notes": {
+  "5": {
+   "en": "Blank means the cell was empty in the file. Remember where the blanks are.",
+   "ar": "الفراغ يعني أن الخلية كانت فارغة في الملف. تذكّر مواضع الفراغات."
+  },
+  "6": {
+   "en": "Blanks become real missing values; everything else stays text for now.",
+   "ar": "تتحوّل الفراغات إلى قيم مفقودة حقيقية، وما عداها يبقى نصًّا في هذه المرحلة."
+  },
+  "7": {
+   "en": "<code>errors=\"coerce\"</code> turns every failure into <code>NaN</code>: the empty cell, <code>\"1,150\"</code> and <code>\"n/a\"</code> all look the same now.",
+   "ar": "تحوّل <code>errors=\"coerce\"</code> كل فشل إلى <code>NaN</code>: الخلية الفارغة و<code>\"1,150\"</code> و<code>\"n/a\"</code> صارت كلها متشابهة."
+  },
+  "8": {
+   "en": "The trick: a cell that is missing <em>after</em> parsing but was <em>not blank before</em> is a parse failure.",
+   "ar": "الحيلة: الخلية المفقودة <em>بعد</em> التحويل وغير الفارغة <em>قبله</em> هي فشل في التحويل."
+  },
+  "9": {
+   "en": "Return the typed column and the offending raw text, so the caller can show it.",
+   "ar": "نُعيد العمود المحوَّل مع النص الأصلي المسبّب للمشكلة، ليعرضه المستدعي."
+  },
+  "12": {
+   "en": "Everything is read as text with nothing guessed: even the empty cell is just an empty string at this point.",
+   "ar": "نقرأ كل شيء نصًّا دون أي تخمين: حتى الخلية الفارغة ليست أكثر من نص فارغ في هذه المرحلة."
+  },
+  "13": {
+   "en": "The call. <code>coerce</code> gets its own frame on the stack.",
+   "ar": "الاستدعاء. تحصل <code>coerce</code> على إطارها الخاص في المكدّس."
+  },
+  "14": {
+   "en": "Three missing cells, but only two of them are parse failures. Without the before/after comparison they would look identical.",
+   "ar": "ثلاث خلايا مفقودة، اثنتان منها فقط فشل في التحويل. وبلا مقارنة ما قبل التحويل وما بعده ستبدو متطابقة."
+  },
+  "end": {
+   "en": "The report can now name the guilty values: <code>1,150</code> needs <code>thousands=\",\"</code>; <code>n/a</code> needs a decision.",
+   "ar": "يستطيع التقرير الآن أن يسمّي القيم المخالفة: تحتاج <code>1,150</code> إلى <code>thousands=\",\"</code>، وتحتاج <code>n/a</code> إلى قرار."
+  }
+ },
+ "watch": [
+  "raw",
+  "rent",
+  "bad"
+ ],
+ "viz": {
+  "raw": "table"
+ },
+ "max_steps": 60
+}

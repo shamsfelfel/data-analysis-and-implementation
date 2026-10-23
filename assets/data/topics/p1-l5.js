@@ -1,0 +1,27 @@
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["p1-powerbi-parts"]      = { href: "p1l5-s1",  en: "Power BI Desktop, Service and Mobile", ar: "Power BI Desktop وService وMobile" };
+  T["p1-powerbi-three-jobs"] = { href: "p1l5-s2",  en: "the three jobs: transform, model, visualise", ar: "المهام الثلاث: التحويل والنمذجة والتصوير" };
+  T["p1-pbi-get-data"]       = { href: "p1l5-s5",  en: "Get data: CSV and Excel connectors", ar: "Get data: موصِّلا CSV وExcel" };
+  T["p1-load-vs-transform"]  = { href: "p1l5-s6",  en: "Load vs Transform Data", ar: "Load مقابل Transform Data" };
+  T["p1-type-detection"]     = { href: "p1l5-s7",  en: "automatic type detection and its mistakes", ar: "الكشف التلقائي عن الأنواع وأخطاؤه" };
+  T["p1-locale"]             = { href: "p1l5-s8",  en: "locale: decimal point or thousands separator", ar: "اللغة الإقليمية: الفاصلة العشرية أم فاصل الآلاف" };
+  T["p1-applied-steps"]      = { href: "p1l5-s9",  en: "Power Query Editor and Applied Steps", ar: "محرر Power Query والخطوات المطبَّقة" };
+  T["p1-pq-cleaning-steps"]  = { href: "p1l5-s10", en: "the cleaning steps for the orders file", ar: "خطوات تنظيف ملف الطلبات" };
+  T["p1-m-code"]             = { href: "p1l5-s11", en: "reading the generated M code", ar: "قراءة شيفرة M المولَّدة" };
+  T["p1-step-order"]         = { href: "p1l5-s12", en: "why the order of steps matters", ar: "لماذا يهم ترتيب الخطوات" };
+  T["p1-merge-queries"]      = { href: "p1l5-s13", en: "Merge Queries and the Left Anti check", ar: "Merge Queries وفحص Left Anti" };
+  T["p1-query-folding"]      = { href: "p1l5-s14", en: "query folding", ar: "طيّ الاستعلام" };
+  T["p1-model-relationships"] = { href: "p1l5-s16", en: "relationships, cardinality and filter direction", ar: "العلاقات وتعدّديتها واتجاه الترشيح" };
+  T["p1-star-schema"]        = { href: "p1l5-s17", en: "star schema: fact and dimension tables", ar: "المخطط النجمي: جدول الحقائق وجداول الأبعاد" };
+  T["p1-report-visuals"]     = { href: "p1l5-s19", en: "choosing a visual for a question", ar: "اختيار عنصر مرئي لسؤال" };
+  T["p1-summarization"]      = { href: "p1l5-s20", en: "summarisation: Sum vs Don't summarize", ar: "التلخيص: Sum مقابل Don't summarize" };
+  T["p1-one-page-layout"]    = { href: "p1l5-s22", en: "from a default chart to a one-page report", ar: "من المخطط الافتراضي إلى تقرير من صفحة واحدة" };
+  T["p1-measure-vs-column"]  = { href: "p1l5-s23", en: "measure vs calculated column vs implicit sum", ar: "المقياس مقابل العمود المحسوب والجمع الضمني" };
+  T["p1-dax-measures"]       = { href: "p1l5-s24", en: "SUMX, DISTINCTCOUNT and DIVIDE measures", ar: "مقاييس SUMX وDISTINCTCOUNT وDIVIDE" };
+  T["p1-filter-context"]     = { href: "p1l5-s25", en: "filter context", ar: "سياق المرشِّح" };
+  T["p1-pbi-pitfalls"]       = { href: "p1l5-s26", en: "silent Power BI pitfalls", ar: "مطبّات Power BI الصامتة" };
+  T["p1-pbix-refresh"]       = { href: "p1l5-s29", en: ".pbix, Refresh, paths and privacy levels", ar: "ملف pbix والتحديث والمسارات ومستويات الخصوصية" };
+  T["p1-publish-export"]     = { href: "p1l5-s30", en: "publishing and export alternatives", ar: "النشر وبدائل التصدير" };
+  T["p1-pbi-ai-features"]    = { href: "p1l5-s31", en: "AI features and monitoring dashboards", ar: "ميزات الذكاء الاصطناعي ولوحات المراقبة" };
+})(window.DATopics);
