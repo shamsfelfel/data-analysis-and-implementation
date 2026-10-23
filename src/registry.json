@@ -1,0 +1,597 @@
+{
+  "site": {
+    "name": {
+      "en": "Data Analysis & Implementation",
+      "ar": "تحليل البيانات وتطبيقها"
+    },
+    "short": {
+      "en": "Data Analysis",
+      "ar": "تحليل البيانات"
+    },
+    "description": "Data analysis taught from first principles to professional practice, in English and Arabic, with tests, a glossary, diagrams and a step-through execution lab."
+  },
+  "tracks": [
+    {
+      "id": "theory",
+      "code": "DSAI 2305",
+      "title": {
+        "en": "Theory — Data Analysis and Representation",
+        "ar": "النظري — تحليل وتمثيل البيانات"
+      },
+      "blurb": {
+        "en": "What the ideas are and why they matter: data types and sources, transformation, visualisation, EDA, time series, Excel, Power BI, augmentation.",
+        "ar": "ما هي الأفكار ولماذا تهم: أنواع البيانات ومصادرها، والتحويل، والتصوير، والتحليل الاستكشافي، والسلاسل الزمنية، وإكسل، وPower BI، وتعزيز البيانات."
+      }
+    },
+    {
+      "id": "practical",
+      "code": "DSAI 1103",
+      "title": {
+        "en": "Practical — Data Analysis and Visualization Lab",
+        "ar": "العملي — مختبر تحليل البيانات وتصويرها"
+      },
+      "blurb": {
+        "en": "Hands-on labs with Python, Excel and Power BI: from setting up your tools to an end-to-end pipeline and dashboard.",
+        "ar": "مختبرات عملية بـ Python وإكسل وPower BI: من تجهيز الأدوات إلى خط معالجة كامل ولوحة معلومات."
+      }
+    }
+  ],
+  "chapters": [
+    {
+      "key": "t1",
+      "track": "theory",
+      "num": 1,
+      "ready": true,
+      "title": {
+        "en": "Basic Data Types and Data Sources",
+        "ar": "أنواع البيانات الأساسية ومصادرها"
+      },
+      "blurb": {
+        "en": "How data is organised, what its values mean, how pandas types it, and how it reaches you from CSV, Excel, JSON and APIs.",
+        "ar": "كيف تُنظَّم البيانات، وماذا تعني قيمها، وكيف يُنمِّطها pandas، وكيف تصلك من CSV وإكسل وJSON وواجهات API."
+      },
+      "domain": {
+        "en": "Rental listings and a school-registry API",
+        "ar": "إعلانات تأجير المنازل وواجهة برمجية لسجل المدارس"
+      },
+      "pages": [
+        {
+          "id": "t1-chapter",
+          "kind": "chapter",
+          "title": {
+            "en": "Chapter home",
+            "ar": "صفحة الفصل"
+          }
+        },
+        {
+          "id": "t1-lesson-01",
+          "kind": "lesson",
+          "n": 1,
+          "title": {
+            "en": "The Three Shapes of Data",
+            "ar": "أشكال البيانات الثلاثة"
+          },
+          "blurb": {
+            "en": "Structured, semi-structured and unstructured data — and why a model can only eat one of them directly.",
+            "ar": "بيانات مُهيكلة وشبه مُهيكلة وغير مُهيكلة — ولماذا لا يستطيع النموذج أن يتغذّى مباشرة إلا على واحد منها."
+          }
+        },
+        {
+          "id": "t1-test-01",
+          "kind": "test",
+          "of": 1,
+          "bank": "t1-test-01",
+          "title": {
+            "en": "Test 1 — The Three Shapes of Data",
+            "ar": "اختبار 1 — أشكال البيانات الثلاثة"
+          }
+        },
+        {
+          "id": "t1-lesson-02",
+          "kind": "lesson",
+          "n": 2,
+          "title": {
+            "en": "What the Values Mean",
+            "ar": "ماذا تعني القيم؟"
+          },
+          "blurb": {
+            "en": "Nominal, ordinal, interval and ratio: which arithmetic, which summary and which chart each level allows.",
+            "ar": "الاسمي والترتيبي والفتري والنسبي: أي حساب وأي ملخّص وأي رسم يسمح به كل مستوى."
+          }
+        },
+        {
+          "id": "t1-test-02",
+          "kind": "test",
+          "of": 2,
+          "bank": "t1-test-02",
+          "title": {
+            "en": "Test 2 — What the Values Mean",
+            "ar": "اختبار 2 — ماذا تعني القيم؟"
+          }
+        },
+        {
+          "id": "t1-lesson-03",
+          "kind": "lesson",
+          "n": 3,
+          "title": {
+            "en": "From Python Containers to pandas dtypes",
+            "ar": "من حاويات بايثون إلى أنواع pandas"
+          },
+          "blurb": {
+            "en": "Lists and dicts, NumPy arrays, Series and DataFrames; reading dtypes, missing values and safe casting.",
+            "ar": "القوائم والقواميس ومصفوفات NumPy وSeries وDataFrame؛ وقراءة الأنواع والقيم المفقودة والتحويل الآمن."
+          }
+        },
+        {
+          "id": "t1-test-03",
+          "kind": "test",
+          "of": 3,
+          "bank": "t1-test-03",
+          "title": {
+            "en": "Test 3 — From Python Containers to pandas dtypes",
+            "ar": "اختبار 3 — من حاويات بايثون إلى أنواع pandas"
+          }
+        },
+        {
+          "id": "t1-lesson-04",
+          "kind": "lesson",
+          "n": 4,
+          "title": {
+            "en": "Flat Files: CSV and Excel",
+            "ar": "الملفات المسطّحة: CSV وExcel"
+          },
+          "blurb": {
+            "en": "Delimiters, encodings, headers, dates and Excel's serial numbers — the quiet ways a file loads wrong.",
+            "ar": "الفواصل والترميز والعناوين والتواريخ والأرقام التسلسلية في إكسل — الطرق الصامتة التي يُحمَّل بها الملف خطأً."
+          }
+        },
+        {
+          "id": "t1-test-04",
+          "kind": "test",
+          "of": 4,
+          "bank": "t1-test-04",
+          "title": {
+            "en": "Test 4 — Flat Files: CSV and Excel",
+            "ar": "اختبار 4 — الملفات المسطّحة: CSV وExcel"
+          }
+        },
+        {
+          "id": "t1-lesson-05",
+          "kind": "lesson",
+          "n": 5,
+          "title": {
+            "en": "Nested Data and APIs: JSON",
+            "ar": "البيانات المتشعّبة والواجهات: JSON وAPI"
+          },
+          "blurb": {
+            "en": "Parsing JSON, flattening it into a table, and pulling data from an API with status codes, pages and rate limits.",
+            "ar": "تحليل JSON وتسطيحه إلى جدول وجلب البيانات من واجهة برمجية برموز الاستجابة والصفحات وحدود المعدّل."
+          }
+        },
+        {
+          "id": "t1-test-05",
+          "kind": "test",
+          "of": 5,
+          "bank": "t1-test-05",
+          "title": {
+            "en": "Test 5 — Nested Data and APIs: JSON",
+            "ar": "اختبار 5 — البيانات المتشعّبة والواجهات: JSON وAPI"
+          }
+        },
+        {
+          "id": "t1-lesson-06",
+          "kind": "lesson",
+          "n": 6,
+          "title": {
+            "en": "Did It Really Load? Validation & Capstone",
+            "ar": "هل تحمّلت فعلًا؟ التحقّق والمشروع الختامي"
+          },
+          "blurb": {
+            "en": "A validation ritual for every new dataset, choosing the right format, and a capstone from raw sources to a typed table.",
+            "ar": "طقس تحقّق لكل مجموعة بيانات جديدة، واختيار الصيغة المناسبة، ومشروع ختامي من المصادر الخام إلى جدول مضبوط الأنواع."
+          }
+        },
+        {
+          "id": "t1-test-06",
+          "kind": "test",
+          "of": 6,
+          "bank": "t1-test-06",
+          "title": {
+            "en": "Test 6 — Did It Really Load? Validation & Capstone",
+            "ar": "اختبار 6 — هل تحمّلت فعلًا؟ التحقّق والمشروع الختامي"
+          }
+        },
+        {
+          "id": "t1-lab",
+          "kind": "lab",
+          "title": {
+            "en": "Execution Lab",
+            "ar": "مختبر التنفيذ"
+          }
+        },
+        {
+          "id": "t1-glossary",
+          "kind": "glossary",
+          "title": {
+            "en": "Glossary",
+            "ar": "قاموس المصطلحات"
+          }
+        },
+        {
+          "id": "t1-exam-a",
+          "kind": "exam",
+          "bank": "t1-exam-a",
+          "title": {
+            "en": "Chapter Test A — Core",
+            "ar": "اختبار الفصل أ — الأساسيات"
+          }
+        },
+        {
+          "id": "t1-exam-b",
+          "kind": "exam",
+          "bank": "t1-exam-b",
+          "title": {
+            "en": "Chapter Test B — Applied",
+            "ar": "اختبار الفصل ب — التطبيق"
+          }
+        },
+        {
+          "id": "t1-exam-c",
+          "kind": "exam",
+          "bank": "t1-exam-c",
+          "title": {
+            "en": "Chapter Test C — Advanced",
+            "ar": "اختبار الفصل ج — المتقدم"
+          }
+        }
+      ]
+    },
+    {
+      "key": "p1",
+      "track": "practical",
+      "num": 1,
+      "ready": true,
+      "title": {
+        "en": "Introduction to Data Analysis & Tools Setup",
+        "ar": "مقدمة في تحليل البيانات وتجهيز الأدوات"
+      },
+      "blurb": {
+        "en": "Set up Excel, Power BI Desktop and Jupyter, learn the analysis lifecycle, and answer one question three ways.",
+        "ar": "جهّز إكسل وPower BI Desktop وJupyter، وتعلّم دورة حياة التحليل، وأجب عن سؤال واحد بثلاث طرق."
+      },
+      "domain": {
+        "en": "A campus cafeteria's orders",
+        "ar": "طلبات كافتيريا الحرم الجامعي"
+      },
+      "pages": [
+        {
+          "id": "p1-chapter",
+          "kind": "chapter",
+          "title": {
+            "en": "Chapter home",
+            "ar": "صفحة الفصل"
+          }
+        },
+        {
+          "id": "p1-lesson-01",
+          "kind": "lesson",
+          "n": 1,
+          "title": {
+            "en": "The Data Analysis Lifecycle",
+            "ar": "دورة حياة تحليل البيانات"
+          },
+          "blurb": {
+            "en": "From a vague question to a decision: ask, acquire, clean, explore, model, communicate — and where AI projects differ.",
+            "ar": "من سؤال غامض إلى قرار: اسأل، واجمع، ونظّف، واستكشف، وانمذج، وتواصل — وأين تختلف مشاريع الذكاء الاصطناعي."
+          }
+        },
+        {
+          "id": "p1-test-01",
+          "kind": "test",
+          "of": 1,
+          "bank": "p1-test-01",
+          "title": {
+            "en": "Test 1 — The Data Analysis Lifecycle",
+            "ar": "اختبار 1 — دورة حياة تحليل البيانات"
+          }
+        },
+        {
+          "id": "p1-lesson-02",
+          "kind": "lesson",
+          "n": 2,
+          "title": {
+            "en": "Setting Up Your Workbench",
+            "ar": "تجهيز بيئة العمل"
+          },
+          "blurb": {
+            "en": "Python, a virtual environment, JupyterLab, Excel and Power BI Desktop installed and verified — plus a map of which tool for which job.",
+            "ar": "بايثون وبيئة افتراضية وJupyterLab وإكسل وPower BI Desktop مثبّتة ومفحوصة — مع خريطة لأي أداة لأي عمل."
+          }
+        },
+        {
+          "id": "p1-test-02",
+          "kind": "test",
+          "of": 2,
+          "bank": "p1-test-02",
+          "title": {
+            "en": "Test 2 — Setting Up Your Workbench",
+            "ar": "اختبار 2 — تجهيز بيئة العمل"
+          }
+        },
+        {
+          "id": "p1-lesson-03",
+          "kind": "lesson",
+          "n": 3,
+          "title": {
+            "en": "Jupyter Notebooks Done Right",
+            "ar": "دفاتر Jupyter كما يجب"
+          },
+          "blurb": {
+            "en": "Cells, kernels, modes and shortcuts — and the hidden-state trap that makes notebooks lie.",
+            "ar": "الخلايا والنواة والأوضاع والاختصارات — وفخّ الحالة الخفية الذي يجعل الدفاتر تكذب."
+          }
+        },
+        {
+          "id": "p1-test-03",
+          "kind": "test",
+          "of": 3,
+          "bank": "p1-test-03",
+          "title": {
+            "en": "Test 3 — Jupyter Notebooks Done Right",
+            "ar": "اختبار 3 — دفاتر Jupyter كما يجب"
+          }
+        },
+        {
+          "id": "p1-lesson-04",
+          "kind": "lesson",
+          "n": 4,
+          "title": {
+            "en": "Excel as an Analysis Tool",
+            "ar": "إكسل أداةً للتحليل"
+          },
+          "blurb": {
+            "en": "Tables, structured references, data types and a first look at a dataset — and the Excel habits that silently corrupt data.",
+            "ar": "الجداول والمراجع المهيكلة وأنواع البيانات ونظرة أولى على مجموعة بيانات — وعادات إكسل التي تفسد البيانات بصمت."
+          }
+        },
+        {
+          "id": "p1-test-04",
+          "kind": "test",
+          "of": 4,
+          "bank": "p1-test-04",
+          "title": {
+            "en": "Test 4 — Excel as an Analysis Tool",
+            "ar": "اختبار 4 — إكسل أداةً للتحليل"
+          }
+        },
+        {
+          "id": "p1-lesson-05",
+          "kind": "lesson",
+          "n": 5,
+          "title": {
+            "en": "Power BI Desktop: First Tour",
+            "ar": "Power BI Desktop: الجولة الأولى"
+          },
+          "blurb": {
+            "en": "Get Data, Power Query, the model and report views, and your first visuals — what Power BI automates and what it hides.",
+            "ar": "جلب البيانات وPower Query وعرضا النموذج والتقرير وأولى الرسوم — ما تؤتمته Power BI وما تخفيه."
+          }
+        },
+        {
+          "id": "p1-test-05",
+          "kind": "test",
+          "of": 5,
+          "bank": "p1-test-05",
+          "title": {
+            "en": "Test 5 — Power BI Desktop: First Tour",
+            "ar": "اختبار 5 — Power BI Desktop: الجولة الأولى"
+          }
+        },
+        {
+          "id": "p1-lesson-06",
+          "kind": "lesson",
+          "n": 6,
+          "title": {
+            "en": "One Question, Three Tools",
+            "ar": "سؤال واحد بثلاث أدوات"
+          },
+          "blurb": {
+            "en": "Answer the same business question in Excel, Power BI and pandas, compare the results line by line, and finish the chapter project.",
+            "ar": "أجب عن السؤال التجاري نفسه في إكسل وPower BI وpandas، وقارن النتائج سطرًا بسطر، وأنجز مشروع الفصل."
+          }
+        },
+        {
+          "id": "p1-test-06",
+          "kind": "test",
+          "of": 6,
+          "bank": "p1-test-06",
+          "title": {
+            "en": "Test 6 — One Question, Three Tools",
+            "ar": "اختبار 6 — سؤال واحد بثلاث أدوات"
+          }
+        },
+        {
+          "id": "p1-lab",
+          "kind": "lab",
+          "title": {
+            "en": "Execution Lab",
+            "ar": "مختبر التنفيذ"
+          }
+        },
+        {
+          "id": "p1-glossary",
+          "kind": "glossary",
+          "title": {
+            "en": "Glossary",
+            "ar": "قاموس المصطلحات"
+          }
+        },
+        {
+          "id": "p1-exam-a",
+          "kind": "exam",
+          "bank": "p1-exam-a",
+          "title": {
+            "en": "Chapter Test A — Core",
+            "ar": "اختبار الفصل أ — الأساسيات"
+          }
+        },
+        {
+          "id": "p1-exam-b",
+          "kind": "exam",
+          "bank": "p1-exam-b",
+          "title": {
+            "en": "Chapter Test B — Applied",
+            "ar": "اختبار الفصل ب — التطبيق"
+          }
+        },
+        {
+          "id": "p1-exam-c",
+          "kind": "exam",
+          "bank": "p1-exam-c",
+          "title": {
+            "en": "Chapter Test C — Advanced",
+            "ar": "اختبار الفصل ج — المتقدم"
+          }
+        }
+      ]
+    }
+  ],
+  "planned": [
+    {
+      "track": "theory",
+      "num": 2,
+      "title": {
+        "en": "Data Transformation",
+        "ar": "تحويل البيانات"
+      }
+    },
+    {
+      "track": "theory",
+      "num": 3,
+      "title": {
+        "en": "Matplotlib (+ Seaborn)",
+        "ar": "Matplotlib (+ Seaborn)"
+      }
+    },
+    {
+      "track": "theory",
+      "num": 4,
+      "title": {
+        "en": "Exploratory Data Analysis",
+        "ar": "التحليل الاستكشافي للبيانات"
+      }
+    },
+    {
+      "track": "theory",
+      "num": 5,
+      "title": {
+        "en": "Time Series Data",
+        "ar": "بيانات السلاسل الزمنية"
+      }
+    },
+    {
+      "track": "theory",
+      "num": 6,
+      "title": {
+        "en": "Excel",
+        "ar": "إكسل"
+      }
+    },
+    {
+      "track": "theory",
+      "num": 7,
+      "title": {
+        "en": "Power BI",
+        "ar": "Power BI"
+      }
+    },
+    {
+      "track": "theory",
+      "num": 8,
+      "title": {
+        "en": "Data Augmentation",
+        "ar": "تعزيز البيانات"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 2,
+      "title": {
+        "en": "Python for Data Analysis — NumPy & pandas",
+        "ar": "بايثون لتحليل البيانات — NumPy وpandas"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 3,
+      "title": {
+        "en": "Data Wrangling & Descriptive Statistics",
+        "ar": "معالجة البيانات والإحصاء الوصفي"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 4,
+      "title": {
+        "en": "Data Visualization in Python (Matplotlib & Seaborn)",
+        "ar": "تصوير البيانات في بايثون (Matplotlib وSeaborn)"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 5,
+      "title": {
+        "en": "Interactive Dashboards & Data Storytelling",
+        "ar": "لوحات المعلومات التفاعلية وسرد البيانات"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 6,
+      "title": {
+        "en": "Time Series & Trend Analysis (Excel & Power BI)",
+        "ar": "السلاسل الزمنية وتحليل الاتجاه (إكسل وPower BI)"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 7,
+      "title": {
+        "en": "Advanced Excel I — Formulas & Wrangling",
+        "ar": "إكسل المتقدم 1 — الصيغ ومعالجة البيانات"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 8,
+      "title": {
+        "en": "Advanced Excel II — Power Query & PivotTables",
+        "ar": "إكسل المتقدم 2 — Power Query والجداول المحورية"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 9,
+      "title": {
+        "en": "Business Intelligence & Power BI Fundamentals",
+        "ar": "ذكاء الأعمال وأساسيات Power BI"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 10,
+      "title": {
+        "en": "Data Modeling & DAX",
+        "ar": "نمذجة البيانات ولغة DAX"
+      }
+    },
+    {
+      "track": "practical",
+      "num": 11,
+      "title": {
+        "en": "Capstone — End-to-End Pipeline",
+        "ar": "المشروع الختامي — خط معالجة متكامل"
+      }
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+/* ============================================================
+   Content components - the boxes the chapter prose is built
+   from: cards, callouts, the problem/tip/warning notes, the
+   phase and step blocks, exercises with their worked solutions,
+   the inline quizzes, and the takeaway panel.
+   ============================================================ */
+
+/* ---------- cards / callouts ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin: 18px 0;
+}
+
+.note, .problem, .tip, .warn {
+  border-inline-start: 4px solid var(--accent);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 18px 0;
+}
+.problem { border-color: var(--bad); background: var(--bad-soft); }
+.tip     { border-color: var(--good); background: var(--good-soft); }
+.warn    { border-color: var(--warn); background: var(--warn-soft); }
+.note h4, .problem h4, .tip h4, .warn h4 { margin-top: 0; }
+
+.label {
+  display: inline-block; font-size: 12px; font-weight: 700;
+  padding: 2px 9px; border-radius: 999px; margin-bottom: 6px;
+  background: var(--surface-2); color: var(--text-soft);
+}
+.label.bad  { background: var(--bad-soft);  color: var(--bad); }
+.label.good { background: var(--good-soft); color: var(--good); }
+
+/* ---------- callouts (prerequisite / looking ahead) ---------- */
+.callout {
+  border: 1px solid var(--border);
+  border-inline-start: 4px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--surface);
+  padding: 12px 15px; margin: 18px 0;
+}
+html[dir="rtl"] .callout { border-radius: var(--radius) 0 0 var(--radius); }
+.callout h4 { margin: 0 0 5px; font-size: 15px; }
+.callout p:last-child { margin-bottom: 0; }
+.callout.prereq { border-inline-start-color: var(--warn); }
+.callout.ahead  { border-inline-start-color: var(--good); }
+
+.seelist { margin: 8px 0 0; padding-inline-start: 20px; }
+.seelist li { margin-bottom: 4px; }
+
+/* ---------- phases / steps ---------- */
+.phase {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 16px 0;
+  background: var(--surface);
+}
+.phase > .step {
+  display: inline-block;
+  font-size: 12px; font-weight: 700;
+  color: var(--accent); background: var(--accent-soft);
+  padding: 3px 10px; border-radius: 999px; margin-bottom: 6px;
+}
+
+/* ---------- exercises ---------- */
+.exercise {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-inline-start: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 18px 0;
+}
+.exercise > h4 { margin-top: 0; }
+details.solution {
+  margin-top: 10px;
+  border-top: 1px dashed var(--border);
+  padding-top: 8px;
+}
+details.solution > summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  list-style: none;
+  padding: 4px 0;
+}
+details.solution > summary::-webkit-details-marker { display: none; }
+details.solution > summary::before { content: "▸ "; }
+details.solution[open] > summary::before { content: "▾ "; }
+
+/* ---------- quiz ---------- */
+.quiz {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 16px 0;
+}
+.quiz .q { font-weight: 600; margin-top: 0; }
+.quiz .options { list-style: none; margin: 10px 0 0; padding: 0; }
+.quiz .options li { margin: 7px 0; }
+.quiz .opt {
+  width: 100%;
+  text-align: start;
+  font: inherit;
+  font-size: 15px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+}
+.quiz .opt:hover { border-color: var(--accent); }
+.quiz .opt.right { background: var(--good-soft); border-color: var(--good); color: var(--good); font-weight: 600; }
+.quiz .opt.wrong { background: var(--bad-soft);  border-color: var(--bad);  color: var(--bad); }
+.quiz .opt[disabled] { cursor: default; opacity: .95; }
+.quiz .feedback {
+  margin-top: 10px; padding: 10px 12px;
+  border-radius: 10px; background: var(--surface-2);
+  font-size: 15px; color: var(--text-soft);
+}
+.quiz .feedback[hidden] { display: none; }
+.score {
+  font-size: 14px; color: var(--text-soft);
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 999px; padding: 6px 14px; display: inline-block;
+}
+
+/* ---------- takeaways ---------- */
+.takeaways { background: var(--accent-soft); border: 1px solid var(--accent); }
+.takeaways h3 { margin-top: 0; }

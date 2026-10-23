@@ -1,0 +1,16 @@
+# Everything in the site itself is committed, including the generated pages --
+# GitHub Pages serves the repository as it stands. What is ignored here is only
+# ever local: test output, tooling caches, editor config and the author's own brief.
+__pycache__/
+*.pyc
+.DS_Store
+.claude/
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# the author's original brief, kept locally (docs/SPEC.md is the committed version)
+*.local.md
+.tmp/

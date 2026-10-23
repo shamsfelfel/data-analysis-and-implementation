@@ -1,0 +1,101 @@
+/* ============================================================
+   The Execution Lab: a program on the left with the line about
+   to run highlighted, and the variables and the printed output
+   beside it. Loaded only by the lab page.
+   ============================================================ */
+
+.trace {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 14px 16px;
+  margin: 20px 0;
+}
+.trace > h4 { margin: 0 0 4px; font-size: 16px; }
+.trace > .lede { margin: 0 0 12px; font-size: 15px; color: var(--text-soft); }
+
+.trace-grid { display: grid; grid-template-columns: 1.25fr .9fr; gap: 12px; }
+@media (max-width: 720px) { .trace-grid { grid-template-columns: 1fr; } }
+
+.trace-code {
+  margin: 0; padding: 10px 0;
+  background: var(--code-bg); color: var(--code-text);
+  border-radius: 10px; overflow-x: auto;
+  font-family: var(--mono); font-size: 13.5px; line-height: 1.65;
+  direction: ltr; text-align: left;
+}
+.trace-code .row { display: flex; border-inline-start: 3px solid transparent; }
+.trace-code .ln {
+  flex: none; width: 3.2ch; padding-inline-end: 10px;
+  text-align: end; color: #7b8696; user-select: none;
+}
+.trace-code .lx { white-space: pre; padding-inline-end: 14px; }
+.trace-code .row.now {
+  background: rgba(217,162,0,.16);
+  border-inline-start-color: var(--line-hit-bar);
+}
+.trace-code .row.done { opacity: .72; }
+
+.trace-side { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.trace-pane {
+  border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface-2); padding: 9px 11px;
+}
+.trace-pane h5 {
+  margin: 0 0 7px; font-size: 11.5px; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-soft);
+}
+.vars { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.vars td {
+  padding: 3px 6px; border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.vars tr:last-child td { border-bottom: 0; }
+.vars .vn {
+  font-family: var(--mono); color: var(--accent);
+  white-space: nowrap; direction: ltr;
+}
+.vars .vv { font-family: var(--mono); direction: ltr; word-break: break-word; }
+.vars tr.changed .vv {
+  background: var(--line-hit); border-radius: 4px;
+  box-shadow: 0 0 0 3px var(--line-hit);
+}
+.vars .empty { color: var(--text-soft); font-style: italic; font-family: var(--font); }
+
+.trace-out {
+  margin: 0; font-family: var(--mono); font-size: 13.5px;
+  white-space: pre-wrap; direction: ltr; text-align: left;
+  min-height: 1.6em; color: var(--text);
+}
+.trace-out .muted { color: var(--text-soft); font-style: italic; font-family: var(--font); }
+
+.trace-note {
+  margin: 10px 0 0; padding: 9px 12px;
+  border-inline-start: 3px solid var(--accent);
+  background: var(--accent-soft); border-radius: 0 9px 9px 0;
+  font-size: 14.5px;
+}
+html[dir="rtl"] .trace-note { border-radius: 9px 0 0 9px; }
+
+.trace-ctrl {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 7px;
+  margin-top: 11px;
+}
+.trace-ctrl .btn { font-size: 13.5px; padding: 6px 12px; }
+.trace-ctrl .step {
+  font-size: 13px; color: var(--text-soft);
+  font-variant-numeric: tabular-nums; margin-inline-start: auto;
+}
+.trace-ctrl .btn:disabled { opacity: .45; cursor: default; }
+.trace-scrub {
+  flex: 1 1 100%; width: 100%; margin: 2px 0 0;
+  accent-color: var(--accent);
+}
+
+@media (max-width: 560px) {
+  .trace { scroll-margin-top: 168px; }
+}
+
+@media print {
+  .trace-ctrl { display: none !important; }
+}

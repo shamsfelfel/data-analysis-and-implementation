@@ -1,0 +1,40 @@
+{
+  "name": "Programming for AI — Python OOP",
+  "short_name": "Python OOP",
+  "description": "Object-oriented Python taught one problem at a time, in English and Arabic, with tests, worked solutions and a step-through execution lab.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f7f9",
+  "theme_color": "#0d6f6a",
+  "dir": "auto",
+  "lang": "en",
+  "categories": ["education", "books"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Chapter 1 — Object-Oriented Python",
+      "short_name": "Chapter 1",
+      "url": "chapters/chapter-1.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Execution Lab",
+      "short_name": "Lab",
+      "url": "labs/chapter-1-lab.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Chapter Test A — Core",
+      "short_name": "Test A",
+      "url": "exams/chapter-1-exam-a.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}

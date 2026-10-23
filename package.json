@@ -1,0 +1,22 @@
+{
+  "name": "programming-ai",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Programming for AI — a bilingual, offline-first course site. The site itself has no dependencies and no build step for the browser; this file exists only so the end-to-end suite has a test runner.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shamsfelfel/programming-ai.git"
+  },
+  "scripts": {
+    "build": "python build.py && python scripts/build-sw.py",
+    "check": "python build.py --check && python scripts/build-sw.py --check && python tools/verify_chapter.py",
+    "serve": "python scripts/dev-server.py 8088",
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0"
+  }
+}

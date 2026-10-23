@@ -1,0 +1,76 @@
+/* ============================================================
+   Design tokens.
+
+   Every colour, radius and font in the course resolves to one of
+   these. The light set is the default; html[data-theme="dark"]
+   swaps the same names, so no component needs a dark-mode rule of
+   its own. The assessment tones live here too, so one file answers
+   "what colour is this?" for the whole site.
+   ============================================================ */
+
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #eef1f5;
+  --text: #16181d;
+  --text-soft: #555c68;
+  --border: #d9dee6;
+  --accent: #0d6f6a;
+  --accent-soft: #e3f1ef;
+  --good: #137a3d;
+  --good-soft: #e2f5e9;
+  --bad: #b3261e;
+  --bad-soft: #fdeceb;
+  --warn: #8a5a00;
+  --warn-soft: #fdf3d8;
+  --code-bg: #1b1f27;
+  --code-text: #e6e9ef;
+  --radius: 12px;
+  --maxw: 880px;
+  --font: "Segoe UI", system-ui, -apple-system, "Noto Sans", Arial, sans-serif;
+  --font-ar: "Segoe UI", "Noto Naskh Arabic", "Amiri", "Tahoma", system-ui, sans-serif;
+  --mono: "Cascadia Mono", "Fira Code", Consolas, "Courier New", monospace;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f1218;
+  --surface: #171b23;
+  --surface-2: #1f2530;
+  --text: #e8ebf0;
+  --text-soft: #a3acbb;
+  --border: #2b323d;
+  --accent: #4fd1c5;
+  --accent-soft: #12302f;
+  --good: #68d391;
+  --good-soft: #10291b;
+  --bad: #ff8a80;
+  --bad-soft: #301616;
+  --warn: #ffcc66;
+  --warn-soft: #2d2410;
+  --code-bg: #0b0e13;
+  --code-text: #e6e9ef;
+}
+
+/* ---------- assessment tones (easy / medium / hard) ---------- */
+:root {
+  --easy: #3f6f4f;
+  --easy-soft: #e8f1e9;
+  --mid: #8a6420;
+  --mid-soft: #f7efdd;
+  --hard: #9c4a35;
+  --hard-soft: #f8e9e4;
+  --chip-bg: var(--surface-2);
+  --line-hit: #fff4cf;
+  --line-hit-bar: #d9a200;
+}
+
+:root[data-theme="dark"] {
+  --easy: #93c9a3;
+  --easy-soft: #16241a;
+  --mid: #e0bd77;
+  --mid-soft: #26200f;
+  --hard: #e9a68f;
+  --hard-soft: #2a1711;
+  --line-hit: #2c2512;
+  --line-hit-bar: #d9a200;
+}
