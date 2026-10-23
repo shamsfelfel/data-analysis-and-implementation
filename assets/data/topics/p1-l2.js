@@ -1,0 +1,30 @@
+/* Topic tags for Practical Chapter 1, Lesson 2 (Setting Up Your Workbench). */
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["p1-tool-choice"] = { href: "p1l2-h1", en: "choosing a tool: repeatable, shareable, checkable", ar: "اختيار الأداة: قابل للتكرار والمشاركة والتدقيق" };
+  T["p1-tool-table"] = { href: "p1l2-s1", en: "Python, Excel and Power BI compared", ar: "مقارنة Python وExcel وPower BI" };
+  T["p1-python-install"] = { href: "p1l2-s5", en: "installing Python on Windows", ar: "تثبيت Python على ويندوز" };
+  T["p1-which-python"] = { href: "p1l2-s8", en: "which Python answered (where / which)", ar: "أي Python أجاب (where / which)" };
+  T["p1-pip-module"] = { href: "p1l2-s9", en: "python -m pip versus pip", ar: "python -m pip مقابل pip" };
+  T["p1-venv"] = { href: "p1l2-s10", en: "what a virtual environment is", ar: "ما هي البيئة الافتراضية" };
+  T["p1-venv-activate"] = { href: "p1l2-s11", en: "creating and activating a venv", ar: "إنشاء venv وتفعيلها" };
+  T["p1-exec-policy"] = { href: "p1l2-s11", en: "PowerShell execution policy and activation", ar: "سياسة تنفيذ PowerShell والتفعيل" };
+  T["p1-pip-install"] = { href: "p1l2-s12", en: "installing packages and what it costs", ar: "تثبيت الحزم وما كلفته" };
+  T["p1-requirements"] = { href: "p1l2-s13", en: "pip freeze and requirements.txt", ar: "pip freeze وrequirements.txt" };
+  T["p1-version-pinning"] = { href: "p1l2-s13", en: "pinning versions: same code, same answer", ar: "تثبيت الإصدارات: الكود نفسه، الجواب نفسه" };
+  T["p1-project-layout"] = { href: "p1l2-s14", en: "project folder layout (raw, processed, notebooks, outputs)", ar: "تخطيط مجلد المشروع (raw وprocessed وnotebooks وoutputs)" };
+  T["p1-readme"] = { href: "p1l2-s15", en: "README, naming rule and where to put the folder", ar: "README وقاعدة التسمية ومكان المجلد" };
+  T["p1-jupyter-launch"] = { href: "p1l2-s16", en: "starting and stopping JupyterLab", ar: "تشغيل JupyterLab وإيقافه" };
+  T["p1-working-dir"] = { href: "p1l2-s17", en: "the notebook working-directory trap", ar: "فخ مجلد العمل في الدفاتر" };
+  T["p1-kernel-pick"] = { href: "p1l2-s18", en: "which Python runs my cells: kernels", ar: "أي Python يشغّل خلاياي: النوى" };
+  T["p1-notebook-hosts"] = { href: "p1l2-s19", en: "VS Code and Colab: what you give up", ar: "VS Code وColab: ما تتخلى عنه" };
+  T["p1-excel-versions"] = { href: "p1l2-s20", en: "Excel versions and XLOOKUP availability", ar: "إصدارات Excel وتوفر XLOOKUP" };
+  T["p1-excel-data-tab"] = { href: "p1l2-s21", en: "Excel Table and Get & Transform (Power Query)", ar: "جدول Excel وGet & Transform ‏(Power Query)" };
+  T["p1-csv-encoding"] = { href: "p1l2-s22", en: "CSV encoding, BOM and delimiter in Excel", ar: "ترميز CSV وBOM والفاصل في Excel" };
+  T["p1-excel-addins"] = { href: "p1l2-s23", en: "Analysis ToolPak, Excel for the web, LibreOffice", ar: "Analysis ToolPak وExcel للويب وLibreOffice" };
+  T["p1-powerbi-needs"] = { href: "p1l2-s24", en: "Power BI Desktop: platform, cost, account", ar: "Power BI Desktop: المنصة والكلفة والحساب" };
+  T["p1-powerbi-install"] = { href: "p1l2-s25", en: "installing Power BI Desktop and first launch", ar: "تثبيت Power BI Desktop وأول تشغيل" };
+  T["p1-powerbi-nowindows"] = { href: "p1l2-s26", en: "Power BI on macOS and Linux: options", ar: "Power BI على macOS وLinux: الخيارات" };
+  T["p1-env-check"] = { href: "p1l2-s27", en: "the workbench check: smoke test to check_env.py", ar: "فحص بيئة العمل: من اختبار الدخان إلى check_env.py" };
+  T["p1-troubleshoot"] = { href: "p1l2-s29", en: "the ten most common setup failures", ar: "أكثر عشرة أعطال إعداد شيوعًا" };
+})(window.DATopics);

@@ -1,0 +1,52 @@
+{
+  "id": "p1-l2-check-mini",
+  "title": {
+    "en": "A workbench check in miniature",
+    "ar": "فحص بيئة العمل في صورة مصغّرة"
+  },
+  "lede": {
+    "en": "The same idea as check_env.py with three checks: each check() call records PASS or FAIL in a list and keeps going, so one missing package does not hide the others.",
+    "ar": "الفكرة نفسها في check_env.py لكن بثلاثة فحوص: كل استدعاء لـ check() يسجّل PASS أو FAIL في قائمة ويواصل العمل، فلا تُخفي حزمة مفقودة واحدة ما سواها."
+  },
+  "files": {
+    "orders.csv": "order_id,order_time,item,category,qty,unit_price,payment,customer_type\n5001,2026-09-01 13:43:29,Shawarma Wrap,Food,1,120.0,Cash,Student\n5002,2026-09-01 09:25:59,Shawarma Wrap,Food,1,12.0,Cash,Visitor\n5002,2026-09-01 09:25:59,Latte,Drink,3,9.0,Wallet,Student\n5003,2026-09-01 11:58:29,Shawarma Wrap,Food,1,12.0,Card,Staff\n5004,2026-09-01 09:37:30,Tea,Drink,1,n/a,Wallet,Visitor\n5005,2026-09-01 13:46:53,Chips,Snack,1,4.0,Voucher,Student\n"
+  },
+  "code": "results = []\n\n\ndef check(ok, label):\n    results.append((\"PASS\" if ok else \"FAIL\") + \"  \" + label)\n    return ok\n\n\ndef can_import(name):\n    try:\n        __import__(name)\n        return True\n    except ImportError:\n        return False\n\n\ndef count_rows(path):\n    with open(path, encoding=\"utf-8\") as f:\n        return len(f.read().splitlines()) - 1\n\n\ncheck(can_import(\"json\"), \"package json\")\ncheck(can_import(\"jupyterlab_missing\"), \"package jupyterlab_missing\")\ncheck(count_rows(\"orders.csv\") == 6, \"orders.csv has 6 rows\")\n\nfor line in results:\n    print(line)\nprint(sum(r.startswith(\"PASS\") for r in results), \"passed\")\n",
+  "watch": [
+    "results"
+  ],
+  "viz": {
+    "results": "array"
+  },
+  "notes": {
+    "1": {
+      "en": "An empty list that will collect one PASS or FAIL line per check.",
+      "ar": "قائمة فارغة ستجمع سطر PASS أو FAIL لكل فحص."
+    },
+    "5": {
+      "en": "check() never raises: it only records the verdict and returns it.",
+      "ar": "الدالة check() لا تُطلق استثناءً أبدًا: تسجّل الحكم وتعيده فقط."
+    },
+    "11": {
+      "en": "Importing a package that is not installed raises ImportError; the except branch below turns that into False instead of crashing the whole check.",
+      "ar": "استيراد حزمة غير مثبّتة يُطلق ImportError؛ والفرع except أدناه يحوّله إلى False بدل أن يُسقط الفحص كله."
+    },
+    "22": {
+      "en": "json ships with Python, so this check passes.",
+      "ar": "الوحدة json تأتي مع Python، فينجح هذا الفحص."
+    },
+    "23": {
+      "en": "This package does not exist on purpose: the failure is recorded and the run goes on.",
+      "ar": "هذه الحزمة غير موجودة عمدًا: يُسجَّل الفشل ويستمر التنفيذ."
+    },
+    "24": {
+      "en": "The data check counts the data lines (the header is not a row).",
+      "ar": "فحص البيانات يعدّ أسطر البيانات (والترويسة ليست صفًّا)."
+    },
+    "28": {
+      "en": "Only now is a summary printed. A real check_env.py also exits with code 1 when anything failed.",
+      "ar": "الآن فقط يُطبع الملخص. أما check_env.py الحقيقي فيخرج برمز 1 إذا فشل أي فحص."
+    }
+  },
+  "max_steps": 80
+}

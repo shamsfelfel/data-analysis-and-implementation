@@ -1,0 +1,6 @@
+# DSAI 1103 lab environment - verified with Python 3.13
+pandas==2.2.3
+numpy==2.2.5
+matplotlib==3.10.6
+openpyxl==3.1.5
+jupyterlab==4.6.4

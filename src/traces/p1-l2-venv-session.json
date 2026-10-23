@@ -1,0 +1,471 @@
+{
+ "id": "p1-l2-venv-session",
+ "title": {
+  "en": "A terminal session: folder, environment, packages, freeze",
+  "ar": "جلسة طرفية: مجلد وبيئة وحزم وتجميد"
+ },
+ "lede": {
+  "en": "Ten commands, step by step. Watch four things change: the current folder, which environment is active, which Python answers, and which packages that Python can see.",
+  "ar": "عشرة أوامر خطوة بخطوة. راقب أربعة أشياء تتغير: المجلد الحالي، والبيئة المفعّلة، ونسخة Python التي تجيب، والحزم التي تراها."
+ },
+ "manual": true,
+ "lang": "bash",
+ "code": "mkdir cafeteria-lab\ncd cafeteria-lab\npython -m venv .venv\n.\\.venv\\Scripts\\Activate.ps1\npython -c \"import sys; print(sys.prefix)\"\npython -m pip list\npython -m pip install pandas==2.2.3 numpy==2.2.5 matplotlib==3.10.6 openpyxl==3.1.5 jupyterlab\npython -m pip freeze > requirements.txt\ndeactivate\npython -c \"import jupyterlab\"",
+ "viz": {
+  "packages": "array"
+ },
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you"
+    },
+    "active_env": {
+     "t": "str",
+     "v": "(none)"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "system: 223 pkgs"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": "(nothing yet)"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "(does not exist)"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "The project folder is created inside your user folder. Nothing is active yet: <code>python</code> is the system Python, with its 223 packages that nobody chose for this project.",
+    "ar": "يُنشأ مجلد المشروع داخل مجلد المستخدم. لا شيء مفعّل بعد: <code>python</code> هو Python النظام وفيه 223 حزمة لم يخترها أحد لهذا المشروع."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab"
+    },
+    "active_env": {
+     "t": "str",
+     "v": "(none)"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "system: 223 pkgs"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": "(empty folder)"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "(does not exist)"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "<code>cd</code> moves the terminal into the project. Every later command runs here.",
+    "ar": "ينقل <code>cd</code> الطرفية إلى المشروع. وكل أمر لاحق ينفَّذ هنا."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab"
+    },
+    "active_env": {
+     "t": "str",
+     "v": "(none)"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "system: 223 pkgs"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": ".venv folder (Include, Lib, Scripts, pyvenv.cfg)"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "(does not exist)"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "The environment is created: a folder with its own <code>Scripts\\python.exe</code> and an empty <code>Lib\\site-packages</code>. It exists but it is <em>not active</em> &mdash; <code>python</code> still means the system Python.",
+    "ar": "أُنشئت البيئة: مجلد فيه <code>Scripts\\python.exe</code> خاص به و<code>Lib\\site-packages</code> فارغ. هي موجودة لكنها <em>غير مفعّلة</em> &mdash; ما زال <code>python</code> يعني Python النظام."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab"
+    },
+    "active_env": {
+     "t": "str",
+     "v": ".venv"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab\\.venv\\Scripts\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pip 25.0.1"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": ".venv folder (active)"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "(does not exist)"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Activation puts <code>.venv\\Scripts</code> first on the PATH for this window and the prompt gains <code>(.venv)</code>. <code>python</code> now means the environment's Python, which sees only pip.",
+    "ar": "يضع التفعيل <code>.venv\\Scripts</code> أولًا في PATH لهذه النافذة ويكتسب المحث <code>(.venv)</code>. صار <code>python</code> يعني Python البيئة الذي لا يرى إلا pip."
+   }
+  },
+  {
+   "line": 5,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab"
+    },
+    "active_env": {
+     "t": "str",
+     "v": ".venv"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab\\.venv\\Scripts\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pip 25.0.1"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": ".venv folder (active)"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "(does not exist)"
+    }
+   },
+   "out": "C:\\Users\\you\\cafeteria-lab\\.venv\n",
+   "note": {
+    "en": "Do not trust the prompt; ask Python. <code>sys.prefix</code> is the environment folder (the system Python would print its own install folder).",
+    "ar": "لا تثق بالمحث؛ اسأل Python. <code>sys.prefix</code> هو مجلد البيئة (أما Python النظام فكان سيطبع مجلد تثبيته)."
+   }
+  },
+  {
+   "line": 6,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab"
+    },
+    "active_env": {
+     "t": "str",
+     "v": ".venv"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab\\.venv\\Scripts\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pip 25.0.1"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": ".venv folder (active)"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "(does not exist)"
+    }
+   },
+   "out": "C:\\Users\\you\\cafeteria-lab\\.venv\nPackage Version\n------- -------\npip     25.0.1\n",
+   "note": {
+    "en": "A fresh environment contains only pip. This is the empty toolbox.",
+    "ar": "البيئة الجديدة لا تحوي إلا pip. هذا هو صندوق الأدوات الفارغ."
+   }
+  },
+  {
+   "line": 7,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab"
+    },
+    "active_env": {
+     "t": "str",
+     "v": ".venv"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab\\.venv\\Scripts\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pip 25.0.1"
+      },
+      {
+       "t": "str",
+       "v": "pandas 2.2.3"
+      },
+      {
+       "t": "str",
+       "v": "numpy 2.2.5"
+      },
+      {
+       "t": "str",
+       "v": "matplotlib 3.10.6"
+      },
+      {
+       "t": "str",
+       "v": "openpyxl 3.1.5"
+      },
+      {
+       "t": "str",
+       "v": "jupyterlab 4.6.4"
+      },
+      {
+       "t": "str",
+       "v": "+ 97 more"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": ".venv folder (active)"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "(does not exist)"
+    }
+   },
+   "out": "C:\\Users\\you\\cafeteria-lab\\.venv\nPackage Version\n------- -------\npip     25.0.1\nCollecting pandas==2.2.3\nCollecting numpy==2.2.5\nCollecting matplotlib==3.10.6\nCollecting openpyxl==3.1.5\nCollecting jupyterlab\n...\nSuccessfully installed MarkupSafe-3.0.4 anyio-4.15.1 ... websocket-client-1.9.2\n",
+   "note": {
+    "en": "You asked for five names; pip installed <strong>102</strong> packages, because each package needs others. It took about 3.5 minutes and ~380&nbsp;MB on the machine used for this lesson (yours will differ).",
+    "ar": "طلبتَ خمسة أسماء فثبّت pip <strong>102</strong> حزمة لأن كل حزمة تحتاج حزمًا أخرى. واستغرق ذلك نحو 3.5 دقيقة ونحو 380&nbsp;ميغابايت على الجهاز المستعمل لهذا الدرس (وسيختلف عندك)."
+   }
+  },
+  {
+   "line": 8,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab"
+    },
+    "active_env": {
+     "t": "str",
+     "v": ".venv"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab\\.venv\\Scripts\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pip 25.0.1"
+      },
+      {
+       "t": "str",
+       "v": "pandas 2.2.3"
+      },
+      {
+       "t": "str",
+       "v": "numpy 2.2.5"
+      },
+      {
+       "t": "str",
+       "v": "matplotlib 3.10.6"
+      },
+      {
+       "t": "str",
+       "v": "openpyxl 3.1.5"
+      },
+      {
+       "t": "str",
+       "v": "jupyterlab 4.6.4"
+      },
+      {
+       "t": "str",
+       "v": "+ 97 more"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": ".venv folder (active), requirements.txt"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "102 lines: exact versions of everything installed"
+    }
+   },
+   "out": "C:\\Users\\you\\cafeteria-lab\\.venv\nPackage Version\n------- -------\npip     25.0.1\nCollecting pandas==2.2.3\nCollecting numpy==2.2.5\nCollecting matplotlib==3.10.6\nCollecting openpyxl==3.1.5\nCollecting jupyterlab\n...\nSuccessfully installed MarkupSafe-3.0.4 anyio-4.15.1 ... websocket-client-1.9.2\n",
+   "note": {
+    "en": "<code>pip freeze</code> writes every installed package with its exact version into a text file. In Windows PowerShell&nbsp;5.1 the <code>&gt;</code> may save it as UTF-16: see the warning in the lesson.",
+    "ar": "يكتب <code>pip freeze</code> كل حزمة مثبّتة بإصدارها الدقيق في ملف نصي. وفي Windows PowerShell&nbsp;5.1 قد يحفظه <code>&gt;</code> بترميز UTF-16: انظر التحذير في الدرس."
+   }
+  },
+  {
+   "line": 9,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab"
+    },
+    "active_env": {
+     "t": "str",
+     "v": "(none)"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "system: 223 pkgs"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": ".venv folder (not active), requirements.txt"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "102 lines: exact versions of everything installed"
+    }
+   },
+   "out": "C:\\Users\\you\\cafeteria-lab\\.venv\nPackage Version\n------- -------\npip     25.0.1\nCollecting pandas==2.2.3\nCollecting numpy==2.2.5\nCollecting matplotlib==3.10.6\nCollecting openpyxl==3.1.5\nCollecting jupyterlab\n...\nSuccessfully installed MarkupSafe-3.0.4 anyio-4.15.1 ... websocket-client-1.9.2\n",
+   "note": {
+    "en": "<code>deactivate</code> restores the PATH: <code>python</code> is the system Python again, with its own packages. The environment folder is untouched and can be activated tomorrow.",
+    "ar": "يعيد <code>deactivate</code> الـ PATH: صار <code>python</code> من جديد Python النظام بحزمه الخاصة. ومجلد البيئة لم يُمسّ ويمكن تفعيله غدًا."
+   }
+  },
+  {
+   "line": 10,
+   "vars": {
+    "cwd": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\cafeteria-lab"
+    },
+    "active_env": {
+     "t": "str",
+     "v": "(none)"
+    },
+    "python_in_use": {
+     "t": "repr",
+     "v": "C:\\Users\\you\\AppData\\Local\\Programs\\Python\\Python313\\python.exe"
+    },
+    "packages": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "system: 223 pkgs"
+      }
+     ]
+    },
+    "project files": {
+     "t": "str",
+     "v": ".venv folder (not active), requirements.txt"
+    },
+    "requirements.txt": {
+     "t": "str",
+     "v": "102 lines: exact versions of everything installed"
+    }
+   },
+   "out": "C:\\Users\\you\\cafeteria-lab\\.venv\nPackage Version\n------- -------\npip     25.0.1\nCollecting pandas==2.2.3\nCollecting numpy==2.2.5\nCollecting matplotlib==3.10.6\nCollecting openpyxl==3.1.5\nCollecting jupyterlab\n...\nSuccessfully installed MarkupSafe-3.0.4 anyio-4.15.1 ... websocket-client-1.9.2\nModuleNotFoundError: No module named 'jupyterlab'\n",
+   "note": {
+    "en": "This is isolation at work: JupyterLab lives in the environment, not in the system Python, so outside it the import fails. Nothing else on the machine was changed by the project.",
+    "ar": "هذا هو العزل وهو يعمل: JupyterLab يعيش في البيئة لا في Python النظام، فيفشل الاستيراد خارجها. ولم يتغير أي شيء آخر على الجهاز بسبب المشروع."
+   },
+   "error": {
+    "type": "ModuleNotFoundError",
+    "msg": "No module named 'jupyterlab'"
+   }
+  }
+ ]
+}

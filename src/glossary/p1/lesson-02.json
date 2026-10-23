@@ -1,0 +1,233 @@
+[
+  {
+    "id": "python",
+    "term": {
+      "en": "Python",
+      "ar": "بايثون (Python)"
+    },
+    "def": {
+      "en": "The programming language used for the course's notebooks and scripts, and the program that runs it. The cafeteria analysis in Lessons 3 and 6 is written in Python.",
+      "ar": "لغة البرمجة المستعملة في دفاتر المقرر وسكربتاته، وهي أيضًا البرنامج الذي ينفّذها. وتحليل الكافتيريا في الدرسين 3 و6 مكتوب بها."
+    },
+    "cat": {
+      "en": "Python setup",
+      "ar": "إعداد Python"
+    },
+    "used": [
+      "p1l2-h2",
+      "p1l2-h1"
+    ],
+    "see": [
+      "interpreter",
+      "pip"
+    ]
+  },
+  {
+    "id": "interpreter",
+    "term": {
+      "en": "Interpreter",
+      "ar": "المفسِّر (Interpreter)"
+    },
+    "def": {
+      "en": "The program that reads Python code and executes it: python.exe on Windows, python3 on macOS and Linux. Each virtual environment has its own copy, so \"which Python?\" means \"which interpreter?\".",
+      "ar": "البرنامج الذي يقرأ كود بايثون وينفّذه: python.exe على ويندوز وpython3 على macOS وLinux. ولكل بيئة افتراضية نسختها الخاصة، فسؤال «أي Python؟» يعني «أي مفسِّر؟»."
+    },
+    "cat": {
+      "en": "Python setup",
+      "ar": "إعداد Python"
+    },
+    "used": [
+      "p1l2-h2",
+      "p1l2-s8"
+    ],
+    "see": [
+      "python",
+      "virtual-environment"
+    ]
+  },
+  {
+    "id": "pip",
+    "term": {
+      "en": "pip",
+      "ar": "pip"
+    },
+    "def": {
+      "en": "Python's package installer. Always call it as python -m pip so that it installs into the Python you just checked, e.g. python -m pip install pandas==2.2.3.",
+      "ar": "مثبّت الحزم في Python. استدعِه دائمًا بالصيغة python -m pip كي يثبّت في Python الذي فحصته للتو، مثل python -m pip install pandas==2.2.3."
+    },
+    "cat": {
+      "en": "Python setup",
+      "ar": "إعداد Python"
+    },
+    "used": [
+      "p1l2-h2",
+      "p1l2-s9",
+      "p1l2-s12"
+    ],
+    "see": [
+      "package",
+      "requirements-txt"
+    ]
+  },
+  {
+    "id": "package",
+    "term": {
+      "en": "Package",
+      "ar": "حزمة (Package)"
+    },
+    "def": {
+      "en": "A bundle of Python code that you load with import; pandas, numpy and openpyxl are packages. Installing one usually installs other packages it depends on: five requested names became 102 installed packages.",
+      "ar": "مجموعة كود بايثون تحمّلها بـ import؛ فـ pandas وnumpy وopenpyxl حزم. وتثبيت واحدة يثبّت عادةً حزمًا أخرى تعتمد عليها: خمسة أسماء مطلوبة صارت 102 حزمة مثبّتة."
+    },
+    "cat": {
+      "en": "Python setup",
+      "ar": "إعداد Python"
+    },
+    "used": [
+      "p1l2-h2",
+      "p1l2-s12"
+    ],
+    "see": [
+      "pip",
+      "requirements-txt"
+    ]
+  },
+  {
+    "id": "path-variable",
+    "term": {
+      "en": "PATH",
+      "ar": "متغيّر المسار PATH"
+    },
+    "def": {
+      "en": "The ordered list of folders the terminal searches for a command; the first match wins. Activating a virtual environment puts its Scripts folder first, which is how python and pip come to mean the environment's own.",
+      "ar": "القائمة المرتبة من المجلدات التي تبحث فيها الطرفية عن أمر؛ وأول تطابق يفوز. وتفعيل البيئة الافتراضية يضع مجلد Scripts الخاص بها أولًا، وهكذا يصير python وpip هما الخاصين بالبيئة."
+    },
+    "cat": {
+      "en": "Environment",
+      "ar": "البيئة"
+    },
+    "used": [
+      "p1l2-h2",
+      "p1l2-s11"
+    ],
+    "see": [
+      "interpreter",
+      "virtual-environment"
+    ]
+  },
+  {
+    "id": "virtual-environment",
+    "term": {
+      "en": "Virtual environment",
+      "ar": "بيئة افتراضية (Virtual environment)"
+    },
+    "def": {
+      "en": "A project-local folder (usually .venv) with its own Python and its own packages, so one project's installs cannot break another's. It is active when sys.prefix differs from sys.base_prefix.",
+      "ar": "مجلد محلي بالمشروع (عادةً .venv) فيه Python خاص به وحزم خاصة به، فلا يستطيع تثبيت مشروع أن يكسر مشروعًا آخر. وهي مفعّلة حين يختلف sys.prefix عن sys.base_prefix."
+    },
+    "cat": {
+      "en": "Environment",
+      "ar": "البيئة"
+    },
+    "used": [
+      "p1l2-h3",
+      "p1l2-s10",
+      "p1l2-s11"
+    ],
+    "see": [
+      "requirements-txt",
+      "path-variable"
+    ]
+  },
+  {
+    "id": "requirements-txt",
+    "term": {
+      "en": "requirements.txt",
+      "ar": "ملف requirements.txt"
+    },
+    "def": {
+      "en": "A plain-text list of the packages (with exact versions, e.g. pandas==2.2.3) a project needs; python -m pip install -r requirements.txt rebuilds the environment from it. The lesson keeps a short one for sharing and a full pip freeze as the record.",
+      "ar": "قائمة نصية بسيطة بالحزم (مع إصدارات دقيقة مثل pandas==2.2.3) التي يحتاجها مشروع؛ والأمر python -m pip install -r requirements.txt يعيد بناء البيئة منها. ويحتفظ الدرس بملف قصير للمشاركة وبتجميد pip freeze كامل كسجل."
+    },
+    "cat": {
+      "en": "Environment",
+      "ar": "البيئة"
+    },
+    "used": [
+      "p1l2-s13",
+      "p1l2-h4"
+    ],
+    "see": [
+      "pip",
+      "virtual-environment"
+    ]
+  },
+  {
+    "id": "ide",
+    "term": {
+      "en": "IDE",
+      "ar": "بيئة التطوير المتكاملة (IDE)"
+    },
+    "def": {
+      "en": "An integrated development environment: an editor that also runs, debugs and organises a project. Visual Studio Code is a free one that can open the course notebooks and use the project's .venv as its kernel.",
+      "ar": "محرر يشغّل المشروع ويصحّحه وينظّمه أيضًا. وVisual Studio Code بيئة مجانية منها تفتح دفاتر المقرر وتستعمل .venv الخاص بالمشروع نواةً لها."
+    },
+    "cat": {
+      "en": "Notebook tools",
+      "ar": "أدوات الدفاتر"
+    },
+    "used": [
+      "p1l2-s19"
+    ],
+    "see": [
+      "jupyter",
+      "kernel"
+    ]
+  },
+  {
+    "id": "jupyter",
+    "term": {
+      "en": "Jupyter / JupyterLab",
+      "ar": "Jupyter / JupyterLab"
+    },
+    "def": {
+      "en": "A family of tools for interactive computing. JupyterLab is the browser application in which you edit notebooks (.ipynb files that mix code, results and notes); it is started with jupyter lab from the project folder.",
+      "ar": "عائلة أدوات للحوسبة التفاعلية. وJupyterLab هو تطبيق المتصفح الذي تحرّر فيه الدفاتر (ملفات .ipynb التي تمزج الكود والنتائج والملاحظات)؛ ويُشغَّل بالأمر jupyter lab من مجلد المشروع."
+    },
+    "cat": {
+      "en": "Notebook tools",
+      "ar": "أدوات الدفاتر"
+    },
+    "used": [
+      "p1l2-s16",
+      "p1l2-h5"
+    ],
+    "see": [
+      "kernel",
+      "ide"
+    ]
+  },
+  {
+    "id": "kernel",
+    "term": {
+      "en": "Kernel",
+      "ar": "النواة (Kernel)"
+    },
+    "def": {
+      "en": "The separate Python process that executes a notebook's cells, tied to one specific Python (one environment). Run import sys; print(sys.executable) in a cell to see which one your notebook is using.",
+      "ar": "عملية بايثون منفصلة تنفّذ خلايا الدفتر، وهي مرتبطة بنسخة Python بعينها (بيئة واحدة). شغّل import sys; print(sys.executable) في خلية لترى أيّها يستعمل دفترك."
+    },
+    "cat": {
+      "en": "Notebook tools",
+      "ar": "أدوات الدفاتر"
+    },
+    "used": [
+      "p1l2-s16",
+      "p1l2-s18"
+    ],
+    "see": [
+      "jupyter",
+      "interpreter"
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+%% alt: Sequence diagram of starting JupyterLab. In the terminal you type jupyter lab inside the project folder. The terminal starts the Jupyter server in that folder. The server prints a URL that contains a token and opens it in the browser. The browser sends the token, and the server answers with the file browser of the folder where you started it. When you open a notebook and choose a kernel, the server launches that kernel, which is a separate Python process taken from the environment you picked. When you run a cell, the browser sends the code to the server, the server forwards it to the kernel, and the result travels back the same way.
+sequenceDiagram
+  autonumber
+  actor You
+  participant T as Terminal
+  participant S as Jupyter server
+  participant B as Browser
+  participant K as Kernel
+  You->>T: `jupyter lab`
+  T->>S: start in this folder
+  S-->>T: URL with a token
+  S->>B: open the URL
+  B->>S: request plus token
+  S-->>B: file browser of this folder
+  You->>B: open a notebook, pick a kernel
+  B->>S: start the kernel
+  S->>K: launch that Python
+  Note over S,K: the kernel is its own process
+  You->>B: run a cell
+  B->>S: code
+  S->>K: code
+  K-->>S: result
+  S-->>B: result

@@ -1,0 +1,17 @@
+%% alt: Install decision flowchart. Start from the operating system. On Windows install Python from python.org and tick Add python.exe to PATH. On macOS install Python from python.org or with Homebrew. On Linux use python3 and the python3-venv package from your distribution. All three paths then check that python --version prints 3.11 to 3.13. If it does, create a virtual environment; if not, go to the troubleshooting table and check again. Power BI Desktop is a separate branch: on Windows install it from the Microsoft Store or the Download Center; on macOS or Linux use a Windows PC or virtual machine, or the browser version with limits.
+flowchart TD
+  S(["Which computer?"]) --> W["Windows"]
+  S --> M["macOS"]
+  S --> L["Linux"]
+  W --> W1["python.org installer<br/>tick Add to PATH"]
+  M --> M1["python.org installer<br/>or Homebrew"]
+  L --> L1["python3 + python3-venv<br/>from your distro"]
+  W1 --> V{"`python --version`<br/>shows 3.11 to 3.13?"}
+  M1 --> V
+  L1 --> V
+  V -- yes --> E["`python -m venv .venv`"]
+  V -- no --> T["Troubleshooting table"]
+  T --> V
+  W --> P["Power BI Desktop:<br/>Store or Download Center"]
+  M --> Q["Windows PC or VM,<br/>or browser version"]
+  L --> Q

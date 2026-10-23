@@ -1,0 +1,574 @@
+{
+ "id": "p1-l2-check-run",
+ "title": {
+  "en": "check_env.py on a classmate's computer: red, fix, green",
+  "ar": "check_env.py على حاسوب زميل: أحمر ثم إصلاح ثم أخضر"
+ },
+ "lede": {
+  "en": "The real script, run twice around one fix. Watch the verdict list and the exit code change.",
+  "ar": "السكربت الحقيقي، مشغَّل مرتين حول إصلاح واحد. راقب قائمة الأحكام ورمز الخروج وهما يتغيران."
+ },
+ "manual": true,
+ "lang": "bash",
+ "code": "python check_env.py\necho $LASTEXITCODE\npython -m pip install -r requirements.txt\npython check_env.py\necho $LASTEXITCODE",
+ "viz": {
+  "results": "table"
+ },
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "results": {
+     "t": "df",
+     "cols": [
+      "verdict",
+      "check",
+      "detail"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+     ],
+     "rows": [
+      [
+       "PASS",
+       "Python 3.11 or newer",
+       "3.13.3"
+      ],
+      [
+       "PASS",
+       "virtual environment is active",
+       ".venv"
+      ],
+      [
+       "PASS",
+       "package pandas",
+       "3.1.0"
+      ],
+      [
+       "PASS",
+       "package numpy",
+       "2.5.4"
+      ],
+      [
+       "FAIL",
+       "package matplotlib",
+       "ModuleNotFoundError: No module named 'matplotlib'"
+      ],
+      [
+       "FAIL",
+       "package openpyxl",
+       "ModuleNotFoundError: No module named 'openpyxl'"
+      ],
+      [
+       "FAIL",
+       "package jupyterlab",
+       "ModuleNotFoundError: No module named 'jupyterlab'"
+      ],
+      [
+       "PASS",
+       "cafeteria_orders.csv has 771 rows",
+       "found 771 rows, 8 columns"
+      ],
+      [
+       "FAIL",
+       "read cafeteria_orders.xlsx",
+       "ModuleNotFoundError: No module named 'openpyxl'"
+      ]
+     ],
+     "shape": [
+      9,
+      3
+     ],
+     "dtypes": [
+      "object",
+      "object",
+      "object"
+     ],
+     "more": false
+    },
+    "exit_code": {
+     "t": "none"
+    },
+    "installed top-level": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pandas 3.1.0"
+      },
+      {
+       "t": "str",
+       "v": "numpy 2.5.4"
+      }
+     ]
+    }
+   },
+   "out": "PASS  Python 3.11 or newer               3.13.3\nPASS  virtual environment is active      .venv\nPASS  package pandas                     3.1.0\nPASS  package numpy                      2.5.4\nFAIL  package matplotlib                 ModuleNotFoundError: No module named 'matplotlib'\nFAIL  package openpyxl                   ModuleNotFoundError: No module named 'openpyxl'\nFAIL  package jupyterlab                 ModuleNotFoundError: No module named 'jupyterlab'\nPASS  cafeteria_orders.csv has 771 rows  found 771 rows, 8 columns\nFAIL  read cafeteria_orders.xlsx         ModuleNotFoundError: No module named 'openpyxl'\n\n5 passed, 4 failed\nNot checked here (do by hand): Excel opens the .xlsx; Power BI Desktop starts (Windows only).\n",
+   "note": {
+    "en": "A classmate's environment has only pandas (and the NumPy it needs). One run reports <strong>four</strong> FAIL lines at once: three missing packages, and the workbook that cannot be read because <code>openpyxl</code> is missing. A smoke test that crashes at the first import would have named only <code>matplotlib</code>.",
+    "ar": "في بيئة الزميل pandas وحده (مع NumPy الذي يحتاجه). تبلّغ تشغيلة واحدة عن <strong>أربعة</strong> أسطر FAIL دفعة واحدة: ثلاث حزم مفقودة، والمصنّف الذي لا يمكن قراءته لغياب <code>openpyxl</code>. أما اختبار دخان ينهار عند أول استيراد فكان سيسمّي <code>matplotlib</code> فقط."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "results": {
+     "t": "df",
+     "cols": [
+      "verdict",
+      "check",
+      "detail"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+     ],
+     "rows": [
+      [
+       "PASS",
+       "Python 3.11 or newer",
+       "3.13.3"
+      ],
+      [
+       "PASS",
+       "virtual environment is active",
+       ".venv"
+      ],
+      [
+       "PASS",
+       "package pandas",
+       "3.1.0"
+      ],
+      [
+       "PASS",
+       "package numpy",
+       "2.5.4"
+      ],
+      [
+       "FAIL",
+       "package matplotlib",
+       "ModuleNotFoundError: No module named 'matplotlib'"
+      ],
+      [
+       "FAIL",
+       "package openpyxl",
+       "ModuleNotFoundError: No module named 'openpyxl'"
+      ],
+      [
+       "FAIL",
+       "package jupyterlab",
+       "ModuleNotFoundError: No module named 'jupyterlab'"
+      ],
+      [
+       "PASS",
+       "cafeteria_orders.csv has 771 rows",
+       "found 771 rows, 8 columns"
+      ],
+      [
+       "FAIL",
+       "read cafeteria_orders.xlsx",
+       "ModuleNotFoundError: No module named 'openpyxl'"
+      ]
+     ],
+     "shape": [
+      9,
+      3
+     ],
+     "dtypes": [
+      "object",
+      "object",
+      "object"
+     ],
+     "more": false
+    },
+    "exit_code": {
+     "t": "num",
+     "v": "1"
+    },
+    "installed top-level": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pandas 3.1.0"
+      },
+      {
+       "t": "str",
+       "v": "numpy 2.5.4"
+      }
+     ]
+    }
+   },
+   "out": "PASS  Python 3.11 or newer               3.13.3\nPASS  virtual environment is active      .venv\nPASS  package pandas                     3.1.0\nPASS  package numpy                      2.5.4\nFAIL  package matplotlib                 ModuleNotFoundError: No module named 'matplotlib'\nFAIL  package openpyxl                   ModuleNotFoundError: No module named 'openpyxl'\nFAIL  package jupyterlab                 ModuleNotFoundError: No module named 'jupyterlab'\nPASS  cafeteria_orders.csv has 771 rows  found 771 rows, 8 columns\nFAIL  read cafeteria_orders.xlsx         ModuleNotFoundError: No module named 'openpyxl'\n\n5 passed, 4 failed\nNot checked here (do by hand): Excel opens the .xlsx; Power BI Desktop starts (Windows only).\n1\n",
+   "note": {
+    "en": "The exit code is <strong>1</strong>: any script or automation that runs the check can tell that it failed without reading the text.",
+    "ar": "رمز الخروج <strong>1</strong>: يستطيع أي سكربت أو أتمتة تشغّل الفحص أن يعرف أنه فشل دون قراءة النص."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "results": {
+     "t": "df",
+     "cols": [
+      "verdict",
+      "check",
+      "detail"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+     ],
+     "rows": [
+      [
+       "PASS",
+       "Python 3.11 or newer",
+       "3.13.3"
+      ],
+      [
+       "PASS",
+       "virtual environment is active",
+       ".venv"
+      ],
+      [
+       "PASS",
+       "package pandas",
+       "3.1.0"
+      ],
+      [
+       "PASS",
+       "package numpy",
+       "2.5.4"
+      ],
+      [
+       "FAIL",
+       "package matplotlib",
+       "ModuleNotFoundError: No module named 'matplotlib'"
+      ],
+      [
+       "FAIL",
+       "package openpyxl",
+       "ModuleNotFoundError: No module named 'openpyxl'"
+      ],
+      [
+       "FAIL",
+       "package jupyterlab",
+       "ModuleNotFoundError: No module named 'jupyterlab'"
+      ],
+      [
+       "PASS",
+       "cafeteria_orders.csv has 771 rows",
+       "found 771 rows, 8 columns"
+      ],
+      [
+       "FAIL",
+       "read cafeteria_orders.xlsx",
+       "ModuleNotFoundError: No module named 'openpyxl'"
+      ]
+     ],
+     "shape": [
+      9,
+      3
+     ],
+     "dtypes": [
+      "object",
+      "object",
+      "object"
+     ],
+     "more": false
+    },
+    "exit_code": {
+     "t": "num",
+     "v": "1"
+    },
+    "installed top-level": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pandas 2.2.3"
+      },
+      {
+       "t": "str",
+       "v": "numpy 2.2.5"
+      },
+      {
+       "t": "str",
+       "v": "matplotlib 3.10.6"
+      },
+      {
+       "t": "str",
+       "v": "openpyxl 3.1.5"
+      },
+      {
+       "t": "str",
+       "v": "jupyterlab 4.6.4"
+      }
+     ]
+    }
+   },
+   "out": "PASS  Python 3.11 or newer               3.13.3\nPASS  virtual environment is active      .venv\nPASS  package pandas                     3.1.0\nPASS  package numpy                      2.5.4\nFAIL  package matplotlib                 ModuleNotFoundError: No module named 'matplotlib'\nFAIL  package openpyxl                   ModuleNotFoundError: No module named 'openpyxl'\nFAIL  package jupyterlab                 ModuleNotFoundError: No module named 'jupyterlab'\nPASS  cafeteria_orders.csv has 771 rows  found 771 rows, 8 columns\nFAIL  read cafeteria_orders.xlsx         ModuleNotFoundError: No module named 'openpyxl'\n\n5 passed, 4 failed\nNot checked here (do by hand): Excel opens the .xlsx; Power BI Desktop starts (Windows only).\n1\nFound existing installation: numpy 2.5.4\nUninstalling numpy-2.5.4: Successfully uninstalled numpy-2.5.4\nFound existing installation: pandas 3.1.0\nUninstalling pandas-3.1.0: Successfully uninstalled pandas-3.1.0\n...\nSuccessfully installed ... jupyterlab-4.6.4 ... matplotlib-3.10.6 ... numpy-2.2.5 openpyxl-3.1.5 pandas-2.2.3 ...\n",
+   "note": {
+    "en": "One command fixes all four at once: pip installs the missing packages <em>and</em> replaces pandas&nbsp;3.1.0 and NumPy&nbsp;2.5.4 with the versions pinned in <code>requirements.txt</code>. Pinning changed two packages that were already installed.",
+    "ar": "أمر واحد يصلح الأربعة معًا: يثبّت pip الحزم المفقودة <em>ويستبدل</em> pandas&nbsp;3.1.0 وNumPy&nbsp;2.5.4 بالإصدارات المثبَّتة في <code>requirements.txt</code>. فغيّر التثبيت حزمتين كانتا مثبّتتين أصلًا."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "results": {
+     "t": "df",
+     "cols": [
+      "verdict",
+      "check",
+      "detail"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+     ],
+     "rows": [
+      [
+       "PASS",
+       "Python 3.11 or newer",
+       "3.13.3"
+      ],
+      [
+       "PASS",
+       "virtual environment is active",
+       ".venv"
+      ],
+      [
+       "PASS",
+       "package pandas",
+       "2.2.3"
+      ],
+      [
+       "PASS",
+       "package numpy",
+       "2.2.5"
+      ],
+      [
+       "PASS",
+       "package matplotlib",
+       "3.10.6"
+      ],
+      [
+       "PASS",
+       "package openpyxl",
+       "3.1.5"
+      ],
+      [
+       "PASS",
+       "package jupyterlab",
+       "4.6.4"
+      ],
+      [
+       "PASS",
+       "cafeteria_orders.csv has 771 rows",
+       "found 771 rows, 8 columns"
+      ],
+      [
+       "PASS",
+       "cafeteria_orders.xlsx has Table tblOrders",
+       "tblOrders"
+      ]
+     ],
+     "shape": [
+      9,
+      3
+     ],
+     "dtypes": [
+      "object",
+      "object",
+      "object"
+     ],
+     "more": false
+    },
+    "exit_code": {
+     "t": "num",
+     "v": "1"
+    },
+    "installed top-level": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pandas 2.2.3"
+      },
+      {
+       "t": "str",
+       "v": "numpy 2.2.5"
+      },
+      {
+       "t": "str",
+       "v": "matplotlib 3.10.6"
+      },
+      {
+       "t": "str",
+       "v": "openpyxl 3.1.5"
+      },
+      {
+       "t": "str",
+       "v": "jupyterlab 4.6.4"
+      }
+     ]
+    }
+   },
+   "out": "PASS  Python 3.11 or newer               3.13.3\nPASS  virtual environment is active      .venv\nPASS  package pandas                     3.1.0\nPASS  package numpy                      2.5.4\nFAIL  package matplotlib                 ModuleNotFoundError: No module named 'matplotlib'\nFAIL  package openpyxl                   ModuleNotFoundError: No module named 'openpyxl'\nFAIL  package jupyterlab                 ModuleNotFoundError: No module named 'jupyterlab'\nPASS  cafeteria_orders.csv has 771 rows  found 771 rows, 8 columns\nFAIL  read cafeteria_orders.xlsx         ModuleNotFoundError: No module named 'openpyxl'\n\n5 passed, 4 failed\nNot checked here (do by hand): Excel opens the .xlsx; Power BI Desktop starts (Windows only).\n1\nFound existing installation: numpy 2.5.4\nUninstalling numpy-2.5.4: Successfully uninstalled numpy-2.5.4\nFound existing installation: pandas 3.1.0\nUninstalling pandas-3.1.0: Successfully uninstalled pandas-3.1.0\n...\nSuccessfully installed ... jupyterlab-4.6.4 ... matplotlib-3.10.6 ... numpy-2.2.5 openpyxl-3.1.5 pandas-2.2.3 ...\nPASS  Python 3.11 or newer                       3.13.3\nPASS  virtual environment is active              .venv\nPASS  package pandas                             2.2.3\nPASS  package numpy                              2.2.5\nPASS  package matplotlib                         3.10.6\nPASS  package openpyxl                           3.1.5\nPASS  package jupyterlab                         4.6.4\nPASS  cafeteria_orders.csv has 771 rows          found 771 rows, 8 columns\nPASS  cafeteria_orders.xlsx has Table tblOrders  tblOrders\n\n9 passed, 0 failed\nNot checked here (do by hand): Excel opens the .xlsx; Power BI Desktop starts (Windows only).\n",
+   "note": {
+    "en": "Run the same check again: nine PASS lines and <code>0 failed</code>. The pandas line now reads 2.2.3 (the course's version) instead of 3.1.0.",
+    "ar": "شغّل الفحص نفسه مجددًا: تسعة أسطر PASS و<code>0 failed</code>. وسطر pandas يقرأ الآن 2.2.3 (إصدار المقرر) بدل 3.1.0."
+   }
+  },
+  {
+   "line": 5,
+   "vars": {
+    "results": {
+     "t": "df",
+     "cols": [
+      "verdict",
+      "check",
+      "detail"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8"
+     ],
+     "rows": [
+      [
+       "PASS",
+       "Python 3.11 or newer",
+       "3.13.3"
+      ],
+      [
+       "PASS",
+       "virtual environment is active",
+       ".venv"
+      ],
+      [
+       "PASS",
+       "package pandas",
+       "2.2.3"
+      ],
+      [
+       "PASS",
+       "package numpy",
+       "2.2.5"
+      ],
+      [
+       "PASS",
+       "package matplotlib",
+       "3.10.6"
+      ],
+      [
+       "PASS",
+       "package openpyxl",
+       "3.1.5"
+      ],
+      [
+       "PASS",
+       "package jupyterlab",
+       "4.6.4"
+      ],
+      [
+       "PASS",
+       "cafeteria_orders.csv has 771 rows",
+       "found 771 rows, 8 columns"
+      ],
+      [
+       "PASS",
+       "cafeteria_orders.xlsx has Table tblOrders",
+       "tblOrders"
+      ]
+     ],
+     "shape": [
+      9,
+      3
+     ],
+     "dtypes": [
+      "object",
+      "object",
+      "object"
+     ],
+     "more": false
+    },
+    "exit_code": {
+     "t": "num",
+     "v": "0"
+    },
+    "installed top-level": {
+     "t": "list",
+     "kind": "list",
+     "v": [
+      {
+       "t": "str",
+       "v": "pandas 2.2.3"
+      },
+      {
+       "t": "str",
+       "v": "numpy 2.2.5"
+      },
+      {
+       "t": "str",
+       "v": "matplotlib 3.10.6"
+      },
+      {
+       "t": "str",
+       "v": "openpyxl 3.1.5"
+      },
+      {
+       "t": "str",
+       "v": "jupyterlab 4.6.4"
+      }
+     ]
+    }
+   },
+   "out": "PASS  Python 3.11 or newer               3.13.3\nPASS  virtual environment is active      .venv\nPASS  package pandas                     3.1.0\nPASS  package numpy                      2.5.4\nFAIL  package matplotlib                 ModuleNotFoundError: No module named 'matplotlib'\nFAIL  package openpyxl                   ModuleNotFoundError: No module named 'openpyxl'\nFAIL  package jupyterlab                 ModuleNotFoundError: No module named 'jupyterlab'\nPASS  cafeteria_orders.csv has 771 rows  found 771 rows, 8 columns\nFAIL  read cafeteria_orders.xlsx         ModuleNotFoundError: No module named 'openpyxl'\n\n5 passed, 4 failed\nNot checked here (do by hand): Excel opens the .xlsx; Power BI Desktop starts (Windows only).\n1\nFound existing installation: numpy 2.5.4\nUninstalling numpy-2.5.4: Successfully uninstalled numpy-2.5.4\nFound existing installation: pandas 3.1.0\nUninstalling pandas-3.1.0: Successfully uninstalled pandas-3.1.0\n...\nSuccessfully installed ... jupyterlab-4.6.4 ... matplotlib-3.10.6 ... numpy-2.2.5 openpyxl-3.1.5 pandas-2.2.3 ...\nPASS  Python 3.11 or newer                       3.13.3\nPASS  virtual environment is active              .venv\nPASS  package pandas                             2.2.3\nPASS  package numpy                              2.2.5\nPASS  package matplotlib                         3.10.6\nPASS  package openpyxl                           3.1.5\nPASS  package jupyterlab                         4.6.4\nPASS  cafeteria_orders.csv has 771 rows          found 771 rows, 8 columns\nPASS  cafeteria_orders.xlsx has Table tblOrders  tblOrders\n\n9 passed, 0 failed\nNot checked here (do by hand): Excel opens the .xlsx; Power BI Desktop starts (Windows only).\n0\n",
+   "note": {
+    "en": "Exit code <strong>0</strong>: the bench is ready. Run the check again whenever anything behaves strangely, before changing anything else.",
+    "ar": "رمز الخروج <strong>0</strong>: المنضدة جاهزة. شغّل الفحص مجددًا كلما تصرف شيء بغرابة، قبل أن تغيّر أي شيء آخر."
+   }
+  }
+ ]
+}

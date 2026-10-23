@@ -80,6 +80,7 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 |---|---|---|
 | P1 L1 | a written decision log (rule, lines removed, reason) beside an untouched raw file | it is prose, so it can go stale and nothing checks it against what was actually done |
 | P1 L2 | a README with install steps | steps go stale |
+| P1 L2 | `python -m venv` + a pinned `requirements.txt` + a `check_env.py` PASS/FAIL script (exit code 0/1) | pins age; a full `pip freeze` is platform-bound (`pywinpty`, `colorama`); unpinned dependencies float (a fresh `pip install pandas` now gives 3.x, where text columns print `str` not `object`); Excel and Power BI cannot be checked from Python |
 | P1 L3 | notebook "Restart & Run All" | hidden-state bugs when cells are run out of order |
 | P1 L3 | a script with `main()` run from a terminal or scheduler | data files change and package versions drift unnoticed — Lesson 6 adds a golden-dataset reconciliation |
 | P1 L4 | Excel: named Table and formulas | manual clicks leave no trail |
