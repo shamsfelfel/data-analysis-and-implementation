@@ -1,0 +1,258 @@
+[
+  {
+    "id": "notebook",
+    "term": {
+      "en": "Notebook",
+      "ar": "الدفتر (Notebook)"
+    },
+    "def": {
+      "en": "A document of cells that mixes code, formatted text and the outputs of that code, run by a kernel and saved as one .ipynb file. Example: the cafeteria revenue analysis, from read_csv to the bar chart, written as a notebook.",
+      "ar": "مستند من الخلايا يجمع الشيفرة والنص المنسّق ونواتج تلك الشيفرة، تشغّله نواة ويُحفظ في ملف ipynb واحد. مثال: تحليل إيراد الكافتيريا، من read_csv إلى مخطط الأعمدة، مكتوبًا في دفتر."
+    },
+    "cat": {
+      "en": "Notebook anatomy",
+      "ar": "بنية الدفتر"
+    },
+    "used": [
+      "p1l3-s2",
+      "p1l3-s13"
+    ],
+    "see": [
+      "cell",
+      "kernel",
+      "ipynb"
+    ]
+  },
+  {
+    "id": "cell",
+    "term": {
+      "en": "Cell",
+      "ar": "الخلية (Cell)"
+    },
+    "def": {
+      "en": "One block of a notebook: a code cell that runs Python, a Markdown cell that holds text, or a raw cell that exports leave untouched. In the cafeteria notebook, the cell that runs orders.shape is a code cell and the title above it is a Markdown cell.",
+      "ar": "كتلة واحدة من الدفتر: خلية شيفرة تشغّل بايثون، أو خلية Markdown تحمل نصًّا، أو خلية خام (raw) لا تمسّها أدوات التصدير. في دفتر الكافتيريا خلية تشغّل orders.shape هي خلية شيفرة، والعنوان فوقها خلية Markdown."
+    },
+    "cat": {
+      "en": "Notebook anatomy",
+      "ar": "بنية الدفتر"
+    },
+    "used": [
+      "p1l3-s10",
+      "p1l3-s15"
+    ],
+    "see": [
+      "markdown-cell",
+      "notebook",
+      "execution-count"
+    ]
+  },
+  {
+    "id": "markdown-cell",
+    "term": {
+      "en": "Markdown cell",
+      "ar": "خلية Markdown"
+    },
+    "def": {
+      "en": "A cell that holds formatted text (headings, lists, links) instead of code and is never run. A header cell with the title, the question and the data source is a Markdown cell.",
+      "ar": "خلية تحمل نصًّا منسّقًا (عناوين وقوائم وروابط) بدل الشيفرة ولا تُشغَّل أبدًا. وخلية الترويسة التي فيها العنوان والسؤال ومصدر البيانات خلية Markdown."
+    },
+    "cat": {
+      "en": "Notebook anatomy",
+      "ar": "بنية الدفتر"
+    },
+    "used": [
+      "p1l3-s13"
+    ],
+    "see": [
+      "cell",
+      "notebook"
+    ]
+  },
+  {
+    "id": "ipynb",
+    "term": {
+      "en": ".ipynb file",
+      "ar": "ملف ‎.ipynb"
+    },
+    "def": {
+      "en": "The JSON text file in which a notebook is saved: its cells' source, their outputs and execution counters, and the kernel's name, but never the kernel's variables. Adding one bar chart grew a three-cell example from 1,211 to 16,838 bytes.",
+      "ar": "ملف النص بصيغة JSON الذي يُحفظ فيه الدفتر: شيفرة خلاياه ونواتجها وعدّادات تنفيذها واسم النواة، لكن ليس متغيّرات النواة أبدًا. وبإضافة مخطط أعمدة واحد كبر مثال من ثلاث خلايا من 1,211 إلى 16,838 بايت."
+    },
+    "cat": {
+      "en": "Notebook anatomy",
+      "ar": "بنية الدفتر"
+    },
+    "used": [
+      "p1l3-s2",
+      "p1l3-s22",
+      "p1l3-s23"
+    ],
+    "see": [
+      "notebook",
+      "nbconvert"
+    ]
+  },
+  {
+    "id": "command-mode",
+    "term": {
+      "en": "Command mode",
+      "ar": "وضع الأوامر (Command mode)"
+    },
+    "def": {
+      "en": "The notebook mode in which the cell itself is selected and single letter keys are commands: A inserts a cell above, D D deletes the cell. Press Esc to enter it.",
+      "ar": "وضع الدفتر الذي تكون فيه الخلية نفسها محدَّدة وتصبح مفاتيح الحروف المفردة أوامر: A تُدخل خلية فوق، وD D تحذف الخلية. اضغط Esc للدخول إليه."
+    },
+    "cat": {
+      "en": "Interface",
+      "ar": "الواجهة"
+    },
+    "used": [
+      "p1l3-s5"
+    ],
+    "see": [
+      "edit-mode"
+    ]
+  },
+  {
+    "id": "edit-mode",
+    "term": {
+      "en": "Edit mode",
+      "ar": "وضع التحرير (Edit mode)"
+    },
+    "def": {
+      "en": "The notebook mode in which a text cursor is inside a cell and the keys type characters. Press Enter to enter it; typing d d here writes two letters instead of deleting the cell.",
+      "ar": "وضع الدفتر الذي يكون فيه مؤشر نصّي داخل الخلية وتكتب المفاتيح حروفًا. اضغط Enter للدخول إليه؛ وكتابة d d فيه تكتب حرفين بدل أن تحذف الخلية."
+    },
+    "cat": {
+      "en": "Interface",
+      "ar": "الواجهة"
+    },
+    "used": [
+      "p1l3-s5"
+    ],
+    "see": [
+      "command-mode"
+    ]
+  },
+  {
+    "id": "magic-command",
+    "term": {
+      "en": "Magic command",
+      "ar": "الأمر السحري (Magic command)"
+    },
+    "def": {
+      "en": "A notebook-only instruction for the IPython kernel, written with % (one line) or %% (the whole cell), such as %timeit or %pip. A plain Python script cannot run it.",
+      "ar": "تعليمة خاصة بالدفاتر موجّهة إلى نواة IPython، تُكتب بعلامة % (لسطر واحد) أو %% (للخلية كلها)، مثل %timeit أو %pip. ولا يستطيع سكربت بايثون عادي تشغيلها."
+    },
+    "cat": {
+      "en": "Execution",
+      "ar": "التنفيذ"
+    },
+    "used": [
+      "p1l3-s8",
+      "p1l3-s9",
+      "p1l3-s26"
+    ],
+    "see": [
+      "kernel"
+    ]
+  },
+  {
+    "id": "execution-count",
+    "term": {
+      "en": "Execution count",
+      "ar": "عدّاد التنفيذ (Execution count)"
+    },
+    "def": {
+      "en": "The number in In [n] beside a code cell: how many cells the kernel had run when that cell last ran. Counters 1, 2, 3, 8, 9 down the page mean some cells ran again or out of order.",
+      "ar": "الرقم في In [n] بجانب خلية الشيفرة: عدد الخلايا التي كانت النواة قد شغّلتها حين شُغّلت تلك الخلية آخر مرة. والعدّادات 1 و2 و3 و8 و9 نزولًا في الصفحة تعني أن بعض الخلايا أُعيد تشغيلها أو شُغّلت بغير ترتيبها."
+    },
+    "cat": {
+      "en": "Execution",
+      "ar": "التنفيذ"
+    },
+    "used": [
+      "p1l3-s10",
+      "p1l3-s11",
+      "p1l3-h10"
+    ],
+    "see": [
+      "hidden-state",
+      "restart-run-all"
+    ]
+  },
+  {
+    "id": "hidden-state",
+    "term": {
+      "en": "Hidden state",
+      "ar": "الحالة الخفية (Hidden state)"
+    },
+    "def": {
+      "en": "What the kernel remembers but the page does not show: a variable from a deleted cell, a table updated twice, a module imported before it was edited. It made the same staff-discount notebook print 8156.95, 7997.605 and 7854.1945.",
+      "ar": "ما تتذكره النواة ولا تعرضه الصفحة: متغيّر من خلية محذوفة، أو جدول حُدّث مرتين، أو وحدة استُوردت قبل تعديلها. وقد جعلت دفتر خصم الموظفين نفسه يطبع 8156.95 ثم 7997.605 ثم 7854.1945."
+    },
+    "cat": {
+      "en": "Execution",
+      "ar": "التنفيذ"
+    },
+    "used": [
+      "p1l3-s11",
+      "p1l3-s12"
+    ],
+    "see": [
+      "kernel",
+      "execution-count",
+      "restart-run-all",
+      "reproducibility"
+    ]
+  },
+  {
+    "id": "restart-run-all",
+    "term": {
+      "en": "Restart & Run All",
+      "ar": "إعادة التشغيل مع تنفيذ الكل (Restart & Run All)"
+    },
+    "def": {
+      "en": "The kernel action that starts a fresh kernel and runs every code cell once, top to bottom. It is the honest test that a notebook explains its own numbers; the same test from a terminal is jupyter nbconvert --execute.",
+      "ar": "إجراء في النواة يبدأ نواة جديدة وينفّذ كل خلية شيفرة مرة واحدة من الأعلى إلى الأسفل. وهو الاختبار الصادق على أن الدفتر يشرح أرقامه بنفسه؛ والاختبار نفسه من الطرفية هو jupyter nbconvert --execute."
+    },
+    "cat": {
+      "en": "Execution",
+      "ar": "التنفيذ"
+    },
+    "used": [
+      "p1l3-s6",
+      "p1l3-s12",
+      "p1l3-s22"
+    ],
+    "see": [
+      "hidden-state",
+      "nbconvert",
+      "reproducibility"
+    ]
+  },
+  {
+    "id": "nbconvert",
+    "term": {
+      "en": "nbconvert",
+      "ar": "‎nbconvert"
+    },
+    "def": {
+      "en": "The tool that converts a notebook file to HTML, a Python script, PDF or a cleaned notebook, and with --execute runs it first. It exports the outputs stored in the file, so export after a clean run.",
+      "ar": "الأداة التي تحوّل ملف الدفتر إلى HTML أو سكربت بايثون أو PDF أو دفتر منظَّف، وتشغّله أولًا إذا أضفت --execute. وهي تصدّر النواتج المخزَّنة في الملف، فصدّر بعد تشغيل نظيف."
+    },
+    "cat": {
+      "en": "Sharing",
+      "ar": "المشاركة"
+    },
+    "used": [
+      "p1l3-s22",
+      "p1l3-s26"
+    ],
+    "see": [
+      "ipynb",
+      "restart-run-all"
+    ]
+  }
+]

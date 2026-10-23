@@ -1,0 +1,1473 @@
+{
+ "id": "p1-l3-hidden-state",
+ "manual": true,
+ "title": {
+  "en": "Trace — a notebook session that lies",
+  "ar": "تتبّع — جلسة دفتر تكذب"
+ },
+ "lede": {
+  "en": "The same five cells, run in a real session: once in order, then cell 4 again by accident, then Restart & Run All. Watch the kernel's variables and the execution counter, and compare them with the output the page keeps showing.",
+  "ar": "الخلايا الخمس نفسها في جلسة حقيقية: مرة بالترتيب، ثم الخلية 4 مرة ثانية بالخطأ، ثم Restart & Run All. راقب متغيّرات النواة وعدّاد التنفيذ وقارنها بالناتج الذي تواصل الصفحة عرضه."
+ },
+ "code": "# %% cell 1\nimport pandas as pd\n\n# %% cell 2\norders = pd.read_csv(\"cafeteria_orders.csv\")\norders[\"line_total\"] = orders[\"qty\"] * orders[\"unit_price\"]\n\n# %% cell 3\nSTAFF_OFF = 0.10\n\n# %% cell 4\norders.loc[orders[\"customer_type\"] == \"Staff\", \"line_total\"] *= 1 - STAFF_OFF\n\n# %% cell 5\norders[\"line_total\"].sum()",
+ "lang": "python",
+ "watch": [
+  "orders"
+ ],
+ "viz": {
+  "orders": "table"
+ },
+ "steps": [
+  {
+   "line": 2,
+   "vars": {
+    "execution_count": {
+     "t": "num",
+     "v": "1"
+    },
+    "pd": {
+     "t": "repr",
+     "v": "<module 'pandas'>",
+     "ty": "module"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Cell 1 runs. The counter beside it reads In [1], and the kernel now knows the name pd.",
+    "ar": "تُنفَّذ الخلية 1. يقرأ العدّاد بجانبها In [1]، وصارت النواة تعرف الاسم pd."
+   }
+  },
+  {
+   "line": 5,
+   "vars": {
+    "execution_count": {
+     "t": "num",
+     "v": "2"
+    },
+    "pd": {
+     "t": "repr",
+     "v": "<module 'pandas'>",
+     "ty": "module"
+    },
+    "orders": {
+     "t": "df",
+     "cols": [
+      "order_id",
+      "order_time",
+      "item",
+      "category",
+      "qty",
+      "unit_price",
+      "payment",
+      "customer_type",
+      "line_total"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+     ],
+     "rows": [
+      [
+       "5001",
+       "2026-09-01 13:43:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "120.0",
+       "Cash",
+       "Student",
+       "120.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Cash",
+       "Visitor",
+       "12.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Latte",
+       "Drink",
+       "3",
+       "9.0",
+       "Wallet",
+       "Student",
+       "27.0"
+      ],
+      [
+       "5003",
+       "2026-09-01 11:58:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Card",
+       "Staff",
+       "12.0"
+      ],
+      [
+       "5004",
+       "2026-09-01 09:37:30",
+       "Tea",
+       "Drink",
+       "1",
+       "NaN",
+       "Wallet",
+       "Visitor",
+       "NaN"
+      ],
+      [
+       "5005",
+       "2026-09-01 13:46:53",
+       "Chips",
+       "Snack",
+       "1",
+       "4.0",
+       "Voucher",
+       "Student",
+       "4.0"
+      ],
+      [
+       "5006",
+       "2026-09-01 16:06:26",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Espresso",
+       "Drink",
+       "1",
+       "6.0",
+       "Wallet",
+       "Student",
+       "6.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Tea",
+       "Drink",
+       "1",
+       "3.0",
+       "Wallet",
+       "Student",
+       "3.0"
+      ],
+      [
+       "5008",
+       "2026-09-01 12:12:46",
+       "Lentil Soup",
+       "Food",
+       "2",
+       "6.0",
+       "Voucher",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5009",
+       "2026-09-01 10:03:04",
+       "Espresso",
+       "Drink",
+       "2",
+       "6.0",
+       "Wallet",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5010",
+       "2026-09-01 11:05:06",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ]
+     ],
+     "shape": [
+      771,
+      9
+     ],
+     "dtypes": [
+      "int64",
+      "object",
+      "object",
+      "object",
+      "int64",
+      "float64",
+      "object",
+      "object",
+      "float64"
+     ],
+     "more": true
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Cell 2 reads the whole file (771 lines) and adds line_total. The table lives in the kernel's memory, not in the notebook file.",
+    "ar": "تقرأ الخلية 2 الملف كله (771 سطرًا) وتضيف العمود line_total. الجدول يعيش في ذاكرة النواة لا في ملف الدفتر."
+   }
+  },
+  {
+   "line": 9,
+   "vars": {
+    "execution_count": {
+     "t": "num",
+     "v": "3"
+    },
+    "pd": {
+     "t": "repr",
+     "v": "<module 'pandas'>",
+     "ty": "module"
+    },
+    "orders": {
+     "t": "df",
+     "cols": [
+      "order_id",
+      "order_time",
+      "item",
+      "category",
+      "qty",
+      "unit_price",
+      "payment",
+      "customer_type",
+      "line_total"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+     ],
+     "rows": [
+      [
+       "5001",
+       "2026-09-01 13:43:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "120.0",
+       "Cash",
+       "Student",
+       "120.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Cash",
+       "Visitor",
+       "12.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Latte",
+       "Drink",
+       "3",
+       "9.0",
+       "Wallet",
+       "Student",
+       "27.0"
+      ],
+      [
+       "5003",
+       "2026-09-01 11:58:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Card",
+       "Staff",
+       "12.0"
+      ],
+      [
+       "5004",
+       "2026-09-01 09:37:30",
+       "Tea",
+       "Drink",
+       "1",
+       "NaN",
+       "Wallet",
+       "Visitor",
+       "NaN"
+      ],
+      [
+       "5005",
+       "2026-09-01 13:46:53",
+       "Chips",
+       "Snack",
+       "1",
+       "4.0",
+       "Voucher",
+       "Student",
+       "4.0"
+      ],
+      [
+       "5006",
+       "2026-09-01 16:06:26",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Espresso",
+       "Drink",
+       "1",
+       "6.0",
+       "Wallet",
+       "Student",
+       "6.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Tea",
+       "Drink",
+       "1",
+       "3.0",
+       "Wallet",
+       "Student",
+       "3.0"
+      ],
+      [
+       "5008",
+       "2026-09-01 12:12:46",
+       "Lentil Soup",
+       "Food",
+       "2",
+       "6.0",
+       "Voucher",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5009",
+       "2026-09-01 10:03:04",
+       "Espresso",
+       "Drink",
+       "2",
+       "6.0",
+       "Wallet",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5010",
+       "2026-09-01 11:05:06",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ]
+     ],
+     "shape": [
+      771,
+      9
+     ],
+     "dtypes": [
+      "int64",
+      "object",
+      "object",
+      "object",
+      "int64",
+      "float64",
+      "object",
+      "object",
+      "float64"
+     ],
+     "more": true
+    },
+    "STAFF_OFF": {
+     "t": "num",
+     "v": "0.1"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Cell 3 defines the setting STAFF_OFF = 0.10: the what-if question is a 10% discount for Staff customers.",
+    "ar": "تعرّف الخلية 3 الإعداد STAFF_OFF = 0.10: السؤال الافتراضي هو خصم 10% لزبائن الموظفين (Staff)."
+   }
+  },
+  {
+   "line": 12,
+   "vars": {
+    "execution_count": {
+     "t": "num",
+     "v": "4"
+    },
+    "pd": {
+     "t": "repr",
+     "v": "<module 'pandas'>",
+     "ty": "module"
+    },
+    "orders": {
+     "t": "df",
+     "cols": [
+      "order_id",
+      "order_time",
+      "item",
+      "category",
+      "qty",
+      "unit_price",
+      "payment",
+      "customer_type",
+      "line_total"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+     ],
+     "rows": [
+      [
+       "5001",
+       "2026-09-01 13:43:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "120.0",
+       "Cash",
+       "Student",
+       "120.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Cash",
+       "Visitor",
+       "12.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Latte",
+       "Drink",
+       "3",
+       "9.0",
+       "Wallet",
+       "Student",
+       "27.0"
+      ],
+      [
+       "5003",
+       "2026-09-01 11:58:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Card",
+       "Staff",
+       "10.8"
+      ],
+      [
+       "5004",
+       "2026-09-01 09:37:30",
+       "Tea",
+       "Drink",
+       "1",
+       "NaN",
+       "Wallet",
+       "Visitor",
+       "NaN"
+      ],
+      [
+       "5005",
+       "2026-09-01 13:46:53",
+       "Chips",
+       "Snack",
+       "1",
+       "4.0",
+       "Voucher",
+       "Student",
+       "4.0"
+      ],
+      [
+       "5006",
+       "2026-09-01 16:06:26",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Espresso",
+       "Drink",
+       "1",
+       "6.0",
+       "Wallet",
+       "Student",
+       "6.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Tea",
+       "Drink",
+       "1",
+       "3.0",
+       "Wallet",
+       "Student",
+       "3.0"
+      ],
+      [
+       "5008",
+       "2026-09-01 12:12:46",
+       "Lentil Soup",
+       "Food",
+       "2",
+       "6.0",
+       "Voucher",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5009",
+       "2026-09-01 10:03:04",
+       "Espresso",
+       "Drink",
+       "2",
+       "6.0",
+       "Wallet",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5010",
+       "2026-09-01 11:05:06",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ]
+     ],
+     "shape": [
+      771,
+      9
+     ],
+     "dtypes": [
+      "int64",
+      "object",
+      "object",
+      "object",
+      "int64",
+      "float64",
+      "object",
+      "object",
+      "float64"
+     ],
+     "more": true
+    },
+    "STAFF_OFF": {
+     "t": "num",
+     "v": "0.1"
+    }
+   },
+   "out": "",
+   "note": {
+    "en": "Cell 4 multiplies the Staff rows of line_total by 0.9, in place. The column now holds the discounted values; the original values are gone from memory.",
+    "ar": "تضرب الخلية 4 صفوف الموظفين في line_total بـ 0.9 في مكانها. يحمل العمود الآن القيم المخفَّضة، وضاعت القيم الأصلية من الذاكرة."
+   }
+  },
+  {
+   "line": 15,
+   "vars": {
+    "execution_count": {
+     "t": "num",
+     "v": "5"
+    },
+    "pd": {
+     "t": "repr",
+     "v": "<module 'pandas'>",
+     "ty": "module"
+    },
+    "orders": {
+     "t": "df",
+     "cols": [
+      "order_id",
+      "order_time",
+      "item",
+      "category",
+      "qty",
+      "unit_price",
+      "payment",
+      "customer_type",
+      "line_total"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+     ],
+     "rows": [
+      [
+       "5001",
+       "2026-09-01 13:43:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "120.0",
+       "Cash",
+       "Student",
+       "120.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Cash",
+       "Visitor",
+       "12.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Latte",
+       "Drink",
+       "3",
+       "9.0",
+       "Wallet",
+       "Student",
+       "27.0"
+      ],
+      [
+       "5003",
+       "2026-09-01 11:58:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Card",
+       "Staff",
+       "10.8"
+      ],
+      [
+       "5004",
+       "2026-09-01 09:37:30",
+       "Tea",
+       "Drink",
+       "1",
+       "NaN",
+       "Wallet",
+       "Visitor",
+       "NaN"
+      ],
+      [
+       "5005",
+       "2026-09-01 13:46:53",
+       "Chips",
+       "Snack",
+       "1",
+       "4.0",
+       "Voucher",
+       "Student",
+       "4.0"
+      ],
+      [
+       "5006",
+       "2026-09-01 16:06:26",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Espresso",
+       "Drink",
+       "1",
+       "6.0",
+       "Wallet",
+       "Student",
+       "6.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Tea",
+       "Drink",
+       "1",
+       "3.0",
+       "Wallet",
+       "Student",
+       "3.0"
+      ],
+      [
+       "5008",
+       "2026-09-01 12:12:46",
+       "Lentil Soup",
+       "Food",
+       "2",
+       "6.0",
+       "Voucher",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5009",
+       "2026-09-01 10:03:04",
+       "Espresso",
+       "Drink",
+       "2",
+       "6.0",
+       "Wallet",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5010",
+       "2026-09-01 11:05:06",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ]
+     ],
+     "shape": [
+      771,
+      9
+     ],
+     "dtypes": [
+      "int64",
+      "object",
+      "object",
+      "object",
+      "int64",
+      "float64",
+      "object",
+      "object",
+      "float64"
+     ],
+     "more": true
+    },
+    "STAFF_OFF": {
+     "t": "num",
+     "v": "0.1"
+    },
+    "last_output": {
+     "t": "num",
+     "v": "8156.95"
+    }
+   },
+   "out": "Out[5]: 8156.95",
+   "note": {
+    "en": "Cell 5 shows the answer, 8156.95. This is the correct 10% what-if on the raw file. Counters so far: 1, 2, 3, 4, 5.",
+    "ar": "تعرض الخلية 5 الجواب 8156.95، وهو الجواب الصحيح لخصم 10% على الملف الخام. العدّادات حتى الآن: 1، 2، 3، 4، 5."
+   }
+  },
+  {
+   "line": 12,
+   "vars": {
+    "execution_count": {
+     "t": "num",
+     "v": "6"
+    },
+    "pd": {
+     "t": "repr",
+     "v": "<module 'pandas'>",
+     "ty": "module"
+    },
+    "orders": {
+     "t": "df",
+     "cols": [
+      "order_id",
+      "order_time",
+      "item",
+      "category",
+      "qty",
+      "unit_price",
+      "payment",
+      "customer_type",
+      "line_total"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+     ],
+     "rows": [
+      [
+       "5001",
+       "2026-09-01 13:43:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "120.0",
+       "Cash",
+       "Student",
+       "120.00"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Cash",
+       "Visitor",
+       "12.00"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Latte",
+       "Drink",
+       "3",
+       "9.0",
+       "Wallet",
+       "Student",
+       "27.00"
+      ],
+      [
+       "5003",
+       "2026-09-01 11:58:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Card",
+       "Staff",
+       "9.72"
+      ],
+      [
+       "5004",
+       "2026-09-01 09:37:30",
+       "Tea",
+       "Drink",
+       "1",
+       "NaN",
+       "Wallet",
+       "Visitor",
+       "NaN"
+      ],
+      [
+       "5005",
+       "2026-09-01 13:46:53",
+       "Chips",
+       "Snack",
+       "1",
+       "4.0",
+       "Voucher",
+       "Student",
+       "4.00"
+      ],
+      [
+       "5006",
+       "2026-09-01 16:06:26",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.00"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Espresso",
+       "Drink",
+       "1",
+       "6.0",
+       "Wallet",
+       "Student",
+       "6.00"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Tea",
+       "Drink",
+       "1",
+       "3.0",
+       "Wallet",
+       "Student",
+       "3.00"
+      ],
+      [
+       "5008",
+       "2026-09-01 12:12:46",
+       "Lentil Soup",
+       "Food",
+       "2",
+       "6.0",
+       "Voucher",
+       "Student",
+       "12.00"
+      ],
+      [
+       "5009",
+       "2026-09-01 10:03:04",
+       "Espresso",
+       "Drink",
+       "2",
+       "6.0",
+       "Wallet",
+       "Student",
+       "12.00"
+      ],
+      [
+       "5010",
+       "2026-09-01 11:05:06",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.00"
+      ]
+     ],
+     "shape": [
+      771,
+      9
+     ],
+     "dtypes": [
+      "int64",
+      "object",
+      "object",
+      "object",
+      "int64",
+      "float64",
+      "object",
+      "object",
+      "float64"
+     ],
+     "more": true
+    },
+    "STAFF_OFF": {
+     "t": "num",
+     "v": "0.1"
+    },
+    "last_output": {
+     "t": "num",
+     "v": "8156.95"
+    }
+   },
+   "out": "Out[5]: 8156.95",
+   "note": {
+    "en": "You wonder whether the discount really applied, scroll up and press Shift+Enter on cell 4 again (In [6]). The kernel's table is now discounted twice, but the page still shows Out [5] = 8156.95, so nothing looks wrong.",
+    "ar": "تتساءل هل طُبِّق الخصم فعلًا، فتصعد إلى الأعلى وتضغط Shift+Enter على الخلية 4 مرة ثانية (In [6]). صار جدول النواة مخفَّضًا مرتين، لكن الصفحة ما زالت تعرض Out [5] = 8156.95 فلا يبدو أي شيء خاطئًا."
+   }
+  },
+  {
+   "line": 15,
+   "vars": {
+    "execution_count": {
+     "t": "num",
+     "v": "7"
+    },
+    "pd": {
+     "t": "repr",
+     "v": "<module 'pandas'>",
+     "ty": "module"
+    },
+    "orders": {
+     "t": "df",
+     "cols": [
+      "order_id",
+      "order_time",
+      "item",
+      "category",
+      "qty",
+      "unit_price",
+      "payment",
+      "customer_type",
+      "line_total"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+     ],
+     "rows": [
+      [
+       "5001",
+       "2026-09-01 13:43:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "120.0",
+       "Cash",
+       "Student",
+       "120.00"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Cash",
+       "Visitor",
+       "12.00"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Latte",
+       "Drink",
+       "3",
+       "9.0",
+       "Wallet",
+       "Student",
+       "27.00"
+      ],
+      [
+       "5003",
+       "2026-09-01 11:58:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Card",
+       "Staff",
+       "9.72"
+      ],
+      [
+       "5004",
+       "2026-09-01 09:37:30",
+       "Tea",
+       "Drink",
+       "1",
+       "NaN",
+       "Wallet",
+       "Visitor",
+       "NaN"
+      ],
+      [
+       "5005",
+       "2026-09-01 13:46:53",
+       "Chips",
+       "Snack",
+       "1",
+       "4.0",
+       "Voucher",
+       "Student",
+       "4.00"
+      ],
+      [
+       "5006",
+       "2026-09-01 16:06:26",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.00"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Espresso",
+       "Drink",
+       "1",
+       "6.0",
+       "Wallet",
+       "Student",
+       "6.00"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Tea",
+       "Drink",
+       "1",
+       "3.0",
+       "Wallet",
+       "Student",
+       "3.00"
+      ],
+      [
+       "5008",
+       "2026-09-01 12:12:46",
+       "Lentil Soup",
+       "Food",
+       "2",
+       "6.0",
+       "Voucher",
+       "Student",
+       "12.00"
+      ],
+      [
+       "5009",
+       "2026-09-01 10:03:04",
+       "Espresso",
+       "Drink",
+       "2",
+       "6.0",
+       "Wallet",
+       "Student",
+       "12.00"
+      ],
+      [
+       "5010",
+       "2026-09-01 11:05:06",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.00"
+      ]
+     ],
+     "shape": [
+      771,
+      9
+     ],
+     "dtypes": [
+      "int64",
+      "object",
+      "object",
+      "object",
+      "int64",
+      "float64",
+      "object",
+      "object",
+      "float64"
+     ],
+     "more": true
+    },
+    "STAFF_OFF": {
+     "t": "num",
+     "v": "0.1"
+    },
+    "last_output": {
+     "t": "num",
+     "v": "7997.605"
+    }
+   },
+   "out": "Out[7]: 7997.605",
+   "note": {
+    "en": "You re-run cell 5 (In [7]). The page now shows 7997.605 beside code that says 10%. The only hint of the double run is the counters 1, 2, 3, 6, 7: the jump from 3 to 6.",
+    "ar": "تعيد تشغيل الخلية 5 (In [7]). تعرض الصفحة الآن 7997.605 بجانب شيفرة تقول 10%. والتلميح الوحيد إلى التشغيل المزدوج هو العدّادات 1، 2، 3، 6، 7: القفزة من 3 إلى 6."
+   }
+  },
+  {
+   "line": 1,
+   "vars": {
+    "execution_count": {
+     "t": "none"
+    }
+   },
+   "out": "Out[7]: 7997.605",
+   "note": {
+    "en": "Kernel → Restart. Memory is wiped: no pd, no orders, no STAFF_OFF, no counter. The page still shows the old output, because outputs are stored in the file, not in the kernel.",
+    "ar": "Kernel → Restart. تُمسح الذاكرة: لا pd ولا orders ولا STAFF_OFF ولا عدّاد. وما زالت الصفحة تعرض الناتج القديم، لأن النواتج تُخزَّن في الملف لا في النواة."
+   }
+  },
+  {
+   "line": 15,
+   "vars": {
+    "execution_count": {
+     "t": "num",
+     "v": "5"
+    },
+    "pd": {
+     "t": "repr",
+     "v": "<module 'pandas'>",
+     "ty": "module"
+    },
+    "orders": {
+     "t": "df",
+     "cols": [
+      "order_id",
+      "order_time",
+      "item",
+      "category",
+      "qty",
+      "unit_price",
+      "payment",
+      "customer_type",
+      "line_total"
+     ],
+     "index": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+     ],
+     "rows": [
+      [
+       "5001",
+       "2026-09-01 13:43:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "120.0",
+       "Cash",
+       "Student",
+       "120.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Cash",
+       "Visitor",
+       "12.0"
+      ],
+      [
+       "5002",
+       "2026-09-01 09:25:59",
+       "Latte",
+       "Drink",
+       "3",
+       "9.0",
+       "Wallet",
+       "Student",
+       "27.0"
+      ],
+      [
+       "5003",
+       "2026-09-01 11:58:29",
+       "Shawarma Wrap",
+       "Food",
+       "1",
+       "12.0",
+       "Card",
+       "Staff",
+       "10.8"
+      ],
+      [
+       "5004",
+       "2026-09-01 09:37:30",
+       "Tea",
+       "Drink",
+       "1",
+       "NaN",
+       "Wallet",
+       "Visitor",
+       "NaN"
+      ],
+      [
+       "5005",
+       "2026-09-01 13:46:53",
+       "Chips",
+       "Snack",
+       "1",
+       "4.0",
+       "Voucher",
+       "Student",
+       "4.0"
+      ],
+      [
+       "5006",
+       "2026-09-01 16:06:26",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Espresso",
+       "Drink",
+       "1",
+       "6.0",
+       "Wallet",
+       "Student",
+       "6.0"
+      ],
+      [
+       "5007",
+       "2026-09-01 11:12:51",
+       "Tea",
+       "Drink",
+       "1",
+       "3.0",
+       "Wallet",
+       "Student",
+       "3.0"
+      ],
+      [
+       "5008",
+       "2026-09-01 12:12:46",
+       "Lentil Soup",
+       "Food",
+       "2",
+       "6.0",
+       "Voucher",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5009",
+       "2026-09-01 10:03:04",
+       "Espresso",
+       "Drink",
+       "2",
+       "6.0",
+       "Wallet",
+       "Student",
+       "12.0"
+      ],
+      [
+       "5010",
+       "2026-09-01 11:05:06",
+       "Karak Tea",
+       "Drink",
+       "1",
+       "5.0",
+       "Cash",
+       "Student",
+       "5.0"
+      ]
+     ],
+     "shape": [
+      771,
+      9
+     ],
+     "dtypes": [
+      "int64",
+      "object",
+      "object",
+      "object",
+      "int64",
+      "float64",
+      "object",
+      "object",
+      "float64"
+     ],
+     "more": true
+    },
+    "STAFF_OFF": {
+     "t": "num",
+     "v": "0.1"
+    },
+    "last_output": {
+     "t": "num",
+     "v": "8156.95"
+    }
+   },
+   "out": "Out[5]: 8156.95",
+   "note": {
+    "en": "Restart & Run All: the five cells run once each, top to bottom, counters 1 to 5. The answer is 8156.95 again. The figure 7997.605 never belonged to the notebook; it existed only in one kernel's memory.",
+    "ar": "إعادة التشغيل مع تنفيذ الكل (Restart & Run All): تُنفَّذ الخلايا الخمس مرة واحدة من الأعلى إلى الأسفل، بالعدّادات من 1 إلى 5. يعود الجواب 8156.95. أما الرقم 7997.605 فلم يكن يومًا من الدفتر؛ كان موجودًا فقط في ذاكرة نواة واحدة."
+   }
+  }
+ ]
+}

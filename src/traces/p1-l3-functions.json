@@ -1,0 +1,41 @@
+{
+ "id": "p1-l3-functions",
+ "title": {
+  "en": "Trace — the same analysis as two functions",
+  "ar": "تتبّع — التحليل نفسه في دالتين"
+ },
+ "lede": {
+  "en": "The analysis rewritten as load_orders and revenue_by_item. Watch the call stack: each function receives what it needs and returns a result, so a cell that calls it does not depend on any other cell having run first.",
+  "ar": "التحليل مكتوبًا في الدالتين load_orders وrevenue_by_item. راقب مكدّس الاستدعاءات: كل دالة تستلم ما تحتاجه وتُرجع نتيجة، فلا تعتمد الخلية التي تستدعيها على تشغيل أي خلية أخرى قبلها."
+ },
+ "files": {
+  "cafeteria_orders.csv": "order_id,order_time,item,category,qty,unit_price,payment,customer_type\n5001,2026-09-01 13:43:29,Shawarma Wrap,Food,1,120.0,Cash,Student\n5002,2026-09-01 09:25:59,Shawarma Wrap,Food,1,12.0,Cash,Visitor\n5002,2026-09-01 09:25:59,Latte,Drink,3,9.0,Wallet,Student\n5003,2026-09-01 11:58:29,Shawarma Wrap,Food,1,12.0,Card,Staff\n5004,2026-09-01 09:37:30,Tea,Drink,1,n/a,Wallet,Visitor\n5005,2026-09-01 13:46:53,Chips,Snack,1,4.0,Voucher,Student\n5006,2026-09-01 16:06:26,Karak Tea,Drink,1,5.0,Cash,Student\n5007,2026-09-01 11:12:51,Espresso,Drink,1,6.0,Wallet,Student\n5007,2026-09-01 11:12:51,Tea,Drink,1,3.0,Wallet,Student\n5008,2026-09-01 12:12:46,Lentil Soup,Food,2,6.0,Voucher,Student\n5009,2026-09-01 10:03:04,Espresso,Drink,2,6.0,Wallet,Student\n5010,2026-09-01 11:05:06,Karak Tea,Drink,1,5.0,Cash,Student\n5011,2026-09-01 15:41:32,Chips,Snack,1,4.0,Cash,Student\n5012,2026-09-01 16:40:46,Shawarma Wrap,Food,2,12.0,Card,Student\n5012,2026-09-01 16:40:46,Tea,Drink,-1,3.0,,Student\n5013,2026-09-01 13:32:29,Shawarma Wrap,Food,2,12.0,Cash,Staff\n5014,2026-09-01 14:44:09,Espresso,Drink,1,6.0,Voucher,Visitor\n5015,2026-09-01 14:44:14,Shawarma Wrap,Food,2,12.0,Voucher,Student\n5016,2026-09-01 10:33:27,Karak Tea,Drink,2,5.0,Card,Student\n5016,2026-09-01 10:33:27,Latte,Drink,1,9.0,Cash,Visitor\n5017,2026-09-01 15:17:35,Falafel Sandwich,Food,2,7.0,Cash,Student\n5018,2026-09-01 15:48:29,Chips,Snack,2,4.0,Wallet,Visitor\n5019,2026-09-01 10:59:10,Chips,Snack,3,4.0,Cash,Student\n5019,2026-09-01 10:59:10,Tea,Drink,1,3.0,Cash,Staff\n"
+ },
+ "code": "import pandas as pd\n\n\ndef load_orders(path):\n    orders = pd.read_csv(path)\n    orders[\"item\"] = orders[\"item\"].str.strip().str.title()\n    orders[\"line_total\"] = orders[\"qty\"] * orders[\"unit_price\"]\n    orders = orders.drop_duplicates()\n    return orders[(orders[\"qty\"] > 0) & (orders[\"unit_price\"] < 50)]\n\n\ndef revenue_by_item(orders):\n    return orders.groupby(\"item\")[\"line_total\"].sum().sort_values(ascending=False)\n\n\norders = load_orders(\"cafeteria_orders.csv\")\nrevenue = revenue_by_item(orders)\nprint(revenue.head(3))",
+ "notes": {
+  "16": {
+   "en": "The call. The path is an argument, so the same function can read another month's file. Nothing outside the function is read or changed.",
+   "ar": "الاستدعاء. المسار وسيط، فتستطيع الدالة نفسها قراءة ملف شهر آخر. ولا يُقرأ ولا يُغيَّر شيء خارج الدالة."
+  },
+  "5": {
+   "en": "Inside the call: path is a local name that exists only while load_orders runs.",
+   "ar": "داخل الاستدعاء: path اسم محلي لا يوجد إلا أثناء عمل load_orders."
+  },
+  "9@ret": {
+   "en": "load_orders returns the cleaned table; the function's locals disappear when it returns.",
+   "ar": "ترجع load_orders الجدول المنظَّف، وتختفي متغيّراتها المحلية عند انتهائها."
+  },
+  "17": {
+   "en": "revenue_by_item only needs a table. Pass it a different table (a week, a branch) and it gives that table's revenue.",
+   "ar": "لا تحتاج revenue_by_item إلا إلى جدول. مرّر لها جدولًا آخر (أسبوعًا، فرعًا) تعطك إيراد ذلك الجدول."
+  }
+ },
+ "watch": [
+  "orders",
+  "revenue"
+ ],
+ "viz": {
+  "orders": "table"
+ },
+ "max_steps": 80
+}

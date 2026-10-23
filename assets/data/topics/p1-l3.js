@@ -1,0 +1,27 @@
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["p1-nb-anatomy"]         = { href: "p1l3-s1",  en: "notebook = cells + kernel + file",        ar: "الدفتر = خلايا + نواة + ملف" };
+  T["p1-nb-ipynb-json"]      = { href: "p1l3-s2",  en: "what is inside an .ipynb file",           ar: "ما داخل ملف ipynb" };
+  T["p1-nb-stale-outputs"]   = { href: "p1l3-s3",  en: "saved outputs vs the live kernel",        ar: "النواتج المحفوظة مقابل النواة الحيّة" };
+  T["p1-nb-modes"]           = { href: "p1l3-s4",  en: "command mode and edit mode",              ar: "وضع الأوامر ووضع التحرير" };
+  T["p1-nb-shortcuts"]       = { href: "p1l3-s5",  en: "notebook shortcuts and execution counters", ar: "اختصارات الدفتر وعدّادات التنفيذ" };
+  T["p1-nb-kernel-menu"]     = { href: "p1l3-s6",  en: "interrupt, restart, restart & run all",   ar: "المقاطعة وإعادة التشغيل وتنفيذ الكل" };
+  T["p1-nb-last-expression"] = { href: "p1l3-s7",  en: "last expression, print and display",      ar: "آخر عبارة وprint وdisplay" };
+  T["p1-nb-magics"]          = { href: "p1l3-s8",  en: "magic commands and shell escapes",        ar: "الأوامر السحرية وأوامر الصدفة" };
+  T["p1-nb-pip-env"]         = { href: "p1l3-s9",  en: "%pip versus !pip (which Python?)",        ar: "‎%pip مقابل ‎!pip (أي بايثون؟)" };
+  T["p1-nb-hidden-state"]    = { href: "p1l3-s10", en: "hidden state and in-place updates",       ar: "الحالة الخفية والتحديث في المكان" };
+  T["p1-nb-drift-ways"]      = { href: "p1l3-s11", en: "how the kernel drifts from the page",     ar: "كيف تبتعد النواة عن الصفحة" };
+  T["p1-nb-run-all"]         = { href: "p1l3-s12", en: "Restart & Run All and safe-to-rerun cells", ar: "Restart & Run All وخلايا آمنة لإعادة التشغيل" };
+  T["p1-nb-header-config"]   = { href: "p1l3-s13", en: "header cell and settings cell",           ar: "خلية الترويسة وخلية الإعدادات" };
+  T["p1-nb-paths"]           = { href: "p1l3-s14", en: "absolute, relative and pathlib paths",    ar: "المسارات المطلقة والنسبية وpathlib" };
+  T["p1-nb-hygiene"]         = { href: "p1l3-s15", en: "one idea per cell, secrets, clean outputs", ar: "فكرة لكل خلية والأسرار والنواتج النظيفة" };
+  T["p1-nb-spelling-variants"] = { href: "p1l3-s17", en: "spelling variants in a label column",   ar: "صيغ الإملاء المتعددة في عمود تسميات" };
+  T["p1-nb-dirty-rows"]      = { href: "p1l3-s19", en: "dirty rows change the answer",            ar: "الصفوف المتسخة تغيّر الجواب" };
+  T["p1-nb-chart-hour"]      = { href: "p1l3-s20", en: "the bar chart and the busiest hour",      ar: "مخطط الأعمدة وأكثر ساعة ازدحامًا" };
+  T["p1-nb-three-shapes"]    = { href: "p1l3-s21", en: "giant cell, cells, functions",            ar: "خلية عملاقة وخلايا ودوال" };
+  T["p1-nb-nbconvert"]       = { href: "p1l3-s22", en: "exporting with nbconvert",                ar: "التصدير بأداة nbconvert" };
+  T["p1-nb-diffs"]           = { href: "p1l3-s23", en: "notebooks in version control",            ar: "الدفاتر في التحكم بالإصدارات" };
+  T["p1-nb-tools-compared"]  = { href: "p1l3-s24", en: "JupyterLab, VS Code and Colab compared",  ar: "مقارنة JupyterLab وVS Code وColab" };
+  T["p1-nb-when-script"]     = { href: "p1l3-s25", en: "when to move from notebook to script",    ar: "متى تنتقل من الدفتر إلى السكربت" };
+  T["p1-nb-module-main"]     = { href: "p1l3-s26", en: "module, main() and autoreload",           ar: "الوحدة و main() وإعادة التحميل التلقائي" };
+})(window.DATopics);

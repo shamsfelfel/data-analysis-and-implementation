@@ -1,0 +1,15 @@
+%% alt: Sequence diagram of one notebook session. In the browser you press Shift+Enter on a cell. The Jupyter server sends the code to the kernel, a separate Python process. The kernel runs it and changes its variables in memory, then returns the output, which the server passes back to the browser to show under the cell. Later, pressing Ctrl+S makes the server write the cells and their outputs to the notebook.ipynb file. The variables stay in the kernel and are never written to the file.
+sequenceDiagram
+  autonumber
+  participant B as Browser tab
+  participant S as Jupyter server
+  participant K as Kernel
+  participant F as notebook.ipynb
+  B->>S: Shift+Enter on a cell
+  S->>K: run this code
+  K->>K: change variables in memory
+  K-->>S: output (text, table, image)
+  S-->>B: show it under the cell
+  B->>S: Ctrl+S
+  S->>F: write cells and outputs as JSON
+  Note over K,F: Variables live only in the kernel.<br/>The file never contains them.

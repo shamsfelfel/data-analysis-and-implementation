@@ -81,6 +81,7 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 | P1 L1 | a written decision log (rule, lines removed, reason) beside an untouched raw file | it is prose, so it can go stale and nothing checks it against what was actually done |
 | P1 L2 | a README with install steps | steps go stale |
 | P1 L3 | notebook "Restart & Run All" | hidden-state bugs when cells are run out of order |
+| P1 L3 | a script with `main()` run from a terminal or scheduler | data files change and package versions drift unnoticed — Lesson 6 adds a golden-dataset reconciliation |
 | P1 L4 | Excel: named Table and formulas | manual clicks leave no trail |
 | P1 L5 | Power Query applied steps | tied to Power BI |
 | P1 L6 | one script/notebook that rebuilds the answer from the raw file | — |

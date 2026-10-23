@@ -1,0 +1,10 @@
+%% alt: Decision flowchart for moving work out of a notebook. Start with a notebook that works. If it must run without you, for example nightly or on a schedule, move it to a script. Otherwise, if other files import its functions or tests need them, move the functions into a .py module and import them in the notebook. Otherwise, if it is long-running or heavy, move it to a script. If none of these hold, keep it in the notebook.
+flowchart TD
+  A(["A notebook that works"]) --> B{"Must it run<br/>without you?"}
+  B -- "yes: nightly, scheduled" --> S["Script run by a scheduler"]
+  B -- no --> C{"Do other files or<br/>tests need its functions?"}
+  C -- yes --> M["Move functions to a .py module"]
+  M --> N2["Notebook imports the module"]
+  C -- no --> D{"Long-running<br/>or heavy?"}
+  D -- yes --> S
+  D -- no --> N["Stay in the notebook"]

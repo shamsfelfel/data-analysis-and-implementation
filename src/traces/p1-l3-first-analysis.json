@@ -1,0 +1,49 @@
+{
+ "id": "p1-l3-first-analysis",
+ "title": {
+  "en": "Trace — the first analysis, line by line",
+  "ar": "تتبّع — التحليل الأول، سطرًا سطرًا"
+ },
+ "lede": {
+  "en": "The cafeteria analysis as one small program, run on the first 24 order lines of the real file. Watch the table gain a column, then watch three rows that should not be counted disappear and the top item's revenue fall.",
+  "ar": "تحليل الكافتيريا كبرنامج صغير واحد، يُشغَّل على أول 24 سطر طلب من الملف الحقيقي. شاهد الجدول يكتسب عمودًا، ثم شاهد ثلاثة صفوف لا ينبغي عدّها تختفي وإيراد الصنف الأول يهبط."
+ },
+ "files": {
+  "cafeteria_orders.csv": "order_id,order_time,item,category,qty,unit_price,payment,customer_type\n5001,2026-09-01 13:43:29,Shawarma Wrap,Food,1,120.0,Cash,Student\n5002,2026-09-01 09:25:59,Shawarma Wrap,Food,1,12.0,Cash,Visitor\n5002,2026-09-01 09:25:59,Latte,Drink,3,9.0,Wallet,Student\n5003,2026-09-01 11:58:29,Shawarma Wrap,Food,1,12.0,Card,Staff\n5004,2026-09-01 09:37:30,Tea,Drink,1,n/a,Wallet,Visitor\n5005,2026-09-01 13:46:53,Chips,Snack,1,4.0,Voucher,Student\n5006,2026-09-01 16:06:26,Karak Tea,Drink,1,5.0,Cash,Student\n5007,2026-09-01 11:12:51,Espresso,Drink,1,6.0,Wallet,Student\n5007,2026-09-01 11:12:51,Tea,Drink,1,3.0,Wallet,Student\n5008,2026-09-01 12:12:46,Lentil Soup,Food,2,6.0,Voucher,Student\n5009,2026-09-01 10:03:04,Espresso,Drink,2,6.0,Wallet,Student\n5010,2026-09-01 11:05:06,Karak Tea,Drink,1,5.0,Cash,Student\n5011,2026-09-01 15:41:32,Chips,Snack,1,4.0,Cash,Student\n5012,2026-09-01 16:40:46,Shawarma Wrap,Food,2,12.0,Card,Student\n5012,2026-09-01 16:40:46,Tea,Drink,-1,3.0,,Student\n5013,2026-09-01 13:32:29,Shawarma Wrap,Food,2,12.0,Cash,Staff\n5014,2026-09-01 14:44:09,Espresso,Drink,1,6.0,Voucher,Visitor\n5015,2026-09-01 14:44:14,Shawarma Wrap,Food,2,12.0,Voucher,Student\n5016,2026-09-01 10:33:27,Karak Tea,Drink,2,5.0,Card,Student\n5016,2026-09-01 10:33:27,Latte,Drink,1,9.0,Cash,Visitor\n5017,2026-09-01 15:17:35,Falafel Sandwich,Food,2,7.0,Cash,Student\n5018,2026-09-01 15:48:29,Chips,Snack,2,4.0,Wallet,Visitor\n5019,2026-09-01 10:59:10,Chips,Snack,3,4.0,Cash,Student\n5019,2026-09-01 10:59:10,Tea,Drink,1,3.0,Cash,Staff\n"
+ },
+ "code": "import pandas as pd\n\norders = pd.read_csv(\"cafeteria_orders.csv\")\nprint(orders.shape)\nprint(orders[\"item\"].value_counts().head(3))\norders[\"line_total\"] = orders[\"qty\"] * orders[\"unit_price\"]\nrevenue = orders.groupby(\"item\")[\"line_total\"].sum().sort_values(ascending=False)\nprint(revenue.head(3))\norders = orders[(orders[\"qty\"] > 0) & (orders[\"unit_price\"] < 50)]\nrevenue = orders.groupby(\"item\")[\"line_total\"].sum().sort_values(ascending=False)\nprint(revenue.head(3))",
+ "notes": {
+  "3": {
+   "en": "read_csv turns the 24 lines into a table of 24 rows and 8 columns. Look at unit_price: pandas read the text n/a (order 5004) as NaN on its own, and kept the column as float64.",
+   "ar": "تحوّل read_csv الأسطر الـ 24 إلى جدول من 24 صفًّا و8 أعمدة. انظر إلى unit_price: قرأ pandas النص n/a (الطلب 5004) على أنه NaN من تلقاء نفسه، وأبقى العمود من النوع float64."
+  },
+  "4": {
+   "en": "shape is (rows, columns). Always look at it right after loading: it is the cheapest check that you read what you think you read.",
+   "ar": "الخاصية shape هي (الصفوف، الأعمدة). انظر إليها دائمًا بعد التحميل مباشرة: إنها أرخص فحص للتأكد من أنك قرأت ما تظن أنك قرأته."
+  },
+  "6": {
+   "en": "A new column, computed for all rows at once. The NaN price makes line_total NaN for order 5004, and the price typo (120.0 in order 5001) gives a line_total of 120.0.",
+   "ar": "عمود جديد يُحسب لكل الصفوف دفعة واحدة. السعر NaN يجعل line_total للطلب 5004 قيمة NaN، وخطأ السعر (120.0 في الطلب 5001) يعطي line_total يساوي 120.0."
+  },
+  "8": {
+   "en": "The raw answer: Shawarma Wrap earns 216.0 in these 24 lines. Of that, 120.0 is one row where the price was typed as 120.0 instead of 12.0.",
+   "ar": "الجواب الخام: يحقق Shawarma Wrap مبلغ 216.0 في هذه الأسطر الـ 24. منه 120.0 في صف واحد كُتب سعره 120.0 بدل 12.0."
+  },
+  "9": {
+   "en": "A filter with two conditions joined by &. It keeps only rows with qty > 0 and unit_price < 50. That drops the refund (order 5012, qty = -1), the typo row (order 5001) and the n/a row (NaN < 50 is False, so it goes too, silently).",
+   "ar": "مرشِّح بشرطين يربطهما &. يُبقي الصفوف التي فيها qty > 0 و unit_price < 50 فقط. وهكذا يسقط الاسترجاع (الطلب 5012، qty = -1) وصف الخطأ (الطلب 5001) وصف n/a (فالتعبير NaN < 50 خاطئ فيسقط هو الآخر بصمت)."
+  },
+  "11": {
+   "en": "Same code, same file, a different answer: Shawarma Wrap falls from 216.0 to 96.0. The rows we removed are the subject of cleaning (Lesson 6 and Practical Chapter 3), shown here in miniature.",
+   "ar": "الشيفرة نفسها والملف نفسه، لكن الجواب مختلف: ينخفض Shawarma Wrap من 216.0 إلى 96.0. الصفوف التي أزلناها هي موضوع التنظيف (الدرس 6 والفصل العملي 3)، معروضة هنا بصورة مصغَّرة."
+  }
+ },
+ "watch": [
+  "orders",
+  "revenue"
+ ],
+ "viz": {
+  "orders": "table"
+ },
+ "max_steps": 80
+}
