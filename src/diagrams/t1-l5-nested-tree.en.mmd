@@ -1,0 +1,12 @@
+%% alt: Nested JSON becomes a tree and then a table. The JSON text holds a results list of school records; json.loads turns each record into a dict. A school dict holds name and enrolment objects, a facilities list and an optional contacts object. Flattening turns the inner objects into columns such as name_en, enrolment_boys and contacts_email, keeps the facilities list whole in one cell, and leaves NaN where the contacts key is absent.
+flowchart TD
+  T["JSON text:<br/>`results` is a list of records"] -- "`json.loads`" --> S["one school<br/>(a dict)"]
+  S --> N["`name`<br/>en, ar"]
+  S --> E["`enrolment`<br/>boys, girls"]
+  S --> F["`facilities`<br/>(a list)"]
+  S --> C["`contacts`<br/>(optional)"]
+  N --> Y["columns `name_en`,<br/>`enrolment_boys` ...<br/>one row per school"]
+  E --> Y
+  C --> Y
+  F --> Z["`facilities` stays<br/>a list in one cell"]
+  C -. "key absent" .-> M["NaN"]

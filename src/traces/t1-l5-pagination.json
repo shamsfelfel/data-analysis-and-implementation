@@ -1,0 +1,81 @@
+{
+  "id": "t1-l5-pagination",
+  "title": {
+    "en": "A pagination loop that meets a 429",
+    "ar": "حلقة تصفيح تصادف الرمز 429"
+  },
+  "lede": {
+    "en": "The loop follows next until it is None. On its second page the fake server answers 429 once: the loop reads Retry-After, goes round again with the same url, and carries on. The list of ids grows by five, five, then three.",
+    "ar": "تتبع الحلقة الحقل next حتى يصير None. وفي الصفحة الثانية يردّ الخادم المزيّف بالرمز 429 مرة واحدة: تقرأ الحلقة Retry-After وتدور من جديد بالعنوان نفسه ثم تواصل. وتنمو قائمة المعرّفات بمقدار خمسة ثم خمسة ثم ثلاثة."
+  },
+  "files": {
+    "schools_api_page1.json": "{\n  \"page\": 1,\n  \"per_page\": 5,\n  \"total\": 13,\n  \"pages\": 3,\n  \"next\": \"https://api.example.org/schools?page=2\",\n  \"results\": [\n    {\n      \"id\": 201,\n      \"name\": {\n        \"en\": \"School 1 (Gaza)\",\n        \"ar\": \"مدرسة 1 (غزة)\"\n      },\n      \"governorate\": \"Gaza\",\n      \"level\": \"Preparatory\",\n      \"enrolment\": {\n        \"boys\": 217,\n        \"girls\": 238\n      },\n      \"location\": {\n        \"lat\": 31.5788,\n        \"lon\": 34.389\n      },\n      \"facilities\": [\n        \"library\",\n        \"lab\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-8529025\"\n      }\n    },\n    {\n      \"id\": 202,\n      \"name\": {\n        \"en\": \"School 2 (Khan Younis)\",\n        \"ar\": \"مدرسة 2 (خان يونس)\"\n      },\n      \"governorate\": \"Khan Younis\",\n      \"level\": \"Secondary\",\n      \"enrolment\": {\n        \"boys\": 273,\n        \"girls\": 280\n      },\n      \"location\": {\n        \"lat\": 31.5849,\n        \"lon\": 34.3984\n      },\n      \"facilities\": [\n        \"library\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-1063067\"\n      }\n    },\n    {\n      \"id\": 203,\n      \"name\": {\n        \"en\": \"School 3 (Rafah)\",\n        \"ar\": \"مدرسة 3 (رفح)\"\n      },\n      \"governorate\": \"Rafah\",\n      \"level\": \"Primary\",\n      \"enrolment\": {\n        \"boys\": 272,\n        \"girls\": 183\n      },\n      \"location\": {\n        \"lat\": 31.3345,\n        \"lon\": 34.303\n      },\n      \"facilities\": [\n        \"lab\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-2487610\",\n        \"email\": \"school3@example.org\"\n      }\n    },\n    {\n      \"id\": 204,\n      \"name\": {\n        \"en\": \"School 4 (Deir al-Balah)\",\n        \"ar\": \"مدرسة 4 (دير البلح)\"\n      },\n      \"governorate\": \"Deir al-Balah\",\n      \"level\": \"Preparatory\",\n      \"enrolment\": {\n        \"boys\": 227,\n        \"girls\": 175\n      },\n      \"location\": {\n        \"lat\": 31.3096,\n        \"lon\": 34.3875\n      },\n      \"facilities\": [\n        \"lab\",\n        \"playground\",\n        \"computer room\"\n      ]\n    },\n    {\n      \"id\": 205,\n      \"name\": {\n        \"en\": \"School 5 (Jabalia)\",\n        \"ar\": \"مدرسة 5 (جباليا)\"\n      },\n      \"governorate\": \"North Gaza\",\n      \"level\": \"Secondary\",\n      \"enrolment\": {\n        \"boys\": 269,\n        \"girls\": 244\n      },\n      \"location\": {\n        \"lat\": 31.4542,\n        \"lon\": 34.2693\n      },\n      \"facilities\": [],\n      \"contacts\": {\n        \"phone\": \"08-6904966\"\n      }\n    }\n  ]\n}",
+    "schools_api_page2.json": "{\n  \"page\": 2,\n  \"per_page\": 5,\n  \"total\": 13,\n  \"pages\": 3,\n  \"next\": \"https://api.example.org/schools?page=3\",\n  \"results\": [\n    {\n      \"id\": 206,\n      \"name\": {\n        \"en\": \"School 6 (Gaza)\",\n        \"ar\": \"مدرسة 6 (غزة)\"\n      },\n      \"governorate\": \"Gaza\",\n      \"level\": \"Primary\",\n      \"enrolment\": {\n        \"boys\": 84,\n        \"girls\": 283\n      },\n      \"location\": {\n        \"lat\": 31.3519,\n        \"lon\": 34.2602\n      },\n      \"facilities\": [\n        \"canteen\",\n        \"computer room\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-1606369\",\n        \"email\": \"school6@example.org\"\n      }\n    },\n    {\n      \"id\": 207,\n      \"name\": {\n        \"en\": \"School 7 (Khan Younis)\",\n        \"ar\": \"مدرسة 7 (خان يونس)\"\n      },\n      \"governorate\": \"Khan Younis\",\n      \"level\": \"Preparatory\",\n      \"enrolment\": {\n        \"boys\": 260,\n        \"girls\": 222\n      },\n      \"location\": {\n        \"lat\": 31.3746,\n        \"lon\": 34.2193\n      },\n      \"facilities\": [\n        \"computer room\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-2274673\"\n      }\n    },\n    {\n      \"id\": 208,\n      \"name\": {\n        \"en\": \"School 8 (Rafah)\",\n        \"ar\": \"مدرسة 8 (رفح)\"\n      },\n      \"governorate\": \"Rafah\",\n      \"level\": \"Secondary\",\n      \"enrolment\": {\n        \"boys\": 107,\n        \"girls\": 132\n      },\n      \"location\": {\n        \"lat\": 31.4442,\n        \"lon\": 34.2242\n      },\n      \"facilities\": []\n    },\n    {\n      \"id\": 209,\n      \"name\": {\n        \"en\": \"School 9 (Deir al-Balah)\",\n        \"ar\": \"مدرسة 9 (دير البلح)\"\n      },\n      \"governorate\": \"Deir al-Balah\",\n      \"level\": \"Primary\",\n      \"enrolment\": {\n        \"boys\": 164,\n        \"girls\": 185\n      },\n      \"location\": {\n        \"lat\": 31.3494,\n        \"lon\": 34.3068\n      },\n      \"facilities\": [\n        \"playground\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-3746161\",\n        \"email\": \"school9@example.org\"\n      }\n    },\n    {\n      \"id\": 210,\n      \"name\": {\n        \"en\": \"School 10 (Jabalia)\",\n        \"ar\": \"مدرسة 10 (جباليا)\"\n      },\n      \"governorate\": \"North Gaza\",\n      \"level\": \"Preparatory\",\n      \"enrolment\": {\n        \"boys\": 198,\n        \"girls\": 267\n      },\n      \"location\": {\n        \"lat\": 31.4133,\n        \"lon\": 34.3863\n      },\n      \"facilities\": [],\n      \"contacts\": {\n        \"phone\": \"08-8466796\"\n      }\n    }\n  ]\n}",
+    "schools_api_page3.json": "{\n  \"page\": 3,\n  \"per_page\": 5,\n  \"total\": 13,\n  \"pages\": 3,\n  \"next\": null,\n  \"results\": [\n    {\n      \"id\": 211,\n      \"name\": {\n        \"en\": \"School 11 (Gaza)\",\n        \"ar\": \"مدرسة 11 (غزة)\"\n      },\n      \"governorate\": \"Gaza\",\n      \"level\": \"Secondary\",\n      \"enrolment\": {\n        \"boys\": 196,\n        \"girls\": 161\n      },\n      \"location\": {\n        \"lat\": 31.3057,\n        \"lon\": 34.3601\n      },\n      \"facilities\": [\n        \"canteen\",\n        \"lab\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-9957339\"\n      }\n    },\n    {\n      \"id\": 212,\n      \"name\": {\n        \"en\": \"School 12 (Khan Younis)\",\n        \"ar\": \"مدرسة 12 (خان يونس)\"\n      },\n      \"governorate\": \"Khan Younis\",\n      \"level\": \"Primary\",\n      \"enrolment\": {\n        \"boys\": 85,\n        \"girls\": 222\n      },\n      \"location\": {\n        \"lat\": 31.3216,\n        \"lon\": 34.2054\n      },\n      \"facilities\": [\n        \"library\",\n        \"lab\",\n        \"computer room\"\n      ]\n    },\n    {\n      \"id\": 213,\n      \"name\": {\n        \"en\": \"School 13 (Rafah)\",\n        \"ar\": \"مدرسة 13 (رفح)\"\n      },\n      \"governorate\": \"Rafah\",\n      \"level\": \"Preparatory\",\n      \"enrolment\": {\n        \"boys\": 194,\n        \"girls\": 104\n      },\n      \"location\": {\n        \"lat\": 31.3003,\n        \"lon\": 34.2513\n      },\n      \"facilities\": [\n        \"library\",\n        \"playground\",\n        \"lab\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-7445767\"\n      }\n    }\n  ]\n}"
+  },
+  "code": "import json\n\n\nclass FakeResponse:\n    def __init__(self, status_code, body, headers=None):\n        self.status_code = status_code\n        self.body = body\n        self.headers = headers or {}\n\n\nbusy = [429]                                   # page 2 answers 429 once\n\n\ndef fake_get(url):\n    page = int(url.rsplit(\"=\", 1)[1])\n    if page == 2 and busy:\n        busy.pop()\n        return FakeResponse(429, {\"error\": \"slow down\"}, {\"Retry-After\": \"2\"})\n    with open(f\"schools_api_page{page}.json\", encoding=\"utf-8\") as f:\n        return FakeResponse(200, json.load(f))\n\n\nresults = []\nurl = \"https://api.example.org/schools?page=1\"\nwhile url:\n    resp = fake_get(url)\n    status = resp.status_code\n    if status == 429:\n        wait = float(resp.headers[\"Retry-After\"])      # real code: sleep(wait)\n        continue\n    results.extend(r[\"id\"] for r in resp.body[\"results\"])\n    url = resp.body[\"next\"]\nprint(len(results), \"schools\")\n",
+  "watch": [
+    "url",
+    "status",
+    "results"
+  ],
+  "watch_locals": [
+    "page",
+    "url",
+    "status"
+  ],
+  "viz": {
+    "results": "array"
+  },
+  "max_steps": 200,
+  "notes": {
+    "11": {
+      "en": "Page 2 is set to fail once with 429. Real servers decide this themselves.",
+      "ar": "الصفحة 2 مضبوطة لتفشل مرة واحدة بالرمز 429. في الواقع يقرّر الخادم ذلك بنفسه."
+    },
+    "23": {
+      "en": "results starts empty; url is the first page. The loop runs while url is not None.",
+      "ar": "تبدأ results فارغة، وurl هو الصفحة الأولى. تعمل الحلقة ما دام url ليس None."
+    },
+    "26": {
+      "en": "Ask for the current url. The stack shows fake_get running.",
+      "ar": "نطلب العنوان الحالي. تُظهر الحزمة fake_get وهي تعمل."
+    },
+    "27": {
+      "en": "Read the status code of the reply.",
+      "ar": "نقرأ رمز الحالة في الردّ."
+    },
+    "16#2": {
+      "en": "Page 2 and the busy list still holds its 429: this call will be refused.",
+      "ar": "الصفحة 2 وقائمة busy ما زالت تحوي الرمز 429: سيُرفض هذا الطلب."
+    },
+    "28#1": {
+      "en": "Is the status 429? Not on page 1.",
+      "ar": "هل الحالة 429؟ ليس في الصفحة 1."
+    },
+    "28#2": {
+      "en": "429: the server asks us to slow down, so we take the branch.",
+      "ar": "429: يطلب الخادم أن نخفّف، فندخل الفرع."
+    },
+    "29": {
+      "en": "Read how long the server wants us to wait. Real code would call sleep(wait) here.",
+      "ar": "نقرأ المدة التي يريدها الخادم. في الكود الحقيقي نستدعي sleep(wait) هنا."
+    },
+    "30": {
+      "en": "continue: go back to while with the SAME url, so page 2 is asked for again. Nothing was added to results.",
+      "ar": "continue: نعود إلى while بالعنوان نفسه فتُطلب الصفحة 2 مرة أخرى. لم يُضف شيء إلى results."
+    },
+    "31": {
+      "en": "Keep the ids of this page.",
+      "ar": "نحتفظ بمعرّفات هذه الصفحة."
+    },
+    "32": {
+      "en": "Follow next to the following page. After page 3 it is None and the loop ends.",
+      "ar": "نتبع next إلى الصفحة التالية. وبعد الصفحة 3 يصير None وتنتهي الحلقة."
+    },
+    "33": {
+      "en": "13 schools, the same number as the 'total' field of the pages: the 429 did not cost us a page.",
+      "ar": "13 مدرسة، وهو رقم الحقل 'total' في الصفحات: لم يكلّفنا الرمز 429 صفحة."
+    }
+  }
+}

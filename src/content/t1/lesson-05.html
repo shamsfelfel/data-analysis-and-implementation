@@ -1,0 +1,1694 @@
+<section class="page" id="t1-lesson-05">
+
+  <span class="kicker">Lesson 5</span>
+  <h1><span class="en">Nested Data and APIs: JSON</span><span class="ar">البيانات المتشعّبة والواجهات: JSON وAPI</span></h1>
+
+  <p class="lede en">By the end of this lesson you will take the school registry as one nested JSON document and as a three-page API, read it without a single <code>KeyError</code>, flatten it into a table a model can use, and fetch it politely: checking every status code, following every page, waiting when the server says 429, and failing loudly instead of quietly returning half of the schools.</p>
+  <p class="lede ar">بنهاية هذا الدرس ستأخذ سجلّ المدارس مرة وثيقةَ JSON متشعّبة واحدة، ومرة واجهةً من ثلاث صفحات، وتقرؤه دون <code>KeyError</code> واحد، وتسطّحه إلى جدول يصلح للنموذج، ثم تجلبه بأدب: تفحص كل رمز حالة، وتتبع كل صفحة، وتنتظر حين يقول الخادم 429، وتفشل بصوت عالٍ بدل أن تعيد بصمت نصف المدارس.</p>
+
+  <div class="note">
+    <h4><span class="en">The setting</span><span class="ar">الإطار</span></h4>
+    <p class="en">The school registry from the chapter home: <strong>13 schools</strong>, each with a bilingual <code>name</code>, an <code>enrolment</code> (boys, girls), a <code>location</code>, a list of <code>facilities</code> and, for 10 of the 13, a <code>contacts</code> object that sometimes holds an email. It exists as one document, <a href="@/downloads/t1/schools.json">schools.json</a>, and as a three-page API reply, <a href="@/downloads/t1/schools_api_page1.json">page 1</a>, <a href="@/downloads/t1/schools_api_page2.json">page 2</a> and <a href="@/downloads/t1/schools_api_page3.json">page 3</a>. Save the four files into a folder called <code>downloads/t1/</code> next to your notebook and every example below runs as printed.</p>
+    <p class="ar">سجلّ المدارس من الصفحة الرئيسة للفصل: <strong>13 مدرسة</strong>، لكلٍّ منها اسم ثنائي اللغة <code>name</code>، وأعداد الطلبة <code>enrolment</code> (بنين وبنات)، وموقع <code>location</code>، وقائمة مرافق <code>facilities</code>، ولعشر مدارس من الثلاث عشرة كائن اتصال <code>contacts</code> يحوي أحيانًا بريدًا إلكترونيًّا. يوجد السجلّ وثيقةً واحدة هي <a href="@/downloads/t1/schools.json">schools.json</a>، وردًّا من واجهة بثلاث صفحات: <a href="@/downloads/t1/schools_api_page1.json">الصفحة 1</a> و<a href="@/downloads/t1/schools_api_page2.json">الصفحة 2</a> و<a href="@/downloads/t1/schools_api_page3.json">الصفحة 3</a>. احفظ الملفات الأربعة في مجلد <code>downloads/t1/</code> بجوار دفترك فيعمل كل مثال أدناه كما هو مطبوع.</p>
+    <p class="en"><strong>No network is used anywhere in this lesson.</strong> The real <code>requests.get(...)</code> code is shown (and marked as not run); everything you can run talks to a short fake server that serves these files and can answer 429 or 500 on demand, so every status-code path can be tried safely and its output checked.</p>
+    <p class="ar"><strong>لا يُستخدم أي اتصال بالشبكة في هذا الدرس.</strong> نعرض كود <code>requests.get(...)</code> الحقيقي (موسومًا بأنه غير منفَّذ)، أما كل ما يمكنك تشغيله فيخاطب خادمًا مزيّفًا قصيرًا يقدّم هذه الملفات ويستطيع أن يردّ بالرمز 429 أو 500 عند الطلب، فنجرّب كل مسار من مسارات رموز الحالة بأمان ونتحقق من ناتجه.</p>
+  </div>
+
+  <div class="objectives">
+    <ul>
+      <li><span class="en">Parse JSON text into Python and write it back, naming the Python type of each JSON value and what a round trip quietly changes.</span><span class="ar">تحلّل نصّ JSON إلى بايثون وتكتبه من جديد، وتسمّي نوع بايثون المقابل لكل قيمة، وما الذي يغيّره الذهاب والإياب بصمت.</span></li>
+      <li><span class="en">Read optional nested fields without crashing and without hiding typos: <code>[]</code>, <code>.get</code> and a small <code>dig()</code> helper.</span><span class="ar">تقرأ الحقول المتشعّبة الاختيارية دون انهيار ودون إخفاء الأخطاء الإملائية: <code>[]</code> و<code>.get</code> ودالة مساعدة صغيرة <code>dig()</code>.</span></li>
+      <li><span class="en">Flatten nested records into a DataFrame with <code>pd.json_normalize</code> (<code>record_path</code>, <code>meta</code>, <code>sep</code>), say what each <code>NaN</code> means, and choose how to treat a list field.</span><span class="ar">تسطّح السجلات المتشعّبة إلى DataFrame بـ <code>pd.json_normalize</code> (<code>record_path</code> و<code>meta</code> و<code>sep</code>)، وتقول ماذا تعني كل <code>NaN</code>، وتختار كيف تعامل حقل القائمة.</span></li>
+      <li><span class="en">Describe an API as a request and a response, and choose the right reaction to each status code (2xx, 4xx, 5xx; 401, 403, 404, 429).</span><span class="ar">تصف الواجهة بأنها طلب واستجابة، وتختار ردّ الفعل الصحيح لكل رمز حالة (2xx وَ4xx وَ5xx؛ و401 و403 و404 و429).</span></li>
+      <li><span class="en">Write a fetch function that follows pages, retries with back-off, uses a timeout, keeps the key out of the code and refuses to return incomplete data; and validate JSON that a model returns.</span><span class="ar">تكتب دالة جلب تتبع الصفحات وتعيد المحاولة بتباطؤ وتستعمل مهلة زمنية وتُبقي المفتاح خارج الكود وترفض إعادة بيانات ناقصة؛ وتتحقق من JSON الذي يعيده نموذج.</span></li>
+    </ul>
+  </div>
+
+  <div class="callout prereq">
+    <h4><span class="en">Before you start</span><span class="ar">قبل أن تبدأ</span></h4>
+    <p class="en">Lists, dictionaries and DataFrames from <a href="#t1-lesson-03">Lesson 3</a>, and the habit of distrusting a file that "loaded fine" from <a href="#t1-lesson-04">Lesson 4</a>. HTTP and JSON are introduced here before they are used.</p>
+    <p class="ar">القوائم والقواميس وDataFrame من <a href="#t1-lesson-03">الدرس 3</a>، وعادة عدم الوثوق بملف «تحمّل بخير» من <a href="#t1-lesson-04">الدرس 4</a>. أما HTTP وJSON فنقدّمهما هنا قبل أن نستعملهما.</p>
+  </div>
+
+  <!-- =================================================== CONCEPT 1 -->
+  <h2 id="t1l5-h1"><span class="en">Concept 1 — JSON: nested text that Python already speaks</span><span class="ar">المفهوم 1 — JSON: نصّ متشعّب تتحدّثه بايثون أصلًا</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">Until now every file was a rectangle. The registry is not. A school has two names, an enrolment that is itself a pair of numbers, a location, a list of facilities and, for ten schools out of thirteen, a contacts object with a phone and sometimes an email. Squeeze that into a CSV and you must invent column names, decide what to do with the list, and pick a value for the three schools that have no contacts at all. A web service avoids the squeeze: it sends the structure as it is, as <span class="term" data-term="json">JSON</span>.</p>
+    <p class="ar">كل ملف حتى الآن كان مستطيلًا. أما السجلّ فليس كذلك. للمدرسة اسمان، وأعداد طلبة هي نفسها زوج من الأرقام، وموقع، وقائمة مرافق، ولعشر مدارس من ثلاث عشرة كائن اتصال فيه هاتف وأحيانًا بريد. إن حشرتَ هذا في CSV فعليك أن تخترع أسماء أعمدة، وتقرّر ما تفعله بالقائمة، وتختار قيمة للمدارس الثلاث التي لا اتصال لها أصلًا. الخدمة على الويب تتجنّب هذا الحشر: ترسل البنية كما هي بصيغة <span class="term" data-term="json">جسون (JSON)</span>.</p>
+  </div>
+
+  <p class="en"><strong>JSON</strong> (JavaScript Object Notation) is a plain-text format for nested data. An <em>object</em> <code>{ }</code> holds named values, an <em>array</em> <code>[ ]</code> holds an ordered list, and a value is a string, a number, <code>true</code>, <code>false</code>, <code>null</code>, or another object or array. This is school 203, exactly as it sits in <code>schools.json</code> (produced by <code>json.dumps(schools[2], ensure_ascii=False, indent=2)</code>):</p>
+  <p class="ar"><strong>JSON</strong> (JavaScript Object Notation) صيغة نصّية للبيانات المتشعّبة. <em>الكائن</em> <code>{ }</code> يحمل قيمًا مسمّاة، و<em>المصفوفة</em> <code>[ ]</code> تحمل قائمة مرتّبة، والقيمة نصّ أو رقم أو <code>true</code> أو <code>false</code> أو <code>null</code> أو كائن أو مصفوفة أخرى. هذه المدرسة 203 كما هي تمامًا في <code>schools.json</code> (ناتجة عن <code>json.dumps(schools[2], ensure_ascii=False, indent=2)</code>):</p>
+
+<pre class="code" data-lang="json"><code>{
+  "id": 203,
+  "name": {
+    "en": "School 3 (Rafah)",
+    "ar": "مدرسة 3 (رفح)"
+  },
+  "governorate": "Rafah",
+  "level": "Primary",
+  "enrolment": {
+    "boys": 272,
+    "girls": 183
+  },
+  "location": {
+    "lat": 31.3345,
+    "lon": 34.303
+  },
+  "facilities": [
+    "lab"
+  ],
+  "contacts": {
+    "phone": "08-2487610",
+    "email": "school3@example.org"
+  }
+}</code></pre>
+
+  <p class="en">Two words you will use constantly. <span class="term" data-term="parsing">Parsing</span> means turning such text into objects your program can use; <span class="term" data-term="serialisation">serialisation</span> is the reverse, turning objects back into text. In Python both live in the standard-library module <code>json</code>.</p>
+  <p class="ar">كلمتان ستستعملهما باستمرار. <span class="term" data-term="parsing">التحليل (Parsing)</span> هو تحويل هذا النصّ إلى كائنات يستعملها برنامجك، و<span class="term" data-term="serialisation">التسلسل (Serialisation)</span> هو العكس: تحويل الكائنات إلى نصّ. وفي بايثون يعيش الاثنان في وحدة المكتبة القياسية <code>json</code>.</p>
+
+  <h3 id="t1l5-s1"><span class="en">Six JSON types, six Python twins</span><span class="ar">ستة أنواع في JSON، ولكلٍّ توأمه في بايثون</span></h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th><span class="en">JSON</span><span class="ar">JSON</span></th><th><span class="en">Python</span><span class="ar">بايثون</span></th><th><span class="en">Watch for</span><span class="ar">انتبه إلى</span></th></tr></thead>
+      <tbody>
+        <tr><td><code>{ "a": 1 }</code> <span class="en">object</span><span class="ar">كائن</span></td><td><code>dict</code></td><td><span class="en">keys are always strings</span><span class="ar">المفاتيح نصوص دائمًا</span></td></tr>
+        <tr><td><code>[1, 2]</code> <span class="en">array</span><span class="ar">مصفوفة</span></td><td><code>list</code></td><td><span class="en">order is kept</span><span class="ar">الترتيب محفوظ</span></td></tr>
+        <tr><td><code>"text"</code></td><td><code>str</code></td><td><span class="en">double quotes only; Arabic is fine</span><span class="ar">علامات اقتباس مزدوجة فقط؛ والعربية مقبولة</span></td></tr>
+        <tr><td><code>7</code>, <code>1.5</code>, <code>3e2</code></td><td><code>int</code> / <code>float</code></td><td><span class="en">no dot and no exponent gives <code>int</code></span><span class="ar">بلا فاصلة ولا أُسّ يعطي <code>int</code></span></td></tr>
+        <tr><td><code>true</code>, <code>false</code></td><td><code>True</code>, <code>False</code></td><td><span class="en">lowercase in JSON</span><span class="ar">بأحرف صغيرة في JSON</span></td></tr>
+        <tr><td><code>null</code></td><td><code>None</code></td><td><span class="en">"no value", not 0 and not <code>""</code></span><span class="ar">«لا قيمة»، وليست 0 ولا <code>""</code></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="en"><strong>Predict first:</strong> in the made-up record below, which Python types will <code>double_shift</code>, <code>contacts</code> and <code>location</code> have? Then run it.</p>
+  <p class="ar"><strong>توقّع أولًا:</strong> في السجلّ المُختلَق أدناه، ما أنواع بايثون التي ستحملها <code>double_shift</code> و<code>contacts</code> و<code>location</code>؟ ثم شغّله.</p>
+
+<pre class="code" data-lang="python"><code>import json
+
+text = '{"id": 7, "name": "Demo School", "ratio": 1.5, "double_shift": true, "contacts": null, "facilities": ["lab", "library"], "location": {"lat": 31.5, "lon": 34.4}}'
+record = json.loads(text)
+
+for key, value in record.items():
+    print(f"{key:&lt;13}{type(value).__name__:&lt;9}{value!r}")</code></pre>
+  <div class="output">id           int      7
+name         str      'Demo School'
+ratio        float    1.5
+double_shift bool     True
+contacts     NoneType None
+facilities   list     ['lab', 'library']
+location     dict     {'lat': 31.5, 'lon': 34.4}</div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">A reply contains <code>{"phone": null}</code>. After <code>info = json.loads(reply)</code>, what is <code>info["phone"]</code>?</span><span class="ar">في ردٍّ ما <code>{"phone": null}</code>. بعد <code>info = json.loads(reply)</code> ما قيمة <code>info["phone"]</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">The string <code>"null"</code></span><span class="ar">النصّ <code>"null"</code></span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>None</code></span><span class="ar"><code>None</code></span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">The number <code>0</code></span><span class="ar">الرقم <code>0</code></span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">A <code>KeyError</code>, because there is no value</span><span class="ar"><code>KeyError</code> لأنه لا توجد قيمة</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">JSON <code>null</code> becomes Python <code>None</code>: the key <em>is</em> there, its value is "nothing". The tempting <code>KeyError</code> belongs to a key that is <em>absent</em>, a different situation that Concept 2 separates carefully. Turning <code>null</code> into <code>0</code> or <code>""</code> would invent data.</div>
+      <div class="ar"><code>null</code> في JSON تصبح <code>None</code> في بايثون: المفتاح <em>موجود</em> وقيمته «لا شيء». أما <code>KeyError</code> المغري فيخصّ مفتاحًا <em>غائبًا</em>، وهذه حالة مختلفة يفصلها المفهوم 2 بعناية. وتحويل <code>null</code> إلى <code>0</code> أو <code>""</code> يعني اختلاق بيانات.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l5-s2"><span class="en">Strict on the way in (and one surprising exception)</span><span class="ar">صارم عند الدخول (مع استثناء مفاجئ)</span></h3>
+
+  <p class="en">JSON is stricter than Python: strings use double quotes, no trailing comma, nothing before or after the document. A parser that sees anything else raises <code>json.JSONDecodeError</code>. Four inputs, four verdicts:</p>
+  <p class="ar">JSON أصرم من بايثون: النصوص بعلامات اقتباس مزدوجة، ولا فاصلة زائدة، ولا شيء قبل الوثيقة أو بعدها. وأي مُحلِّل يرى غير ذلك يرفع <code>json.JSONDecodeError</code>. أربعة مدخلات وأربعة أحكام:</p>
+
+<pre class="code" data-lang="python"><code>import json
+
+samples = {
+    "single quotes":  "{'id': 7}",
+    "trailing comma": '{"id": 7,}',
+    "prose first":    'Here is the JSON: {"id": 7}',
+    "NaN":            '{"ratio": NaN}',
+}
+for label, text in samples.items():
+    try:
+        print(f"{label:&lt;15} parsed   {json.loads(text)}")
+    except json.JSONDecodeError as err:
+        print(f"{label:&lt;15} rejected {err.msg} (char {err.pos})")</code></pre>
+  <div class="output">single quotes   rejected Expecting property name enclosed in double quotes (char 1)
+trailing comma  rejected Illegal trailing comma before end of object (char 8)
+prose first     rejected Expecting value (char 0)
+NaN             parsed   {'ratio': nan}</div>
+
+  <div class="warn">
+    <h4><span class="en">The last line is the dangerous one</span><span class="ar">السطر الأخير هو الخطِر</span></h4>
+    <p class="en">Python's parser <em>accepts</em> <code>NaN</code>, which the JSON standard does not allow, and <code>json.dumps</code> will happily <em>write</em> it. A file that Python reads without complaint can be rejected by another tool, and a <code>nan</code> that sneaks in is a number that is not a number. (On the writing side, <code>json.dumps(..., allow_nan=False)</code> makes Python strict too.) The message wording of the other three varies a little between Python versions; the verdicts do not.</p>
+    <p class="ar">مُحلِّل بايثون <em>يقبل</em> <code>NaN</code> مع أن معيار JSON لا يسمح بها، وتكتبها <code>json.dumps</code> بكل رحابة. ملف تقرؤه بايثون دون شكوى قد ترفضه أداة أخرى، و<code>nan</code> يتسلّل هو رقمٌ ليس برقم. (وعند الكتابة تجعل <code>json.dumps(..., allow_nan=False)</code> بايثون صارمة أيضًا.) صياغة رسائل الأسطر الثلاثة الأخرى تختلف قليلًا بين إصدارات بايثون؛ أما الأحكام فلا.</p>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">A language model does not return JSON; it returns <em>text that is often JSON</em>. "Here is the JSON: {...}" fails exactly like the third line above, and a trailing comma — a classic slip — like the second. A pipeline that calls <code>json.loads(reply)</code> will crash on some fraction of replies, or, worse, wrap it in <code>try/except: continue</code> and silently drop those rows from your training set. Always count the failures. Concept 7 builds the checker.</p>
+    <p class="ar">النموذج اللغوي لا يعيد JSON؛ يعيد <em>نصًّا هو في الغالب JSON</em>. عبارة «هذا هو الـ JSON: {...}» تفشل تمامًا مثل السطر الثالث أعلاه، والفاصلة الزائدة — زلّة كلاسيكية — مثل السطر الثاني. وخطّ المعالجة الذي يستدعي <code>json.loads(reply)</code> سينهار عند نسبة من الردود، أو — وهو الأسوأ — يلفّها بـ <code>try/except: continue</code> فيُسقط تلك الصفوف من بيانات تدريبك بصمت. احسب الإخفاقات دائمًا. وسنبني المدقّق في المفهوم 7.</p>
+  </div>
+
+  <h3 id="t1l5-s3"><span class="en">Writing JSON back: <code>dumps</code>, <code>indent</code>, <code>ensure_ascii</code> — and what a round trip changes</span><span class="ar">كتابة JSON من جديد: <code>dumps</code> و<code>indent</code> و<code>ensure_ascii</code> — وما يغيّره الذهاب والإياب</span></h3>
+
+  <p class="en"><code>json.dumps(obj)</code> returns text; <code>json.dump(obj, f)</code> writes to an open file. Two options matter every day. <code>indent=2</code> lays the text out for human eyes. <code>ensure_ascii</code> is <code>True</code> by default, which escapes every non-ASCII character: valid, but an Arabic name becomes a row of <code>مد…</code>. Use <code>ensure_ascii=False</code> and open the file with <code>encoding="utf-8"</code>.</p>
+  <p class="ar">تُعيد <code>json.dumps(obj)</code> نصًّا، وتكتب <code>json.dump(obj, f)</code> في ملف مفتوح. وخياران يهمّان كل يوم. الخيار <code>indent=2</code> ينسّق النصّ لعين الإنسان. أما <code>ensure_ascii</code> فقيمته الافتراضية <code>True</code> وهي تحوّل كل حرف غير لاتيني إلى رمز هروب: صحيح لكنه يحوّل الاسم العربي إلى صفّ من <code>مد…</code>. استعمل <code>ensure_ascii=False</code> وافتح الملف بـ <code>encoding="utf-8"</code>.</p>
+
+<pre class="code" data-lang="python"><code>import json
+
+name = {"ar": "مدرسة 1 (غزة)"}
+print(json.dumps(name))
+print(json.dumps(name, ensure_ascii=False))
+print(json.dumps({"a": [1, 2], "b": {"c": None}}, indent=2))</code></pre>
+  <div class="output">{"ar": "\u0645\u062f\u0631\u0633\u0629 1 (\u063a\u0632\u0629)"}
+{"ar": "مدرسة 1 (غزة)"}
+{
+  "a": [
+    1,
+    2
+  ],
+  "b": {
+    "c": null
+  }
+}</div>
+
+  <p class="en">A round trip, <code>loads(dumps(x))</code>, is <strong>not</strong> an identity. JSON has no integer keys, no tuples and no <code>NaN</code>:</p>
+  <p class="ar">الذهاب والإياب، <code>loads(dumps(x))</code>، <strong>ليس</strong> مطابقة تامة. فـ JSON لا تعرف مفاتيح صحيحة ولا صفوفًا مرتّبة (tuple) ولا <code>NaN</code>:</p>
+
+<pre class="code bad" data-lang="python"><code>import json
+
+original = {1: "one", "pair": (3, 4), "ok": True}
+back = json.loads(json.dumps(original))
+print(back)
+print(back == original)
+print(json.dumps({"rent": float("nan")}))</code></pre>
+  <div class="output">{'1': 'one', 'pair': [3, 4], 'ok': True}
+False
+{"rent": NaN}</div>
+
+  <p class="en">The integer key <code>1</code> came back as the string <code>"1"</code>, the tuple as a list, and the comparison with the original is <code>False</code> — with no error anywhere. Treat JSON as a message format, not as a way to save Python objects.</p>
+  <p class="ar">عاد المفتاح الصحيح <code>1</code> نصًّا <code>"1"</code>، وعاد الـ tuple قائمة، وصارت المقارنة بالأصل <code>False</code> — دون أي خطأ في أي مكان. عامِل JSON على أنها صيغة رسائل، لا وسيلة لحفظ كائنات بايثون.</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">What does <code>json.loads(json.dumps({2: (1, 2)}))</code> return?</span><span class="ar">ماذا تعيد <code>json.loads(json.dumps({2: (1, 2)}))</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>{2: (1, 2)}</code>, the original, because dumps and loads undo each other</span><span class="ar"><code>{2: (1, 2)}</code> أي الأصل، لأن dumps وloads يلغي أحدهما الآخر</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>{'2': [1, 2]}</code></span><span class="ar"><code>{'2': [1, 2]}</code></span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">A <code>TypeError</code>: tuples cannot be serialised</span><span class="ar"><code>TypeError</code>: لا يمكن تسلسل الـ tuple</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>{2: [1, 2]}</code>: only the tuple changes</span><span class="ar"><code>{2: [1, 2]}</code>: الـ tuple وحده يتغيّر</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">JSON object keys are strings, so <code>2</code> becomes <code>"2"</code>, and a tuple is written as an array and comes back as a list. The first option is the tempting one — it is what we wish for — but the round trip is lossy. <code>TypeError</code> is raised only for types JSON has no form for at all, such as a <code>date</code>.</div>
+      <div class="ar">مفاتيح كائنات JSON نصوص، فيصير <code>2</code> إلى <code>"2"</code>، ويُكتب الـ tuple مصفوفة ويعود قائمة. والخيار الأول هو المغري — فهو ما نتمنّاه — لكن الذهاب والإياب يفقد شيئًا. ولا يُرفع <code>TypeError</code> إلا للأنواع التي لا شكل لها في JSON أصلًا مثل <code>date</code>.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l5-s4"><span class="en">Loading the registry file</span><span class="ar">تحميل ملف السجلّ</span></h3>
+
+  <p class="en"><code>json.load(f)</code> reads from a file object, <code>json.loads(text)</code> from a string (the <em>s</em> is for string). Open with <code>encoding="utf-8"</code>, as in Lesson 4, or the Arabic names break. The top level of this file is a dictionary with one key, <code>results</code>, whose value is the list of 13 schools.</p>
+  <p class="ar">تقرأ <code>json.load(f)</code> من كائن ملف، وتقرأ <code>json.loads(text)</code> من نصّ (الحرف <em>s</em> من string). افتح الملف بـ <code>encoding="utf-8"</code> كما في الدرس 4 وإلا تعطّلت الأسماء العربية. المستوى الأعلى في هذا الملف قاموس بمفتاح واحد هو <code>results</code> وقيمته قائمة المدارس الثلاث عشرة.</p>
+
+<pre class="code" data-lang="python"><code>import json
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    data = json.load(f)
+
+print(type(data).__name__, list(data))
+schools = data["results"]
+print(len(schools), "schools")
+print(list(schools[0]))
+print(schools[0]["enrolment"]["boys"], "|", schools[0]["name"]["ar"])</code></pre>
+  <div class="output">dict ['results']
+13 schools
+['id', 'name', 'governorate', 'level', 'enrolment', 'location', 'facilities', 'contacts']
+217 | مدرسة 1 (غزة)</div>
+
+  <p class="en">Reading nested data is giving an address: <code>data["results"][0]["enrolment"]["boys"]</code> means "the list under <code>results</code>, its first record, that record's <code>enrolment</code>, its <code>boys</code>". Every step is either a key (into an object) or a position (into an array). The next concept is about what happens when a step in the address does not exist.</p>
+  <p class="ar">قراءة البيانات المتشعّبة هي إعطاء عنوان: <code>data["results"][0]["enrolment"]["boys"]</code> تعني «القائمة تحت <code>results</code>، وسجلّها الأول، و<code>enrolment</code> لذلك السجلّ، و<code>boys</code> فيه». كل خطوة إما مفتاح (داخل كائن) وإما موضع (داخل مصفوفة). والمفهوم التالي يتناول ما يحدث حين لا توجد خطوة من خطوات العنوان.</p>
+
+  <h3 id="t1l5-s5"><span class="en">XML in one paragraph</span><span class="ar">XML في فقرة واحدة</span></h3>
+
+  <p class="en"><span class="term" data-term="xml">XML</span> is JSON's older, more verbose cousin: nested, labelled data written with opening and closing tags and attributes, still common in government statistics feeds, RSS, sitemaps and Office files. The idea is identical — a tree you walk with keys and positions — but <em>everything is text</em>, so <code>boys</code> comes back as <code>'272'</code>, not <code>272</code>, and you convert it yourself. Python reads it with the standard-library <code>xml.etree.ElementTree</code> (pandas has <code>read_xml</code> for simple record-shaped files). All of this lesson's habits — optional elements, flattening, pagination — carry over; only the parser changes. If you choose the format, choose JSON; if the source is XML, you do not need to fear it.</p>
+  <p class="ar"><span class="term" data-term="xml">XML</span> هي ابنة عمّ JSON الأقدم والأكثر إسهابًا: بيانات متشعّبة معنونة تُكتب بوسوم فتح وإغلاق وسمات، وما زالت شائعة في خلاصات الإحصاءات الحكومية وRSS وخرائط المواقع وملفات Office. الفكرة نفسها — شجرة تمشي عليها بالمفاتيح والمواضع — لكن <em>كل شيء نصّ</em>، فتعود <code>boys</code> على هيئة <code>'272'</code> لا <code>272</code> وتحوّلها بنفسك. تقرؤها بايثون بوحدة المكتبة القياسية <code>xml.etree.ElementTree</code> (ولدى pandas الدالة <code>read_xml</code> للملفات البسيطة ذات شكل السجلّات). وكل عادات هذا الدرس — العناصر الاختيارية والتسطيح والتصفيح — تنتقل كما هي؛ ولا يتغيّر إلا المُحلِّل. إن كان الاختيار لك فاختر JSON، وإن كان المصدر XML فلا داعي لأن تخافه.</p>
+
+<pre class="code" data-lang="python"><code>import xml.etree.ElementTree as ET
+
+xml_text = '&lt;school id="203"&gt;&lt;name lang="en"&gt;School 3 (Rafah)&lt;/name&gt;&lt;enrolment boys="272" girls="183"/&gt;&lt;/school&gt;'
+root = ET.fromstring(xml_text)
+
+print(root.tag, root.attrib)
+print(root.find("name").text, root.find("enrolment").attrib)</code></pre>
+  <div class="output">school {'id': '203'}
+School 3 (Rafah) {'boys': '272', 'girls': '183'}</div>
+
+  <div class="thread">
+    <h4><span class="en">Thread · T-LOAD, the JSON and API variant</span><span class="ar">خيط · T-LOAD، صيغة JSON والواجهات</span></h4>
+    <p class="en"><strong>Earlier solutions:</strong> a hand-written loop (<a href="#t1-lesson-03">Lesson 3</a>), the <code>csv</code> module, <code>pd.read_csv</code> and its options (<a href="#t1-lesson-04">Lesson 4</a>). <strong>Their gap:</strong> every one assumes a rectangle that sits in a file. <strong>What this lesson closes:</strong> nested files with <code>json.load</code> and <code>json_normalize</code>, and data that lives behind an API with a fetch function that returns a DataFrame. <strong>Still open:</strong> nothing here <em>validates</em> the result, and the source's structure can change tomorrow; <a href="#t1-lesson-06">Lesson 6</a> wraps loading and checking in one function.</p>
+    <p class="ar"><strong>الحلول السابقة:</strong> حلقة مكتوبة يدويًّا (<a href="#t1-lesson-03">الدرس 3</a>)، ووحدة <code>csv</code>، و<code>pd.read_csv</code> وخياراتها (<a href="#t1-lesson-04">الدرس 4</a>). <strong>ثغرتها:</strong> كلها تفترض مستطيلًا موجودًا في ملف. <strong>ما يسدّه هذا الدرس:</strong> الملفات المتشعّبة بـ <code>json.load</code> وَ<code>json_normalize</code>، والبيانات التي تعيش خلف واجهة بدالة جلب تعيد DataFrame. <strong>ما زال مفتوحًا:</strong> لا شيء هنا <em>يتحقّق</em> من النتيجة، وقد تتغيّر بنية المصدر غدًا؛ ويجمع <a href="#t1-lesson-06">الدرس 6</a> التحميل والفحص في دالة واحدة.</p>
+  </div>
+
+  <!-- =================================================== CONCEPT 2 -->
+  <h2 id="t1l5-h2"><span class="en">Concept 2 — Reading nested data safely</span><span class="ar">المفهوم 2 — قراءة البيانات المتشعّبة بأمان</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">The outreach team asks one question: <em>how many schools can we email?</em> The obvious code is one line, <code>s["contacts"]["email"]</code>. But <code>contacts</code> is optional, and inside it <code>email</code> is optional again. A path of two steps has two ways to fail, and the file you test on is never the file that arrives next month.</p>
+    <p class="ar">يسأل فريق التواصل سؤالًا واحدًا: <em>كم مدرسة نستطيع مراسلتها بالبريد؟</em> الكود البديهي سطر واحد: <code>s["contacts"]["email"]</code>. لكن <code>contacts</code> اختياري، وداخله <code>email</code> اختياري مرة أخرى. فللمسار ذي الخطوتين طريقان للفشل، والملف الذي تختبر عليه ليس هو الملف الذي سيصل الشهر القادم.</p>
+  </div>
+
+  <h3 id="t1l5-s6"><span class="en">First, count which keys exist</span><span class="ar">أولًا: عُدَّ المفاتيح الموجودة</span></h3>
+
+  <p class="en">Before writing any access code, take a census: how many records carry each key? It is the cheapest schema check there is.</p>
+  <p class="ar">قبل كتابة أي كود وصول، أجرِ تعدادًا: كم سجلًّا يحمل كل مفتاح؟ إنه أرخص فحص للبنية.</p>
+
+<pre class="code" data-lang="python"><code>import json
+from collections import Counter
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+print(Counter(key for s in schools for key in s))
+print(Counter(key for s in schools for key in s.get("contacts", {})))</code></pre>
+  <div class="output">Counter({'id': 13, 'name': 13, 'governorate': 13, 'level': 13, 'enrolment': 13, 'location': 13, 'facilities': 13, 'contacts': 10})
+Counter({'phone': 10, 'email': 3})</div>
+
+  <p class="en">All 13 schools have the seven core keys. Only 10 have <code>contacts</code>, and only 3 of those carry an <code>email</code>. So there are <em>three different situations</em> for one email: the key is <strong>absent</strong> (3 schools have no <code>contacts</code>; 7 have <code>contacts</code> without <code>email</code>), the key is present with <strong><code>null</code></strong> (an API may send this; this file does not), or the key is present and <strong>empty</strong> (<code>""</code> or <code>[]</code>, like the schools whose <code>facilities</code> is an empty list). Code should know which of the three it is willing to meet.</p>
+  <p class="ar">لكل المدارس الثلاث عشرة المفاتيح السبعة الأساسية. عشر مدارس فقط لديها <code>contacts</code>، وثلاث منها فقط تحمل <code>email</code>. فهناك <em>ثلاث حالات مختلفة</em> للبريد الواحد: المفتاح <strong>غائب</strong> (ثلاث مدارس بلا <code>contacts</code>، وسبع لديها <code>contacts</code> بلا <code>email</code>)، أو المفتاح موجود بقيمة <strong><code>null</code></strong> (قد ترسلها واجهة، وهذا الملف لا يفعل)، أو المفتاح موجود و<strong>فارغ</strong> (<code>""</code> أو <code>[]</code> مثل المدارس التي قائمة <code>facilities</code> فيها فارغة). وعلى الكود أن يعرف أيًّا من الثلاث هو مستعدّ لمواجهتها.</p>
+
+  <h3 id="t1l5-s7"><span class="en">From <code>KeyError</code> to <code>dig()</code></span><span class="ar">من <code>KeyError</code> إلى <code>dig()</code></span></h3>
+
+  <div class="evolve" id="t1l5-e1">
+    <div class="ver" data-title-en="Version 1 — index and hope" data-title-ar="النسخة 1 — فهرسة وأمل">
+<pre class="code bad" data-lang="python"><code>import json
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+for s in schools:
+    print(s["id"], s["contacts"]["email"])</code></pre>
+      <div class="output">Traceback (most recent call last):
+  File "demo.py", line 7, in &lt;module&gt;
+    print(s["id"], s["contacts"]["email"])
+                   ~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'email'</div>
+      <p class="en"><strong>What it does:</strong> indexes both levels as if every school were complete. <strong>What goes wrong:</strong> it stops at the very first school: school 201 has a phone but no email, so the second index fails with <code>KeyError: 'email'</code>. Behind that sits a second failure: school 204 has no <code>contacts</code> at all, which would raise <code>KeyError: 'contacts'</code>. Note that the message names the missing <em>key</em>, not the school. <strong>Still imperfect:</strong> it fails loudly, which is honest, but it gives you nothing for the 13 schools.</p>
+      <p class="ar"><strong>ماذا تفعل:</strong> تفهرس المستويين كأن كل مدرسة كاملة. <strong>ما الذي يخطئ:</strong> تتوقف عند أول مدرسة: المدرسة 201 لها هاتف بلا بريد، فيفشل الفهرس الثاني بـ <code>KeyError: 'email'</code>. وخلفه فشل ثانٍ: المدرسة 204 بلا <code>contacts</code> إطلاقًا، وكانت سترفع <code>KeyError: 'contacts'</code>. لاحظ أن الرسالة تسمّي <em>المفتاح</em> المفقود لا المدرسة. <strong>ما زال ناقصًا:</strong> تفشل بصوت عالٍ وهذا أمين، لكنها لا تعطيك شيئًا عن المدارس الثلاث عشرة.</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 — chained .get with a default" data-title-ar="النسخة 2 — .get متسلسلة مع قيمة افتراضية">
+<pre class="code" data-lang="python"><code>import json
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+emails = [s.get("contacts", {}).get("email") for s in schools]
+print(emails)
+
+record = json.loads('{"id": 7, "contacts": null}')      # an explicit null
+print(record.get("contacts", {}).get("email"))</code></pre>
+      <div class="output">[None, None, 'school3@example.org', None, None, 'school6@example.org', None, None, 'school9@example.org', None, None, None, None]
+Traceback (most recent call last):
+  File "demo.py", line 10, in &lt;module&gt;
+    print(record.get("contacts", {}).get("email"))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'</div>
+      <p class="en"><strong>What changed:</strong> <code>[]</code> became <code>.get(key, {})</code>: an absent <code>contacts</code> gives an empty dict, so the second <code>.get</code> has something to ask. <strong>What it fixes:</strong> the crash. All 13 schools answer: 3 emails and 10 <code>None</code>. <strong>Still imperfect:</strong> (1) an explicit <code>null</code> is a key that <em>is</em> present, so the default <code>{}</code> is never used and the next <code>.get</code> is called on <code>None</code> — the <code>AttributeError</code> above, on the made-up record. Real APIs do send nulls. (2) The pattern is long and must be repeated, correctly, at every access. (3) It cannot walk into a list.</p>
+      <p class="ar"><strong>ما الذي تغيّر:</strong> صارت <code>[]</code> إلى <code>.get(key, {})</code>: غياب <code>contacts</code> يعطي قاموسًا فارغًا فيجد <code>.get</code> الثانية ما تسأل عنه. <strong>ما الذي تصلحه:</strong> الانهيار. تجيب المدارس الثلاث عشرة كلها: 3 رسائل بريد و10 قيم <code>None</code>. <strong>ما زال ناقصًا:</strong> (1) القيمة <code>null</code> الصريحة مفتاحٌ <em>موجود</em>، فلا تُستعمل القيمة الافتراضية <code>{}</code> أبدًا وتُستدعى <code>.get</code> التالية على <code>None</code> — وهذا <code>AttributeError</code> أعلاه على السجلّ المُختلَق. والواجهات الحقيقية ترسل قيم null. (2) النمط طويل ويجب تكراره بدقة في كل وصول. (3) لا يستطيع الدخول إلى قائمة.</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 — dig(): one helper, one rule" data-title-ar="النسخة 3 — dig(): دالة واحدة وقاعدة واحدة">
+<pre class="code good" data-lang="python"><code>import json
+
+
+def dig(data, *path, default=None):
+    """Follow keys (and list positions) through nested data; never raise."""
+    current = data
+    for step in path:
+        if isinstance(current, dict) and step in current:
+            current = current[step]
+        elif isinstance(current, list) and isinstance(step, int) and -len(current) &lt;= step &lt; len(current):
+            current = current[step]
+        else:
+            return default
+    return current
+
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+emails = [dig(s, "contacts", "email") for s in schools]
+print(sum(e is not None for e in emails), "of", len(emails), "schools have an email")
+print([dig(s, "facilities", 0) for s in schools[:5]])
+
+record = json.loads('{"id": 7, "contacts": null}')      # an explicit null
+print(dig(record, "contacts", "email"))</code></pre>
+      <div class="output">3 of 13 schools have an email
+['library', 'library', 'lab', 'lab', None]
+None</div>
+      <p class="en"><strong>What changed:</strong> the walk moved into <code>dig(data, *path, default=None)</code>. At each step it asks "is this a dict that has the key, or a list with that position?"; if not — absent, <code>null</code>, wrong type, position out of range — it returns the default. <strong>What it fixes:</strong> the null record, the nesting, and the list: 3 of 13 schools have an email, the first facility of the first five schools is read safely (<code>None</code> for school 205, whose list is empty), and one rule replaces a pattern. <strong>Still imperfect:</strong> a path that is <em>wrong</em> looks exactly like data that is <em>missing</em>. See below.</p>
+      <p class="ar"><strong>ما الذي تغيّر:</strong> انتقل المشي إلى <code>dig(data, *path, default=None)</code>. في كل خطوة تسأل: «هل هذا قاموس فيه المفتاح، أو قائمة فيها هذا الموضع؟» فإن لم يكن كذلك — غائب، أو <code>null</code>، أو نوع مختلف، أو موضع خارج المدى — تعيد القيمة الافتراضية. <strong>ما الذي تصلحه:</strong> السجلّ ذا القيمة null، والتشعّب، والقائمة: 3 من 13 مدرسة لديها بريد، وقراءة أول مرفق للمدارس الخمس الأولى آمنة (<code>None</code> للمدرسة 205 لأن قائمتها فارغة)، وقاعدة واحدة تحلّ محل نمط. <strong>ما زال ناقصًا:</strong> المسار <em>الخاطئ</em> يشبه تمامًا بيانات <em>ناقصة</em>. انظر أدناه.</p>
+    </div>
+  </div>
+
+  <div class="warn">
+    <h4><span class="en">A typo that raises nothing</span><span class="ar">خطأ إملائي لا يرفع شيئًا</span></h4>
+<pre class="code bad" data-lang="python"><code>emails = [dig(s, "contact", "email") for s in schools]      # typo: "contact"
+print(sum(e is not None for e in emails), "of", len(emails), "schools have an email")</code></pre>
+    <div class="output">0 of 13 schools have an email</div>
+    <p class="en">One missing letter and the answer to the outreach team is "nobody has an email": clean, plausible, wrong. The helper that cannot crash also cannot complain. The defence is the census from the start of this concept: when a result is 0 or suspiciously round, compare it with the count you already know (3), or <code>assert</code> that at least one record produced a value.</p>
+    <p class="ar">حرف واحد ناقص فتصير إجابة فريق التواصل «لا أحد لديه بريد»: نظيفة ومعقولة وخاطئة. الدالة التي لا تنهار لا تشتكي أيضًا. والدفاع هو التعداد الذي بدأنا به هذا المفهوم: حين تكون النتيجة 0 أو مستديرة بشكل مريب فقارنها بالعدد الذي تعرفه (3)، أو اكتب <code>assert</code> بأن سجلًّا واحدًا على الأقل أنتج قيمة.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th><span class="en">Use</span><span class="ar">استعمل</span></th><th><span class="en">When</span><span class="ar">متى</span></th></tr></thead>
+      <tbody>
+        <tr><td><code>d["id"]</code></td><td><span class="en">the key is <em>required</em>; if it is absent the data is broken and you want the crash</span><span class="ar">المفتاح <em>مطلوب</em>؛ إن غاب فالبيانات معطوبة وتريد الانهيار</span></td></tr>
+        <tr><td><code>d.get("email")</code></td><td><span class="en">one optional level, and you know a present value is never <code>null</code></span><span class="ar">مستوى اختياري واحد، وتعرف أن القيمة الموجودة لا تكون <code>null</code></span></td></tr>
+        <tr><td><code>dig(d, "contacts", "email")</code></td><td><span class="en">several optional levels, possible nulls, or list positions</span><span class="ar">عدة مستويات اختيارية، أو قيم null محتملة، أو مواضع في قوائم</span></td></tr>
+        <tr><td><span class="en">a schema validator</span><span class="ar">مدقّق بنية (schema)</span></td><td><span class="en">you depend on the structure for months: describe it once and check every record against it (libraries such as <code>jsonschema</code> and <code>pydantic</code> exist for this)</span><span class="ar">تعتمد على البنية شهورًا: صِفها مرة واحدة وافحص كل سجلّ بها (توجد لذلك مكتبات مثل <code>jsonschema</code> وَ<code>pydantic</code>)</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">With <code>record = {"id": 7, "contacts": None}</code>, what does <code>record.get("contacts", {}).get("email")</code> do?</span><span class="ar">مع <code>record = {"id": 7, "contacts": None}</code> ماذا تفعل <code>record.get("contacts", {}).get("email")</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">Returns <code>None</code>, because the default <code>{}</code> protects the second <code>.get</code></span><span class="ar">تعيد <code>None</code> لأن القيمة الافتراضية <code>{}</code> تحمي <code>.get</code> الثانية</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Raises <code>KeyError: 'email'</code></span><span class="ar">ترفع <code>KeyError: 'email'</code></span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">Raises <code>AttributeError</code>: <code>None</code> has no <code>.get</code></span><span class="ar">ترفع <code>AttributeError</code>: ليس لـ <code>None</code> دالة <code>.get</code></span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Returns <code>{}</code></span><span class="ar">تعيد <code>{}</code></span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">The default of <code>.get</code> is used only when the key is <em>absent</em>. Here the key is present and its value is <code>None</code>, so the first <code>.get</code> returns <code>None</code> and the chain calls <code>.get</code> on it. That is why Version 2 is fine for this file and fragile for the next one.</div>
+      <div class="ar">القيمة الافتراضية في <code>.get</code> تُستعمل فقط حين يكون المفتاح <em>غائبًا</em>. هنا المفتاح موجود وقيمته <code>None</code>، فتعيد أول <code>.get</code> القيمة <code>None</code> وتستدعي السلسلة <code>.get</code> عليها. ولهذا تصلح النسخة 2 لهذا الملف وتهشّ مع الملف التالي.</div>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">A default is a decision about your data. Had a school lacked its <code>enrolment</code> object and you wrote <code>.get("enrolment", {}).get("boys", 0)</code> "to be safe", that school would enter the table as a school with <em>zero boys</em>: the mean enrolment drops and no error is raised. A missing value left as missing (<code>None</code>, later <code>NaN</code>) can be imputed on purpose or even used as a feature (<code>has_email</code>); a made-up zero cannot be told apart from a real one. The same trap sits in code that reads the arguments of a model's tool call: <code>args.get("amount", 0)</code> turns "the model forgot the amount" into "the amount is zero".</p>
+    <p class="ar">القيمة الافتراضية قرار بشأن بياناتك. لو افتقدت مدرسة كائن <code>enrolment</code> وكتبتَ <code>.get("enrolment", {}).get("boys", 0)</code> «للاحتياط»، لدخلت الجدول مدرسةً <em>بلا بنين</em>: ينخفض متوسط الطلبة ولا يُرفع أي خطأ. أما القيمة الناقصة التي تُترك ناقصة (<code>None</code> ثم <code>NaN</code>) فيمكن تعويضها عن قصد، بل استعمالها خاصية (<code>has_email</code>)؛ والصفر المختلَق لا يمكن تمييزه عن الصفر الحقيقي. وهذا الفخ نفسه في الكود الذي يقرأ وسائط استدعاء أداة من نموذج: <code>args.get("amount", 0)</code> تحوّل «نسي النموذج المبلغ» إلى «المبلغ صفر».</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب صادق</span></h4>
+    <p class="en"><code>dig()</code> trades loudness for convenience: it never tells you that the structure changed. For a one-off look at a file, a plain <code>[]</code> that crashes is the better tool, because the crash <em>is</em> the information. Use <code>dig</code> only where "absent" is a legitimate, expected state, and pair it with a count.</p>
+    <p class="ar">تُبدّل <code>dig()</code> الضجيج بالراحة: لا تخبرك أبدًا أن البنية تغيّرت. ولنظرة عابرة على ملف يبقى <code>[]</code> الذي ينهار هو الأداة الأفضل لأن الانهيار <em>هو</em> المعلومة. استعمل <code>dig</code> حيث يكون «الغياب» حالة مشروعة متوقعة، وأرفقها بعدّ.</p>
+  </div>
+
+  <!-- =================================================== CONCEPT 3 -->
+  <h2 id="t1l5-h3"><span class="en">Concept 3 — Flattening: from a tree to a table</span><span class="ar">المفهوم 3 — التسطيح: من شجرة إلى جدول</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">Every <code>groupby</code>, every chart and every model wants a rectangle: one row per school, one column per fact. The most natural attempt, <code>pd.DataFrame(schools)</code>, produces something that <em>looks</em> like a table and is not:</p>
+    <p class="ar">كل <code>groupby</code> وكل رسم وكل نموذج يريد مستطيلًا: صفًّا لكل مدرسة وعمودًا لكل معلومة. أبسط محاولة، <code>pd.DataFrame(schools)</code>، تنتج شيئًا <em>يشبه</em> جدولًا وليس بجدول:</p>
+<pre class="code bad" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+df = pd.DataFrame(schools)
+print(df[["id", "enrolment", "contacts"]].head(3).to_string())
+print(df["enrolment"].sum())</code></pre>
+    <div class="output">    id                    enrolment                                                 contacts
+0  201  {'boys': 217, 'girls': 238}                                  {'phone': '08-8529025'}
+1  202  {'boys': 273, 'girls': 280}                                  {'phone': '08-1063067'}
+2  203  {'boys': 272, 'girls': 183}  {'phone': '08-2487610', 'email': 'school3@example.org'}
+Traceback (most recent call last):
+  File "demo.py", line 9, in &lt;module&gt;
+    print(df["enrolment"].sum())
+          ~~~~~~~~~~~~~~~~~~~^^
+  ...
+TypeError: unsupported operand type(s) for +: 'dict' and 'dict'</div>
+    <p class="en">The cells of <code>enrolment</code> and <code>contacts</code> hold whole dictionaries, so arithmetic on them fails. (The <code>contacts</code> column is mixed too: three schools have <code>NaN</code> there instead of a dictionary.) The fix is called <span class="term" data-term="flattening">flattening</span>: turning a tree of nested records into a flat table with one row per record and one column per leaf value.</p>
+    <p class="ar">خلايا <code>enrolment</code> وَ<code>contacts</code> تحمل قواميس كاملة، فتفشل العمليات الحسابية عليها. (وعمود <code>contacts</code> مختلط أيضًا: في ثلاث مدارس <code>NaN</code> بدل القاموس.) والعلاج اسمه <span class="term" data-term="flattening">التسطيح (Flattening)</span>: تحويل شجرة من السجلات المتشعّبة إلى جدول مسطّح بصفّ لكل سجلّ وعمود لكل قيمة ورقية.</p>
+  </div>
+
+  <figure class="diagram" data-diagram="t1-l5-nested-tree">
+    <figcaption><span class="en">The same registry three ways: JSON text, a tree of dicts and lists in Python, and a flat table. Objects become columns; a list stays whole in one cell; an absent key becomes NaN.</span><span class="ar">السجلّ نفسه بثلاث صور: نصّ JSON، وشجرة من القواميس والقوائم في بايثون، وجدول مسطّح. الكائنات تصير أعمدة؛ والقائمة تبقى كاملة في خلية؛ والمفتاح الغائب يصير NaN.</span></figcaption>
+  </figure>
+
+  <h3 id="t1l5-s8"><span class="en">Flattening in eight lines: a function that calls itself</span><span class="ar">التسطيح في ثمانية أسطر: دالة تستدعي نفسها</span></h3>
+
+  <p class="en">A record is a dictionary whose values may be dictionaries, whose values may be dictionaries… so the natural tool is <em>recursion</em>: a function that handles the plain values itself and calls itself on every inner dictionary, with a longer prefix. The dotted names are the prefix trail. This is, in essence, what pandas does for you:</p>
+  <p class="ar">السجلّ قاموس قد تكون بعض قيمه قواميس، وقد تكون قيم هذه قواميس أيضًا… فالأداة الطبيعية هي <em>الاستدعاء الذاتي</em> (recursion): دالة تعالج القيم العادية بنفسها وتستدعي نفسها على كل قاموس داخلي ببادئة أطول. والأسماء المنقّطة هي أثر البادئات. وهذا في جوهره ما تفعله pandas عنك:</p>
+
+<pre class="code" data-lang="python"><code>import json
+import pandas as pd
+
+
+def flatten(d, prefix=""):
+    flat = {}
+    for key, value in d.items():
+        name = prefix + key
+        if isinstance(value, dict):
+            flat.update(flatten(value, name + "."))      # recurse into the inner object
+        else:
+            flat[name] = value
+    return flat
+
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+mine = pd.DataFrame([flatten(s) for s in schools])
+theirs = pd.json_normalize(schools)
+print(mine.shape, theirs.shape)
+print(mine[theirs.columns].equals(theirs))</code></pre>
+  <div class="output">(13, 12) (13, 12)
+True</div>
+
+  <p class="en">Our eight-line <code>flatten</code> and <code>pd.json_normalize</code> agree on all 13 schools, down to the cell. Step through one school and watch the call stack: each inner object pushes a frame, its leaves are copied under dotted names, and the frame pops when the object is finished.</p>
+  <p class="ar">تتفق دالتنا <code>flatten</code> ذات الأسطر الثمانية مع <code>pd.json_normalize</code> على المدارس الثلاث عشرة كلها حتى مستوى الخلية. تنقّل في مدرسة واحدة وراقب حزمة الاستدعاءات: كل كائن داخلي يدفع إطارًا، وتُنسخ أوراقه تحت أسماء منقّطة، ويُرفع الإطار حين ينتهي الكائن.</p>
+
+  <div data-trace-id="t1-l5-flatten"></div>
+
+  <h3 id="t1l5-s9"><span class="en">Three ways to build the table</span><span class="ar">ثلاث طرق لبناء الجدول</span></h3>
+
+  <div class="evolve" id="t1l5-e2">
+    <div class="ver" data-title-en="Version 1 — by hand, key by key" data-title-ar="النسخة 1 — يدويًّا، مفتاحًا بعد مفتاح">
+<pre class="code bad" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+rows = []
+for s in schools:
+    rows.append({
+        "id": s["id"],
+        "name_en": s["name"]["en"],
+        "governorate": s["governorate"],
+        "boys": s["enrolment"]["boys"],
+        "girls": s["enrolment"]["girls"],
+        "email": s.get("contacts", {}).get("email"),
+    })
+df = pd.DataFrame(rows)
+print(df.shape)
+print(df.columns.tolist())</code></pre>
+      <div class="output">(13, 6)
+['id', 'name_en', 'governorate', 'boys', 'girls', 'email']</div>
+      <p class="en"><strong>What it does:</strong> a loop builds one flat dictionary per school, naming every column by hand, with <code>.get</code> for the optional email. It works: 13 rows. <strong>What goes wrong:</strong> six columns out of twelve. <code>level</code>, the Arabic name, <code>location</code>, <code>facilities</code> and <code>phone</code> never reached the table, nobody was told, and a field the server adds tomorrow will be dropped in the same silent way. The code also repeats the nesting of the data in its own text.</p>
+      <p class="ar"><strong>ماذا تفعل:</strong> حلقة تبني قاموسًا مسطّحًا لكل مدرسة وتسمّي كل عمود بيدها، مع <code>.get</code> للبريد الاختياري. وتعمل: 13 صفًّا. <strong>ما الذي يخطئ:</strong> ستة أعمدة من اثني عشر. <code>level</code> والاسم العربي وَ<code>location</code> وَ<code>facilities</code> وَ<code>phone</code> لم تصل إلى الجدول، ولم يُخبَر أحد، وأي حقل يضيفه الخادم غدًا سيُسقَط بالصمت نفسه. كما يكرّر الكود في نصّه تشعّب البيانات.</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 — pd.json_normalize" data-title-ar="النسخة 2 — pd.json_normalize">
+<pre class="code" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+with open("downloads/t1/schools_api_page1.json", encoding="utf-8") as f:
+    page = json.load(f)
+
+df = pd.json_normalize(schools)
+print(df.shape)
+print(df.columns.tolist())
+print(pd.json_normalize(page).shape)</code></pre>
+      <div class="output">(13, 12)
+['id', 'governorate', 'level', 'facilities', 'name.en', 'name.ar', 'enrolment.boys', 'enrolment.girls', 'location.lat', 'location.lon', 'contacts.phone', 'contacts.email']
+(1, 6)</div>
+      <p class="en"><strong>What changed:</strong> one call, no column list. <strong>What it fixes:</strong> nothing is dropped — all 12 columns, inner objects spelled <code>name.en</code>, <code>enrolment.boys</code>…, the optional ones filled with <code>NaN</code>. <strong>Still imperfect:</strong> it flattens <em>whatever you hand it</em>. The last line passes the API reply itself, a dictionary that <em>contains</em> the records, and gets a table of <strong>one row and six columns</strong>: the whole list of 5 schools sits in one cell. No error, wrong shape. And a name such as <code>name.en</code> cannot be used as an attribute (<code>df.name.en</code>).</p>
+      <p class="ar"><strong>ما الذي تغيّر:</strong> استدعاء واحد ولا قائمة أعمدة. <strong>ما الذي يصلحه:</strong> لا شيء يسقط — الأعمدة الاثنا عشر كلها، والكائنات الداخلية بأسماء <code>name.en</code> وَ<code>enrolment.boys</code>…، والاختيارية معبّأة بـ <code>NaN</code>. <strong>ما زال ناقصًا:</strong> تسطّح <em>أي شيء تعطيه لها</em>. السطر الأخير يمرّر ردّ الواجهة نفسه، وهو قاموس <em>يحتوي</em> السجلات، فتحصل على جدول من <strong>صف واحد وستة أعمدة</strong>: قائمة المدارس الخمس كلها في خلية واحدة. لا خطأ، وشكل خاطئ. كما أن اسمًا مثل <code>name.en</code> لا يصلح خاصيةً (<code>df.name.en</code>).</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 — record_path, meta and sep" data-title-ar="النسخة 3 — record_path وmeta وsep">
+<pre class="code good" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools_api_page1.json", encoding="utf-8") as f:
+    page = json.load(f)
+
+df = pd.json_normalize(page, record_path="results", meta=["page", "total"], sep="_")
+print(df.shape)
+print(df[["id", "name_en", "enrolment_boys", "contacts_email", "page", "total"]].to_string())</code></pre>
+      <div class="output">(5, 14)
+    id                   name_en  enrolment_boys       contacts_email page total
+0  201           School 1 (Gaza)             217                  NaN    1    13
+1  202    School 2 (Khan Younis)             273                  NaN    1    13
+2  203          School 3 (Rafah)             272  school3@example.org    1    13
+3  204  School 4 (Deir al-Balah)             227                  NaN    1    13
+4  205        School 5 (Jabalia)             269                  NaN    1    13</div>
+      <p class="en"><strong>What changed:</strong> <code>record_path="results"</code> tells pandas <em>which list holds the records</em>; <code>meta=["page", "total"]</code> copies those top-level fields onto every row; <code>sep="_"</code> spells nested names as <code>name_en</code>. <strong>What it fixes:</strong> the shape is right — 5 rows, one per school, 14 columns — and the page context travels with each row. <strong>Still imperfect (its limits):</strong> lists stay lists inside a cell; a missing key is a silent <code>NaN</code>; reaching a list that sits two levels down needs a list of keys in <code>record_path</code> and a clumsy nested-path syntax in <code>meta</code>; and the whole document must fit in memory.</p>
+      <p class="ar"><strong>ما الذي تغيّر:</strong> يخبر <code>record_path="results"</code> مكتبة pandas <em>أي قائمة تحمل السجلات</em>؛ وينسخ <code>meta=["page", "total"]</code> هذين الحقلين العلويين على كل صف؛ ويكتب <code>sep="_"</code> الأسماء المتشعّبة هكذا <code>name_en</code>. <strong>ما الذي يصلحه:</strong> الشكل صحيح — 5 صفوف بواقع صف لكل مدرسة و14 عمودًا — وسياق الصفحة يسافر مع كل صف. <strong>ما زال ناقصًا (حدوده):</strong> القوائم تبقى قوائم داخل خلية؛ والمفتاح الغائب <code>NaN</code> صامتة؛ والوصول إلى قائمة تقع على مستويين أعمق يحتاج قائمة مفاتيح في <code>record_path</code> وصيغة مسار متداخل مُرهِقة في <code>meta</code>؛ والوثيقة كلها يجب أن تتّسع في الذاكرة.</p>
+    </div>
+  </div>
+
+  <div data-trace-id="t1-l5-normalize"></div>
+
+  <div class="quiz">
+    <p class="q"><span class="en"><code>page</code> is a whole API reply (<code>{"page": 1, "total": 13, "results": [5 schools], ...}</code>). What is the shape of <code>pd.json_normalize(page)</code>?</span><span class="ar"><code>page</code> ردّ كامل من الواجهة (<code>{"page": 1, "total": 13, "results": [5 مدارس], ...}</code>). ما شكل <code>pd.json_normalize(page)</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">5 rows: it finds the list of schools by itself</span><span class="ar">5 صفوف: تجد قائمة المدارس بنفسها</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">13 rows, because <code>total</code> is 13</span><span class="ar">13 صفًّا لأن <code>total</code> يساوي 13</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">1 row, with the list of schools sitting whole in one cell</span><span class="ar">صف واحد، وقائمة المدارس كاملة في خلية واحدة</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">An error: the reply is not a list of records</span><span class="ar">خطأ: الردّ ليس قائمة سجلات</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">A single dictionary is treated as <em>one record</em>: its scalar fields become columns and its list <code>results</code> stays an object in one cell, giving shape (1, 6). pandas cannot guess which list you care about; <code>record_path="results"</code> is how you say it. The tempting "5 rows" assumes pandas reads your mind.</div>
+      <div class="ar">القاموس الواحد يُعامَل <em>سجلًّا واحدًا</em>: تصير حقوله البسيطة أعمدة وتبقى قائمته <code>results</code> كائنًا في خلية واحدة، فيكون الشكل (1, 6). لا تستطيع pandas أن تخمّن أي قائمة تهمّك؛ و<code>record_path="results"</code> هو طريقتك لقولها. أما «5 صفوف» المغرية فتفترض أن pandas تقرأ أفكارك.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l5-s10"><span class="en">What a <code>NaN</code> means after flattening</span><span class="ar">ماذا تعني <code>NaN</code> بعد التسطيح</span></h3>
+
+  <p class="en">The flat table has 10 <code>NaN</code> in <code>contacts_email</code>. Is that "10 unknown emails"? Count what the tree said:</p>
+  <p class="ar">في الجدول المسطّح 10 قيم <code>NaN</code> في <code>contacts_email</code>. هل هي «10 رسائل بريد مجهولة»؟ عُدّ ما قالته الشجرة:</p>
+
+<pre class="code" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+df = pd.json_normalize(schools, sep="_")
+print(df["contacts_email"].isna().sum(), "NaN in contacts_email")
+print(sum("contacts" not in s for s in schools), "schools have no contacts object at all")
+print(sum("contacts" in s and "email" not in s["contacts"] for s in schools), "have contacts but no email")
+
+tiny = pd.json_normalize([{"a": 1}, {"a": None}, {}])
+print(tiny["a"].tolist())</code></pre>
+  <div class="output">10 NaN in contacts_email
+3 schools have no contacts object at all
+7 have contacts but no email
+[1.0, nan, nan]</div>
+
+  <p class="en">The 10 <code>NaN</code> mix two different facts — <strong>3</strong> schools with no contacts object and <strong>7</strong> with contacts but no email — and after flattening they are the same. The last two lines show worse: a key that is absent and a key that is <code>null</code> both become <code>NaN</code>, and the integer column was silently turned into floats (<code>1</code> became <code>1.0</code>) because <code>NaN</code> is a float. A <code>NaN</code> here is a fact about the <em>source</em> ("the record has no such key"), not a failed measurement. If the difference matters, record it before you flatten, for example <code>df["has_contacts"] = ["contacts" in s for s in schools]</code>.</p>
+  <p class="ar">قيم <code>NaN</code> العشر تخلط حقيقتين مختلفتين — <strong>3</strong> مدارس بلا كائن اتصال و<strong>7</strong> لديها اتصال بلا بريد — وبعد التسطيح تصيران شيئًا واحدًا. والسطران الأخيران أسوأ: المفتاح الغائب والمفتاح ذو القيمة <code>null</code> كلاهما يصير <code>NaN</code>، وتحوّل العمود الصحيح بصمت إلى أعداد عشرية (صارت <code>1</code> إلى <code>1.0</code>) لأن <code>NaN</code> عدد عشري. إن <code>NaN</code> هنا حقيقة عن <em>المصدر</em> («السجلّ لا يحوي هذا المفتاح»)، لا قياس فاشل. وإن كان الفرق مهمًّا فسجّله قبل التسطيح مثلًا <code>df["has_contacts"] = ["contacts" in s for s in schools]</code>.</p>
+
+  <div class="thread">
+    <h4><span class="en">Thread · T-PARSE, turn messy input into usable values</span><span class="ar">خيط · T-PARSE، تحويل مدخل فوضوي إلى قيم صالحة</span></h4>
+    <p class="en"><strong>Where it came from:</strong> reading a rent by eye (<a href="#t1-lesson-01">Lesson 1</a>), <code>pd.to_numeric(errors="coerce")</code> (<a href="#t1-lesson-03">Lesson 3</a>), read-time <code>thousands=</code>, <code>decimal=</code>, <code>parse_dates=</code> (<a href="#t1-lesson-04">Lesson 4</a>). <strong>The gap each time:</strong> failures became <code>NaN</code> and the <em>reason</em> was lost. <strong>Here:</strong> <code>json_normalize</code> parses nested fields, and a missing nested key becomes <code>NaN</code> without a warning — the same loss, new place. <strong>Still open:</strong> <a href="#t1-lesson-06">Lesson 6</a> counts the <code>NaN</code>s before and after parsing and fails loudly if they grew.</p>
+    <p class="ar"><strong>من أين جاء:</strong> قراءة إيجار بالعين (<a href="#t1-lesson-01">الدرس 1</a>)، و<code>pd.to_numeric(errors="coerce")</code> (<a href="#t1-lesson-03">الدرس 3</a>)، وخيارات القراءة <code>thousands=</code> وَ<code>decimal=</code> وَ<code>parse_dates=</code> (<a href="#t1-lesson-04">الدرس 4</a>). <strong>الثغرة في كل مرة:</strong> صارت الإخفاقات <code>NaN</code> وضاع <em>السبب</em>. <strong>هنا:</strong> تحلّل <code>json_normalize</code> الحقول المتشعّبة، ويصير المفتاح المتشعّب الغائب <code>NaN</code> دون تحذير — الخسارة نفسها في مكان جديد. <strong>ما زال مفتوحًا:</strong> يعدّ <a href="#t1-lesson-06">الدرس 6</a> قيم <code>NaN</code> قبل التحليل وبعده ويفشل بصوت عالٍ إن زادت.</p>
+  </div>
+
+  <h3 id="t1l5-s11"><span class="en">A list inside a record: summarise, spread, or explode?</span><span class="ar">قائمة داخل سجلّ: تلخيص أم نشر أم تفكيك؟</span></h3>
+
+  <p class="en">The <code>facilities</code> list has a different length for each school (0 to 3), so it cannot become a fixed set of columns by simply spreading it. Three honest options, depending on the question:</p>
+  <p class="ar">قائمة <code>facilities</code> تختلف في طولها من مدرسة إلى أخرى (من 0 إلى 3)، فلا تصير مجموعة أعمدة ثابتة بمجرد نشرها. ثلاثة خيارات صادقة بحسب السؤال:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th><span class="en">Option</span><span class="ar">الخيار</span></th><th><span class="en">How</span><span class="ar">كيف</span></th><th><span class="en">The row still means…</span><span class="ar">الصف ما زال يعني…</span></th></tr></thead>
+      <tbody>
+        <tr><td><span class="en">Summarise</span><span class="ar">تلخيص</span></td><td><code>df["facilities"].str.len()</code></td><td><span class="en">one school (you keep only the count)</span><span class="ar">مدرسة واحدة (تحتفظ بالعدد فقط)</span></td></tr>
+        <tr><td><span class="en">Spread (multi-hot)</span><span class="ar">نشر (multi-hot)</span></td><td><code>df["facilities"].str.join("|").str.get_dummies()</code></td><td><span class="en">one school, one 0/1 column per facility type</span><span class="ar">مدرسة واحدة، وعمود 0/1 لكل نوع مرفق</span></td></tr>
+        <tr><td><span class="en">Explode</span><span class="ar">تفكيك</span></td><td><code>df.explode("facilities")</code></td><td><strong><span class="en">one school–facility pair</span><span class="ar">زوج مدرسة–مرفق</span></strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+<pre class="code" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+df = pd.json_normalize(schools, sep="_")
+df["students"] = df["enrolment_boys"] + df["enrolment_girls"]
+print("schools:", len(df), " students:", df["students"].sum())
+
+exploded = df.explode("facilities")
+print("rows after explode:", len(exploded), " students:", exploded["students"].sum())
+
+df["n_facilities"] = df["facilities"].str.len()
+multi_hot = (df["facilities"].str.join("|").str.get_dummies()
+             .rename(columns=lambda name: "has_" + name.replace(" ", "_")))
+print(multi_hot.sum().to_dict())
+print(df["n_facilities"].tolist())</code></pre>
+  <div class="output">schools: 13  students: 5242
+rows after explode: 22  students: 8435
+{'has_canteen': 2, 'has_computer_room': 4, 'has_lab': 6, 'has_library': 4, 'has_playground': 3}
+[2, 1, 1, 3, 0, 2, 1, 0, 1, 0, 2, 3, 3]</div>
+
+  <div class="warn">
+    <h4><span class="en">Explode changes the unit of analysis</span><span class="ar">التفكيك يغيّر وحدة التحليل</span></h4>
+    <p class="en">13 schools became 22 rows (19 facility entries, plus one empty row for each of the 3 schools whose list is empty), and the total of <code>students</code> jumped from 5,242 to 8,435: each school is now counted once <em>per facility</em>. That is 61% more students than exist. Nothing failed. After any <code>explode</code>, ask "what does one row mean now?" before you sum, average or count.</p>
+    <p class="ar">صارت 13 مدرسة 22 صفًّا (19 مرفقًا، وصف فارغ واحد لكل مدرسة من المدارس الثلاث التي قائمتها فارغة)، وقفز مجموع <code>students</code> من 5,242 إلى 8,435: تُحسب كل مدرسة الآن مرة <em>لكل مرفق</em>. وهذا أكثر من الطلبة الموجودين بـ 61%. لم يفشل شيء. بعد أي <code>explode</code> اسأل «ماذا يعني الصف الواحد الآن؟» قبل أن تجمع أو تحسب متوسطًا أو تعدّ.</p>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">After <code>exploded = df.explode("facilities")</code> (13 schools, 22 rows), a colleague computes <code>exploded["students"].sum()</code> as "total enrolment". What is wrong?</span><span class="ar">بعد <code>exploded = df.explode("facilities")</code> (13 مدرسة و22 صفًّا) يحسب زميل <code>exploded["students"].sum()</code> على أنه «إجمالي الطلبة». ما الخطأ؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">Nothing: <code>sum</code> adds the same numbers whatever the row count</span><span class="ar">لا شيء: <code>sum</code> تجمع الأرقام نفسها مهما كان عدد الصفوف</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">Each school's enrolment is repeated once per facility, so the total (8,435) is inflated; the true total is 5,242</span><span class="ar">يتكرّر عدد طلبة كل مدرسة مرة لكل مرفق، فيتضخّم المجموع (8,435)؛ والمجموع الحقيقي 5,242</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>sum</code> skips the <code>NaN</code> rows, so the total is too small</span><span class="ar"><code>sum</code> تتجاهل صفوف <code>NaN</code> فيصغر المجموع</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>explode</code> sorts the rows, so the sum is in the wrong order</span><span class="ar"><code>explode</code> ترتّب الصفوف فيكون المجموع بترتيب خاطئ</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">The rows now stand for school–facility pairs, but the column still holds a per-school number, so it is added once per pair. The first option is tempting because <code>sum</code> really is innocent: the damage was done by <code>explode</code> changing what a row means. The <code>NaN</code> rows are not the issue (their <code>students</code> value is intact), and a sum has no order.</div>
+      <div class="ar">صارت الصفوف تمثّل أزواج مدرسة–مرفق، لكن العمود ما زال يحمل رقمًا لكل مدرسة فيُجمع مرة لكل زوج. والخيار الأول مغرٍ لأن <code>sum</code> بريئة فعلًا: الضرر وقع من <code>explode</code> التي غيّرت معنى الصف. وصفوف <code>NaN</code> ليست المشكلة (قيمة <code>students</code> فيها سليمة)، والمجموع لا ترتيب له.</div>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">A tabular model needs one row per example and numeric columns, so flattening is where nested data becomes features. Three decisions are yours: which leaves become columns (<code>enrolment_boys</code>, <code>location_lat</code>…), what a list becomes (a count, a multi-hot block of 0/1 columns, or extra rows) and what a missing key means (<code>NaN</code> to impute, or a <code>has_contacts</code> flag). Exploding is the dangerous choice for training: the 13 schools become 22 rows, and a random 80/20 split of <em>rows</em> will usually put the same school on both sides. The test score then measures memory, not generalisation. If you explode, split by <code>id</code>, not by row.</p>
+    <p class="ar">يحتاج النموذج الجدولي إلى صف لكل مثال وأعمدة رقمية، فالتسطيح هو اللحظة التي تتحول فيها البيانات المتشعّبة إلى خصائص. ثلاثة قرارات لك: أي الأوراق تصير أعمدة (<code>enrolment_boys</code> وَ<code>location_lat</code>…)، وماذا تصير القائمة (عدّادًا أو كتلة multi-hot من أعمدة 0/1 أو صفوفًا إضافية)، وماذا يعني المفتاح الغائب (<code>NaN</code> للتعويض أو علَم <code>has_contacts</code>). والتفكيك هو الخيار الخطِر في التدريب: تصير المدارس الثلاث عشرة 22 صفًّا، وتقسيم عشوائي 80/20 <em>للصفوف</em> سيضع المدرسة نفسها غالبًا على الجانبين. فتقيس درجة الاختبار حينئذ الحفظ لا التعميم. إن فكّكتَ فاقسم بحسب <code>id</code> لا بحسب الصف.</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب صادق</span></h4>
+    <p class="en"><code>json_normalize</code> is convenient, not magic: with deep nesting it can produce hundreds of columns you did not ask for, it needs the whole document in memory, and it will never tell you that a field appeared or vanished. For a handful of known fields, Version 1 with an explicit <code>.get</code> is perfectly good <em>if</em> you also compare its column count with the data's (12 here). For a huge file you would stream it record by record instead.</p>
+    <p class="ar">إن <code>json_normalize</code> مريحة لا سحرية: مع التشعّب العميق قد تنتج مئات الأعمدة التي لم تطلبها، وتحتاج الوثيقة كلها في الذاكرة، ولن تخبرك أبدًا بأن حقلًا ظهر أو اختفى. ولبضعة حقول معروفة تصلح النسخة 1 بـ <code>.get</code> صريحة تمامًا <em>إذا</em> قارنتَ أيضًا عدد أعمدتها بعدد أعمدة البيانات (12 هنا). وللملف الضخم تقرؤه سجلًّا سجلًّا بدل ذلك.</p>
+  </div>
+
+  <!-- =================================================== CONCEPT 4 -->
+  <h2 id="t1l5-h4"><span class="en">Concept 4 — What an API is: a request and a response</span><span class="ar">المفهوم 4 — ما الواجهة البرمجية: طلب واستجابة</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">Every file so far was handed to you. But the registry changes: schools reopen, enrolments are corrected. A downloaded file is a photograph; by Thursday it is Monday's photograph and nothing inside says so. Re-downloading by hand every morning is exactly the kind of manual step that gets forgotten. The registry's owner offers a door instead: an address your program can ask for the <em>current</em> data. That door is an <span class="term" data-term="api">API</span>.</p>
+    <p class="ar">كل ملف حتى الآن سُلِّم إليك. لكن السجلّ يتغيّر: مدارس تعيد الفتح وأعداد طلبة تُصحَّح. والملف المنزَّل صورة فوتوغرافية؛ وبحلول الخميس يصير صورة الاثنين ولا شيء بداخله يقول ذلك. وإعادة التنزيل يدويًّا كل صباح هي الخطوة اليدوية التي تُنسى. صاحب السجلّ يعرض بدلًا من ذلك بابًا: عنوانًا يستطيع برنامجك أن يطلب منه البيانات <em>الحالية</em>. هذا الباب هو <span class="term" data-term="api">الواجهة البرمجية (API)</span>.</p>
+  </div>
+
+  <p class="en">An <strong>API</strong> (application programming interface) is a door that one system opens for other programs, with fixed rules for asking and a fixed shape for answering. A web API runs over HTTP, and every use of it is a conversation of exactly two messages.</p>
+  <p class="ar"><strong>الواجهة البرمجية</strong> (API) بابٌ يفتحه نظام للبرامج الأخرى، بقواعد ثابتة للسؤال وشكل ثابت للجواب. وتعمل الواجهة على الويب فوق HTTP، وكل استعمال لها حوار من رسالتين بالضبط.</p>
+
+  <h3 id="t1l5-s12"><span class="en">The two messages</span><span class="ar">الرسالتان</span></h3>
+
+  <figure class="diagram" data-diagram="t1-api-sequence">
+    <figcaption><span class="en">One conversation with the school API: ask for a page, wait out a 429 if the server is busy, then turn the JSON text into Python dicts and a DataFrame.</span><span class="ar">حوار واحد مع واجهة المدارس: نطلب صفحة، وننتظر إن كان الخادم مشغولًا (429)، ثم نحوّل نصّ JSON إلى قواميس بايثون ثم إلى DataFrame.</span></figcaption>
+  </figure>
+
+  <p class="en">The <span class="term" data-term="request">request</span> is what you send: a <em>method</em> (what to do), a URL (where), optional <em>headers</em> (labels about you and what you accept) and, for some methods, a <em>body</em> (data you send along). The <span class="term" data-term="response">response</span> is what comes back: a <em>status code</em> (did it work?), headers, and a body (for us, JSON text). The URL itself has parts:</p>
+  <p class="ar"><span class="term" data-term="request">الطلب (Request)</span> هو ما ترسله: <em>طريقة</em> (ماذا تفعل)، وعنوان URL (أين)، و<em>ترويسات</em> اختيارية (بطاقات عنك وعمّا تقبله) وفي بعض الطرق <em>جسم</em> (بيانات ترسلها معه). و<span class="term" data-term="response">الاستجابة (Response)</span> هي ما يعود: <em>رمز حالة</em> (هل نجح؟)، وترويسات، وجسم (هو عندنا نصّ JSON). وللعنوان نفسه أجزاء:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th><code>https://api.example.org/schools?page=2&amp;per_page=5</code></th><th><span class="en">Name</span><span class="ar">الاسم</span></th><th><span class="en">Meaning</span><span class="ar">المعنى</span></th></tr></thead>
+      <tbody>
+        <tr><td><code>https</code></td><td><span class="en">scheme</span><span class="ar">البروتوكول</span></td><td><span class="en">how to talk (HTTP, encrypted)</span><span class="ar">كيف نتحدث (HTTP مشفّر)</span></td></tr>
+        <tr><td><code>api.example.org</code></td><td><span class="en">host</span><span class="ar">المضيف</span></td><td><span class="en">which server</span><span class="ar">أي خادم</span></td></tr>
+        <tr><td><code>/schools</code></td><td><span class="term" data-term="endpoint">endpoint</span></td><td><span class="en">which kind of data: the schools</span><span class="ar">أي نوع من البيانات: المدارس</span></td></tr>
+        <tr><td><code>?page=2&amp;per_page=5</code></td><td><span class="en">query parameters</span><span class="ar">معاملات الاستعلام</span></td><td><span class="en">options as <code>key=value</code> pairs joined by <code>&amp;</code></span><span class="ar">خيارات على هيئة أزواج <code>key=value</code> تصل بينها <code>&amp;</code></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="en">The <strong>endpoint</strong> is the address of one kind of data inside the API (<code>/schools</code>, <code>/schools/203</code>). The common methods: <code>GET</code> reads data and changes nothing (what we do all lesson); <code>POST</code> sends data to be processed or created — it is how you send a prompt to a hosted model, with a JSON body; <code>PUT</code>/<code>PATCH</code> update; <code>DELETE</code> removes. A common header pair: <code>Accept: application/json</code> ("answer in JSON") and <code>Authorization: Bearer &lt;key&gt;</code> ("this is who I am").</p>
+  <p class="ar"><strong>نقطة النهاية</strong> (endpoint) هي عنوان نوع واحد من البيانات داخل الواجهة (<code>/schools</code> أو <code>/schools/203</code>). والطرق الشائعة: <code>GET</code> تقرأ البيانات ولا تغيّر شيئًا (وهذا ما نفعله طوال الدرس)؛ و<code>POST</code> ترسل بيانات لتُعالَج أو تُنشأ — وبها ترسل سؤالًا إلى نموذج مستضاف بجسم JSON؛ و<code>PUT</code>/<code>PATCH</code> تحدّث؛ و<code>DELETE</code> تحذف. وزوج ترويسات شائع: <code>Accept: application/json</code> («أجب بـ JSON») و<code>Authorization: Bearer &lt;key&gt;</code> («هذا هو أنا»).</p>
+
+  <p class="en">The real code for one request, with the <code>requests</code> library (<code>pip install requests</code>), is short. It is shown here to be read, <strong>not run</strong>:</p>
+  <p class="ar">الكود الحقيقي لطلب واحد بمكتبة <code>requests</code> (<code>pip install requests</code>) قصير. نعرضه هنا ليُقرأ، <strong>لا ليُشغَّل</strong>:</p>
+
+<pre class="code" data-lang="python"><code>import requests
+
+resp = requests.get(
+    "https://api.example.org/schools",      # a placeholder address: not a real service
+    params={"page": 1, "per_page": 5},      # becomes ?page=1&amp;per_page=5
+    headers={"Accept": "application/json"},
+    timeout=10,                             # seconds; without it requests may wait forever
+)
+print(resp.status_code)
+data = resp.json()                          # JSON text -&gt; dicts and lists</code></pre>
+
+  <div class="warn">
+    <h4><span class="en">Not executed, on purpose</span><span class="ar">غير منفَّذ عن قصد</span></h4>
+    <p class="en"><code>api.example.org</code> is a placeholder (the name <code>example.org</code> is reserved for documentation), so the block above would fail if run. No code in this lesson touches the network, so that every example gives the same output on every machine, with or without internet, and so that you can make the server misbehave on demand.</p>
+    <p class="ar">إن <code>api.example.org</code> عنوان بديل (الاسم <code>example.org</code> محجوز للتوثيق)، فالكتلة أعلاه ستفشل إن شُغِّلت. ولا يلمس أي كود في هذا الدرس الشبكة، كي يعطي كل مثال الناتج نفسه على كل جهاز، بإنترنت أو بدونه، وكي تستطيع أن تجعل الخادم يسيء التصرف عند الطلب.</p>
+  </div>
+
+  <h3 id="t1l5-s13"><span class="en">The classroom server</span><span class="ar">الخادم الصفّي</span></h3>
+
+  <p class="en">To practise every path safely we use a tiny stand-in. Save this as <code>fake_api.py</code> next to your notebook. <code>make_fake_get()</code> returns a function called exactly like <code>requests.get</code> — same arguments, and a result with <code>.status_code</code>, <code>.headers</code>, <code>.json()</code> and <code>.raise_for_status()</code> — that serves the three page files. A <code>script</code> makes a page fail on purpose (429, 500, 503 or a timeout) a given number of times before it answers properly; <code>api_key</code> makes it demand a token. You do not need to study it; you need to know that it is only the stage set.</p>
+  <p class="ar">لنتمرّن على كل مسار بأمان نستعمل بديلًا صغيرًا. احفظ هذا باسم <code>fake_api.py</code> بجوار دفترك. تعيد <code>make_fake_get()</code> دالة تُستدعى تمامًا مثل <code>requests.get</code> — بالوسائط نفسها، ونتيجتها فيها <code>.status_code</code> وَ<code>.headers</code> وَ<code>.json()</code> وَ<code>.raise_for_status()</code> — وتقدّم ملفات الصفحات الثلاث. و<code>script</code> يجعل صفحة تفشل عمدًا (429 أو 500 أو 503 أو مهلة) عددًا محددًا من المرات قبل أن تجيب كما يجب؛ و<code>api_key</code> يجعلها تطلب رمزًا. لا تحتاج إلى دراستها؛ يكفي أن تعرف أنها مجرد ديكور المسرح.</p>
+
+<pre class="code" data-lang="python"><code># fake_api.py  -  a classroom stand-in for requests.get that serves the fixture files
+import json
+from pathlib import Path
+from urllib.parse import urlparse, parse_qs
+
+PAGES = Path("downloads/t1")            # where schools_api_page1..3.json live
+
+
+class HTTPError(Exception):             # plays the part of requests.HTTPError
+    pass
+
+
+class FakeResponse:
+    def __init__(self, status_code, body, headers=None):
+        self.status_code = status_code
+        self._body = body
+        self.headers = headers or {}
+
+    def json(self):
+        return self._body
+
+    def raise_for_status(self):
+        if self.status_code &gt;= 400:
+            raise HTTPError(f"{self.status_code} error")
+
+
+def make_fake_get(script=None, api_key=None):
+    """script = {page: [outcome, ...]}: each outcome (429, 500, 503 or "timeout")
+    is served once, in order, before the real page. api_key demands a Bearer token."""
+    script = {page: list(queue) for page, queue in (script or {}).items()}
+    log = []                            # every page number that was asked for
+
+    def fake_get(url, params=None, headers=None, timeout=None):
+        parts = urlparse(url)
+        query = {k: v[0] for k, v in parse_qs(parts.query).items()}
+        query.update(params or {})
+        page = int(query.get("page", 1))
+        log.append(page)
+        if parts.path != "/schools":
+            return FakeResponse(404, {"error": "not found"})
+        if api_key and (headers or {}).get("Authorization") != f"Bearer {api_key}":
+            return FakeResponse(401, {"error": "missing or wrong API key"})
+        queue = script.get(page, [])
+        if queue:
+            outcome = queue.pop(0)
+            if outcome == "timeout":
+                raise TimeoutError("no reply within the timeout")
+            if outcome == 429:
+                return FakeResponse(429, {"error": "slow down"}, {"Retry-After": "2"})
+            return FakeResponse(outcome, {"error": "server trouble"})
+        with open(PAGES / f"schools_api_page{page}.json", encoding="utf-8") as f:
+            return FakeResponse(200, json.load(f))
+
+    fake_get.log = log
+    return fake_get</code></pre>
+
+  <p class="en">One real request-and-response, from the fake server:</p>
+  <p class="ar">طلب واستجابة واحد حقيقي من الخادم المزيّف:</p>
+
+<pre class="code" data-lang="python"><code>from fake_api import make_fake_get
+
+get = make_fake_get()
+resp = get("https://api.example.org/schools", params={"page": 1, "per_page": 5})
+
+print(resp.status_code)
+print(resp.headers)
+body = resp.json()
+print({k: v for k, v in body.items() if k != "results"})
+print(len(body["results"]), "schools in this reply")</code></pre>
+  <div class="output">200
+{}
+{'page': 1, 'per_page': 5, 'total': 13, 'pages': 3, 'next': 'https://api.example.org/schools?page=2'}
+5 schools in this reply</div>
+
+  <p class="en">The body is not just the data. Next to <code>results</code> it carries instructions: <code>total: 13</code> schools, <code>per_page: 5</code>, <code>pages: 3</code>, and a <code>next</code> address for the following page. The reply says it is <em>part</em> of something bigger (Concept 5). The fake server sends no headers; real ones send several (<code>Content-Type</code>, rate-limit hints, <code>Retry-After</code> when they are busy).</p>
+  <p class="ar">الجسم ليس البيانات فقط. فبجانب <code>results</code> يحمل تعليمات: <code>total: 13</code> مدرسة، وَ<code>per_page: 5</code>، وَ<code>pages: 3</code>، وعنوان <code>next</code> للصفحة التالية. فالردّ يقول إنه <em>جزء</em> من شيء أكبر (المفهوم 5). والخادم المزيّف لا يرسل ترويسات؛ أما الحقيقية فترسل عدة ترويسات (<code>Content-Type</code> وتلميحات حدّ الطلبات وَ<code>Retry-After</code> حين تنشغل).</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">In <code>https://api.example.org/schools?page=2&amp;per_page=5</code>, which part is the <em>endpoint</em>?</span><span class="ar">في <code>https://api.example.org/schools?page=2&amp;per_page=5</code> أي جزء هو <em>نقطة النهاية</em>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>api.example.org</code></span><span class="ar"><code>api.example.org</code></span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>/schools</code></span><span class="ar"><code>/schools</code></span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>?page=2&amp;per_page=5</code></span><span class="ar"><code>?page=2&amp;per_page=5</code></span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>https</code></span><span class="ar"><code>https</code></span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">The endpoint is the path that names one kind of data. The host (<code>api.example.org</code>) is the server that offers many endpoints — people often call it "the API" because it is the part that looks like a name. The query string only adjusts <em>how</em> the endpoint answers (which page, how many).</div>
+      <div class="ar">نقطة النهاية هي المسار الذي يسمّي نوعًا واحدًا من البيانات. أما المضيف (<code>api.example.org</code>) فهو الخادم الذي يقدّم عدة نقاط نهاية — ويسميه الناس غالبًا «الواجهة» لأنه الجزء الذي يشبه اسمًا. وسلسلة الاستعلام تضبط فقط <em>كيف</em> تجيب نقطة النهاية (أي صفحة وكم عنصرًا).</div>
+    </div>
+  </div>
+
+  <h3 id="t1l5-s14"><span class="en">Status codes: the first digit tells you whose problem it is</span><span class="ar">رموز الحالة: الرقم الأول يخبرك مشكلة من هي</span></h3>
+
+  <p class="en">The <span class="term" data-term="status-code">status code</span> is a three-digit number at the head of every response. The first digit is the family: <code>2xx</code> success; <code>3xx</code> "look elsewhere" (a redirect; the library follows it for you); <code>4xx</code> <strong>you</strong> sent something the server will not accept; <code>5xx</code> the <strong>server</strong> has trouble. That split decides the reaction: a 4xx will fail again if you repeat it unchanged; a 5xx may well succeed a moment later.</p>
+  <p class="ar"><span class="term" data-term="status-code">رمز الحالة (Status code)</span> رقم من ثلاثة أرقام في رأس كل استجابة. والرقم الأول هو العائلة: <code>2xx</code> نجاح؛ <code>3xx</code> «انظر في مكان آخر» (إعادة توجيه تتبعها المكتبة عنك)؛ <code>4xx</code> أرسلتَ <strong>أنت</strong> ما لا يقبله الخادم؛ <code>5xx</code> <strong>الخادم</strong> في ورطة. وهذا التقسيم يحدّد ردّ الفعل: الـ 4xx يفشل ثانية إن كرّرته كما هو؛ والـ 5xx قد ينجح بعد لحظة.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th><span class="en">Code</span><span class="ar">الرمز</span></th><th><span class="en">Means</span><span class="ar">يعني</span></th><th><span class="en">Do</span><span class="ar">افعل</span></th></tr></thead>
+      <tbody>
+        <tr><td><code>200</code></td><td><span class="en">OK</span><span class="ar">نجح</span></td><td><span class="en">read the body</span><span class="ar">اقرأ الجسم</span></td></tr>
+        <tr><td><code>301</code>, <code>302</code></td><td><span class="en">moved: use the address in <code>Location</code></span><span class="ar">نُقل: استعمل العنوان في <code>Location</code></span></td><td><span class="en">nothing: the library follows it</span><span class="ar">لا شيء: المكتبة تتبعه</span></td></tr>
+        <tr><td><code>400</code>, <code>422</code></td><td><span class="en">your request is malformed or invalid</span><span class="ar">طلبك مشوّه أو غير صالح</span></td><td><span class="en">fix the request; do not retry</span><span class="ar">أصلح الطلب؛ لا تعد المحاولة</span></td></tr>
+        <tr><td><code>401</code></td><td><span class="en">"who are you?": key missing or wrong</span><span class="ar">«من أنت؟»: المفتاح مفقود أو خاطئ</span></td><td><span class="en">fix the key; do not retry</span><span class="ar">أصلح المفتاح؛ لا تعد المحاولة</span></td></tr>
+        <tr><td><code>403</code></td><td><span class="en">"I know you, and you may not": no permission</span><span class="ar">«أعرفك ولا يحق لك»: لا صلاحية</span></td><td><span class="en">ask for access; do not retry</span><span class="ar">اطلب الصلاحية؛ لا تعد المحاولة</span></td></tr>
+        <tr><td><code>404</code></td><td><span class="en">no such address</span><span class="ar">لا يوجد هذا العنوان</span></td><td><span class="en">check the endpoint spelling; do not retry</span><span class="ar">راجع كتابة نقطة النهاية؛ لا تعد المحاولة</span></td></tr>
+        <tr><td><code>429</code></td><td><span class="en">too many requests: you hit the rate limit</span><span class="ar">طلبات كثيرة: بلغتَ حدّ المعدّل</span></td><td><span class="en">wait, then retry (Concept 6)</span><span class="ar">انتظر ثم أعد المحاولة (المفهوم 6)</span></td></tr>
+        <tr><td><code>500</code>, <code>502</code>, <code>503</code>, <code>504</code></td><td><span class="en">the server failed, is overloaded, or timed out behind a gateway</span><span class="ar">فشل الخادم أو ازدحم أو انتهت مهلته خلف بوابة</span></td><td><span class="en">back off and retry a few times, then give up</span><span class="ar">تباطأ وأعد المحاولة بضع مرات ثم استسلم</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure class="diagram" data-diagram="t1-l5-status-flow">
+    <figcaption><span class="en">"What do I do with this status code?" The whole table as one decision. Only 429 and the 5xx family go round the retry loop, and the loop is bounded.</span><span class="ar">«ماذا أفعل بهذا الرمز؟» الجدول كله في قرار واحد. الرمز 429 وعائلة 5xx وحدهما يدوران في حلقة إعادة المحاولة، والحلقة محدودة.</span></figcaption>
+  </figure>
+
+  <p class="en">Here are four of those replies from the fake server (the key is a fake one; the script makes page 1 answer 429, then 500, before it answers properly):</p>
+  <p class="ar">وهذه أربعة من تلك الردود من الخادم المزيّف (المفتاح مزيّف؛ والسكربت يجعل الصفحة 1 تردّ بـ 429 ثم 500 قبل أن تجيب كما يجب):</p>
+
+<pre class="code" data-lang="python"><code>from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools"
+auth = {"Authorization": "Bearer demo-key"}
+get = make_fake_get(script={1: [429, 500]}, api_key="demo-key")
+
+attempts = [
+    ("wrong endpoint", "https://api.example.org/school", {}),
+    ("no key",         URL, {}),
+    ("with key, 1st",  URL, auth),
+    ("with key, 2nd",  URL, auth),
+    ("with key, 3rd",  URL, auth),
+]
+for label, url, headers in attempts:
+    resp = get(url, headers=headers)
+    print(f"{label:&lt;15}{resp.status_code}  {resp.headers}  {list(resp.json())}")</code></pre>
+  <div class="output">wrong endpoint 404  {}  ['error']
+no key         401  {}  ['error']
+with key, 1st  429  {'Retry-After': '2'}  ['error']
+with key, 2nd  500  {}  ['error']
+with key, 3rd  200  {}  ['page', 'per_page', 'total', 'pages', 'next', 'results']</div>
+
+  <p class="en">Each row is a different <em>cause</em> with a different <em>cure</em>. Notice that a 4xx and a 5xx both carry an <code>error</code> field instead of <code>results</code>: code that reads <code>["results"]</code> without looking at the status will crash on the first and misreport on the second. Only the 429 carried the <code>Retry-After</code> header.</p>
+  <p class="ar">كل صف <em>سبب</em> مختلف وله <em>علاج</em> مختلف. لاحظ أن الـ 4xx والـ 5xx كليهما يحمل حقل <code>error</code> بدل <code>results</code>: والكود الذي يقرأ <code>["results"]</code> دون أن ينظر إلى الحالة سينهار عند الأول ويُخبر خطأً عند الثاني. ولم يحمل ترويسة <code>Retry-After</code> إلا الرمز 429.</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">Your script gets <code>401</code> on every request. What is the right reaction?</span><span class="ar">يتلقى سكربتك <code>401</code> عند كل طلب. ما ردّ الفعل الصحيح؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">Sleep and retry: the server is probably busy</span><span class="ar">نم وأعد المحاولة: الخادم مشغول على الأرجح</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">Stop and check the API key and how it is sent; retrying cannot help</span><span class="ar">توقّف وافحص مفتاح الواجهة وطريقة إرساله؛ إعادة المحاولة لن تفيد</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Request smaller pages</span><span class="ar">اطلب صفحات أصغر</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Treat it like 404 and try another endpoint</span><span class="ar">عامله مثل 404 وجرّب نقطة نهاية أخرى</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">401 is in the "you" family: the server does not accept who you claim to be. Sleeping is the reflex for 429 and 5xx, which are about <em>load</em>; here the same request will be refused forever. Page size is irrelevant to identity, and a 404 means a wrong address, not wrong credentials.</div>
+      <div class="ar">الرمز 401 من عائلة «أنت»: الخادم لا يقبل من تدّعي أنك هو. والنوم ردّ فعل الرمز 429 والـ 5xx اللذين يتعلقان بـ <em>الحِمل</em>؛ أما هنا فسيُرفض الطلب نفسه إلى الأبد. وحجم الصفحة لا علاقة له بالهوية، و404 تعني عنوانًا خاطئًا لا بيانات اعتماد خاطئة.</div>
+    </div>
+  </div>
+
+  <div class="thread">
+    <h4><span class="en">Thread · T-FETCH opens here: get data from another system</span><span class="ar">خيط · يبدأ T-FETCH هنا: جلب بيانات من نظام آخر</span></h4>
+    <p class="en"><strong>Solution 1:</strong> <code>requests.get(url).json()</code> — <em>gap:</em> it assumes a 200, one page and no limit (Concept 5 shows each assumption failing). <strong>Solution 2:</strong> check <code>status_code</code>, call <code>raise_for_status()</code>, follow <code>next</code>, sleep on 429 — <em>gap:</em> still no retry policy and no timeout (Concept 6). <strong>Solution 3:</strong> a function with a timeout, bounded retries and a validated result (Concept 7) — <em>gap:</em> every run still hits the server again, with no cache; <a href="#t1-lesson-06">Lesson 6</a> picks that up.</p>
+    <p class="ar"><strong>الحل 1:</strong> <code>requests.get(url).json()</code> — <em>الثغرة:</em> يفترض رمز 200 وصفحة واحدة وبلا حدّ (يُري المفهوم 5 كل افتراض وهو يفشل). <strong>الحل 2:</strong> افحص <code>status_code</code> واستدعِ <code>raise_for_status()</code> وتتبّع <code>next</code> وانتظر عند 429 — <em>الثغرة:</em> ما زالت بلا سياسة إعادة محاولة ولا مهلة (المفهوم 6). <strong>الحل 3:</strong> دالة بمهلة وإعادة محاولات محدودة ونتيجة مُتحقَّق منها (المفهوم 7) — <em>الثغرة:</em> كل تشغيل يطرق الخادم من جديد دون ذاكرة مؤقتة؛ ويتناول <a href="#t1-lesson-06">الدرس 6</a> هذه النقطة.</p>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">Calling a hosted model is the same conversation: a <code>POST</code> to an endpoint, a JSON body that carries the prompt and settings, your key in a header, a JSON reply, and the same status families — and a 429 is routine on model APIs, which meter by requests and by tokens. Everything in Concepts 5 to 7 applies unchanged. A second point is about <em>what you may collect</em>. Data you pull from an API or a web page is only usable as training data if its licence and terms allow it, and this registry shows the privacy side: <code>contacts.email</code> and <code>contacts.phone</code> are personal contact data. A model trained on them can memorise and repeat them. Decide which fields you need <em>before</em> you collect, and drop the rest at the door.</p>
+    <p class="ar">استدعاء نموذج مستضاف هو الحوار نفسه: <code>POST</code> إلى نقطة نهاية، وجسم JSON يحمل السؤال والإعدادات، ومفتاحك في ترويسة، وردّ JSON، وعائلات الحالة نفسها — والرمز 429 معتاد في واجهات النماذج التي تحسب بالطلبات وبالرموز (tokens). وكل ما في المفاهيم 5 إلى 7 ينطبق دون تغيير. والنقطة الثانية عن <em>ما يحق لك جمعه</em>. البيانات التي تسحبها من واجهة أو صفحة ويب لا تصلح بيانات تدريب إلا إن سمحت بذلك رخصتها وشروطها، وهذا السجلّ يُري جانب الخصوصية: <code>contacts.email</code> وَ<code>contacts.phone</code> بيانات اتصال شخصية. والنموذج المدرَّب عليها قد يحفظها ويكررها. قرّر أي الحقول تحتاج <em>قبل</em> أن تجمع، وأسقط الباقي عند الباب.</p>
+  </div>
+
+  <!-- =================================================== CONCEPT 5 -->
+  <h2 id="t1l5-h5"><span class="en">Concept 5 — Pagination: the data arrives in installments</span><span class="ar">المفهوم 5 — التصفيح: تصل البيانات على دفعات</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">The registry has 13 schools and one request returned 5. A server that handed over ten thousand records in one go would be slow to answer and heavy to carry, so APIs answer in <span class="term" data-term="pagination">pages</span>: a slice of the data plus the means to ask for the next slice. The reply says so — <code>total: 13</code>, <code>pages: 3</code>, <code>next: …</code> — to anyone who reads more than <code>results</code>. Code that takes <code>results</code> and moves on builds a table that is right in every respect except that it holds 5 of the 13 schools.</p>
+    <p class="ar">في السجلّ 13 مدرسة وأعاد طلب واحد 5 منها. الخادم الذي يسلّم عشرة آلاف سجلّ دفعة واحدة سيكون بطيئًا في الجواب ثقيلًا في النقل، لذلك تجيب الواجهات على <span class="term" data-term="pagination">صفحات</span>: شريحة من البيانات مع وسيلة لطلب الشريحة التالية. والردّ يقول ذلك — <code>total: 13</code> وَ<code>pages: 3</code> وَ<code>next: …</code> — لمن يقرأ أكثر من <code>results</code>. أما الكود الذي يأخذ <code>results</code> ويمضي فيبني جدولًا صحيحًا في كل شيء إلا أنه يحوي 5 مدارس من 13.</p>
+  </div>
+
+  <h3 id="t1l5-s15"><span class="en">Three versions of "get the schools"</span><span class="ar">ثلاث نسخ من «اجلب المدارس»</span></h3>
+
+  <p class="en">Each version runs against the classroom server twice: on a good day, and on a day when the server answers 429 once. The only line that changes in the drivers is where the trouble is placed.</p>
+  <p class="ar">تعمل كل نسخة على الخادم الصفّي مرتين: في يوم جيد، وفي يوم يردّ فيه الخادم بالرمز 429 مرة واحدة. والسطر الوحيد الذي يتغيّر في كود التشغيل هو موضع المشكلة.</p>
+
+  <div class="evolve" id="t1l5-e3">
+    <div class="ver" data-title-en="Version 1 — one request, trust the reply" data-title-ar="النسخة 1 — طلب واحد وثقة بالردّ">
+<pre class="code bad" data-lang="python"><code>from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools"
+
+
+def load_schools(get):
+    return get(URL).json()["results"]          # trust the reply
+
+
+print(len(load_schools(make_fake_get())), "rows on a good day")
+print(len(load_schools(make_fake_get(script={1: [429]}))), "rows on a busy day")</code></pre>
+      <div class="output">5 rows on a good day
+Traceback (most recent call last):
+  File "demo.py", line 11, in &lt;module&gt;
+    print(len(load_schools(make_fake_get(script={1: [429]}))), "rows on a busy day")
+              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "demo.py", line 7, in load_schools
+    return get(URL).json()["results"]          # trust the reply
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'results'</div>
+      <p class="en"><strong>What it does:</strong> one request, then <code>["results"]</code>. <strong>What goes wrong, twice:</strong> on a good day it returns <em>5 rows of 13</em> and nothing says so. On a busy day the server's reply is an error document, which has no <code>results</code>, so the crash is a <code>KeyError: 'results'</code> — a message about a dictionary that never mentions 429. (Had the code used <code>.get("results", [])</code> to be "safe", it would have returned an empty table without a sound.)</p>
+      <p class="ar"><strong>ماذا تفعل:</strong> طلب واحد ثم <code>["results"]</code>. <strong>ما الذي يخطئ، مرتين:</strong> في اليوم الجيد تعيد <em>5 صفوف من 13</em> ولا شيء يقول ذلك. وفي اليوم المشغول يكون ردّ الخادم وثيقة خطأ لا تحوي <code>results</code>، فيكون الانهيار <code>KeyError: 'results'</code> — رسالة عن قاموس لا تذكر 429 أبدًا. (ولو استعمل الكود <code>.get("results", [])</code> «للأمان» لأعاد جدولًا فارغًا بلا صوت.)</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 — check the status code" data-title-ar="النسخة 2 — فحص رمز الحالة">
+<pre class="code" data-lang="python"><code>from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools"
+
+
+def load_schools(get):
+    resp = get(URL)
+    if resp.status_code != 200:
+        raise RuntimeError(f"registry answered {resp.status_code}")
+    return resp.json()["results"]
+
+
+print(len(load_schools(make_fake_get())), "rows on a good day")
+print(len(load_schools(make_fake_get(script={1: [429]}))), "rows on a busy day")</code></pre>
+      <div class="output">5 rows on a good day
+Traceback (most recent call last):
+  File "demo.py", line 14, in &lt;module&gt;
+    print(len(load_schools(make_fake_get(script={1: [429]}))), "rows on a busy day")
+              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "demo.py", line 9, in load_schools
+    raise RuntimeError(f"registry answered {resp.status_code}")
+RuntimeError: registry answered 429</div>
+      <p class="en"><strong>What changed:</strong> the reply's <code>status_code</code> is checked before the body is touched. <strong>What it fixes:</strong> the misleading crash — a busy day now stops with <code>registry answered 429</code>, which names the real cause. <strong>Still imperfect:</strong> the good day still returns <em>5</em> rows. The reply carried <code>total: 13</code> and a <code>next</code> address, and Version 2 ignores both.</p>
+      <p class="ar"><strong>ما الذي تغيّر:</strong> يُفحص <code>status_code</code> قبل لمس الجسم. <strong>ما الذي يصلحه:</strong> الانهيار المضلِّل — فاليوم المشغول يتوقف الآن بـ <code>registry answered 429</code> التي تسمّي السبب الحقيقي. <strong>ما زال ناقصًا:</strong> ما زال اليوم الجيد يعيد <em>5</em> صفوف. فقد حمل الردّ <code>total: 13</code> وعنوان <code>next</code> وتتجاهلهما النسخة 2.</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 — follow next until it is None" data-title-ar="النسخة 3 — تتبّع next حتى يصير None">
+<pre class="code good" data-lang="python"><code>from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools"
+
+
+def load_schools(get):
+    rows, url = [], URL
+    while url:
+        resp = get(url)
+        if resp.status_code != 200:
+            raise RuntimeError(f"registry answered {resp.status_code} for {url}")
+        payload = resp.json()
+        rows.extend(payload["results"])
+        url = payload["next"]                  # None on the last page
+    return rows
+
+
+print(len(load_schools(make_fake_get())), "rows on a good day")
+print(len(load_schools(make_fake_get(script={2: [429]}))), "rows on a busy day")</code></pre>
+      <div class="output">13 rows on a good day
+Traceback (most recent call last):
+  File "demo.py", line 19, in &lt;module&gt;
+    print(len(load_schools(make_fake_get(script={2: [429]}))), "rows on a busy day")
+              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "demo.py", line 11, in load_schools
+    raise RuntimeError(f"registry answered {resp.status_code} for {url}")
+RuntimeError: registry answered 429 for https://api.example.org/schools?page=2</div>
+      <p class="en"><strong>What changed:</strong> a <code>while url:</code> loop asks for a page, checks it, keeps its results and moves to <code>payload["next"]</code>; the last page has <code>next: null</code>, which Python reads as <code>None</code>, which is falsy, so the loop ends by itself. <strong>What it fixes:</strong> all 13 schools. The busy day has moved to page 2 to make a point. <strong>Still imperfect:</strong> that single 429 on page 2 throws away the 5 schools already fetched and the whole run fails, because nothing waits and retries. Concept 6 closes that.</p>
+      <p class="ar"><strong>ما الذي تغيّر:</strong> حلقة <code>while url:</code> تطلب صفحة وتفحصها وتحتفظ بنتائجها وتنتقل إلى <code>payload["next"]</code>؛ وللصفحة الأخيرة <code>next: null</code> التي تقرؤها بايثون <code>None</code> وهي تُعدّ خطأً منطقيًّا فتنتهي الحلقة وحدها. <strong>ما الذي يصلحه:</strong> المدارس الثلاث عشرة كلها. وانتقل اليوم المشغول إلى الصفحة 2 لتوضيح نقطة. <strong>ما زال ناقصًا:</strong> رمز 429 واحد في الصفحة 2 يُهدر المدارس الخمس التي جُلبت ويفشل التشغيل كله، لأن شيئًا لا ينتظر ولا يعيد المحاولة. وسيعالج المفهوم 6 هذا.</p>
+    </div>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">A loop ends with <code>len(rows) == 10</code>, but the last reply said <code>"total": 13</code>. What should you conclude?</span><span class="ar">انتهت حلقة وفيها <code>len(rows) == 10</code>، لكن آخر ردّ قال <code>"total": 13</code>. ماذا تستنتج؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">Nothing: <code>total</code> is only an estimate</span><span class="ar">لا شيء: <code>total</code> مجرد تقدير</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">pandas dropped 3 rows when building the table</span><span class="ar">أسقطت pandas ثلاثة صفوف عند بناء الجدول</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">Data is missing: a page was skipped or the loop stopped early; do not analyse this table</span><span class="ar">هناك بيانات ناقصة: تُخطّيت صفحة أو توقفت الحلقة مبكرًا؛ لا تحلّل هذا الجدول</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">The server counted 3 schools twice</span><span class="ar">عدّ الخادم ثلاث مدارس مرتين</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">When the server states a total, a shortfall is evidence, not noise. The tempting "estimate" excuse is how a truncated table gets analysed for months. (A server <em>can</em> be wrong, but you check for lost pages first, because that is the failure you can cause.) This is why the final function in Concept 7 compares <code>len(df)</code> with <code>total</code> before it returns anything.</div>
+      <div class="ar">حين يعلن الخادم إجماليًّا فإن النقص دليل لا ضجيج. وعذر «التقدير» المغري هو ما يجعل جدولًا مبتورًا يُحلَّل شهورًا. (قد يخطئ الخادم <em>فعلًا</em>، لكنك تفحص ضياع الصفحات أولًا لأنه الفشل الذي قد تتسبب به.) ولهذا تقارن الدالة النهائية في المفهوم 7 بين <code>len(df)</code> وَ<code>total</code> قبل أن تعيد أي شيء.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l5-s16"><span class="en">Follow <code>next</code>; do not count pages yourself</span><span class="ar">اتبع <code>next</code>؛ ولا تعدّ الصفحات بنفسك</span></h3>
+
+  <p class="en">Servers page in three styles: page numbers (<code>?page=2</code>), offset and limit (<code>?offset=10&amp;limit=5</code>), or an opaque cursor (<code>?cursor=a81f…</code>) that only the server can interpret. The <code>next</code> field hides which one is used. If you build your own page numbers, a cursor API breaks you; if you follow <code>next</code>, all three work. The corollary: after the first request, the <code>next</code> address is <em>complete</em>. Adding your own <code>params</code> on top is a classic bug:</p>
+  <p class="ar">تُصفّح الخوادم بثلاثة أساليب: أرقام الصفحات (<code>?page=2</code>)، أو الإزاحة والحدّ (<code>?offset=10&amp;limit=5</code>)، أو مؤشر معتَّم (<code>?cursor=a81f…</code>) لا يفسّره إلا الخادم. والحقل <code>next</code> يخفي أيها مستعمل. فإن بنيتَ أرقام صفحاتك بنفسك كسرتك واجهة المؤشر؛ وإن اتبعتَ <code>next</code> اشتغلت الثلاثة. والنتيجة: بعد الطلب الأول يكون عنوان <code>next</code> <em>كاملًا</em>. وإضافة <code>params</code> من عندك فوقه خطأ كلاسيكي:</p>
+
+<pre class="code bad" data-lang="python"><code>from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools"
+get = make_fake_get()
+
+rows, url = [], URL
+for _ in range(5):                                   # a guard: never loop forever on a bug
+    payload = get(url, params={"page": 1}).json()    # BUG: params override the page inside `next`
+    rows.extend(payload["results"])
+    url = payload["next"]
+print(len(rows), "rows,", len({r["id"] for r in rows}), "distinct ids; the server says total =", payload["total"])</code></pre>
+  <div class="output">25 rows, 5 distinct ids; the server says total = 13</div>
+
+  <p class="en">The explicit <code>page: 1</code> overrode the page inside <code>next</code>, so the server kept returning page 1. No error: 25 rows, five distinct schools, and a <code>total</code> that says 13. Without the <code>range(5)</code> guard this loop would never end. Two defences, both cheap: a bounded loop, and a check that the ids are unique and that their count equals <code>total</code>.</p>
+  <p class="ar">غلبَ <code>page: 1</code> الصريحة على الصفحة داخل <code>next</code>، فظل الخادم يعيد الصفحة 1. لا خطأ: 25 صفًّا وخمس مدارس مختلفة وَ<code>total</code> يقول 13. ولولا حارس <code>range(5)</code> لما انتهت هذه الحلقة أبدًا. دفاعان رخيصان: حلقة محدودة، وفحص أن المعرّفات فريدة وأن عددها يساوي <code>total</code>.</p>
+
+  <h3 id="t1l5-s17"><span class="en">Page size is a trade-off</span><span class="ar">حجم الصفحة مفاضلة</span></h3>
+
+  <p class="en">Many APIs let you choose the page size (<code>per_page</code>, <code>limit</code>), up to a maximum they set. The number of requests is <code>ceil(total / per_page)</code>:</p>
+  <p class="ar">تتيح كثير من الواجهات اختيار حجم الصفحة (<code>per_page</code> أو <code>limit</code>) حتى حدّ أقصى تضعه. وعدد الطلبات هو <code>ceil(total / per_page)</code>:</p>
+
+<pre class="code" data-lang="python"><code>import math
+
+total = 13
+for per_page in (5, 10, 13):
+    print(f"per_page={per_page:&lt;3} -&gt; {math.ceil(total / per_page)} request(s)")</code></pre>
+  <div class="output">per_page=5   -&gt; 3 request(s)
+per_page=10  -&gt; 2 request(s)
+per_page=13  -&gt; 1 request(s)</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th></th><th><span class="en">Big pages</span><span class="ar">صفحات كبيرة</span></th><th><span class="en">Small pages</span><span class="ar">صفحات صغيرة</span></th></tr></thead>
+      <tbody>
+        <tr><td><span class="en">Requests</span><span class="ar">الطلبات</span></td><td><span class="en">few: fewer chances to meet a rate limit</span><span class="ar">قليلة: فرص أقل للاصطدام بحدّ المعدّل</span></td><td><span class="en">many: more overhead, more 429s</span><span class="ar">كثيرة: كلفة أكبر ورموز 429 أكثر</span></td></tr>
+        <tr><td><span class="en">One reply</span><span class="ar">الردّ الواحد</span></td><td><span class="en">heavy: memory, time, a bigger timeout</span><span class="ar">ثقيل: ذاكرة ووقت ومهلة أكبر</span></td><td><span class="en">light and quick</span><span class="ar">خفيف وسريع</span></td></tr>
+        <tr><td><span class="en">When one fails</span><span class="ar">حين يفشل أحدها</span></td><td><span class="en">a lot to fetch again</span><span class="ar">كثير لإعادة جلبه</span></td><td><span class="en">little to fetch again</span><span class="ar">قليل لإعادة جلبه</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="en">There is no universal best. A middle size, within the server's stated maximum, and a loop that survives a failed page, is the usual answer.</p>
+  <p class="ar">لا يوجد أفضل مطلق. والجواب المعتاد: حجم وسط ضمن الحدّ الأقصى الذي يعلنه الخادم، وحلقة تنجو من فشل صفحة.</p>
+
+  <h3 id="t1l5-s18"><span class="en">Why the first page is not a sample</span><span class="ar">لماذا ليست الصفحة الأولى عيّنة</span></h3>
+
+<pre class="code" data-lang="python"><code>import pandas as pd
+
+get = make_fake_get()
+first_page = get(URL).json()["results"]
+everything = load_schools(get)
+
+for label, rows in (("page 1 only", first_page), ("all 3 pages", everything)):
+    df = pd.json_normalize(rows, sep="_")
+    students = df["enrolment_boys"] + df["enrolment_girls"]
+    print(f"{label:&lt;12}{len(df):&gt;3} schools   mean enrolment {students.mean():.1f}")</code></pre>
+  <div class="output">page 1 only   5 schools   mean enrolment 475.6
+all 3 pages  13 schools   mean enrolment 403.2</div>
+
+  <p class="en">The first page alone overstates the mean enrolment by about 18% (475.6 against 403.2). Servers sort by id, by date, by popularity — page 1 is almost never a random slice of the whole.</p>
+  <p class="ar">الصفحة الأولى وحدها تبالغ في متوسط عدد الطلبة بنحو 18% (475.6 مقابل 403.2). فالخوادم ترتّب بحسب المعرّف أو التاريخ أو الشهرة — والصفحة 1 نادرًا ما تكون شريحة عشوائية من الكل.</p>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">A training set pulled from an API that silently stops after page 1 is a <em>biased sample</em>: here the schools on page 1 are 18% bigger than the registry. A model fitted to it will be miscalibrated for the other 8 schools, and every metric computed on the same slice will look fine. Two habits protect you. Record <code>len(rows)</code> and <code>total</code> in the training metadata, and check the ids are unique: duplicates (the bug above) over-weight some examples, and if copies of one example land in both the training and the test set, the test score is inflated by leakage.</p>
+    <p class="ar">مجموعة تدريب مسحوبة من واجهة تتوقف بصمت بعد الصفحة 1 هي <em>عيّنة متحيّزة</em>: مدارس الصفحة 1 هنا أكبر بـ 18% من السجلّ. والنموذج الملائم لها سيكون غير معاير للمدارس الثماني الأخرى، وكل مقياس يُحسب على الشريحة نفسها سيبدو جيدًا. وعادتان تحميانك. سجّل <code>len(rows)</code> وَ<code>total</code> في بيانات التدريب الوصفية، وتحقق من فرادة المعرّفات: فالتكرارات (الخطأ أعلاه) تثقّل بعض الأمثلة، وإن وقعت نسخ من المثال الواحد في مجموعتي التدريب والاختبار معًا تضخّمت درجة الاختبار بالتسرّب.</p>
+  </div>
+
+  <!-- =================================================== CONCEPT 6 -->
+  <h2 id="t1l5-h6"><span class="en">Concept 6 — Rate limits, back-off and timeouts</span><span class="ar">المفهوم 6 — حدود المعدّل والتباطؤ والمهلات الزمنية</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">The loop of Concept 5 asks as fast as the network allows. Servers protect themselves with a <span class="term" data-term="rate-limit">rate limit</span>: a cap on how many requests one client may make in a time window. Go over it and the reply is <code>429 Too Many Requests</code>, usually with a <code>Retry-After</code> header that says how many seconds to wait. Servers also fail (5xx) and sometimes do not answer at all. A script that fetches data needs a <em>policy</em> for each of these, decided in advance, not an improvised reaction at 2 a.m.</p>
+    <p class="ar">حلقة المفهوم 5 تسأل بأسرع ما تسمح به الشبكة. والخوادم تحمي نفسها بـ<span class="term" data-term="rate-limit">حدّ المعدّل (Rate limit)</span>: سقف لعدد الطلبات التي يحق لعميل واحد إرسالها في نافذة زمنية. فإن تجاوزته كان الردّ <code>429 Too Many Requests</code> وغالبًا معه ترويسة <code>Retry-After</code> تقول كم ثانية تنتظر. والخوادم تفشل أيضًا (5xx) وأحيانًا لا تجيب أصلًا. والسكربت الذي يجلب البيانات يحتاج إلى <em>سياسة</em> لكل حالة، تُقرَّر مسبقًا، لا ردّ فعل مرتجل في الثانية فجرًا.</p>
+  </div>
+
+  <p class="en">Three words. <strong>Retry</strong>: ask again. <strong>Back-off</strong>: wait longer after each failure (2 s, then 4 s, then 8 s…) so a struggling server gets room to recover instead of a stampede. <strong>Timeout</strong>: the longest you will wait for a reply before treating the attempt as failed. The conversation looks like this:</p>
+  <p class="ar">ثلاث كلمات. <strong>إعادة المحاولة (Retry)</strong>: اسأل ثانية. <strong>التباطؤ (Back-off)</strong>: انتظر مدة أطول بعد كل فشل (ثانيتان ثم 4 ثم 8…) ليجد الخادم المتعثر فسحة للتعافي بدل أن تندفع عليه. <strong>المهلة (Timeout)</strong>: أطول مدة تنتظر فيها ردًّا قبل أن تعدّ المحاولة فاشلة. وهكذا يبدو الحوار:</p>
+
+  <figure class="diagram" data-diagram="t1-l5-retry-sequence">
+    <figcaption><span class="en">One page, up to four tries: 200 ends the loop, 429 waits as long as Retry-After says, 500 or 503 waits 2, 4, 8 seconds. After the last failure the script raises an error.</span><span class="ar">صفحة واحدة وحتى أربع محاولات: الرمز 200 ينهي الحلقة، و429 ينتظر المدة في Retry-After، و500 أو 503 ينتظر 2 ثم 4 ثم 8 ثوانٍ. وبعد آخر فشل يرفع السكربت خطأً.</span></figcaption>
+  </figure>
+
+  <h3 id="t1l5-s19"><span class="en">From "ask again" to a retry policy</span><span class="ar">من «اسأل ثانية» إلى سياسة إعادة محاولة</span></h3>
+
+  <p class="en">We build one function, <code>get_with_retry(get, url)</code>, that fetches <em>one</em> address robustly. Its drivers fetch page 2 while the server misbehaves in scripted ways. The <code>sleep</code> argument lets the demo record the waits instead of really waiting (real code passes <code>time.sleep</code>, the default).</p>
+  <p class="ar">نبني دالة واحدة، <code>get_with_retry(get, url)</code>، تجلب عنوانًا <em>واحدًا</em> بمتانة. وتجلب برامج التشغيل فيها الصفحة 2 بينما يسيء الخادم التصرف بطرائق مبرمجة. ويتيح الوسيط <code>sleep</code> أن يسجّل العرض فترات الانتظار بدل أن ينتظر فعلًا (والكود الحقيقي يمرّر <code>time.sleep</code> وهو الافتراضي).</p>
+
+  <div class="evolve" id="t1l5-e4">
+    <div class="ver" data-title-en="Version 1 — ask again, immediately" data-title-ar="النسخة 1 — اسأل ثانية، فورًا">
+<pre class="code bad" data-lang="python"><code>from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools?page=2"
+
+
+def get_with_retry(get, url):
+    while True:
+        resp = get(url)
+        if resp.status_code != 429:
+            return resp                        # otherwise: ask again, immediately
+
+
+get = make_fake_get(script={2: [429, 429, 429, 429]})
+resp = get_with_retry(get, URL)
+print(resp.status_code, "after", len(get.log), "calls and 0 seconds of waiting")</code></pre>
+      <div class="output">200 after 5 calls and 0 seconds of waiting</div>
+      <p class="en"><strong>What it does:</strong> on a 429, loop and ask again at once. It "works": the fifth call succeeds. <strong>What goes wrong:</strong> five calls in no time at all, to a server that just said "slow down". A real limiter keeps refusing during its window, so every impatient retry is another refusal and, on some services, a longer penalty. The loop is also <em>unbounded</em>: a server that stays busy keeps this script spinning forever. And it ignores the <code>Retry-After: 2</code> header the server took the trouble to send.</p>
+      <p class="ar"><strong>ماذا تفعل:</strong> عند 429 تدور وتسأل فورًا. و«تنجح»: المحاولة الخامسة تنجح. <strong>ما الذي يخطئ:</strong> خمسة طلبات في لحظة لخادم قال للتو «خفّف». والمحدِّد الحقيقي يواصل الرفض طوال نافذته، فكل إعادة متعجلة رفض آخر، وفي بعض الخدمات عقوبة أطول. والحلقة أيضًا <em>بلا حدّ</em>: خادم يبقى مشغولًا يُبقي هذا السكربت يدور إلى الأبد. وتتجاهل ترويسة <code>Retry-After: 2</code> التي تكلّف الخادم عناء إرسالها.</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 — wait as told, at most N tries" data-title-ar="النسخة 2 — انتظر كما قيل لك، وبحدّ أقصى N محاولة">
+<pre class="code" data-lang="python"><code>import time
+from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools?page=2"
+
+
+def get_with_retry(get, url, max_tries=4, sleep=time.sleep):
+    for attempt in range(1, max_tries + 1):
+        resp = get(url)
+        if resp.status_code != 429:
+            return resp
+        sleep(float(resp.headers.get("Retry-After", 2 ** attempt)))
+    raise RuntimeError(f"still rate-limited after {max_tries} tries")
+
+
+waits = []
+get = make_fake_get(script={2: [429, 429]})
+resp = get_with_retry(get, URL, sleep=waits.append)
+print(resp.status_code, "after", len(get.log), "calls; waited", waits)
+
+get = make_fake_get(script={2: [500]})
+print(get_with_retry(get, URL, sleep=waits.append).status_code, "&lt;- a 500 was handed back as if it were the answer")</code></pre>
+      <div class="output">200 after 3 calls; waited [2.0, 2.0]
+500 &lt;- a 500 was handed back as if it were the answer</div>
+      <p class="en"><strong>What changed:</strong> a <code>for</code> loop bounded by <code>max_tries</code>; before each retry it sleeps for the server's <code>Retry-After</code> (or <code>2 ** attempt</code> seconds if the header is missing); when the tries run out it raises instead of looping on. <strong>What it fixes:</strong> the hammering and the endless loop — two 429s cost two waits of 2.0 s, recorded in <code>waits</code>. <strong>Still imperfect:</strong> only 429 is handled. The second driver shows a 500 handed back to the caller "as if it were the answer", a timeout would escape as an uncaught exception, and no <code>timeout</code> is passed, so a server that never replies would freeze the script.</p>
+      <p class="ar"><strong>ما الذي تغيّر:</strong> حلقة <code>for</code> محدودة بـ <code>max_tries</code>؛ تنام قبل كل إعادة مدة <code>Retry-After</code> التي أرسلها الخادم (أو <code>2 ** attempt</code> ثانية إن غابت الترويسة)؛ وحين تنفد المحاولات ترفع خطأً بدل أن تواصل الدوران. <strong>ما الذي تصلحه:</strong> الطرق المتواصل والحلقة اللانهائية — فرمزا 429 كلّفا انتظارين من 2.0 ثانية مسجلين في <code>waits</code>. <strong>ما زال ناقصًا:</strong> لا يعالج إلا 429. يُري برنامج التشغيل الثاني رمز 500 يُسلَّم إلى المستدعي «كأنه الجواب»، وأي مهلة ستفلت استثناءً غير ممسوك، ولا يُمرَّر <code>timeout</code> فالخادم الذي لا يردّ أبدًا سيجمّد السكربت.</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 — retry every transient failure, back off, time out" data-title-ar="النسخة 3 — أعد كل فشل عابر، وتباطأ، وحدّد مهلة">
+<pre class="code good" data-lang="python"><code>import time
+from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools?page=2"
+RETRYABLE = {429, 500, 502, 503, 504}
+
+
+def get_with_retry(get, url, params=None, headers=None, max_tries=4, timeout=10, sleep=time.sleep):
+    for attempt in range(1, max_tries + 1):
+        try:
+            resp = get(url, params=params, headers=headers, timeout=timeout)
+        except TimeoutError:
+            resp = None                                    # a timeout is worth another try
+        if resp is not None and resp.status_code not in RETRYABLE:
+            return resp                                    # success, or an error a retry cannot fix
+        wait = float(2 ** attempt)                         # back-off: 2, 4, 8 ... seconds
+        if resp is not None and "Retry-After" in resp.headers:
+            wait = float(resp.headers["Retry-After"])      # the server's instruction beats our guess
+        if attempt &lt; max_tries:
+            sleep(wait)
+    raise RuntimeError(f"gave up on {url} after {max_tries} tries")
+
+
+waits = []
+get = make_fake_get(script={2: [429, "timeout", 500]})
+resp = get_with_retry(get, URL, sleep=waits.append)
+print(resp.status_code, "after", len(get.log), "calls; waited", waits)
+
+get = make_fake_get(script={2: [500, 500, 500, 500]})
+get_with_retry(get, URL, sleep=waits.append)</code></pre>
+      <div class="output">200 after 4 calls; waited [2.0, 4.0, 8.0]
+Traceback (most recent call last):
+  File "demo.py", line 30, in &lt;module&gt;
+    get_with_retry(get, URL, sleep=waits.append)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "demo.py", line 21, in get_with_retry
+    raise RuntimeError(f"gave up on {url} after {max_tries} tries")
+RuntimeError: gave up on https://api.example.org/schools?page=2 after 4 tries</div>
+      <p class="en"><strong>What changed:</strong> a <code>RETRYABLE</code> set (429 and the 5xx that mean "try later"); a <code>timeout=</code> passed to every call; a caught <code>TimeoutError</code> counts as a failed attempt; the back-off doubles (<code>2 ** attempt</code>) and <code>Retry-After</code> overrides it; no pointless sleep after the last try; any status outside the set is returned immediately for the caller to judge (a 404 will not be retried). <strong>What it fixes:</strong> the first driver survives a 429, a timeout and a 500 in a row — four calls, waits of 2, 4 and 8 s — and the second shows the end of the road: four 500s and it <em>raises</em>, instead of returning something half-true. <strong>Still imperfect:</strong> see the honest box below.</p>
+      <p class="ar"><strong>ما الذي تغيّر:</strong> مجموعة <code>RETRYABLE</code> (الرمز 429 والـ 5xx التي تعني «حاول لاحقًا»)؛ و<code>timeout=</code> يُمرَّر في كل استدعاء؛ و<code>TimeoutError</code> الممسوكة تُعدّ محاولة فاشلة؛ والتباطؤ يتضاعف (<code>2 ** attempt</code>) و<code>Retry-After</code> تغلبه؛ ولا نوم بلا فائدة بعد آخر محاولة؛ وأي حالة خارج المجموعة تُعاد فورًا ليحكم عليها المستدعي (فلن يُعاد 404). <strong>ما الذي تصلحه:</strong> يصمد برنامج التشغيل الأول أمام 429 ومهلة و500 على التوالي — أربعة استدعاءات وانتظارات 2 و4 و8 ثوانٍ — ويُري الثاني نهاية الطريق: أربع مرات 500 فـ<em>يرفع خطأً</em> بدل أن يعيد شيئًا نصف صحيح. <strong>ما زال ناقصًا:</strong> انظر الصندوق الصادق أدناه.</p>
+    </div>
+  </div>
+
+  <div class="warn">
+    <h4><span class="en">Same code, real library</span><span class="ar">الكود نفسه، مع المكتبة الحقيقية</span></h4>
+    <p class="en">The classroom server raises Python's built-in <code>TimeoutError</code>. With <code>requests</code> the exceptions are <code>requests.exceptions.Timeout</code> and <code>requests.exceptions.ConnectionError</code>, so the <code>except</code> line becomes the one below (not executed). <code>requests</code> has <strong>no default timeout</strong>: forget <code>timeout=</code> and one dead connection can freeze a script for hours. It accepts a pair, <code>timeout=(3.05, 10)</code>, for connecting and for reading.</p>
+    <p class="ar">يرفع الخادم الصفّي الاستثناء المدمج في بايثون <code>TimeoutError</code>. أما مع <code>requests</code> فالاستثناءان هما <code>requests.exceptions.Timeout</code> وَ<code>requests.exceptions.ConnectionError</code>، فيصير سطر <code>except</code> كما أدناه (غير منفَّذ). و<code>requests</code> <strong>ليس لها مهلة افتراضية</strong>: انسَ <code>timeout=</code> فقد يجمّد اتصال ميت واحد السكربت ساعات. وتقبل زوجًا <code>timeout=(3.05, 10)</code> للاتصال وللقراءة.</p>
+<pre class="code" data-lang="python"><code>except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+    resp = None                                    # a timeout is worth another try</code></pre>
+  </div>
+
+  <div data-trace-id="t1-l5-pagination"></div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">Which reply should <code>get_with_retry</code> retry (and which should it hand straight back)?</span><span class="ar">أي ردّ يجب أن تعيد <code>get_with_retry</code> محاولته (وأيها تسلّمه فورًا)؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>404</code>: the page might appear in a moment</span><span class="ar"><code>404</code>: قد تظهر الصفحة بعد لحظة</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>401</code>: the key might start working</span><span class="ar"><code>401</code>: قد يبدأ المفتاح بالعمل</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>503</code>: the server says it is overloaded</span><span class="ar"><code>503</code>: يقول الخادم إنه مزدحم</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>400</code>: the request might become valid</span><span class="ar"><code>400</code>: قد يصير الطلب صالحًا</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">503 is about the server's <em>load</em>, so time can cure it. 404, 401 and 400 are about <em>your request</em>, which is unchanged by waiting: retrying only wastes time and calls, and hides the real error behind four slow attempts. That is why the retry set holds 429 and the 5xx family, nothing else.</div>
+      <div class="ar">الرمز 503 يتعلق بـ <em>حِمل</em> الخادم، فالزمن يعالجه. أما 404 و401 و400 فتتعلق بـ <em>طلبك</em> الذي لا يغيّره الانتظار: إعادة المحاولة تهدر الوقت والطلبات فقط وتخفي الخطأ الحقيقي خلف أربع محاولات بطيئة. ولهذا لا تضم مجموعة الإعادة إلا الرمز 429 وعائلة 5xx.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l5-s20"><span class="en">Politeness is part of the job</span><span class="ar">الأدب جزء من العمل</span></h3>
+
+  <ul>
+    <li><span class="en"><strong>Pause between pages</strong> (<code>time.sleep(0.2)</code>) even when nothing has refused you; the limit is easier to stay under than to recover from.</span><span class="ar"><strong>توقّف بين الصفحات</strong> (<code>time.sleep(0.2)</code>) حتى حين لا يرفضك أحد؛ فالبقاء تحت الحدّ أسهل من التعافي منه.</span></li>
+    <li><span class="en"><strong>Do not re-fetch what you have:</strong> save the result to a file and read the file next time (Lesson 6 returns to this cache gap).</span><span class="ar"><strong>لا تعد جلب ما عندك:</strong> احفظ النتيجة في ملف واقرأ الملف في المرة التالية (يعود الدرس 6 إلى ثغرة الذاكرة المؤقتة هذه).</span></li>
+    <li><span class="en"><strong>Read the documentation:</strong> the real limit, the maximum page size and the terms of use belong to the provider, not to this lesson.</span><span class="ar"><strong>اقرأ التوثيق:</strong> الحدّ الحقيقي وأقصى حجم للصفحة وشروط الاستعمال يملكها المزوّد لا هذا الدرس.</span></li>
+    <li><span class="en"><strong>Identify yourself</strong> with a <code>User-Agent</code> header that says who runs the script, where the provider offers a way to contact you.</span><span class="ar"><strong>عرّف بنفسك</strong> بترويسة <code>User-Agent</code> تقول من يشغّل السكربت، حيث يتيح المزوّد وسيلة للتواصل معك.</span></li>
+  </ul>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">On a model API a retry loop is also a <em>cost</em> loop. These services meter by request and by token, and 429 is routine at volume. An unbounded retry on a paid call can multiply the bill, and a <code>POST</code> that timed out may already have been processed (and billed) on the server — unlike a <code>GET</code>, repeating it is not free of side effects. Use the bounded policy of Version 3, log every retry so you can see the real failure rate, and add the pause between calls when you label thousands of documents. In the worst case Version 3 spends 2 + 4 + 8 = 14 s of waiting on one page and then stops; that ceiling is the point.</p>
+    <p class="ar">في واجهة نموذج تكون حلقة إعادة المحاولة أيضًا حلقة <em>تكلفة</em>. هذه الخدمات تحسب بالطلب وبالرمز (token)، والرمز 429 معتاد عند الأحجام الكبيرة. وإعادة محاولة بلا حدّ على استدعاء مدفوع قد تضاعف الفاتورة، والـ <code>POST</code> التي انتهت مهلتها ربما عولجت (وحوسبت) على الخادم أصلًا — وبخلاف <code>GET</code> لا يخلو تكرارها من آثار جانبية. استعمل السياسة المحدودة في النسخة 3، وسجّل كل إعادة لترى معدّل الفشل الحقيقي، وأضف التوقف بين الاستدعاءات حين تُرمّز آلاف الوثائق. وفي أسوأ الأحوال تنفق النسخة 3 على الصفحة الواحدة 2 + 4 + 8 = 14 ثانية انتظار ثم تتوقف؛ وهذا السقف هو المقصود.</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب صادق</span></h4>
+    <p class="en">Retries <em>hide</em> a flaky server: if every fifth page needs a second try you want to know, so count them. Back-off here is deterministic; real systems add random "jitter" so that many clients do not all retry at the same instant. Retrying is safe for a <code>GET</code>, not automatically for a <code>POST</code>. And for a three-page fetch you run once a month, a simpler script that fails loudly and is re-run by hand may be the better engineering. Production code often uses a tested library (<code>urllib3.util.Retry</code> with a <code>requests</code> session, or <code>tenacity</code>) rather than a hand-made loop — but now you know what those libraries do.</p>
+    <p class="ar">إعادة المحاولة <em>تخفي</em> خادمًا متقلبًا: إن احتاجت كل صفحة خامسة إلى محاولة ثانية فأنت تريد أن تعرف، فعُدَّها. والتباطؤ هنا حتمي؛ أما الأنظمة الحقيقية فتضيف «تشويشًا» عشوائيًّا (jitter) كي لا يعيد عملاء كثيرون المحاولة في اللحظة نفسها. وإعادة المحاولة آمنة مع <code>GET</code> لا مع <code>POST</code> تلقائيًّا. ولجلب من ثلاث صفحات تشغّله مرة في الشهر قد يكون السكربت الأبسط الذي يفشل بصوت عالٍ ويُعاد تشغيله يدويًّا هو الهندسة الأفضل. وغالبًا يستعمل الكود الإنتاجي مكتبة مختبَرة (<code>urllib3.util.Retry</code> مع جلسة <code>requests</code>، أو <code>tenacity</code>) بدل حلقة مصنوعة يدويًّا — لكنك الآن تعرف ماذا تفعل تلك المكتبات.</p>
+  </div>
+
+  <!-- =================================================== CONCEPT 7 -->
+  <h2 id="t1l5-h7"><span class="en">Concept 7 — <code>fetch_all()</code>, secrets, and model JSON</span><span class="ar">المفهوم 7 — <code>fetch_all()</code> والأسرار وJSON النماذج</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">You now own the ingredients: a status check, a page loop, a retry policy, a timeout. Scattered through a notebook they get copied wrong: one cell checks the status, another forgets, a third pastes the key into the code. What an analysis needs is <em>one function with a contract</em>: it returns a complete, checked table, or it raises. It never returns half of the schools and lets you find out in a chart.</p>
+    <p class="ar">تملك الآن المكوّنات: فحص الحالة وحلقة الصفحات وسياسة إعادة المحاولة والمهلة. وحين تتناثر في دفتر تُنسخ خطأً: خلية تفحص الحالة وأخرى تنساها وثالثة تلصق المفتاح في الكود. ما يحتاجه التحليل هو <em>دالة واحدة لها عقد</em>: تعيد جدولًا كاملًا مفحوصًا أو ترفع خطأً. ولا تعيد أبدًا نصف المدارس وتدعك تكتشف ذلك في رسم بياني.</p>
+  </div>
+
+  <h3 id="t1l5-s21"><span class="en">One function, one contract</span><span class="ar">دالة واحدة وعقد واحد</span></h3>
+
+  <p class="en">Keep <code>get_with_retry</code> from Concept 6 in the same file. <code>fetch_all</code> follows <code>next</code>, hands every request to <code>get_with_retry</code>, turns any non-retryable error into an exception with <code>raise_for_status()</code>, collects the records, flattens them, and checks the result against what the server announced.</p>
+  <p class="ar">أبقِ <code>get_with_retry</code> من المفهوم 6 في الملف نفسه. تتبع <code>fetch_all</code> الحقل <code>next</code>، وتسلّم كل طلب إلى <code>get_with_retry</code>، وتحوّل أي خطأ غير قابل للإعادة إلى استثناء بـ <code>raise_for_status()</code>، وتجمع السجلات وتسطّحها، وتقارن النتيجة بما أعلنه الخادم.</p>
+
+<pre class="code good" data-lang="python"><code>import time
+import pandas as pd
+
+
+def fetch_all(get, first_url, headers=None, sleep=time.sleep):
+    rows, url, total = [], first_url, None
+    while url:
+        resp = get_with_retry(get, url, headers=headers, sleep=sleep)
+        resp.raise_for_status()                  # a 4xx that retrying cannot fix: stop, loudly
+        payload = resp.json()
+        rows.extend(payload["results"])
+        total, url = payload["total"], payload["next"]
+    df = pd.json_normalize(rows, sep="_")
+    if len(df) != total or not df["id"].is_unique:
+        raise ValueError(f"expected {total} distinct schools, got {len(df)} rows")
+    return df</code></pre>
+
+  <p class="en">Run it against a server that is having a bad day — page 2 answers 429 once, page 3 answers 500 and then times out before it answers:</p>
+  <p class="ar">شغّلها على خادم يمرّ بيوم سيئ — الصفحة 2 تردّ بـ 429 مرة، والصفحة 3 تردّ بـ 500 ثم تتجاوز المهلة قبل أن تجيب:</p>
+
+<pre class="code" data-lang="python"><code>URL = "https://api.example.org/schools"
+waits = []
+get = make_fake_get(script={2: [429], 3: [500, "timeout"]})
+df = fetch_all(get, URL, sleep=waits.append)
+
+print(df.shape, "- waited", waits)
+print(df[["id", "name_en", "governorate"]].tail(3).to_string())
+print(get.log)</code></pre>
+  <div class="output">(13, 12) - waited [2.0, 2.0, 4.0]
+     id                  name_en  governorate
+10  211         School 11 (Gaza)         Gaza
+11  212  School 12 (Khan Younis)  Khan Younis
+12  213        School 13 (Rafah)        Rafah
+[1, 2, 2, 3, 3, 3]</div>
+
+  <p class="en">Thirteen schools, twelve columns. <code>get.log</code> tells the story: page 2 was asked twice (the 429, then success) and page 3 three times (500, timeout, success); the three waits were the server's own 2 seconds, then 2 and 4 seconds of back-off. Now the failures that must <em>not</em> produce a table:</p>
+  <p class="ar">ثلاث عشرة مدرسة واثنا عشر عمودًا. ويحكي <code>get.log</code> القصة: طُلبت الصفحة 2 مرتين (الرمز 429 ثم النجاح) والصفحة 3 ثلاث مرات (500 ثم مهلة ثم نجاح)؛ وكانت فترات الانتظار الثلاث ثانيتي الخادم نفسه، ثم 2 و4 ثوانٍ تباطؤًا. والآن الإخفاقات التي يجب ألّا تنتج جدولًا:</p>
+
+<pre class="code" data-lang="python"><code>URL = "https://api.example.org/schools"
+cases = [
+    ("wrong endpoint", "https://api.example.org/school", {}),
+    ("page 3 always down", URL, {3: [503, 503, 503, 503]}),
+]
+for label, url, script in cases:
+    try:
+        fetch_all(make_fake_get(script=script), url, sleep=lambda seconds: None)
+    except Exception as err:
+        print(f"{label}: {type(err).__name__}: {err}")</code></pre>
+  <div class="output">wrong endpoint: HTTPError: 404 error
+page 3 always down: RuntimeError: gave up on https://api.example.org/schools?page=3 after 4 tries</div>
+
+  <p class="en">A wrong endpoint stops at once with a clear error (with the real library the exception is <code>requests.exceptions.HTTPError: 404 Client Error: Not Found for url: …</code>), and a page that stays down gives up after four tries instead of returning pages 1 and 2 as if they were everything. Both outcomes are what the contract promises. The last check inside the function — <code>len(df) != total or not df["id"].is_unique</code> — is the net under the net: it catches the duplicate-page bug of Concept 5 and any truncation you did not think of.</p>
+  <p class="ar">العنوان الخاطئ يتوقف فورًا بخطأ واضح (والاستثناء مع المكتبة الحقيقية <code>requests.exceptions.HTTPError: 404 Client Error: Not Found for url: …</code>)، والصفحة التي تبقى معطلة تستسلم بعد أربع محاولات بدل أن تعيد الصفحتين 1 و2 كأنهما كل شيء. وكلا الناتجين هو ما يعد به العقد. والفحص الأخير داخل الدالة — <code>len(df) != total or not df["id"].is_unique</code> — شبكة تحت الشبكة: تلتقط خطأ الصفحة المكررة من المفهوم 5 وأي بتر لم يخطر ببالك.</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">Why does <code>fetch_all</code> call <code>resp.raise_for_status()</code> after <code>get_with_retry</code> has already returned?</span><span class="ar">لماذا تستدعي <code>fetch_all</code> الدالة <code>resp.raise_for_status()</code> بعد أن أعادت <code>get_with_retry</code> ردًّا؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">To retry the 5xx errors that <code>get_with_retry</code> missed</span><span class="ar">لإعادة محاولة أخطاء 5xx التي فاتت <code>get_with_retry</code></span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>get_with_retry</code> hands back non-retryable replies (404, 401…) unchanged, so something must turn them into an exception before the code reads <code>["results"]</code></span><span class="ar">تُسلِّم <code>get_with_retry</code> الردود غير القابلة للإعادة (404 و401…) كما هي، فيجب أن يحوّلها شيء إلى استثناء قبل أن يقرأ الكود <code>["results"]</code></span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">To parse the JSON body</span><span class="ar">لتحليل جسم JSON</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">To apply the timeout</span><span class="ar">لتطبيق المهلة</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">Division of labour: <code>get_with_retry</code> decides <em>whether to try again</em>; <code>raise_for_status()</code> decides <em>whether what finally arrived is acceptable</em>. Without it a 404 reply would flow on and fail at <code>["results"]</code> with a <code>KeyError</code>, which is Version 1 of Concept 5 all over again. Parsing is <code>.json()</code>'s job and the timeout is applied inside the call.</div>
+      <div class="ar">تقسيم العمل: تقرّر <code>get_with_retry</code> <em>هل نحاول مجددًا</em>؛ وتقرّر <code>raise_for_status()</code> <em>هل ما وصل أخيرًا مقبول</em>. وبدونها يمرّ ردّ 404 ويفشل عند <code>["results"]</code> بـ <code>KeyError</code>، وهذه هي النسخة 1 من المفهوم 5 من جديد. أما التحليل فمهمة <code>.json()</code>، وتُطبَّق المهلة داخل الاستدعاء.</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Where this stops being the whole truth</span><span class="ar">حيث يتوقف هذا عن أن يكون الحقيقة كلها</span></h4>
+    <p class="en">The classroom server proves your <em>logic</em>, not the real server's habits. Real services name things differently — the records may sit under <code>data</code>, the total under <code>meta.total_pages</code>, the next page in a <code>Link</code> header — and they add headers, versions and their own error bodies. Read the provider's documentation and adapt the three lines that touch those names; the structure (status, loop, retry, validate) stays.</p>
+    <p class="ar">الخادم الصفّي يثبت <em>منطقك</em> لا عادات الخادم الحقيقي. الخدمات الحقيقية تسمّي الأشياء بطرائق أخرى — قد تقع السجلات تحت <code>data</code> والإجمالي تحت <code>meta.total_pages</code> والصفحة التالية في ترويسة <code>Link</code> — وتضيف ترويسات وإصدارات وأجسام أخطاء خاصة بها. اقرأ توثيق المزوّد وعدّل الأسطر الثلاثة التي تلمس هذه الأسماء؛ أما البنية (الحالة والحلقة وإعادة المحاولة والتحقق) فتبقى.</p>
+  </div>
+
+  <h3 id="t1l5-s22"><span class="en">Keys and secrets: never in the code</span><span class="ar">المفاتيح والأسرار: ليست في الكود أبدًا</span></h3>
+
+  <p class="en">Most real APIs identify you with an <span class="term" data-term="api-key">API key</span>: a long secret string, sent with every request, that says who you are and whom to bill or limit. Anyone who holds it can act as you. A key in your code is a key in every copy of your code: the notebook you email, the repository you push, the screenshot in a slide.</p>
+  <p class="ar">تعرّف معظم الواجهات الحقيقية هويتك بـ<span class="term" data-term="api-key">مفتاح الواجهة (API key)</span>: سلسلة سرية طويلة تُرسل مع كل طلب وتقول من أنت ومن يُحاسَب أو يُقيَّد. ومن يملكها يستطيع أن يتصرف باسمك. والمفتاح في كودك هو مفتاح في كل نسخة من كودك: الدفتر الذي ترسله بالبريد، والمستودع الذي تدفعه، ولقطة الشاشة في شريحة عرض.</p>
+
+<pre class="code bad" data-lang="python"><code>API_KEY = "reg-4f9c2e71b0d34a58"                 # a made-up key, committed to git = published
+resp = requests.get(url + "?api_key=" + API_KEY)   # and now it is in every server log too</code></pre>
+
+<pre class="code good" data-lang="python"><code>import os
+
+API_KEY = os.environ["REGISTRY_API_KEY"]            # KeyError at once if it was never set
+headers = {"Authorization": f"Bearer {API_KEY}"}    # in a header, never in the URL</code></pre>
+
+<pre class="code" data-lang="bash"><code># set it outside the code, in the terminal that runs the script
+export REGISTRY_API_KEY="..."            # macOS / Linux, this terminal only
+$env:REGISTRY_API_KEY = "..."            # Windows PowerShell, this window only
+
+# or keep it in a file named .env, list that file in .gitignore, and load it with python-dotenv
+# .gitignore  ->  .env</code></pre>
+
+  <p class="en">Why <code>os.environ["…"]</code> and not <code>os.environ.get("…")</code>? Watch what the quiet version does when the variable was never set:</p>
+  <p class="ar">لماذا <code>os.environ["…"]</code> وليس <code>os.environ.get("…")</code>؟ شاهد ما تفعله النسخة الهادئة حين لا يكون المتغيّر مضبوطًا:</p>
+
+<pre class="code" data-lang="python"><code>import os
+from fake_api import make_fake_get
+
+os.environ.pop("REGISTRY_API_KEY", None)                 # pretend it was never set
+get = make_fake_get(api_key="reg-demo-key")
+
+key = os.environ.get("REGISTRY_API_KEY")                 # .get returns None instead of failing
+resp = get("https://api.example.org/schools", headers={"Authorization": f"Bearer {key}"})
+print(key, resp.status_code, resp.json())
+
+try:
+    key = os.environ["REGISTRY_API_KEY"]                 # [] fails right here, naming the variable
+except KeyError as err:
+    print("KeyError:", err)</code></pre>
+  <div class="output">None 401 {'error': 'missing or wrong API key'}
+KeyError: 'REGISTRY_API_KEY'</div>
+
+  <p class="en"><code>.get</code> returned <code>None</code>, the f-string happily built <code>"Bearer None"</code>, and the failure surfaced as a 401 from a server — far from the line that was wrong. The square-bracket form fails on the spot and names the variable. Three more rules. <strong>History is forever:</strong> deleting a committed key in a later commit does not remove it from the earlier ones, so a key that ever reached a repository is a leaked key — revoke it and issue a new one (automated scanners do search public repositories for keys). <strong>Keep it out of output:</strong> never print it, and clear a notebook's outputs before sharing it. <strong>Least privilege:</strong> a separate, read-only key per project limits the damage.</p>
+  <p class="ar">أعادت <code>.get</code> القيمة <code>None</code>، وبنت صيغة f النصَّ <code>"Bearer None"</code> بكل رحابة، وظهر الفشل رمز 401 من خادم — بعيدًا عن السطر الخاطئ. أما صيغة الأقواس المربعة فتفشل في المكان وتسمّي المتغيّر. وثلاث قواعد أخرى. <strong>التاريخ إلى الأبد:</strong> حذف مفتاح مُودَع في إيداع لاحق لا يزيله من الإيداعات السابقة، فالمفتاح الذي وصل يومًا إلى مستودع هو مفتاح مسرَّب — ألغِه وأصدر غيره (وتبحث ماسحات آلية فعلًا في المستودعات العامة عن المفاتيح). <strong>أبقِه خارج المخرجات:</strong> لا تطبعه أبدًا، وامسح مخرجات الدفتر قبل مشاركته. <strong>أقل صلاحية:</strong> مفتاح مستقل للقراءة فقط لكل مشروع يحدّ الضرر.</p>
+
+  <h3 id="t1l5-s23"><span class="en">The same discipline for a model API: parse, validate, count</span><span class="ar">الانضباط نفسه لواجهة نموذج: حلّل وتحقق وعُدّ</span></h3>
+
+  <p class="en">When a hosted model is asked for JSON, its reply is the <em>body of a 200 response</em> — and even a perfect 200 does not make that body valid. The model's text is untrusted input, like a stranger's CSV. So it gets the same treatment as the API reply: a strict parse, a check of the keys and types you rely on, and a count of failures. The six replies below are made up, but each one is a mistake models really make:</p>
+  <p class="ar">حين يُطلب JSON من نموذج مستضاف فإن ردّه هو <em>جسم استجابة 200</em> — وحتى الرمز 200 المثالي لا يجعل هذا الجسم صالحًا. نصّ النموذج مُدخل غير موثوق مثل ملف CSV من غريب. فيُعامَل كما يُعامَل ردّ الواجهة: تحليل صارم، وفحص للمفاتيح والأنواع التي تعتمد عليها، وعدّ للإخفاقات. الردود الستة أدناه مختلَقة، لكن كلًّا منها خطأ ترتكبه النماذج فعلًا:</p>
+
+<pre class="code" data-lang="python"><code>import json
+
+REQUIRED = {"id": int, "governorate": str, "enrolment_total": int}
+
+
+def parse_model_json(text):
+    """Turn a model's reply into a checked dict, or raise ValueError saying why."""
+    start, end = text.find("{"), text.rfind("}")
+    if start == -1 or end &lt; start:
+        raise ValueError("no JSON object in the reply")
+    try:
+        data = json.loads(text[start:end + 1])
+    except json.JSONDecodeError as err:
+        raise ValueError(f"not valid JSON: {err.msg}") from err
+    for key, kind in REQUIRED.items():
+        if key not in data:
+            raise ValueError(f"missing key {key!r}")
+        if not isinstance(data[key], kind) or isinstance(data[key], bool):
+            raise ValueError(f"{key!r} should be {kind.__name__}, got {type(data[key]).__name__}")
+    return data
+
+
+replies = [
+    '{"id": 203, "governorate": "Rafah", "enrolment_total": 455}',
+    'Sure! Here it is:\n```json\n{"id": 203, "governorate": "Rafah", "enrolment_total": 455}\n```',
+    '{"id": 203, "governorate": "Rafah", "enrolment_total": "about 450"}',
+    '{"id": 203, "governorate": "Rafah",}',
+    '{"id": 203, "governorate": "Rafah"}',
+    "I could not find that school.",
+]
+for text in replies:
+    try:
+        print("OK  ", parse_model_json(text))
+    except ValueError as err:
+        print("FAIL", err)</code></pre>
+  <div class="output">OK   {'id': 203, 'governorate': 'Rafah', 'enrolment_total': 455}
+OK   {'id': 203, 'governorate': 'Rafah', 'enrolment_total': 455}
+FAIL 'enrolment_total' should be int, got str
+FAIL not valid JSON: Illegal trailing comma before end of object
+FAIL missing key 'enrolment_total'
+FAIL no JSON object in the reply</div>
+
+  <p class="en">Only <strong>2 of 6</strong> replies were usable. The second one succeeded only because the function digs the object out of the surrounding prose and code fence — a deliberate, visible choice. The text <code>"about 450"</code> is valid JSON and still wrong for a numeric field; a trailing comma, a missing key and a refusal each fail differently, and each failure says why. Many model APIs offer a "structured output" or "JSON mode" feature; it lowers the failure rate, it does not remove the need for this check. The loop that calls the model should <em>count</em> the failures, retry a small bounded number of times for the cases worth retrying (every retry costs a call), and never silently skip.</p>
+  <p class="ar">لم يصلح للاستعمال إلا <strong>2 من 6</strong> ردود. والثاني نجح فقط لأن الدالة تستخرج الكائن من النص والسياج البرمجي المحيطين به — خيار مقصود ومرئي. والنص <code>"about 450"</code> JSON صالح وخاطئ مع ذلك لحقل رقمي؛ والفاصلة الزائدة والمفتاح الناقص والاعتذار يفشل كلٌّ منها بطريقة، وكل فشل يقول السبب. وتقدّم كثير من واجهات النماذج ميزة «مخرجات منظَّمة» أو «وضع JSON»؛ وهي تخفّض معدّل الفشل ولا تلغي الحاجة إلى هذا الفحص. والحلقة التي تستدعي النموذج يجب أن <em>تعدّ</em> الإخفاقات، وتعيد عددًا صغيرًا محدودًا من المحاولات في الحالات التي تستحق (كل إعادة تكلّف استدعاءً)، ولا تتخطّى بصمت أبدًا.</p>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">A pipeline from an API to a model is a chain: <code>fetch_all</code> → DataFrame → features → training. Every link either returns a complete, checked result or raises. The silent alternatives — a truncated fetch, a swallowed JSON error, a <code>None</code> turned into a zero — are what make "the model got worse after the data refresh" impossible to debug, because nothing ever said that the data had changed. In the six replies above, a loop that skips failures would have kept 2 of 6 rows and reported nothing; with your labelled data that is a training set one third the size you believe, and not a random third. Count, compare to what you asked for, and fail loudly.</p>
+    <p class="ar">خط المعالجة من واجهة إلى نموذج سلسلة: <code>fetch_all</code> ← DataFrame ← خصائص ← تدريب. وكل حلقة إما تعيد نتيجة كاملة مفحوصة أو ترفع خطأً. والبدائل الصامتة — جلب مبتور، وخطأ JSON مبلوع، وَ<code>None</code> تحوّل إلى صفر — هي ما يجعل «ساء النموذج بعد تحديث البيانات» مستحيل التصحيح، لأن شيئًا لم يقل يومًا إن البيانات تغيّرت. وفي الردود الستة أعلاه كانت الحلقة التي تتخطى الإخفاقات ستبقي 2 من 6 صفوف ولا تبلّغ بشيء؛ ومع بياناتك الموسومة هذه مجموعة تدريب بثلث الحجم الذي تظنه، وليست ثلثًا عشوائيًّا. عُدّ، وقارن بما طلبتَ، واخفق بصوت عالٍ.</p>
+  </div>
+
+  <!-- =================================================== EXERCISES -->
+  <h2 id="t1l5-h8"><span class="en">Exercises</span><span class="ar">تمارين</span></h2>
+
+  <p class="en">Try each one before you open the solution. Every solution below was run on the real files and its output is printed exactly.</p>
+  <p class="ar">جرّب كل تمرين قبل أن تفتح حلّه. وكل حلّ أدناه شُغِّل على الملفات الحقيقية وناتجه مطبوع كما هو.</p>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 1 — Parse and navigate one record</span><span class="ar">تمرين 1 — حلّل سجلًّا وتنقّل فيه</span></h4>
+    <p class="en">The string below is school 208 as an API might send it. Parse it and print one line: the total enrolment (boys + girls), the first facility or <code>none</code>, the email or <code>no email</code>, and the Arabic name, separated by <code> | </code>. The record has no <code>contacts</code> and an empty <code>facilities</code> list; your code must not crash on either.</p>
+    <p class="ar">النصّ أدناه هو المدرسة 208 كما قد ترسلها واجهة. حلّله واطبع سطرًا واحدًا: إجمالي الطلبة (بنين + بنات)، وأول مرفق أو <code>none</code>، والبريد أو <code>no email</code>، والاسم العربي، تفصل بينها <code> | </code>. السجلّ بلا <code>contacts</code> وقائمة <code>facilities</code> فيه فارغة؛ ويجب ألّا ينهار كودك عند أيٍّ منهما.</p>
+<pre class="code" data-lang="python"><code>import json
+
+text = '{"id": 208, "name": {"en": "School 8 (Rafah)", "ar": "مدرسة 8 (رفح)"}, "governorate": "Rafah", "level": "Secondary", "enrolment": {"boys": 107, "girls": 132}, "location": {"lat": 31.4442, "lon": 34.2242}, "facilities": []}'
+record = json.loads(text)
+
+# print: boys + girls | first facility or "none" | email or "no email" | Arabic name</code></pre>
+    <p class="en">Expected output:</p><p class="ar">الناتج المتوقع:</p>
+    <div class="output">239 | none | no email | مدرسة 8 (رفح)</div>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+<pre class="code good" data-lang="python"><code>import json
+
+text = '{"id": 208, "name": {"en": "School 8 (Rafah)", "ar": "مدرسة 8 (رفح)"}, "governorate": "Rafah", "level": "Secondary", "enrolment": {"boys": 107, "girls": 132}, "location": {"lat": 31.4442, "lon": 34.2242}, "facilities": []}'
+record = json.loads(text)
+
+total = record["enrolment"]["boys"] + record["enrolment"]["girls"]
+first = (record["facilities"] or ["none"])[0]
+email = record.get("contacts", {}).get("email", "no email")
+name = record["name"]["ar"]
+print(total, "|", first, "|", email, "|", name)</code></pre>
+      <div class="output">239 | none | no email | مدرسة 8 (رفح)</div>
+      <p class="en"><code>record["name"]["ar"]</code> and <code>record["enrolment"]</code> are required parts of the record, so plain <code>[]</code> is right: if they were missing you would want the crash. The two optional parts use the safe forms: an empty list is falsy, so <code>(record["facilities"] or ["none"])[0]</code> falls back to <code>"none"</code>; <code>contacts</code> is absent, so <code>.get("contacts", {})</code> supplies an empty dict. <code>dig(record, "facilities", 0, default="none")</code> from Concept 2 is the one-helper alternative.</p>
+      <p class="ar">إن <code>record["name"]["ar"]</code> وَ<code>record["enrolment"]</code> جزءان مطلوبان من السجلّ، فـ<code>[]</code> العادية صحيحة: لو غابا لأردتَ الانهيار. أما الجزءان الاختياريان فيستعملان الصيغ الآمنة: القائمة الفارغة تُعدّ خطأً منطقيًّا فتعود <code>(record["facilities"] or ["none"])[0]</code> إلى <code>"none"</code>؛ و<code>contacts</code> غائب فتقدّم <code>.get("contacts", {})</code> قاموسًا فارغًا. والبديل بدالة واحدة هو <code>dig(record, "facilities", 0, default="none")</code> من المفهوم 2.</p>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 2 — Flatten with <code>record_path</code></span><span class="ar">تمرين 2 — سطّح بـ <code>record_path</code></span></h4>
+    <p class="en">Load <code>schools_api_page2.json</code>. Build a DataFrame with one row per school and the page number copied onto each row, with underscore column names. Add a column <code>students</code> (boys + girls). Print <code>id</code>, <code>name_en</code>, <code>students</code> and <code>page</code>; then the mean of <code>students</code>; then how many schools on this page have an email.</p>
+    <p class="ar">حمّل <code>schools_api_page2.json</code>. ابنِ DataFrame بصف لكل مدرسة ورقم الصفحة منسوخ على كل صف، بأسماء أعمدة تفصل بينها شرطة سفلية. أضف عمود <code>students</code> (بنين + بنات). اطبع <code>id</code> وَ<code>name_en</code> وَ<code>students</code> وَ<code>page</code>؛ ثم متوسط <code>students</code>؛ ثم عدد مدارس هذه الصفحة التي لها بريد.</p>
+<pre class="code" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools_api_page2.json", encoding="utf-8") as f:
+    page = json.load(f)
+
+# df = pd.json_normalize(...)   # record_path? meta? sep?
+# add students, then print the three results</code></pre>
+    <p class="en">Expected output:</p><p class="ar">الناتج المتوقع:</p>
+    <div class="output">    id                   name_en  students page
+0  206           School 6 (Gaza)       367    2
+1  207    School 7 (Khan Younis)       482    2
+2  208          School 8 (Rafah)       239    2
+3  209  School 9 (Deir al-Balah)       349    2
+4  210       School 10 (Jabalia)       465    2
+mean students: 380.4
+with an email: 2</div>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+<pre class="code good" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools_api_page2.json", encoding="utf-8") as f:
+    page = json.load(f)
+
+df = pd.json_normalize(page, record_path="results", meta=["page", "total"], sep="_")
+df["students"] = df["enrolment_boys"] + df["enrolment_girls"]
+
+print(df[["id", "name_en", "students", "page"]].to_string())
+print("mean students:", df["students"].mean())
+print("with an email:", df["contacts_email"].notna().sum())</code></pre>
+      <div class="output">    id                   name_en  students page
+0  206           School 6 (Gaza)       367    2
+1  207    School 7 (Khan Younis)       482    2
+2  208          School 8 (Rafah)       239    2
+3  209  School 9 (Deir al-Balah)       349    2
+4  210       School 10 (Jabalia)       465    2
+mean students: 380.4
+with an email: 2</div>
+      <p class="en"><code>record_path="results"</code> names the list that holds the records, <code>meta=["page", "total"]</code> copies the top-level fields onto each row, and <code>sep="_"</code> gives <code>name_en</code> and <code>contacts_email</code>. Without <code>record_path</code> you would get the one-row table of Concept 3. <code>notna().sum()</code> counts the schools that actually have an email key (schools 206 and 209); remember that the other three <code>NaN</code> are "absent", not "unknown".</p>
+      <p class="ar">يسمّي <code>record_path="results"</code> القائمة التي تحمل السجلات، وينسخ <code>meta=["page", "total"]</code> الحقول العليا على كل صف، ويعطي <code>sep="_"</code> الاسمين <code>name_en</code> وَ<code>contacts_email</code>. وبدون <code>record_path</code> تحصل على جدول الصف الواحد من المفهوم 3. وتعدّ <code>notna().sum()</code> المدارس التي فيها مفتاح بريد فعلًا (المدرستان 206 و209)؛ وتذكّر أن قيم <code>NaN</code> الثلاث الأخرى تعني «غائب» لا «مجهول».</p>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 3 — Write the pagination loop</span><span class="ar">تمرين 3 — اكتب حلقة التصفيح</span></h4>
+    <p class="en">Write <code>all_ids(get, first_url, max_pages=10)</code> that follows <code>next</code> until it is <code>None</code> and returns the list of every school <code>id</code>. It must raise on any 4xx/5xx reply (use <code>raise_for_status()</code>) and must not loop forever if <code>next</code> never becomes <code>None</code>. Test it on a healthy classroom server.</p>
+    <p class="ar">اكتب <code>all_ids(get, first_url, max_pages=10)</code> تتبع <code>next</code> حتى يصير <code>None</code> وتعيد قائمة <code>id</code> كل مدرسة. ويجب أن ترفع خطأً عند أي ردّ 4xx/5xx (استعمل <code>raise_for_status()</code>) وألّا تدور إلى الأبد إن لم يصر <code>next</code> قيمة <code>None</code> أبدًا. اختبرها على خادم صفّي سليم.</p>
+<pre class="code" data-lang="python"><code>from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools"
+
+
+def all_ids(get, first_url, max_pages=10):
+    ...   # your loop
+
+
+ids = all_ids(make_fake_get(), URL)
+print(len(ids), ids)</code></pre>
+    <p class="en">Expected output:</p><p class="ar">الناتج المتوقع:</p>
+    <div class="output">13 [201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213]</div>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+<pre class="code good" data-lang="python"><code>from fake_api import make_fake_get
+
+URL = "https://api.example.org/schools"
+
+
+def all_ids(get, first_url, max_pages=10):
+    ids, url = [], first_url
+    for _ in range(max_pages):                       # bounded: a bug cannot loop forever
+        resp = get(url)
+        resp.raise_for_status()
+        payload = resp.json()
+        ids.extend(school["id"] for school in payload["results"])
+        url = payload["next"]
+        if url is None:
+            return ids
+    raise RuntimeError("more than max_pages pages - is `next` ever None?")
+
+
+ids = all_ids(make_fake_get(), URL)
+print(len(ids), ids)</code></pre>
+      <div class="output">13 [201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213]</div>
+      <p class="en">The <code>for _ in range(max_pages)</code> is the guard: the loop can run at most ten times, and falling off its end means something is wrong, so it raises. The normal exit is the <code>return ids</code> inside the loop when <code>next</code> is <code>None</code>. No <code>params</code> are passed, because the <code>next</code> address already says which page. All 13 ids come back in order, 201 to 213.</p>
+      <p class="ar">إن <code>for _ in range(max_pages)</code> هي الحارس: تدور الحلقة عشر مرات على الأكثر، والسقوط من نهايتها يعني خللًا فترفع خطأً. والخروج العادي هو <code>return ids</code> داخل الحلقة حين يكون <code>next</code> قيمة <code>None</code>. ولا تُمرَّر <code>params</code> لأن عنوان <code>next</code> يقول أي صفحة. وتعود المعرّفات الثلاثة عشر كلها بالترتيب من 201 إلى 213.</p>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 4 — Choose the reaction to each status code</span><span class="ar">تمرين 4 — اختر ردّ الفعل لكل رمز حالة</span></h4>
+    <p class="en">Write <code>action(status)</code> returning one of four words: <code>"read"</code> (2xx), <code>"follow"</code> (3xx), <code>"retry"</code> (429 and every 5xx) or <code>"fix"</code> (every other 4xx). Print the result for 200, 301, 401, 404, 429, 500 and 503.</p>
+    <p class="ar">اكتب <code>action(status)</code> تعيد إحدى أربع كلمات: <code>"read"</code> (2xx) أو <code>"follow"</code> (3xx) أو <code>"retry"</code> (429 وكل 5xx) أو <code>"fix"</code> (كل 4xx الأخرى). اطبع النتيجة للرموز 200 و301 و401 و404 و429 و500 و503.</p>
+<pre class="code" data-lang="python"><code>def action(status):
+    ...   # return "read", "follow", "retry" or "fix"
+
+
+for status in (200, 301, 401, 404, 429, 500, 503):
+    print(status, action(status))</code></pre>
+    <p class="en">Expected output:</p><p class="ar">الناتج المتوقع:</p>
+    <div class="output">200 read
+301 follow
+401 fix
+404 fix
+429 retry
+500 retry
+503 retry</div>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+<pre class="code good" data-lang="python"><code>def action(status):
+    if 200 &lt;= status &lt; 300:
+        return "read"
+    if 300 &lt;= status &lt; 400:
+        return "follow"
+    if status == 429 or status &gt;= 500:
+        return "retry"
+    return "fix"
+
+
+for status in (200, 301, 401, 404, 429, 500, 503):
+    print(status, action(status))</code></pre>
+      <div class="output">200 read
+301 follow
+401 fix
+404 fix
+429 retry
+500 retry
+503 retry</div>
+      <p class="en">The order matters: 429 is a 4xx but belongs with "retry", so it is tested <em>before</em> the catch-all that sends the other 4xx to "fix". Writing the family tests first and the special case second would send 429 to "fix" and make a script give up on the one error that asks for patience. This function is Version 3's <code>RETRYABLE</code> set and the flowchart of Concept 4 in code.</p>
+      <p class="ar">الترتيب مهم: الرمز 429 من عائلة 4xx لكنه ينتمي إلى «retry»، فيُفحص <em>قبل</em> الحالة العامة التي ترسل بقية 4xx إلى «fix». ولو كُتبت اختبارات العائلات أولًا والحالة الخاصة ثانيًا لذهب 429 إلى «fix» ولاستسلم السكربت عند الخطأ الوحيد الذي يطلب الصبر. وهذه الدالة هي مجموعة <code>RETRYABLE</code> في النسخة 3 والمخطط الانسيابي في المفهوم 4 بصيغة كود.</p>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 5 — From nested records to a feature table</span><span class="ar">تمرين 5 — من سجلات متشعّبة إلى جدول خصائص</span></h4>
+    <p class="en">Build a model-ready DataFrame <code>features</code> from <code>schools.json</code> with one row per school (no <code>explode</code>): <code>students</code> (boys + girls), <code>has_email</code> (True or False), and one 0/1 column per facility type named <code>has_&lt;facility&gt;</code> (spaces become underscores). Print its shape, its first three rows, and how many schools have a lab.</p>
+    <p class="ar">ابنِ جدولًا جاهزًا للنموذج <code>features</code> من <code>schools.json</code> بصف لكل مدرسة (دون <code>explode</code>): <code>students</code> (بنين + بنات)، وَ<code>has_email</code> (True أو False)، وعمود 0/1 لكل نوع مرفق باسم <code>has_&lt;facility&gt;</code> (تتحول المسافات إلى شرطات سفلية). اطبع شكله وأول ثلاثة صفوف منه وعدد المدارس التي فيها مختبر.</p>
+<pre class="code" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+df = pd.json_normalize(schools, sep="_")
+# features = ...   # students, has_email, and the multi-hot facility columns</code></pre>
+    <p class="en">Expected output:</p><p class="ar">الناتج المتوقع:</p>
+    <div class="output">(13, 7)
+   students  has_email  has_canteen  has_computer_room  has_lab  has_library  has_playground
+0       455      False            0                  0        1            1               0
+1       553      False            0                  0        0            1               0
+2       455       True            0                  0        1            0               0
+6 schools have a lab</div>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+<pre class="code good" data-lang="python"><code>import json
+import pandas as pd
+
+with open("downloads/t1/schools.json", encoding="utf-8") as f:
+    schools = json.load(f)["results"]
+
+df = pd.json_normalize(schools, sep="_")
+features = pd.DataFrame({
+    "students": df["enrolment_boys"] + df["enrolment_girls"],
+    "has_email": df["contacts_email"].notna(),
+})
+shapes = (df["facilities"].str.join("|").str.get_dummies()
+          .rename(columns=lambda name: "has_" + name.replace(" ", "_")))
+features = pd.concat([features, shapes], axis=1)
+
+print(features.shape)
+print(features.head(3).to_string())
+print(features["has_lab"].sum(), "schools have a lab")</code></pre>
+      <div class="output">(13, 7)
+   students  has_email  has_canteen  has_computer_room  has_lab  has_library  has_playground
+0       455      False            0                  0        1            1               0
+1       553      False            0                  0        0            1               0
+2       455       True            0                  0        1            0               0
+6 schools have a lab</div>
+      <p class="en">13 rows, 7 columns: the unit of analysis is still one school. <code>has_email</code> turns "the key is absent" into an explicit feature instead of a hidden <code>NaN</code>; the multi-hot block turns a variable-length list into fixed columns that a model can use, without the double counting that <code>explode</code> would bring. Six schools have a lab, the same count the earlier <code>get_dummies</code> sum gave.</p>
+      <p class="ar">13 صفًّا و7 أعمدة: ما زالت وحدة التحليل مدرسة واحدة. يحوّل <code>has_email</code> عبارة «المفتاح غائب» إلى خاصية صريحة بدل <code>NaN</code> خفية؛ وتحوّل كتلة multi-hot قائمة متغيّرة الطول إلى أعمدة ثابتة يستعملها النموذج، دون العدّ المزدوج الذي تجلبه <code>explode</code>. وفي ست مدارس مختبر، وهو العدد نفسه الذي أعطاه مجموع <code>get_dummies</code> سابقًا.</p>
+    </details>
+  </div>
+
+  <!-- =================================================== TAKEAWAYS -->
+  <div class="card takeaways">
+    <h3 id="t1l5-s24"><span class="en">Key takeaways</span><span class="ar">أهم ما في الدرس</span></h3>
+    <ul>
+      <li><span class="en">JSON is nested text: objects are dicts, arrays are lists, <code>null</code> is <code>None</code>. A round trip is lossy, and Python's parser accepts <code>NaN</code> that the standard does not.</span><span class="ar">JSON نصّ متشعّب: الكائنات قواميس والمصفوفات قوائم وَ<code>null</code> هي <code>None</code>. والذهاب والإياب يفقد شيئًا، ومُحلِّل بايثون يقبل <code>NaN</code> التي لا يقبلها المعيار.</span></li>
+      <li><span class="en">Count the keys first. Use <code>[]</code> for required fields (the crash is the information) and <code>dig()</code> for optional ones; a helper that cannot crash cannot warn you about a typo either.</span><span class="ar">عُدَّ المفاتيح أولًا. استعمل <code>[]</code> للحقول المطلوبة (الانهيار هو المعلومة) وَ<code>dig()</code> للاختيارية؛ والدالة التي لا تنهار لا تحذّرك من خطأ إملائي أيضًا.</span></li>
+      <li><span class="en"><code>pd.json_normalize</code> flattens whatever you give it: pass the list of records, or use <code>record_path</code> and <code>meta</code>. A <code>NaN</code> afterwards means "absent in the source", and absent and <code>null</code> look the same.</span><span class="ar">تسطّح <code>pd.json_normalize</code> أي شيء تعطيه: مرّر قائمة السجلات أو استعمل <code>record_path</code> وَ<code>meta</code>. وتعني <code>NaN</code> بعدها «غائب في المصدر»، والغائب وَ<code>null</code> يبدوان واحدًا.</span></li>
+      <li><span class="en">A list field is a decision: count it, spread it into 0/1 columns, or <code>explode</code> it — and exploding changes what a row means (5,242 students became 8,435).</span><span class="ar">حقل القائمة قرار: عُدَّه أو انشره في أعمدة 0/1 أو فكّكه بـ <code>explode</code> — والتفكيك يغيّر معنى الصف (صار 5,242 طالبًا 8,435).</span></li>
+      <li><span class="en">An API is a request and a response. Read the status code before the body; 4xx means fix your request, 429 and 5xx mean wait and retry, and only those are retried.</span><span class="ar">الواجهة طلب واستجابة. اقرأ رمز الحالة قبل الجسم؛ فـ 4xx تعني أصلح طلبك، و429 وَ5xx تعنيان انتظر وأعد المحاولة، ولا يُعاد إلا هذان.</span></li>
+      <li><span class="en">Follow <code>next</code> until <code>None</code>, bound the loop, and compare <code>len(rows)</code> with <code>total</code>: page 1 alone overstated mean enrolment by about 18%.</span><span class="ar">اتبع <code>next</code> حتى <code>None</code>، وقيّد الحلقة، وقارن <code>len(rows)</code> بـ <code>total</code>: فالصفحة 1 وحدها بالغت في متوسط الطلبة بنحو 18%.</span></li>
+      <li><span class="en">Wait as <code>Retry-After</code> says, back off 2, 4, 8 seconds, set a <code>timeout</code>, give up after N tries and raise. <code>fetch_all()</code> returns a complete, checked DataFrame or an error, never half.</span><span class="ar">انتظر كما تقول <code>Retry-After</code> وتباطأ 2 و4 و8 ثوانٍ وحدّد <code>timeout</code> واستسلم بعد N محاولة وارفع خطأً. وتعيد <code>fetch_all()</code> DataFrame كاملًا مفحوصًا أو خطأً، لا نصفًا أبدًا.</span></li>
+      <li><span class="en">Keys live in environment variables (<code>os.environ["…"]</code>), never in code or git. A model's JSON is untrusted text: parse, validate, count the failures.</span><span class="ar">المفاتيح تعيش في متغيرات البيئة (<code>os.environ["…"]</code>) لا في الكود ولا في git. وJSON النموذج نصّ غير موثوق: حلّل وتحقق وعُدّ الإخفاقات.</span></li>
+    </ul>
+
+    <h4><span class="en">The mistakes cheat-sheet</span><span class="ar">ورقة الأخطاء الشائعة</span></h4>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th><span class="en">Mistake</span><span class="ar">الخطأ</span></th><th><span class="en">What you see (or do not)</span><span class="ar">ما تراه (أو لا تراه)</span></th><th><span class="en">Fix</span><span class="ar">العلاج</span></th></tr></thead>
+        <tbody>
+          <tr><td><code>s["contacts"]["email"]</code> on an optional field</td><td><span class="en"><code>KeyError</code> naming the key, not the record</span><span class="ar"><code>KeyError</code> تسمّي المفتاح لا السجلّ</span></td><td><span class="en">census, then <code>dig()</code></span><span class="ar">تعداد ثم <code>dig()</code></span></td></tr>
+          <tr><td><code>.get("a", {}).get("b")</code> when <code>a</code> is <code>null</code></td><td><code>AttributeError</code></td><td><code>dig()</code></td></tr>
+          <tr><td><span class="en">a typo inside <code>dig()</code></span><span class="ar">خطأ إملائي داخل <code>dig()</code></span></td><td><span class="en">"0 of 13": silently wrong</span><span class="ar">«0 من 13»: خطأ صامت</span></td><td><span class="en">compare with the census</span><span class="ar">قارن بالتعداد</span></td></tr>
+          <tr><td><code>pd.json_normalize(page)</code></td><td><span class="en">1 row, the list in one cell</span><span class="ar">صف واحد والقائمة في خلية</span></td><td><code>record_path="results"</code></td></tr>
+          <tr><td><code>explode</code> then <code>sum</code></td><td><span class="en">a total 61% too large</span><span class="ar">مجموع أكبر بـ 61%</span></td><td><span class="en">ask what one row means</span><span class="ar">اسأل ماذا يعني الصف</span></td></tr>
+          <tr><td><span class="en">read only <code>["results"]</code></span><span class="ar">قراءة <code>["results"]</code> فقط</span></td><td><span class="en">5 rows of 13, no error</span><span class="ar">5 صفوف من 13 بلا خطأ</span></td><td><span class="en">follow <code>next</code>; compare <code>total</code></span><span class="ar">اتبع <code>next</code>؛ وقارن <code>total</code></span></td></tr>
+          <tr><td><span class="en">own <code>params</code> on top of <code>next</code></span><span class="ar"><code>params</code> من عندك فوق <code>next</code></span></td><td><span class="en">duplicates, maybe an endless loop</span><span class="ar">تكرارات وربما حلقة لانهائية</span></td><td><span class="en">use <code>next</code> as is; bound the loop</span><span class="ar">استعمل <code>next</code> كما هو؛ وقيّد الحلقة</span></td></tr>
+          <tr><td><span class="en">retry at once, with no limit</span><span class="ar">إعادة فورية بلا حدّ</span></td><td><span class="en">hammering, bans, a stuck script</span><span class="ar">طرق متواصل وحظر وسكربت عالق</span></td><td><span class="en"><code>Retry-After</code>, back-off, <code>max_tries</code></span><span class="ar"><code>Retry-After</code> وتباطؤ وَ<code>max_tries</code></span></td></tr>
+          <tr><td><span class="en">no <code>timeout=</code></span><span class="ar">بلا <code>timeout=</code></span></td><td><span class="en">a script frozen forever</span><span class="ar">سكربت متجمّد إلى الأبد</span></td><td><code>timeout=10</code></td></tr>
+          <tr><td><code>os.environ.get("KEY")</code></td><td><span class="en"><code>"Bearer None"</code> then a 401 far away</span><span class="ar"><code>"Bearer None"</code> ثم 401 بعيد</span></td><td><code>os.environ["KEY"]</code></td></tr>
+          <tr><td><span class="en">skipping bad model replies</span><span class="ar">تخطّي ردود النموذج الرديئة</span></td><td><span class="en">a training set a third of the size you think</span><span class="ar">مجموعة تدريب بثلث الحجم الذي تظنه</span></td><td><span class="en">validate and count</span><span class="ar">تحقق وعُدّ</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- =================================================== APPENDIX -->
+  <div class="card appendix">
+    <h3 id="t1l5-s25"><span class="en">Appendix — the arithmetic behind page counts and back-off</span><span class="ar">ملحق — الحساب وراء عدد الصفحات والتباطؤ</span></h3>
+    <p class="en"><strong>Requests per fetch.</strong> With <code>total</code> records and <code>per_page</code> records per reply, the number of requests is <code>ceil(total / per_page)</code>. The registry: <code>ceil(13 / 5) = 3</code>. As an illustration (not registry data), 10,000 records at 100 per page need 100 requests, at 20 per page 500. Under an assumed limit of 60 requests a minute that is at least 100 s against 500 s, about 8 min 20 s, before any retry.</p>
+    <p class="ar"><strong>الطلبات في كل جلب.</strong> مع <code>total</code> سجلًّا و<code>per_page</code> سجلًّا في الردّ يكون عدد الطلبات <code>ceil(total / per_page)</code>. في السجلّ: <code>ceil(13 / 5) = 3</code>. وللتوضيح فقط (وليس من بيانات السجلّ): 10,000 سجلّ بواقع 100 في الصفحة تحتاج 100 طلب، وبواقع 20 تحتاج 500. وبافتراض حدّ 60 طلبًا في الدقيقة يعني ذلك 100 ثانية على الأقل مقابل 500 ثانية، أي نحو 8 دقائق و20 ثانية، قبل أي إعادة محاولة.</p>
+    <p class="en"><strong>Total back-off.</strong> With waits of <code>2^k</code> seconds after failed attempt <code>k</code>, and no sleep after the last of <code>n</code> attempts, the longest total wait is the geometric sum <code>2^1 + 2^2 + … + 2^(n−1) = 2^n − 2</code>. For <code>n = 4</code>: <code>2 + 4 + 8 = 14</code> seconds per page. A <code>Retry-After</code> from the server replaces the term for that attempt. Doubling the number of tries to 8 does not double the worst case: it raises it to <code>2^8 − 2 = 254</code> seconds, which is why <code>max_tries</code> and a cap on the wait belong together.</p>
+    <p class="ar"><strong>إجمالي التباطؤ.</strong> مع انتظار <code>2^k</code> ثانية بعد المحاولة الفاشلة رقم <code>k</code> ودون نوم بعد آخر محاولة من <code>n</code>، يكون أطول انتظار إجمالي هو المجموع الهندسي <code>2^1 + 2^2 + … + 2^(n−1) = 2^n − 2</code>. وعند <code>n = 4</code>: <code>2 + 4 + 8 = 14</code> ثانية للصفحة. وترويسة <code>Retry-After</code> من الخادم تحلّ محل الحدّ في تلك المحاولة. ومضاعفة المحاولات إلى 8 لا تضاعف أسوأ الحالات بل ترفعه إلى <code>2^8 − 2 = 254</code> ثانية، ولهذا تتلازم <code>max_tries</code> وسقف للانتظار.</p>
+  </div>
+
+  <div class="callout ahead">
+    <h4><span class="en">Where next</span><span class="ar">إلى أين بعد ذلك</span></h4>
+    <p class="en">Check what stuck with <a href="#t1-test-05">Test 5 — Nested Data and APIs: JSON</a>. Then <a href="#t1-lesson-06">Lesson 6</a> puts the whole chapter together: a validation ritual for every new dataset (including the <code>NaN</code> counts this lesson could not give you), a choice of format for each source, and a capstone that loads raw CSV, Excel, JSON and API data into one typed table. If anything here felt shaky, the flat-file side of the story is in <a href="#t1-lesson-04">Lesson 4</a>.</p>
+    <p class="ar">تأكّد ممّا رسخ بـ <a href="#t1-test-05">الاختبار 5 — البيانات المتشعّبة والواجهات: JSON</a>. ثم يجمع <a href="#t1-lesson-06">الدرس 6</a> الفصل كله: طقس تحقّق لكل مجموعة بيانات جديدة (بما فيه عدّ قيم <code>NaN</code> الذي لم يستطع هذا الدرس إعطاءك إياه)، واختيار صيغة لكل مصدر، ومشروع ختامي يحمّل بيانات CSV وExcel وJSON وواجهة إلى جدول واحد مُنمَّط. وإن بدا أي شيء هنا مهتزًّا فجانب الملفات المسطّحة من القصة في <a href="#t1-lesson-04">الدرس 4</a>.</p>
+  </div>
+
+</section>

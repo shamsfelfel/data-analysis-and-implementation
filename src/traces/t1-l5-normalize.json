@@ -1,0 +1,44 @@
+{
+  "id": "t1-l5-normalize",
+  "title": {
+    "en": "From one API page to a DataFrame",
+    "ar": "من صفحة واحدة من الواجهة إلى DataFrame"
+  },
+  "lede": {
+    "en": "json.load gives a dict that holds a list of nested records. pd.json_normalize with record_path and meta turns that list into one row per school, with dotted keys turned into flat column names and the page numbers copied onto every row.",
+    "ar": "تعطيك json.load قاموسًا فيه قائمة سجلات متشعّبة. وتحوّل pd.json_normalize بالوسيطين record_path وmeta هذه القائمة إلى صف لكل مدرسة، وتصير المفاتيح المنقّطة أسماء أعمدة مسطّحة، وتُنسخ أرقام الصفحة على كل صف."
+  },
+  "files": {
+    "schools_api_page1.json": "{\n  \"page\": 1,\n  \"per_page\": 5,\n  \"total\": 13,\n  \"pages\": 3,\n  \"next\": \"https://api.example.org/schools?page=2\",\n  \"results\": [\n    {\n      \"id\": 201,\n      \"name\": {\n        \"en\": \"School 1 (Gaza)\",\n        \"ar\": \"مدرسة 1 (غزة)\"\n      },\n      \"governorate\": \"Gaza\",\n      \"level\": \"Preparatory\",\n      \"enrolment\": {\n        \"boys\": 217,\n        \"girls\": 238\n      },\n      \"location\": {\n        \"lat\": 31.5788,\n        \"lon\": 34.389\n      },\n      \"facilities\": [\n        \"library\",\n        \"lab\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-8529025\"\n      }\n    },\n    {\n      \"id\": 202,\n      \"name\": {\n        \"en\": \"School 2 (Khan Younis)\",\n        \"ar\": \"مدرسة 2 (خان يونس)\"\n      },\n      \"governorate\": \"Khan Younis\",\n      \"level\": \"Secondary\",\n      \"enrolment\": {\n        \"boys\": 273,\n        \"girls\": 280\n      },\n      \"location\": {\n        \"lat\": 31.5849,\n        \"lon\": 34.3984\n      },\n      \"facilities\": [\n        \"library\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-1063067\"\n      }\n    },\n    {\n      \"id\": 203,\n      \"name\": {\n        \"en\": \"School 3 (Rafah)\",\n        \"ar\": \"مدرسة 3 (رفح)\"\n      },\n      \"governorate\": \"Rafah\",\n      \"level\": \"Primary\",\n      \"enrolment\": {\n        \"boys\": 272,\n        \"girls\": 183\n      },\n      \"location\": {\n        \"lat\": 31.3345,\n        \"lon\": 34.303\n      },\n      \"facilities\": [\n        \"lab\"\n      ],\n      \"contacts\": {\n        \"phone\": \"08-2487610\",\n        \"email\": \"school3@example.org\"\n      }\n    },\n    {\n      \"id\": 204,\n      \"name\": {\n        \"en\": \"School 4 (Deir al-Balah)\",\n        \"ar\": \"مدرسة 4 (دير البلح)\"\n      },\n      \"governorate\": \"Deir al-Balah\",\n      \"level\": \"Preparatory\",\n      \"enrolment\": {\n        \"boys\": 227,\n        \"girls\": 175\n      },\n      \"location\": {\n        \"lat\": 31.3096,\n        \"lon\": 34.3875\n      },\n      \"facilities\": [\n        \"lab\",\n        \"playground\",\n        \"computer room\"\n      ]\n    },\n    {\n      \"id\": 205,\n      \"name\": {\n        \"en\": \"School 5 (Jabalia)\",\n        \"ar\": \"مدرسة 5 (جباليا)\"\n      },\n      \"governorate\": \"North Gaza\",\n      \"level\": \"Secondary\",\n      \"enrolment\": {\n        \"boys\": 269,\n        \"girls\": 244\n      },\n      \"location\": {\n        \"lat\": 31.4542,\n        \"lon\": 34.2693\n      },\n      \"facilities\": [],\n      \"contacts\": {\n        \"phone\": \"08-6904966\"\n      }\n    }\n  ]\n}"
+  },
+  "code": "import json\nimport pandas as pd\n\nwith open(\"schools_api_page1.json\", encoding=\"utf-8\") as f:\n    page = json.load(f)\n\ndf = pd.json_normalize(page, record_path=\"results\", meta=[\"page\", \"total\"], sep=\"_\")\nslim = df[[\"id\", \"name_en\", \"enrolment_boys\", \"contacts_email\", \"page\", \"total\"]]\nmissing = slim[\"contacts_email\"].isna().sum()\nprint(missing, \"of\", len(slim), \"schools have no email\")\n",
+  "watch": [
+    "page",
+    "df",
+    "slim",
+    "missing"
+  ],
+  "viz": {
+    "page": "tree",
+    "df": "table",
+    "slim": "table"
+  },
+  "notes": {
+    "5": {
+      "en": "Read the page file: one dict with page, per_page, total, pages, next and a list called results.",
+      "ar": "نقرأ ملف الصفحة: قاموس واحد فيه page وper_page وtotal وpages وnext وقائمة اسمها results."
+    },
+    "7": {
+      "en": "record_path says which list holds the records; meta lists the top-level fields to copy onto every row; sep joins the nested names with an underscore.",
+      "ar": "يحدّد record_path القائمة التي تحمل السجلات، وتسرد meta الحقول العليا التي تُنسخ على كل صف، ويصل sep الأسماء المتشعّبة بشرطة سفلية."
+    },
+    "8": {
+      "en": "Keep six columns. Note contacts_email: four of the five cells are NaN.",
+      "ar": "نُبقي ستة أعمدة. لاحظ contacts_email: أربع خلايا من خمس هي NaN."
+    },
+    "9": {
+      "en": "NaN here means 'the record had no such key', not 'the email is unknown' or 'the measurement failed'.",
+      "ar": "تعني NaN هنا «السجل لا يحوي هذا المفتاح»، لا «البريد مجهول» ولا «فشل القياس»."
+    }
+  }
+}

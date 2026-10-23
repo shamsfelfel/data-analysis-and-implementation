@@ -1,0 +1,250 @@
+[
+  {
+    "id": "json",
+    "term": {
+      "en": "JSON",
+      "ar": "جسون (JSON)"
+    },
+    "def": {
+      "en": "A plain-text format for nested data: objects { } hold named values, arrays [ ] hold lists, and values are strings, numbers, true, false or null. One school of the registry, with its name, enrolment and optional contacts, is a single JSON object.",
+      "ar": "صيغة نصّية للبيانات المتشعّبة: الكائنات { } تحمل قيمًا مسمّاة والمصفوفات [ ] تحمل قوائم، والقيم نصوص أو أرقام أو true أو false أو null. فمدرسة واحدة من السجلّ، باسمها وأعداد طلبتها واتصالاتها الاختيارية، كائن JSON واحد."
+    },
+    "cat": {
+      "en": "Formats",
+      "ar": "الصيغ"
+    },
+    "see": [
+      "xml",
+      "parsing",
+      "serialisation"
+    ]
+  },
+  {
+    "id": "xml",
+    "term": {
+      "en": "XML",
+      "ar": "إكس إم إل (XML)"
+    },
+    "def": {
+      "en": "An older, more verbose nested format written with opening and closing tags and attributes; everything in it is text, so an enrolment of 272 comes back as '272'. Same idea as JSON, different parser.",
+      "ar": "صيغة متشعّبة أقدم وأكثر إسهابًا تُكتب بوسوم فتح وإغلاق وسمات؛ وكل ما فيها نصّ، فيعود عدد طلبة 272 على هيئة '272'. الفكرة نفسها كـ JSON بمُحلِّل مختلف."
+    },
+    "cat": {
+      "en": "Formats",
+      "ar": "الصيغ"
+    },
+    "see": [
+      "json"
+    ]
+  },
+  {
+    "id": "parsing",
+    "term": {
+      "en": "Parsing",
+      "ar": "التحليل (Parsing)"
+    },
+    "def": {
+      "en": "Turning text into objects a program can use, such as json.loads turning the text of a reply into dicts and lists. A parser that is too forgiving, or too strict, is a source of silent errors.",
+      "ar": "تحويل النصّ إلى كائنات يستعملها البرنامج، مثل تحويل json.loads لنصّ الردّ إلى قواميس وقوائم. والمُحلِّل المتساهل أكثر من اللازم أو الصارم أكثر من اللازم مصدر لأخطاء صامتة."
+    },
+    "cat": {
+      "en": "Formats",
+      "ar": "الصيغ"
+    },
+    "see": [
+      "serialisation",
+      "json"
+    ]
+  },
+  {
+    "id": "serialisation",
+    "term": {
+      "en": "Serialisation",
+      "ar": "التسلسل (Serialisation)"
+    },
+    "def": {
+      "en": "The reverse of parsing: turning objects into text, such as json.dumps writing a dict as JSON. It is not always lossless: integer keys become strings and tuples become lists.",
+      "ar": "عكس التحليل: تحويل الكائنات إلى نصّ، مثل كتابة json.dumps لقاموس بصيغة JSON. وليس دائمًا بلا فقد: تصير المفاتيح الصحيحة نصوصًا وتصير الـ tuple قوائم."
+    },
+    "cat": {
+      "en": "Formats",
+      "ar": "الصيغ"
+    },
+    "see": [
+      "parsing",
+      "json"
+    ]
+  },
+  {
+    "id": "api",
+    "term": {
+      "en": "API",
+      "ar": "الواجهة البرمجية (API)"
+    },
+    "def": {
+      "en": "A door one system opens for other programs, with fixed rules for asking and a fixed shape for answering. A school-registry API lets your script ask for the current list of schools instead of downloading a file by hand.",
+      "ar": "باب يفتحه نظام للبرامج الأخرى بقواعد ثابتة للسؤال وشكل ثابت للجواب. فواجهة سجلّ المدارس تتيح لسكربتك أن يطلب القائمة الحالية للمدارس بدل تنزيل ملف باليد."
+    },
+    "cat": {
+      "en": "Web APIs",
+      "ar": "واجهات الويب"
+    },
+    "see": [
+      "endpoint",
+      "request",
+      "response"
+    ]
+  },
+  {
+    "id": "endpoint",
+    "term": {
+      "en": "Endpoint",
+      "ar": "نقطة النهاية (Endpoint)"
+    },
+    "def": {
+      "en": "The address, inside an API, of one kind of data, such as /schools or /schools/203. The host serves many endpoints; the query string only adjusts how one of them answers.",
+      "ar": "العنوان، داخل الواجهة، لنوع واحد من البيانات مثل /schools أو /schools/203. يخدم المضيف نقاط نهاية كثيرة، وسلسلة الاستعلام تضبط فقط كيف تجيب إحداها."
+    },
+    "cat": {
+      "en": "Web APIs",
+      "ar": "واجهات الويب"
+    },
+    "see": [
+      "api",
+      "request"
+    ]
+  },
+  {
+    "id": "request",
+    "term": {
+      "en": "Request",
+      "ar": "الطلب (Request)"
+    },
+    "def": {
+      "en": "The message a client sends to an API: a method (GET, POST…), a URL with optional query parameters, optional headers such as the key, and for some methods a body. Asking for page 2 of the schools is GET /schools?page=2.",
+      "ar": "الرسالة التي يرسلها العميل إلى الواجهة: طريقة (GET أو POST…)، وعنوان URL بمعاملات استعلام اختيارية، وترويسات اختيارية مثل المفتاح، وفي بعض الطرق جسم. وطلب الصفحة 2 من المدارس هو GET /schools?page=2."
+    },
+    "cat": {
+      "en": "Web APIs",
+      "ar": "واجهات الويب"
+    },
+    "see": [
+      "response",
+      "endpoint"
+    ]
+  },
+  {
+    "id": "response",
+    "term": {
+      "en": "Response",
+      "ar": "الاستجابة (Response)"
+    },
+    "def": {
+      "en": "What the server sends back: a status code, headers and a body, which for our registry is JSON text with results, total and next. Read the status code before the body.",
+      "ar": "ما يعيده الخادم: رمز حالة وترويسات وجسم، وهو عندنا نصّ JSON فيه results وtotal وnext. اقرأ رمز الحالة قبل الجسم."
+    },
+    "cat": {
+      "en": "Web APIs",
+      "ar": "واجهات الويب"
+    },
+    "see": [
+      "status-code",
+      "request"
+    ]
+  },
+  {
+    "id": "status-code",
+    "term": {
+      "en": "Status code",
+      "ar": "رمز الحالة (Status code)"
+    },
+    "def": {
+      "en": "The three-digit number that heads every response; its first digit is the family: 2xx success, 3xx redirect, 4xx your request is wrong, 5xx the server has trouble. 404 means no such address; 429 means slow down.",
+      "ar": "الرقم من ثلاثة أرقام في رأس كل استجابة؛ ورقمه الأول هو العائلة: 2xx نجاح و3xx إعادة توجيه و4xx طلبك خاطئ و5xx الخادم في ورطة. الرمز 404 يعني لا يوجد هذا العنوان، و429 يعني خفّف."
+    },
+    "cat": {
+      "en": "Web APIs",
+      "ar": "واجهات الويب"
+    },
+    "see": [
+      "rate-limit",
+      "response"
+    ]
+  },
+  {
+    "id": "rate-limit",
+    "term": {
+      "en": "Rate limit",
+      "ar": "حدّ المعدّل (Rate limit)"
+    },
+    "def": {
+      "en": "A cap on how many requests one client may send in a time window. Going over it earns a 429 Too Many Requests, usually with a Retry-After header saying how long to wait.",
+      "ar": "سقف لعدد الطلبات التي يحق لعميل واحد إرسالها في نافذة زمنية. وتجاوزه يستدعي ردّ 429 Too Many Requests وغالبًا معه ترويسة Retry-After تقول كم تنتظر."
+    },
+    "cat": {
+      "en": "Web APIs",
+      "ar": "واجهات الويب"
+    },
+    "see": [
+      "status-code",
+      "pagination"
+    ]
+  },
+  {
+    "id": "pagination",
+    "term": {
+      "en": "Pagination",
+      "ar": "التصفيح (Pagination)"
+    },
+    "def": {
+      "en": "Answering a large result in pages, each with a pointer (next) to the following page. The registry's 13 schools arrive as three pages of 5, 5 and 3; reading only the first silently gives 5 of 13.",
+      "ar": "الإجابة عن نتيجة كبيرة على صفحات، في كل صفحة مؤشر (next) إلى التالية. تصل مدارس السجلّ الثلاث عشرة في ثلاث صفحات من 5 و5 و3؛ وقراءة الأولى فقط تعطي 5 من 13 بصمت."
+    },
+    "cat": {
+      "en": "Web APIs",
+      "ar": "واجهات الويب"
+    },
+    "see": [
+      "rate-limit",
+      "api"
+    ]
+  },
+  {
+    "id": "flattening",
+    "term": {
+      "en": "Flattening",
+      "ar": "التسطيح (Flattening)"
+    },
+    "def": {
+      "en": "Turning a tree of nested records into a flat table with one row per record and one column per leaf value, for example enrolment: {boys, girls} becoming the columns enrolment_boys and enrolment_girls. Lists and absent keys need an explicit decision.",
+      "ar": "تحويل شجرة من السجلات المتشعّبة إلى جدول مسطّح بصفّ لكل سجلّ وعمود لكل قيمة ورقية، مثل صيرورة enrolment: {boys, girls} العمودين enrolment_boys وenrolment_girls. وتحتاج القوائم والمفاتيح الغائبة إلى قرار صريح."
+    },
+    "cat": {
+      "en": "Reshaping",
+      "ar": "إعادة التشكيل"
+    },
+    "see": [
+      "json",
+      "parsing"
+    ]
+  },
+  {
+    "id": "api-key",
+    "term": {
+      "en": "API key",
+      "ar": "مفتاح الواجهة (API key)"
+    },
+    "def": {
+      "en": "A long secret string sent with each request that tells the provider who you are, whom to bill and which limits apply. Keep it in an environment variable, never in code or git; anyone who holds it can act as you.",
+      "ar": "سلسلة سرية طويلة تُرسل مع كل طلب وتخبر المزوّد من أنت ومن يُحاسَب وأي الحدود تنطبق. أبقِها في متغيّر بيئة لا في الكود ولا في git؛ فمن يملكها يستطيع أن يتصرف باسمك."
+    },
+    "cat": {
+      "en": "Web APIs",
+      "ar": "واجهات الويب"
+    },
+    "see": [
+      "api",
+      "request"
+    ]
+  }
+]

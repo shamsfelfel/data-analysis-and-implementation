@@ -1,0 +1,19 @@
+%% alt: Sequence diagram. For each page the script asks the School API up to four times. A 200 reply carries the JSON page and ends the loop for that page. A 429 reply carries a Retry-After header, so the script sleeps that long and asks again. A 500 or 503 reply makes the script sleep 2, 4, then 8 seconds and ask again. After the fourth failure the script raises an error and keeps no partial data.
+sequenceDiagram
+  autonumber
+  participant S as Your script
+  participant A as School API
+  loop at most 4 tries per page
+    S->>A: GET /schools?page=2
+    alt 200 OK
+      A-->>S: JSON page with next
+      Note over S: keep the results, leave the loop
+    else 429 Too Many Requests
+      A-->>S: 429 and Retry-After: 2
+      Note over S: sleep 2 s, then ask again
+    else 500 or 503 server error
+      A-->>S: error body
+      Note over S: sleep 2, 4, 8 s, then ask again
+    end
+  end
+  Note over S: after the 4th failure raise an error

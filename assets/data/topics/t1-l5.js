@@ -1,0 +1,24 @@
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["t1-json-syntax"] = { href: "t1l5-s1", en: "JSON syntax and its Python types", ar: "صياغة JSON وأنواعها في بايثون" };
+  T["t1-json-parse-errors"] = { href: "t1l5-s2", en: "strict JSON parsing, errors and NaN", ar: "التحليل الصارم لـ JSON والأخطاء وقيمة NaN" };
+  T["t1-json-dumps"] = { href: "t1l5-s3", en: "dumps, indent, ensure_ascii and lossy round trips", ar: "dumps وindent وensure_ascii والذهاب والإياب الفاقد" };
+  T["t1-json-load"] = { href: "t1l5-s4", en: "loading a JSON file and reading a path", ar: "تحميل ملف JSON وقراءة مسار فيه" };
+  T["t1-xml"] = { href: "t1l5-s5", en: "XML in one paragraph", ar: "XML في فقرة واحدة" };
+  T["t1-key-census"] = { href: "t1l5-s6", en: "counting keys: absent, null, empty", ar: "عدّ المفاتيح: غائب وnull وفارغ" };
+  T["t1-safe-access"] = { href: "t1l5-s7", en: "[] vs .get vs dig() for optional fields", ar: "[] مقابل .get مقابل dig() للحقول الاختيارية" };
+  T["t1-flatten-recursion"] = { href: "t1l5-s8", en: "flattening by recursion", ar: "التسطيح بالاستدعاء الذاتي" };
+  T["t1-json-normalize"] = { href: "t1l5-s9", en: "pd.json_normalize, record_path, meta, sep", ar: "pd.json_normalize وrecord_path وmeta وsep" };
+  T["t1-nan-after-flatten"] = { href: "t1l5-s10", en: "what NaN means after flattening", ar: "ماذا تعني NaN بعد التسطيح" };
+  T["t1-list-fields"] = { href: "t1l5-s11", en: "list fields: count, multi-hot or explode", ar: "حقول القوائم: عدّ أو multi-hot أو explode" };
+  T["t1-api-request-response"] = { href: "t1l5-s12", en: "an API as request and response", ar: "الواجهة طلبًا واستجابة" };
+  T["t1-status-codes"] = { href: "t1l5-s14", en: "status codes and the reaction to each", ar: "رموز الحالة وردّ الفعل لكل منها" };
+  T["t1-fetch-versions"] = { href: "t1l5-s15", en: "one request, checked request, page loop", ar: "طلب واحد وطلب مفحوص وحلقة صفحات" };
+  T["t1-pagination"] = { href: "t1l5-s16", en: "pagination: follow next, do not count pages", ar: "التصفيح: اتبع next ولا تعدّ الصفحات" };
+  T["t1-page-size"] = { href: "t1l5-s17", en: "page size trade-off and the biased first page", ar: "مفاضلة حجم الصفحة وتحيّز الصفحة الأولى" };
+  T["t1-rate-limit-backoff"] = { href: "t1l5-s19", en: "rate limits, Retry-After and back-off", ar: "حدود المعدّل وRetry-After والتباطؤ" };
+  T["t1-timeouts-politeness"] = { href: "t1l5-s20", en: "timeouts and polite fetching", ar: "المهلات والجلب المؤدّب" };
+  T["t1-fetch-all"] = { href: "t1l5-s21", en: "fetch_all(): one function, one contract", ar: "fetch_all(): دالة واحدة وعقد واحد" };
+  T["t1-api-key-secrets"] = { href: "t1l5-s22", en: "API keys and environment variables", ar: "مفاتيح الواجهة ومتغيرات البيئة" };
+  T["t1-llm-json-validation"] = { href: "t1l5-s23", en: "validating JSON returned by a model", ar: "التحقق من JSON الذي يعيده نموذج" };
+})(window.DATopics);

@@ -1,0 +1,12 @@
+%% alt: يصير JSON المتشعّب شجرة ثم جدولًا. يحمل نصّ JSON قائمة results من سجلات المدارس، وتحوّل json.loads كل سجلّ إلى قاموس. وقاموس المدرسة يحمل كائني name وenrolment وقائمة facilities وكائن contacts اختياريًّا. ويحوّل التسطيح الكائنات الداخلية إلى أعمدة مثل name_en وenrolment_boys وcontacts_email، ويُبقي قائمة facilities كاملة في خلية واحدة، ويترك NaN حيث يغيب المفتاح contacts.
+flowchart TD
+  T["نص JSON:<br/>`results` قائمة سجلات"] -- "`json.loads`" --> S["مدرسة واحدة<br/>(قاموس)"]
+  S --> N["`name`<br/>en, ar"]
+  S --> E["`enrolment`<br/>boys, girls"]
+  S --> F["`facilities`<br/>(قائمة)"]
+  S --> C["`contacts`<br/>(اختياري)"]
+  N --> Y["أعمدة `name_en`<br/>و`enrolment_boys` ...<br/>صف لكل مدرسة"]
+  E --> Y
+  C --> Y
+  F --> Z["`facilities` تبقى<br/>قائمة في خلية"]
+  C -. "غياب المفتاح" .-> M["NaN"]

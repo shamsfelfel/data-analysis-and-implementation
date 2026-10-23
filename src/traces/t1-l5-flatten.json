@@ -1,0 +1,58 @@
+{
+  "id": "t1-l5-flatten",
+  "title": {
+    "en": "Flattening one school with recursion",
+    "ar": "تسطيح سجلّ مدرسة واحدة بالاستدعاء الذاتي"
+  },
+  "lede": {
+    "en": "flatten() walks a nested record. Each time it meets an inner object it calls itself with a longer prefix; plain values and lists are copied under their dotted name. Watch the call stack grow and shrink while the flat dictionary fills up.",
+    "ar": "تمشي الدالة flatten() على سجلّ متشعّب. وكلما صادفت كائنًا داخليًّا استدعت نفسها ببادئة أطول؛ أما القيم العادية والقوائم فتُنسخ تحت اسمها المنقّط. راقب كيف تنمو حزمة الاستدعاءات وتتقلّص بينما يمتلئ القاموس المسطّح."
+  },
+  "code": "def flatten(d, prefix=\"\"):\n    flat = {}\n    for key, value in d.items():\n        name = prefix + key\n        if isinstance(value, dict):\n            flat.update(flatten(value, name + \".\"))\n        else:\n            flat[name] = value\n    return flat\n\n\nschool = {\n    \"id\": 203,\n    \"name\": {\"en\": \"School 3 (Rafah)\"},\n    \"enrolment\": {\"boys\": 272, \"girls\": 183},\n    \"facilities\": [\"lab\"],\n    \"contacts\": {\"phone\": \"08-2487610\", \"email\": \"school3@example.org\"},\n}\nflat = flatten(school)\nprint(flat)\n",
+  "watch": [
+    "school",
+    "flat"
+  ],
+  "watch_locals": [
+    "d",
+    "prefix",
+    "key",
+    "name",
+    "flat"
+  ],
+  "viz": {
+    "school": "tree",
+    "flat": "dict"
+  },
+  "max_steps": 200,
+  "notes": {
+    "1": {
+      "en": "Define the function. Nothing runs yet.",
+      "ar": "نعرّف الدالة. لا شيء يُنفَّذ بعد."
+    },
+    "12": {
+      "en": "A trimmed copy of school 203: two plain values (one of them a list) and three inner objects (name, enrolment, contacts).",
+      "ar": "نسخة مقتطعة من المدرسة 203: قيمتان عاديتان (إحداهما قائمة) وثلاثة كائنات داخلية (name وenrolment وcontacts)."
+    },
+    "19": {
+      "en": "The first call: prefix is empty, so keys keep their own names.",
+      "ar": "الاستدعاء الأول: البادئة فارغة فتحتفظ المفاتيح بأسمائها."
+    },
+    "6#1": {
+      "en": "The value of 'name' is a dict, so flatten calls itself with the prefix 'name.'. A new frame appears on the call stack.",
+      "ar": "قيمة 'name' قاموس، فتستدعي flatten نفسها بالبادئة 'name.'. يظهر إطار جديد في حزمة الاستدعاءات."
+    },
+    "8": {
+      "en": "A leaf: a number, a string, or a list. Lists are not opened; they travel whole under their dotted name.",
+      "ar": "ورقة: رقم أو نص أو قائمة. القوائم لا تُفتح؛ تنتقل كاملة تحت اسمها المنقّط."
+    },
+    "9": {
+      "en": "Return the flat dictionary of this level; the caller merges it with update().",
+      "ar": "تُعيد القاموس المسطّح لهذا المستوى؛ ويدمجه المستدعي بـ update()."
+    },
+    "20": {
+      "en": "One flat dictionary: dotted names for the inner objects, the facilities list kept whole. This is what pd.json_normalize builds for every record.",
+      "ar": "قاموس مسطّح واحد: أسماء منقّطة للكائنات الداخلية وقائمة facilities محفوظة كاملة. هذا ما يبنيه pd.json_normalize لكل سجل."
+    }
+  }
+}

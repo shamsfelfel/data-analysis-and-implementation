@@ -1,0 +1,9 @@
+%% alt: Flowchart for choosing a reaction to a status code. 2xx or 3xx: read the JSON body; the library follows redirects. Other 4xx codes such as 400, 401, 403 and 404: fix the key, the permission or the request, and do not retry. 429 or 5xx: wait for Retry-After or back off 2, 4, 8 seconds, then ask whether tries are left; if yes ask again, if not give up and raise an error.
+flowchart TD
+  S{"Status code<br/>of the reply?"}
+  S -- "2xx or 3xx" --> OK["Read the JSON body<br/>(redirects are<br/>followed for you)"]
+  S -- "other 4xx<br/>400, 401, 403, 404" --> FIX["Fix the key, the<br/>permission or the request<br/>do not retry"]
+  S -- "429 or 5xx" --> WAIT["Wait: Retry-After,<br/>or back off 2, 4, 8 s"]
+  WAIT --> LIM{"Tries left?"}
+  LIM -- "yes" --> S
+  LIM -- "no" --> GIVE["Give up<br/>raise an error"]
