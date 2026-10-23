@@ -1,0 +1,22 @@
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["p1-xl-doors"]                = { href: "p1l4-s2",  en: "opening XLSX and CSV in Excel", ar: "فتح XLSX وCSV في إكسل" };
+  T["p1-xl-tables"]               = { href: "p1l4-s3",  en: "Tables versus plain ranges", ar: "الجداول مقابل النطاقات العادية" };
+  T["p1-xl-structured-refs"]      = { href: "p1l4-s4",  en: "structured references", ar: "المراجع المُهيكلة" };
+  T["p1-xl-cell-types"]           = { href: "p1l4-s5",  en: "number, text and COUNT vs COUNTA", ar: "الرقم والنص وCOUNT مقابل COUNTA" };
+  T["p1-xl-serial-dates"]         = { href: "p1l4-s6",  en: "dates as serial numbers", ar: "التواريخ أرقامًا تسلسلية" };
+  T["p1-xl-silent-conversions"]   = { href: "p1l4-s7",  en: "Excel's silent type conversions", ar: "تحويلات الأنواع الصامتة في إكسل" };
+  T["p1-xl-text-repairs"]         = { href: "p1l4-s8",  en: "TRIM, VALUE, TEXT and Text to Columns", ar: "TRIM وVALUE وTEXT وText to Columns" };
+  T["p1-xl-conditional-format"]   = { href: "p1l4-s10", en: "conditional formatting and its limits", ar: "التنسيق الشرطي وحدوده" };
+  T["p1-xl-duplicates"]           = { href: "p1l4-s11", en: "duplicate lines: delete, Remove Duplicates, flag", ar: "البنود المكررة: الحذف وRemove Duplicates والعلامة" };
+  T["p1-xl-helper-columns"]       = { href: "p1l4-s12", en: "helper columns, IFS and error handling", ar: "الأعمدة المساعدة وIFS ومعالجة الأخطاء" };
+  T["p1-xl-sumifs"]               = { href: "p1l4-s13", en: "SUMIFS, COUNTIFS and AVERAGEIFS", ar: "SUMIFS وCOUNTIFS وAVERAGEIFS" };
+  T["p1-xl-lookup"]               = { href: "p1l4-s14", en: "VLOOKUP, XLOOKUP and INDEX/MATCH", ar: "VLOOKUP وXLOOKUP وINDEX/MATCH" };
+  T["p1-xl-absolute-refs"]        = { href: "p1l4-s15", en: "absolute and relative references", ar: "المراجع المطلقة والنسبية" };
+  T["p1-xl-pivot-revenue"]        = { href: "p1l4-s16", en: "revenue by item: typed, SUMIFS, PivotTable", ar: "الإيراد حسب الصنف: يدويًّا وSUMIFS وجدول محوري" };
+  T["p1-xl-pivot-hours"]          = { href: "p1l4-s17", en: "orders by hour, lines versus orders", ar: "الطلبات حسب الساعة، البنود مقابل الطلبات" };
+  T["p1-xl-pivot-caveats"]        = { href: "p1l4-s18", en: "PivotTable caveats: dirty rows, calculated fields, refresh", ar: "محاذير الجدول المحوري: الصفوف الملوثة والحقول المحسوبة والتحديث" };
+  T["p1-xl-habits"]               = { href: "p1l4-s19", en: "Excel habits that corrupt analyses", ar: "عادات إكسل التي تفسد التحليل" };
+  T["p1-xl-audit"]                = { href: "p1l4-s20", en: "auditing formulas and recalculation", ar: "تدقيق الصيغ وإعادة الحساب" };
+  T["p1-xl-limits-graduate"]      = { href: "p1l4-s22", en: "Excel's limits and when to graduate", ar: "حدود إكسل ومتى تتخرّج منه" };
+})(window.DATopics);

@@ -1,0 +1,17 @@
+%% alt: Sequence diagram of recalculation. You type 3 instead of 1 in a qty cell. Excel marks the cells that depend on it as dirty, so line_total recalculates, then the SUMIFS total that depends on line_total recalculates. The PivotTable does not change by itself; you must press Refresh, after which it reads the new line_total values.
+sequenceDiagram
+  autonumber
+  participant U as You
+  participant Q as Cell qty
+  participant L as Cell line_total
+  participant S as SUMIFS total
+  participant P as PivotTable
+  U->>Q: type 3 instead of 1
+  Q-->>L: marks it dirty
+  L->>L: recalculates qty * unit_price
+  L-->>S: marks it dirty
+  S->>S: recalculates the total
+  Note over P: not recalculated automatically
+  U->>P: Refresh (Alt+F5)
+  P->>L: reads the new line_total
+  P-->>U: pivot matches the table again

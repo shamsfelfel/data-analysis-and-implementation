@@ -59,7 +59,7 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 | Where | Solution | Gap |
 |---|---|---|
 | P1 L1 | a written question card (question, decision, scope, success criteria, "so what" test) | computes nothing; two people can still disagree if they clean differently — closed by the L3/L4/L5 answers and the L6 line-up |
-| P1 L4 | Excel: Table + `SUMIFS` + PivotTable | the dirty rows are in the table; deleting them by hand is not repeatable; formulas live in cells |
+| P1 L4 | Excel: Table + `SUMIFS` + PivotTable (count ORDERS not lines: an `order_first` helper; raw line counts make 13:00 look busiest, 155 vs 149, but distinct orders after cleaning give 12:00, 119 vs 117) | the dirty rows are in the table; deleting them by hand is not repeatable; formulas live in cells |
 | P1 L5 | Power BI: Get Data → Power Query steps → visual | steps are repeatable, but the model hides assumptions (summarisation, auto date hierarchy) |
 | P1 L3 | pandas in a notebook | repeatable and diff-able, but only if the notebook runs top to bottom |
 | P1 L6 | the three results lined up: they agree only after **the same cleaning rules** are applied in all three | — |
@@ -70,6 +70,7 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 | Where | Solution | Gap |
 |---|---|---|
 | P1 L4 | Excel *Remove Duplicates* / filter and delete | destructive, silent, not repeatable, no record of what was removed |
+| P1 L4 | Excel helper-column flag (`COUNTIFS` `dup_n` + `status`), reconciled 8,334.00 → 8,062.00 | the rules still live in cell formulas, not in a recorded recipe; `COUNTIFS` slows on large tables |
 | P1 L5 | Power Query steps (Remove Duplicates, Replace Values, Filter Rows) | repeatable and recorded, but a step in the wrong order changes the answer |
 | P1 L3 | `drop_duplicates()`, boolean masks, `str.strip().str.title()` | still hand-picked thresholds (what is an outlier price?) — see T2 |
 | T2 (planned) | systematic cleaning: IQR / z-score, type and string cleaning | — |

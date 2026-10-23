@@ -1,0 +1,2950 @@
+{
+ "id": "p1-l4-sumifs",
+ "title": {
+  "en": "Step through one SUMIFS",
+  "ar": "تتبّع صيغة SUMIFS خطوة بخطوة"
+ },
+ "lede": {
+  "en": "Which cells does =SUMIFS(...) read, and what is the running total after each row? The excerpt is the first 18 lines of the real file. Excel is not Python, so this walk-through is written by hand (the // notes are not part of a real formula).",
+  "ar": "ما الخلايا التي تقرؤها الصيغة =SUMIFS(...) وما المجموع الجاري بعد كل صف؟ المقتطف هو أول 18 بندًا من الملف الفعلي. إكسل ليس بايثون، لذا كُتبت هذه الخطوات يدويًّا (ملاحظات // ليست جزءًا من صيغة حقيقية)."
+ },
+ "manual": true,
+ "lang": "excel",
+ "code": "=SUMIFS(\n  E2:E19,                    // sum_range: line_total\n  B2:B19, \"Shawarma Wrap\",   // test 1: item\n  F2:F19, \"ok\"               // test 2: status\n)",
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "0"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "0"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "0"
+    }
+   },
+   "note": {
+    "en": "SUMIFS is about to add up line_total, but only for rows that pass every test. Nothing has been read yet; the running total is 0. The table is an excerpt of the first 18 order lines (sheet rows 2 to 19).",
+    "ar": "على وشك أن تجمع SUMIFS قيم line_total، لكن فقط للصفوف التي تجتاز كل الاختبارات. لم يُقرأ شيء بعد والمجموع الجاري 0. الجدول مقتطف من أول 18 بند طلب (صفوف الورقة من 2 إلى 19)."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "0"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "E2:E19"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "0"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "0"
+    }
+   },
+   "note": {
+    "en": "The first argument is the sum_range: the cells whose numbers may be added. It is column E, line_total.",
+    "ar": "الوسيط الأول هو نطاق الجمع (sum_range): الخلايا التي يجوز جمع أرقامها. إنه العمود E، أي line_total."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "0"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B2:B19"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "0"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "0"
+    }
+   },
+   "note": {
+    "en": "Test 1 looks at column B: keep a row only if its item equals Shawarma Wrap (letter case is ignored).",
+    "ar": "الاختبار 1 ينظر إلى العمود B: احتفظ بالصف فقط إذا كان صنفه يساوي Shawarma Wrap (يُتجاهل فرق حالة الأحرف)."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "0"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "F2:F19"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "0"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "0"
+    }
+   },
+   "note": {
+    "en": "Test 2 looks at column F: keep a row only if its status equals ok. Both tests must pass (this is AND, not OR).",
+    "ar": "الاختبار 2 ينظر إلى العمود F: احتفظ بالصف فقط إذا كانت حالته تساوي ok. يجب أن ينجح الاختباران معًا (هذا AND وليس OR)."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "0"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B2",
+      "F2"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "0"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "0"
+    }
+   },
+   "note": {
+    "en": "Row 2 is a Shawarma Wrap, so test 1 passes, but its status is price differs (the 120 typo), so test 2 fails. The 120 is not added.",
+    "ar": "الصف 2 شاورما راب فينجح الاختبار 1، لكن حالته price differs (خطأ السعر 120) فيفشل الاختبار 2. لا يُضاف الرقم 120."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "12"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B3",
+      "F3",
+      "E3"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "12"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "12"
+    }
+   },
+   "note": {
+    "en": "Row 3: Shawarma Wrap and ok, so both tests pass and E3 = 12 is added. Running total: 12.",
+    "ar": "الصف 3: شاورما راب وحالته ok، فينجح الاختباران ويُضاف E3 = 12. المجموع الجاري: 12."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "12"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B4"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "12"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "12"
+    }
+   },
+   "note": {
+    "en": "Row 4 is a Latte. Test 1 fails, so test 2 is not even needed. Skipped.",
+    "ar": "الصف 4 لاتيه. يفشل الاختبار 1 فلا حاجة حتى إلى الاختبار 2. يُتخطّى."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "24"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B5",
+      "F5",
+      "E5"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "24"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "24"
+    }
+   },
+   "note": {
+    "en": "Row 5: both tests pass, E5 = 12 is added. Running total: 24.",
+    "ar": "الصف 5: ينجح الاختباران ويُضاف E5 = 12. المجموع الجاري: 24."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "24"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B6:B14"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "24"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "24"
+    }
+   },
+   "note": {
+    "en": "Rows 6 to 14 are Tea, Chips, Karak Tea, Espresso, Tea, Lentil Soup, Espresso, Karak Tea and Chips. None is a Shawarma Wrap, so none is added.",
+    "ar": "الصفوف من 6 إلى 14 هي Tea وChips وKarak Tea وEspresso وTea وLentil Soup وEspresso وKarak Tea وChips. لا صنف منها شاورما راب فلا يُضاف أيٌّ منها."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "48"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B15",
+      "F15",
+      "E15"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "48"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "48"
+    }
+   },
+   "note": {
+    "en": "Row 15: a Shawarma Wrap, status ok, E15 = 24 (2 wraps at 12). Running total: 48.",
+    "ar": "الصف 15: شاورما راب وحالته ok، وE15 = 24 (قطعتان بسعر 12). المجموع الجاري: 48."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "48"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B16"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "48"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "48"
+    }
+   },
+   "note": {
+    "en": "Row 16 is a Tea refund (qty -1). It is not a Shawarma Wrap, so it never reaches test 2. (Its status is refund, so it would fail there too.)",
+    "ar": "الصف 16 استرجاع شاي (qty = -1). ليس شاورما راب فلا يصل إلى الاختبار 2. (حالته refund وكان سيفشل هناك أيضًا.)"
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "72"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B17",
+      "F17",
+      "E17"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "72"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "72"
+    }
+   },
+   "note": {
+    "en": "Row 17: Shawarma Wrap, ok, E17 = 24. Running total: 72.",
+    "ar": "الصف 17: شاورما راب وحالته ok، وE17 = 24. المجموع الجاري: 72."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "72"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B18"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "72"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "72"
+    }
+   },
+   "note": {
+    "en": "Row 18 is an Espresso. Skipped.",
+    "ar": "الصف 18 إسبريسو. يُتخطّى."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "96"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "B19",
+      "F19",
+      "E19"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "96"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "96"
+    }
+   },
+   "note": {
+    "en": "Row 19: Shawarma Wrap, ok, E19 = 24. Running total: 96.",
+    "ar": "الصف 19: شاورما راب وحالته ok، وE19 = 24. المجموع الجاري: 96."
+   }
+  },
+  {
+   "line": 1,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "order_id",
+      "item",
+      "qty",
+      "unit_price",
+      "line_total",
+      "status",
+      "total"
+     ],
+     "rows": [
+      [
+       "5001",
+       "Shawarma Wrap",
+       "1",
+       "120",
+       "120",
+       "price differs",
+       "96"
+      ],
+      [
+       "5002",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5002",
+       "Latte",
+       "3",
+       "9",
+       "27",
+       "ok",
+       ""
+      ],
+      [
+       "5003",
+       "Shawarma Wrap",
+       "1",
+       "12",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5004",
+       "Tea",
+       "1",
+       "n/a",
+       "0",
+       "bad price",
+       ""
+      ],
+      [
+       "5005",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5006",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5007",
+       "Tea",
+       "1",
+       "3",
+       "3",
+       "ok",
+       ""
+      ],
+      [
+       "5008",
+       "Lentil Soup",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5009",
+       "Espresso",
+       "2",
+       "6",
+       "12",
+       "ok",
+       ""
+      ],
+      [
+       "5010",
+       "Karak Tea",
+       "1",
+       "5",
+       "5",
+       "ok",
+       ""
+      ],
+      [
+       "5011",
+       "Chips",
+       "1",
+       "4",
+       "4",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5012",
+       "Tea",
+       "-1",
+       "3",
+       "-3",
+       "refund",
+       ""
+      ],
+      [
+       "5013",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ],
+      [
+       "5014",
+       "Espresso",
+       "1",
+       "6",
+       "6",
+       "ok",
+       ""
+      ],
+      [
+       "5015",
+       "Shawarma Wrap",
+       "2",
+       "12",
+       "24",
+       "ok",
+       ""
+      ]
+     ],
+     "hl": [
+      "G2"
+     ],
+     "active": "G2",
+     "formula": "=SUMIFS(E2:E19,B2:B19,\"Shawarma Wrap\",F2:F19,\"ok\")",
+     "result": "96"
+    },
+    "running_total": {
+     "t": "num",
+     "v": "96"
+    }
+   },
+   "note": {
+    "en": "All 18 rows are read. SUMIFS returns 96. Notice what the second test bought us: without it the answer would be 216, because the 120 typo would be added.",
+    "ar": "قُرئت الصفوف الـ 18 كلها. تُعيد SUMIFS القيمة 96. لاحظ ما أعطاه الاختبار الثاني: بدونه تكون الإجابة 216 لأن خطأ السعر 120 كان سيُضاف."
+   }
+  }
+ ]
+}

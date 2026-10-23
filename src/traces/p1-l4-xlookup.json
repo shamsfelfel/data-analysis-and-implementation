@@ -1,0 +1,892 @@
+{
+ "id": "p1-l4-xlookup",
+ "title": {
+  "en": "How XLOOKUP finds a menu price",
+  "ar": "كيف يجد XLOOKUP سعر القائمة"
+ },
+ "lede": {
+  "en": "One real order line (sheet row 62), first with a stray trailing space, then with TRIM applied. Watch which Menu cells the lookup compares and returns. Written by hand because Excel is not Python.",
+  "ar": "بند طلب فعلي واحد (صف الورقة 62)، أولًا بفراغ زائد في آخره ثم بعد تطبيق TRIM. راقب أي خلايا من Menu تقارنها عملية البحث وأيها تُعيد. كُتب يدويًّا لأن إكسل ليس بايثون."
+ },
+ "manual": true,
+ "lang": "excel",
+ "code": "item_clean = TRIM([@item])\n=XLOOKUP(\n  [@item_clean],         // lookup_value\n  tblMenu[item],         // lookup_array\n  tblMenu[list_price],   // return_array\n  \"not on menu\"          // if_not_found\n)",
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "lookup_value": {
+     "t": "str",
+     "v": "Latte "
+    },
+    "tblMenu": {
+     "t": "sheet",
+     "cols": [
+      "item",
+      "category",
+      "list_price"
+     ],
+     "rows": [
+      [
+       "Espresso",
+       "Drink",
+       "6"
+      ],
+      [
+       "Latte",
+       "Drink",
+       "9"
+      ],
+      [
+       "Tea",
+       "Drink",
+       "3"
+      ],
+      [
+       "Karak Tea",
+       "Drink",
+       "5"
+      ],
+      [
+       "Orange Juice",
+       "Drink",
+       "8"
+      ],
+      [
+       "Water 500ml",
+       "Drink",
+       "2"
+      ],
+      [
+       "Falafel Sandwich",
+       "Food",
+       "7"
+      ],
+      [
+       "Shawarma Wrap",
+       "Food",
+       "12"
+      ],
+      [
+       "Cheese Manakish",
+       "Food",
+       "8"
+      ],
+      [
+       "Chicken Rice",
+       "Food",
+       "15"
+      ],
+      [
+       "Lentil Soup",
+       "Food",
+       "6"
+      ],
+      [
+       "Chips",
+       "Snack",
+       "4"
+      ],
+      [
+       "Date Cookie",
+       "Snack",
+       "3.5"
+      ],
+      [
+       "Nuts Cup",
+       "Snack",
+       "5"
+      ],
+      [
+       "Baklava",
+       "Dessert",
+       "6.5"
+      ],
+      [
+       "Kunafa Slice",
+       "Dessert",
+       "9"
+      ]
+     ],
+     "hl": [],
+     "active": "A1",
+     "formula": "=XLOOKUP([@item_clean],tblMenu[item],tblMenu[list_price],\"not on menu\")",
+     "result": ""
+    }
+   },
+   "note": {
+    "en": "Order line on sheet row 62 (order 5050) sold one Latte at 9. Its item cell holds the five letters of Latte followed by a trailing space: six characters, invisible on screen. The Menu sheet is shown on the right.",
+    "ar": "بند الطلب في صف الورقة 62 (الطلب 5050) باع لاتيه واحدًا بسعر 9. وخلية الصنف فيه تحمل حروف Latte الخمسة يليها فراغ زائد: ستة محارف لا تُرى على الشاشة. وتظهر ورقة Menu."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "lookup_value": {
+     "t": "str",
+     "v": "Latte "
+    },
+    "tblMenu": {
+     "t": "sheet",
+     "cols": [
+      "item",
+      "category",
+      "list_price"
+     ],
+     "rows": [
+      [
+       "Espresso",
+       "Drink",
+       "6"
+      ],
+      [
+       "Latte",
+       "Drink",
+       "9"
+      ],
+      [
+       "Tea",
+       "Drink",
+       "3"
+      ],
+      [
+       "Karak Tea",
+       "Drink",
+       "5"
+      ],
+      [
+       "Orange Juice",
+       "Drink",
+       "8"
+      ],
+      [
+       "Water 500ml",
+       "Drink",
+       "2"
+      ],
+      [
+       "Falafel Sandwich",
+       "Food",
+       "7"
+      ],
+      [
+       "Shawarma Wrap",
+       "Food",
+       "12"
+      ],
+      [
+       "Cheese Manakish",
+       "Food",
+       "8"
+      ],
+      [
+       "Chicken Rice",
+       "Food",
+       "15"
+      ],
+      [
+       "Lentil Soup",
+       "Food",
+       "6"
+      ],
+      [
+       "Chips",
+       "Snack",
+       "4"
+      ],
+      [
+       "Date Cookie",
+       "Snack",
+       "3.5"
+      ],
+      [
+       "Nuts Cup",
+       "Snack",
+       "5"
+      ],
+      [
+       "Baklava",
+       "Dessert",
+       "6.5"
+      ],
+      [
+       "Kunafa Slice",
+       "Dessert",
+       "9"
+      ]
+     ],
+     "hl": [],
+     "active": "A1",
+     "formula": "=XLOOKUP([@item_clean],tblMenu[item],tblMenu[list_price],\"not on menu\")",
+     "result": ""
+    }
+   },
+   "note": {
+    "en": "First attempt: suppose item_clean were just a copy of item. The lookup_value handed to XLOOKUP is Latte followed by the space.",
+    "ar": "المحاولة الأولى: لنفترض أن item_clean مجرد نسخة من item. فتكون القيمة المُمرَّرة إلى XLOOKUP هي Latte يليها الفراغ."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "lookup_value": {
+     "t": "str",
+     "v": "Latte "
+    },
+    "tblMenu": {
+     "t": "sheet",
+     "cols": [
+      "item",
+      "category",
+      "list_price"
+     ],
+     "rows": [
+      [
+       "Espresso",
+       "Drink",
+       "6"
+      ],
+      [
+       "Latte",
+       "Drink",
+       "9"
+      ],
+      [
+       "Tea",
+       "Drink",
+       "3"
+      ],
+      [
+       "Karak Tea",
+       "Drink",
+       "5"
+      ],
+      [
+       "Orange Juice",
+       "Drink",
+       "8"
+      ],
+      [
+       "Water 500ml",
+       "Drink",
+       "2"
+      ],
+      [
+       "Falafel Sandwich",
+       "Food",
+       "7"
+      ],
+      [
+       "Shawarma Wrap",
+       "Food",
+       "12"
+      ],
+      [
+       "Cheese Manakish",
+       "Food",
+       "8"
+      ],
+      [
+       "Chicken Rice",
+       "Food",
+       "15"
+      ],
+      [
+       "Lentil Soup",
+       "Food",
+       "6"
+      ],
+      [
+       "Chips",
+       "Snack",
+       "4"
+      ],
+      [
+       "Date Cookie",
+       "Snack",
+       "3.5"
+      ],
+      [
+       "Nuts Cup",
+       "Snack",
+       "5"
+      ],
+      [
+       "Baklava",
+       "Dessert",
+       "6.5"
+      ],
+      [
+       "Kunafa Slice",
+       "Dessert",
+       "9"
+      ]
+     ],
+     "hl": [
+      "A2:A17"
+     ],
+     "active": "A2",
+     "formula": "=XLOOKUP([@item_clean],tblMenu[item],tblMenu[list_price],\"not on menu\")",
+     "result": ""
+    }
+   },
+   "note": {
+    "en": "XLOOKUP walks down tblMenu[item] looking for an exact match. Letter case is ignored, but a space is a character: Latte (5) is not Latte plus a space (6). No row matches.",
+    "ar": "يهبط XLOOKUP على tblMenu[item] بحثًا عن تطابق تام. يُتجاهل فرق حالة الأحرف، لكن الفراغ محرف: Latte (5 محارف) لا تساوي Latte مع فراغ (6 محارف). لا يطابق أي صف."
+   }
+  },
+  {
+   "line": 6,
+   "vars": {
+    "lookup_value": {
+     "t": "str",
+     "v": "Latte "
+    },
+    "tblMenu": {
+     "t": "sheet",
+     "cols": [
+      "item",
+      "category",
+      "list_price"
+     ],
+     "rows": [
+      [
+       "Espresso",
+       "Drink",
+       "6"
+      ],
+      [
+       "Latte",
+       "Drink",
+       "9"
+      ],
+      [
+       "Tea",
+       "Drink",
+       "3"
+      ],
+      [
+       "Karak Tea",
+       "Drink",
+       "5"
+      ],
+      [
+       "Orange Juice",
+       "Drink",
+       "8"
+      ],
+      [
+       "Water 500ml",
+       "Drink",
+       "2"
+      ],
+      [
+       "Falafel Sandwich",
+       "Food",
+       "7"
+      ],
+      [
+       "Shawarma Wrap",
+       "Food",
+       "12"
+      ],
+      [
+       "Cheese Manakish",
+       "Food",
+       "8"
+      ],
+      [
+       "Chicken Rice",
+       "Food",
+       "15"
+      ],
+      [
+       "Lentil Soup",
+       "Food",
+       "6"
+      ],
+      [
+       "Chips",
+       "Snack",
+       "4"
+      ],
+      [
+       "Date Cookie",
+       "Snack",
+       "3.5"
+      ],
+      [
+       "Nuts Cup",
+       "Snack",
+       "5"
+      ],
+      [
+       "Baklava",
+       "Dessert",
+       "6.5"
+      ],
+      [
+       "Kunafa Slice",
+       "Dessert",
+       "9"
+      ]
+     ],
+     "hl": [],
+     "active": "A1",
+     "formula": "=XLOOKUP([@item_clean],tblMenu[item],tblMenu[list_price],\"not on menu\")",
+     "result": "not on menu"
+    },
+    "result": {
+     "t": "str",
+     "v": "not on menu"
+    }
+   },
+   "note": {
+    "en": "Nothing matched, so the fourth argument is returned: the text not on menu. Because we asked for that message, we see the problem. With plain INDEX/MATCH or no if_not_found it would be #N/A; wrapped in IFERROR(...,0) it could be silently priced at 0.",
+    "ar": "لم يطابق شيء فتُعاد قيمة الوسيط الرابع: النص not on menu. ولأننا طلبنا هذه الرسالة نرى المشكلة. أما مع INDEX/MATCH العادية أو بلا if_not_found فستكون #N/A؛ ومع IFERROR(...,0) قد يُسعَّر البند بصفر دون أن يلاحظ أحد."
+   }
+  },
+  {
+   "line": 1,
+   "vars": {
+    "lookup_value": {
+     "t": "str",
+     "v": "Latte"
+    },
+    "tblMenu": {
+     "t": "sheet",
+     "cols": [
+      "item",
+      "category",
+      "list_price"
+     ],
+     "rows": [
+      [
+       "Espresso",
+       "Drink",
+       "6"
+      ],
+      [
+       "Latte",
+       "Drink",
+       "9"
+      ],
+      [
+       "Tea",
+       "Drink",
+       "3"
+      ],
+      [
+       "Karak Tea",
+       "Drink",
+       "5"
+      ],
+      [
+       "Orange Juice",
+       "Drink",
+       "8"
+      ],
+      [
+       "Water 500ml",
+       "Drink",
+       "2"
+      ],
+      [
+       "Falafel Sandwich",
+       "Food",
+       "7"
+      ],
+      [
+       "Shawarma Wrap",
+       "Food",
+       "12"
+      ],
+      [
+       "Cheese Manakish",
+       "Food",
+       "8"
+      ],
+      [
+       "Chicken Rice",
+       "Food",
+       "15"
+      ],
+      [
+       "Lentil Soup",
+       "Food",
+       "6"
+      ],
+      [
+       "Chips",
+       "Snack",
+       "4"
+      ],
+      [
+       "Date Cookie",
+       "Snack",
+       "3.5"
+      ],
+      [
+       "Nuts Cup",
+       "Snack",
+       "5"
+      ],
+      [
+       "Baklava",
+       "Dessert",
+       "6.5"
+      ],
+      [
+       "Kunafa Slice",
+       "Dessert",
+       "9"
+      ]
+     ],
+     "hl": [],
+     "active": "A1",
+     "formula": "=XLOOKUP([@item_clean],tblMenu[item],tblMenu[list_price],\"not on menu\")",
+     "result": ""
+    }
+   },
+   "note": {
+    "en": "The fix lives in a helper column: item_clean = TRIM(item). TRIM removes leading and trailing spaces and squeezes repeated inner spaces to one. Now item_clean holds Latte, five characters.",
+    "ar": "الإصلاح في عمود مساعد: item_clean = TRIM(item). تحذف TRIM الفراغات في البداية والنهاية وتختزل الفراغات الداخلية المتكررة إلى واحد. الآن تحمل item_clean القيمة Latte بخمسة محارف."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "lookup_value": {
+     "t": "str",
+     "v": "Latte"
+    },
+    "tblMenu": {
+     "t": "sheet",
+     "cols": [
+      "item",
+      "category",
+      "list_price"
+     ],
+     "rows": [
+      [
+       "Espresso",
+       "Drink",
+       "6"
+      ],
+      [
+       "Latte",
+       "Drink",
+       "9"
+      ],
+      [
+       "Tea",
+       "Drink",
+       "3"
+      ],
+      [
+       "Karak Tea",
+       "Drink",
+       "5"
+      ],
+      [
+       "Orange Juice",
+       "Drink",
+       "8"
+      ],
+      [
+       "Water 500ml",
+       "Drink",
+       "2"
+      ],
+      [
+       "Falafel Sandwich",
+       "Food",
+       "7"
+      ],
+      [
+       "Shawarma Wrap",
+       "Food",
+       "12"
+      ],
+      [
+       "Cheese Manakish",
+       "Food",
+       "8"
+      ],
+      [
+       "Chicken Rice",
+       "Food",
+       "15"
+      ],
+      [
+       "Lentil Soup",
+       "Food",
+       "6"
+      ],
+      [
+       "Chips",
+       "Snack",
+       "4"
+      ],
+      [
+       "Date Cookie",
+       "Snack",
+       "3.5"
+      ],
+      [
+       "Nuts Cup",
+       "Snack",
+       "5"
+      ],
+      [
+       "Baklava",
+       "Dessert",
+       "6.5"
+      ],
+      [
+       "Kunafa Slice",
+       "Dessert",
+       "9"
+      ]
+     ],
+     "hl": [
+      "A2:A3"
+     ],
+     "active": "A3",
+     "formula": "=XLOOKUP([@item_clean],tblMenu[item],tblMenu[list_price],\"not on menu\")",
+     "result": ""
+    }
+   },
+   "note": {
+    "en": "Second attempt. A2 is Espresso: no. A3 is Latte: exact match. XLOOKUP stops at the first match and remembers its position, second in the list.",
+    "ar": "المحاولة الثانية. A2 هو Espresso: لا. A3 هو Latte: تطابق تام. يتوقف XLOOKUP عند أول تطابق ويتذكر موضعه، الثاني في القائمة."
+   }
+  },
+  {
+   "line": 5,
+   "vars": {
+    "lookup_value": {
+     "t": "str",
+     "v": "Latte"
+    },
+    "tblMenu": {
+     "t": "sheet",
+     "cols": [
+      "item",
+      "category",
+      "list_price"
+     ],
+     "rows": [
+      [
+       "Espresso",
+       "Drink",
+       "6"
+      ],
+      [
+       "Latte",
+       "Drink",
+       "9"
+      ],
+      [
+       "Tea",
+       "Drink",
+       "3"
+      ],
+      [
+       "Karak Tea",
+       "Drink",
+       "5"
+      ],
+      [
+       "Orange Juice",
+       "Drink",
+       "8"
+      ],
+      [
+       "Water 500ml",
+       "Drink",
+       "2"
+      ],
+      [
+       "Falafel Sandwich",
+       "Food",
+       "7"
+      ],
+      [
+       "Shawarma Wrap",
+       "Food",
+       "12"
+      ],
+      [
+       "Cheese Manakish",
+       "Food",
+       "8"
+      ],
+      [
+       "Chicken Rice",
+       "Food",
+       "15"
+      ],
+      [
+       "Lentil Soup",
+       "Food",
+       "6"
+      ],
+      [
+       "Chips",
+       "Snack",
+       "4"
+      ],
+      [
+       "Date Cookie",
+       "Snack",
+       "3.5"
+      ],
+      [
+       "Nuts Cup",
+       "Snack",
+       "5"
+      ],
+      [
+       "Baklava",
+       "Dessert",
+       "6.5"
+      ],
+      [
+       "Kunafa Slice",
+       "Dessert",
+       "9"
+      ]
+     ],
+     "hl": [
+      "C3"
+     ],
+     "active": "C3",
+     "formula": "=XLOOKUP([@item_clean],tblMenu[item],tblMenu[list_price],\"not on menu\")",
+     "result": "9"
+    },
+    "result": {
+     "t": "num",
+     "v": "9"
+    }
+   },
+   "note": {
+    "en": "XLOOKUP now reads the same position in the return_array, tblMenu[list_price]. The cell is C3 and it holds 9. The if_not_found argument is never used.",
+    "ar": "يقرأ XLOOKUP الآن الموضع نفسه في مصفوفة الإرجاع tblMenu[list_price]. الخلية هي C3 وفيها 9. ولا يُستعمل وسيط if_not_found إطلاقًا."
+   }
+  },
+  {
+   "line": 7,
+   "vars": {
+    "lookup_value": {
+     "t": "str",
+     "v": "Latte"
+    },
+    "tblMenu": {
+     "t": "sheet",
+     "cols": [
+      "item",
+      "category",
+      "list_price"
+     ],
+     "rows": [
+      [
+       "Espresso",
+       "Drink",
+       "6"
+      ],
+      [
+       "Latte",
+       "Drink",
+       "9"
+      ],
+      [
+       "Tea",
+       "Drink",
+       "3"
+      ],
+      [
+       "Karak Tea",
+       "Drink",
+       "5"
+      ],
+      [
+       "Orange Juice",
+       "Drink",
+       "8"
+      ],
+      [
+       "Water 500ml",
+       "Drink",
+       "2"
+      ],
+      [
+       "Falafel Sandwich",
+       "Food",
+       "7"
+      ],
+      [
+       "Shawarma Wrap",
+       "Food",
+       "12"
+      ],
+      [
+       "Cheese Manakish",
+       "Food",
+       "8"
+      ],
+      [
+       "Chicken Rice",
+       "Food",
+       "15"
+      ],
+      [
+       "Lentil Soup",
+       "Food",
+       "6"
+      ],
+      [
+       "Chips",
+       "Snack",
+       "4"
+      ],
+      [
+       "Date Cookie",
+       "Snack",
+       "3.5"
+      ],
+      [
+       "Nuts Cup",
+       "Snack",
+       "5"
+      ],
+      [
+       "Baklava",
+       "Dessert",
+       "6.5"
+      ],
+      [
+       "Kunafa Slice",
+       "Dessert",
+       "9"
+      ]
+     ],
+     "hl": [
+      "C3"
+     ],
+     "active": "C3",
+     "formula": "=XLOOKUP([@item_clean],tblMenu[item],tblMenu[list_price],\"not on menu\")",
+     "result": "9"
+    },
+    "result": {
+     "t": "num",
+     "v": "9"
+    }
+   },
+   "note": {
+    "en": "The formula returns 9. Compare it with this line's own unit_price (also 9): they agree, so no price warning. On order 5001 the same comparison would show 120 against 12 and expose the typo.",
+    "ar": "تُعيد الصيغة 9. قارنها بسعر الوحدة unit_price في هذا البند نفسه (وهو 9 أيضًا): يتفقان فلا تحذير. أما في الطلب 5001 فستُظهر المقارنة نفسها 120 مقابل 12 وتكشف الخطأ."
+   }
+  }
+ ]
+}

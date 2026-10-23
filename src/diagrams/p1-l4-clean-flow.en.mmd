@@ -1,0 +1,13 @@
+%% alt: Flowchart of cleaning data in Excel without destroying it. Keep the raw data untouched, make a Table, add helper columns such as item_clean, dup_n and status. If a row's status is ok it counts in SUMIFS and PivotTables. If not, it stays in the table with a reason. If the reason is a real error, fix the source and rebuild the Table; if it is a rule, write the rule on a Rules sheet. Either way the report states the total and the rules used.
+flowchart TD
+  A["Raw data<br/>keep untouched"] --> B["Make a Table<br/>tblOrders"]
+  B --> C["Add helper columns<br/>item_clean, dup_n, status"]
+  C --> D{"status is ok?"}
+  D -- "yes" --> E["Counts in SUMIFS<br/>and PivotTables"]
+  D -- "no" --> F["Stays in the table<br/>with a reason"]
+  F --> G{"Is the reason<br/>a real error?"}
+  G -- "yes" --> H["Fix the source<br/>or ask who owns it"]
+  G -- "no, it is a rule" --> I["Write the rule on<br/>a Rules sheet"]
+  H --> B
+  E --> J["Report the total<br/>and the rules used"]
+  I --> J

@@ -1,0 +1,1334 @@
+{
+ "id": "p1-l4-pivot",
+ "title": {
+  "en": "Build a PivotTable step by step",
+  "ar": "بناء جدول محوري خطوة بخطوة"
+ },
+ "lede": {
+  "en": "Revenue by item, built from a 15-line excerpt of the real Table: the fields you drag, what the PivotTable shows after each drag, and the moment it goes stale. Written by hand because Excel is not Python; menu names vary slightly by version.",
+  "ar": "الإيراد حسب الصنف، مبنيًّا من مقتطف من 15 بندًا من الجدول الفعلي: الحقول التي تسحبها، وما يعرضه الجدول المحوري بعد كل سحب، واللحظة التي يتقادم فيها. كُتب يدويًّا لأن إكسل ليس بايثون؛ وتختلف أسماء القوائم قليلًا بين الإصدارات."
+ },
+ "manual": true,
+ "lang": "text",
+ "code": "Click a cell inside tblOrders\nInsert > PivotTable > OK (new worksheet)\nDrag status to Filters\nDrag item_clean to Rows\nDrag line_total to Values\nFilter status: tick ok only\nSort Sum of line_total, largest first\nType a new line under the Table\nPivotTable Analyze > Refresh",
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "line_total",
+      "status"
+     ],
+     "rows": [
+      [
+       "Shawarma Wrap",
+       "120",
+       "price differs"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Latte",
+       "27",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Tea",
+       "0",
+       "bad price"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "6",
+       "ok"
+      ],
+      [
+       "Tea",
+       "3",
+       "ok"
+      ],
+      [
+       "Lentil Soup",
+       "12",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "12",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "24",
+       "ok"
+      ],
+      [
+       "Tea",
+       "-3",
+       "refund"
+      ]
+     ],
+     "hl": []
+    },
+    "PivotTable1": {
+     "t": "sheet",
+     "rows": [
+      [
+       "(no PivotTable yet)",
+       ""
+      ]
+     ],
+     "hl": []
+    },
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Click in the Table",
+      "Insert PivotTable",
+      "Drag fields",
+      "Filter ok",
+      "Sort",
+      "Refresh"
+     ],
+     "active": 0
+    }
+   },
+   "note": {
+    "en": "You start with the Table. The excerpt shows 15 lines: the item name, the line total and the status that the helper columns produced. Click any cell inside it; that is how Excel learns that the source is tblOrders.",
+    "ar": "تبدأ من الجدول. يعرض المقتطف 15 بندًا: اسم الصنف وإجمالي البند والحالة التي أنتجتها الأعمدة المساعدة. انقر أي خلية داخله؛ بذلك يعرف إكسل أن المصدر هو tblOrders."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "line_total",
+      "status"
+     ],
+     "rows": [
+      [
+       "Shawarma Wrap",
+       "120",
+       "price differs"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Latte",
+       "27",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Tea",
+       "0",
+       "bad price"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "6",
+       "ok"
+      ],
+      [
+       "Tea",
+       "3",
+       "ok"
+      ],
+      [
+       "Lentil Soup",
+       "12",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "12",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "24",
+       "ok"
+      ],
+      [
+       "Tea",
+       "-3",
+       "refund"
+      ]
+     ],
+     "hl": []
+    },
+    "PivotTable1": {
+     "t": "sheet",
+     "rows": [
+      [
+       "PivotTable1",
+       "(empty)"
+      ]
+     ],
+     "hl": []
+    },
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Click in the Table",
+      "Insert PivotTable",
+      "Drag fields",
+      "Filter ok",
+      "Sort",
+      "Refresh"
+     ],
+     "active": 1
+    }
+   },
+   "note": {
+    "en": "Insert, PivotTable, OK. Excel proposes tblOrders as the source because the cursor was in the Table, and builds an empty PivotTable on a new worksheet. A field list appears with one entry per column.",
+    "ar": "إدراج ثم PivotTable ثم موافق. يقترح إكسل tblOrders مصدرًا لأن المؤشر كان داخل الجدول، ويبني جدولًا محوريًّا فارغًا في ورقة جديدة. وتظهر قائمة حقول بعنصر لكل عمود."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "line_total",
+      "status"
+     ],
+     "rows": [
+      [
+       "Shawarma Wrap",
+       "120",
+       "price differs"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Latte",
+       "27",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Tea",
+       "0",
+       "bad price"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "6",
+       "ok"
+      ],
+      [
+       "Tea",
+       "3",
+       "ok"
+      ],
+      [
+       "Lentil Soup",
+       "12",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "12",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "24",
+       "ok"
+      ],
+      [
+       "Tea",
+       "-3",
+       "refund"
+      ]
+     ],
+     "hl": []
+    },
+    "PivotTable1": {
+     "t": "sheet",
+     "rows": [
+      [
+       "status",
+       "(All)"
+      ]
+     ],
+     "hl": [
+      "A1:B1"
+     ]
+    },
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Click in the Table",
+      "Insert PivotTable",
+      "Drag fields",
+      "Filter ok",
+      "Sort",
+      "Refresh"
+     ],
+     "active": 2
+    }
+   },
+   "note": {
+    "en": "Drag status into Filters. It sits above the table showing (All): nothing is excluded yet. We will use it to leave out the rows that should not count.",
+    "ar": "اسحب الحقل status إلى منطقة المرشِّحات (Filters). يظهر فوق الجدول بالقيمة (All): لم يُستبعد شيء بعد. سنستعمله لإقصاء الصفوف التي لا يجب أن تُحتسب."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "line_total",
+      "status"
+     ],
+     "rows": [
+      [
+       "Shawarma Wrap",
+       "120",
+       "price differs"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Latte",
+       "27",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Tea",
+       "0",
+       "bad price"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "6",
+       "ok"
+      ],
+      [
+       "Tea",
+       "3",
+       "ok"
+      ],
+      [
+       "Lentil Soup",
+       "12",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "12",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "24",
+       "ok"
+      ],
+      [
+       "Tea",
+       "-3",
+       "refund"
+      ]
+     ],
+     "hl": []
+    },
+    "PivotTable1": {
+     "t": "sheet",
+     "rows": [
+      [
+       "status",
+       "(All)"
+      ],
+      [
+       "",
+       ""
+      ],
+      [
+       "Row Labels",
+       ""
+      ],
+      [
+       "Chips",
+       ""
+      ],
+      [
+       "Espresso",
+       ""
+      ],
+      [
+       "Karak Tea",
+       ""
+      ],
+      [
+       "Latte",
+       ""
+      ],
+      [
+       "Lentil Soup",
+       ""
+      ],
+      [
+       "Shawarma Wrap",
+       ""
+      ],
+      [
+       "Tea",
+       ""
+      ]
+     ],
+     "hl": []
+    },
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Click in the Table",
+      "Insert PivotTable",
+      "Drag fields",
+      "Filter ok",
+      "Sort",
+      "Refresh"
+     ],
+     "active": 2
+    }
+   },
+   "note": {
+    "en": "Drag item_clean into Rows. The PivotTable lists each distinct item once, alphabetically: seven items in this excerpt. No numbers yet.",
+    "ar": "اسحب item_clean إلى الصفوف (Rows). يسرد الجدول المحوري كل صنف مميّز مرة واحدة بترتيب أبجدي: سبعة أصناف في هذا المقتطف. ولا أرقام بعد."
+   }
+  },
+  {
+   "line": 5,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "line_total",
+      "status"
+     ],
+     "rows": [
+      [
+       "Shawarma Wrap",
+       "120",
+       "price differs"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Latte",
+       "27",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Tea",
+       "0",
+       "bad price"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "6",
+       "ok"
+      ],
+      [
+       "Tea",
+       "3",
+       "ok"
+      ],
+      [
+       "Lentil Soup",
+       "12",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "12",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "24",
+       "ok"
+      ],
+      [
+       "Tea",
+       "-3",
+       "refund"
+      ]
+     ],
+     "hl": [
+      "B2:B16"
+     ]
+    },
+    "PivotTable1": {
+     "t": "sheet",
+     "rows": [
+      [
+       "status",
+       "(All)"
+      ],
+      [
+       "",
+       ""
+      ],
+      [
+       "Row Labels",
+       "Sum of line_total"
+      ],
+      [
+       "Chips",
+       "8"
+      ],
+      [
+       "Espresso",
+       "18"
+      ],
+      [
+       "Karak Tea",
+       "10"
+      ],
+      [
+       "Latte",
+       "27"
+      ],
+      [
+       "Lentil Soup",
+       "12"
+      ],
+      [
+       "Shawarma Wrap",
+       "168"
+      ],
+      [
+       "Tea",
+       "0"
+      ],
+      [
+       "Grand Total",
+       "243"
+      ]
+     ],
+     "hl": []
+    },
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Click in the Table",
+      "Insert PivotTable",
+      "Drag fields",
+      "Filter ok",
+      "Sort",
+      "Refresh"
+     ],
+     "active": 2
+    }
+   },
+   "note": {
+    "en": "Drag line_total into Values. Excel proposes Sum of line_total. With no filter every row counts: the 120 typo is inside Shawarma Wrap (168) and the Tea refund cancels a Tea line (0). Grand total: 243.",
+    "ar": "اسحب line_total إلى القيم (Values). يقترح إكسل مجموع line_total. وبلا مرشِّح يُحتسب كل صف: خطأ السعر 120 داخل Shawarma Wrap (168)، واسترجاع الشاي يلغي بندًا من الشاي (0). الإجمالي الكبير: 243."
+   }
+  },
+  {
+   "line": 6,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "line_total",
+      "status"
+     ],
+     "rows": [
+      [
+       "Shawarma Wrap",
+       "120",
+       "price differs"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Latte",
+       "27",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Tea",
+       "0",
+       "bad price"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "6",
+       "ok"
+      ],
+      [
+       "Tea",
+       "3",
+       "ok"
+      ],
+      [
+       "Lentil Soup",
+       "12",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "12",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "24",
+       "ok"
+      ],
+      [
+       "Tea",
+       "-3",
+       "refund"
+      ]
+     ],
+     "hl": [
+      "A3:C3",
+      "A4:C4",
+      "A5:C5",
+      "A7:C7",
+      "A8:C8",
+      "A9:C9",
+      "A10:C10",
+      "A11:C11",
+      "A12:C12",
+      "A13:C13",
+      "A14:C14",
+      "A15:C15"
+     ]
+    },
+    "PivotTable1": {
+     "t": "sheet",
+     "rows": [
+      [
+       "status",
+       "ok"
+      ],
+      [
+       "",
+       ""
+      ],
+      [
+       "Row Labels",
+       "Sum of line_total"
+      ],
+      [
+       "Chips",
+       "8"
+      ],
+      [
+       "Espresso",
+       "18"
+      ],
+      [
+       "Karak Tea",
+       "10"
+      ],
+      [
+       "Latte",
+       "27"
+      ],
+      [
+       "Lentil Soup",
+       "12"
+      ],
+      [
+       "Shawarma Wrap",
+       "48"
+      ],
+      [
+       "Tea",
+       "3"
+      ],
+      [
+       "Grand Total",
+       "126"
+      ]
+     ],
+     "hl": []
+    },
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Click in the Table",
+      "Insert PivotTable",
+      "Drag fields",
+      "Filter ok",
+      "Sort",
+      "Refresh"
+     ],
+     "active": 3
+    }
+   },
+   "note": {
+    "en": "Open the status filter and tick only ok. The typo line and the refund drop out: Shawarma Wrap falls from 168 to 48 and the grand total from 243 to 126. The highlighted source rows are the ones still counted.",
+    "ar": "افتح مرشِّح status وعلّم ok وحدها. يسقط سطر الخطأ والاسترجاع: ينخفض Shawarma Wrap من 168 إلى 48 والإجمالي من 243 إلى 126. صفوف المصدر المظلّلة هي ما يزال محسوبًا."
+   }
+  },
+  {
+   "line": 7,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "line_total",
+      "status"
+     ],
+     "rows": [
+      [
+       "Shawarma Wrap",
+       "120",
+       "price differs"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Latte",
+       "27",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Tea",
+       "0",
+       "bad price"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "6",
+       "ok"
+      ],
+      [
+       "Tea",
+       "3",
+       "ok"
+      ],
+      [
+       "Lentil Soup",
+       "12",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "12",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "24",
+       "ok"
+      ],
+      [
+       "Tea",
+       "-3",
+       "refund"
+      ]
+     ],
+     "hl": []
+    },
+    "PivotTable1": {
+     "t": "sheet",
+     "rows": [
+      [
+       "status",
+       "ok"
+      ],
+      [
+       "",
+       ""
+      ],
+      [
+       "Row Labels",
+       "Sum of line_total"
+      ],
+      [
+       "Shawarma Wrap",
+       "48"
+      ],
+      [
+       "Latte",
+       "27"
+      ],
+      [
+       "Espresso",
+       "18"
+      ],
+      [
+       "Lentil Soup",
+       "12"
+      ],
+      [
+       "Karak Tea",
+       "10"
+      ],
+      [
+       "Chips",
+       "8"
+      ],
+      [
+       "Tea",
+       "3"
+      ],
+      [
+       "Grand Total",
+       "126"
+      ]
+     ],
+     "hl": []
+    },
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Click in the Table",
+      "Insert PivotTable",
+      "Drag fields",
+      "Filter ok",
+      "Sort",
+      "Refresh"
+     ],
+     "active": 4
+    }
+   },
+   "note": {
+    "en": "Right-click a number, Sort, Largest to Smallest. The ranking is now visible: Shawarma Wrap 48, Latte 27, Espresso 18. A Top 10 value filter (set to 3) would keep only the first three.",
+    "ar": "انقر بزر الفأرة الأيمن على رقم ثم Sort ثم Largest to Smallest. يظهر الترتيب الآن: Shawarma Wrap 48 ثم Latte 27 ثم Espresso 18. ومرشِّح Top 10 (بقيمة 3) يُبقي الثلاثة الأولى فقط."
+   }
+  },
+  {
+   "line": 8,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "line_total",
+      "status"
+     ],
+     "rows": [
+      [
+       "Shawarma Wrap",
+       "120",
+       "price differs"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Latte",
+       "27",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Tea",
+       "0",
+       "bad price"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "6",
+       "ok"
+      ],
+      [
+       "Tea",
+       "3",
+       "ok"
+      ],
+      [
+       "Lentil Soup",
+       "12",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "12",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "24",
+       "ok"
+      ],
+      [
+       "Tea",
+       "-3",
+       "refund"
+      ],
+      [
+       "Latte",
+       "9",
+       "ok"
+      ]
+     ],
+     "hl": [
+      "A17:C17"
+     ]
+    },
+    "PivotTable1": {
+     "t": "sheet",
+     "rows": [
+      [
+       "status",
+       "ok"
+      ],
+      [
+       "",
+       ""
+      ],
+      [
+       "Row Labels",
+       "Sum of line_total"
+      ],
+      [
+       "Shawarma Wrap",
+       "48"
+      ],
+      [
+       "Latte",
+       "27"
+      ],
+      [
+       "Espresso",
+       "18"
+      ],
+      [
+       "Lentil Soup",
+       "12"
+      ],
+      [
+       "Karak Tea",
+       "10"
+      ],
+      [
+       "Chips",
+       "8"
+      ],
+      [
+       "Tea",
+       "3"
+      ],
+      [
+       "Grand Total",
+       "126"
+      ]
+     ],
+     "hl": []
+    },
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Click in the Table",
+      "Insert PivotTable",
+      "Drag fields",
+      "Filter ok",
+      "Sort",
+      "Refresh"
+     ],
+     "active": 4
+    }
+   },
+   "note": {
+    "en": "Someone types a new line under the Table: a Latte worth 9 (a made-up line, not in the file). The Table grows by itself, but the PivotTable still shows Latte 27. A PivotTable is a snapshot; it does not recalculate when the source changes.",
+    "ar": "يكتب أحدهم بندًا جديدًا تحت الجدول: لاتيه بقيمة 9 (بند مختلق ليس في الملف). يكبر الجدول وحده، لكن الجدول المحوري ما زال يعرض Latte 27. فالجدول المحوري لقطة ثابتة ولا يُعاد حسابه حين يتغير المصدر."
+   }
+  },
+  {
+   "line": 9,
+   "vars": {
+    "tblOrders": {
+     "t": "sheet",
+     "cols": [
+      "item_clean",
+      "line_total",
+      "status"
+     ],
+     "rows": [
+      [
+       "Shawarma Wrap",
+       "120",
+       "price differs"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Latte",
+       "27",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "12",
+       "ok"
+      ],
+      [
+       "Tea",
+       "0",
+       "bad price"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "6",
+       "ok"
+      ],
+      [
+       "Tea",
+       "3",
+       "ok"
+      ],
+      [
+       "Lentil Soup",
+       "12",
+       "ok"
+      ],
+      [
+       "Espresso",
+       "12",
+       "ok"
+      ],
+      [
+       "Karak Tea",
+       "5",
+       "ok"
+      ],
+      [
+       "Chips",
+       "4",
+       "ok"
+      ],
+      [
+       "Shawarma Wrap",
+       "24",
+       "ok"
+      ],
+      [
+       "Tea",
+       "-3",
+       "refund"
+      ],
+      [
+       "Latte",
+       "9",
+       "ok"
+      ]
+     ],
+     "hl": []
+    },
+    "PivotTable1": {
+     "t": "sheet",
+     "rows": [
+      [
+       "status",
+       "ok"
+      ],
+      [
+       "",
+       ""
+      ],
+      [
+       "Row Labels",
+       "Sum of line_total"
+      ],
+      [
+       "Shawarma Wrap",
+       "48"
+      ],
+      [
+       "Latte",
+       "36"
+      ],
+      [
+       "Espresso",
+       "18"
+      ],
+      [
+       "Lentil Soup",
+       "12"
+      ],
+      [
+       "Karak Tea",
+       "10"
+      ],
+      [
+       "Chips",
+       "8"
+      ],
+      [
+       "Tea",
+       "3"
+      ],
+      [
+       "Grand Total",
+       "135"
+      ]
+     ],
+     "hl": []
+    },
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Click in the Table",
+      "Insert PivotTable",
+      "Drag fields",
+      "Filter ok",
+      "Sort",
+      "Refresh"
+     ],
+     "active": 5
+    }
+   },
+   "note": {
+    "en": "PivotTable Analyze, Refresh (Alt+F5), or Data, Refresh All. Now Latte reads 36 and the grand total 135. Forgetting this step is how a report goes quietly stale.",
+    "ar": "PivotTable Analyze ثم Refresh (Alt+F5)، أو Data ثم Refresh All. الآن تصبح قيمة Latte مساوية 36 والإجمالي 135. نسيان هذه الخطوة هو ما يجعل التقرير قديمًا بصمت."
+   }
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+%% alt: مخطط تسلسلي لإعادة الحساب. تكتب 3 بدل 1 في خلية الكمية qty. يعلّم إكسل الخلايا المعتمدة عليها بأنها قديمة، فيُعاد حساب line_total، ثم يُعاد حساب إجمالي SUMIFS المعتمد على line_total. أما الجدول المحوري فلا يتغير من تلقاء نفسه؛ عليك الضغط على تحديث (Refresh) فيقرأ عندئذ قيم line_total الجديدة.
+sequenceDiagram
+  autonumber
+  participant U as أنت
+  participant Q as خلية `qty`
+  participant L as خلية `line_total`
+  participant S as إجمالي `SUMIFS`
+  participant P as الجدول المحوري
+  U->>Q: اكتب 3 بدل 1
+  Q-->>L: يعلّمها «قديمة»
+  L->>L: يعيد حساب `qty * unit_price`
+  L-->>S: يعلّمه «قديمًا»
+  S->>S: يعيد حساب الإجمالي
+  Note over P: لا يُحسب تلقائيًّا
+  U->>P: تحديث `Alt+F5`
+  P->>L: يقرأ `line_total` الجديد
+  P-->>U: يتطابق مع الجدول من جديد
