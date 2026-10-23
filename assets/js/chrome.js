@@ -7,7 +7,7 @@
    so changing the shell is one edit and not eighteen. The page
    only has to say who it is, on <body>:
 
-     <body data-chapter="1" data-page="lesson-03">
+     <body data-chapter="t1" data-page="t1-lesson-03">
 
    Links are resolved through window.DA_BASE - the number of ../
    that gets from this page back to the site root - so the same
@@ -22,7 +22,8 @@
   function base() { return window.DA_BASE || ""; }
   function url(href) { return base() + href; }
 
-  function chapterNum() { return +(body.getAttribute("data-chapter") || 1); }
+  /* The chapter key ("t1", "p1"); empty on the course home page. */
+  function chapterKey() { return body.getAttribute("data-chapter") || ""; }
   function pageId() { return body.getAttribute("data-page") || ""; }
 
   function L(entry) {
@@ -119,7 +120,14 @@
     drawer.appendChild(home);
 
     var list = document.createElement("ol");
-    var pages = C.pages(chapterNum());
+    var pages = C.pages(chapterKey());
+    var cur = C.chapter(chapterKey());
+    if (cur) {
+      var ch = el("h2");
+      ch.appendChild(bilingual(cur.title));
+      ch.className = "nv-chapter-title";
+      drawer.appendChild(ch);
+    }
     for (var i = 0; i < pages.length; i++) {
       var p = pages[i];
       var li = el("li", "nv-" + p.kind);
@@ -129,7 +137,7 @@
       var span = el("span");
       span.appendChild(bilingual(p));
       a.appendChild(span);
-      if (window.PROGRESS && window.PROGRESS.isSeen(chapterNum(), p.id)) {
+      if (window.PROGRESS && window.PROGRESS.isSeen(chapterKey(), p.id)) {
         a.classList.add("seen");
       }
       if (p.id === pageId()) {
@@ -140,6 +148,37 @@
       list.appendChild(li);
     }
     drawer.appendChild(list);
+
+    /* Every chapter, grouped by track, so a reader can hop between the
+       theory and the practical track without going back to the home page. */
+    var all = el("div", "allchapters");
+    var ah = el("h2");
+    ah.setAttribute("data-ui", "chapters");
+    all.appendChild(ah);
+    for (var ti = 0; ti < C.tracks.length; ti++) {
+      var tr = C.tracks[ti];
+      var cs = C.chaptersOf(tr.id);
+      if (!cs.length) continue;
+      var th = el("p", "nv-track");
+      th.setAttribute("data-ui", tr.id);
+      all.appendChild(th);
+      var tl = document.createElement("ul");
+      for (var ci = 0; ci < cs.length; ci++) {
+        var cli = document.createElement("li");
+        var ca = document.createElement("a");
+        ca.href = url(cs[ci].href);
+        if (cs[ci].key === chapterKey()) ca.className = "current";
+        var cn = el("b", null, cs[ci].track.charAt(0).toUpperCase() + cs[ci].num);
+        ca.appendChild(cn);
+        var cspan = el("span");
+        cspan.appendChild(bilingual(cs[ci].title));
+        ca.appendChild(cspan);
+        cli.appendChild(ca);
+        tl.appendChild(cli);
+      }
+      all.appendChild(tl);
+    }
+    drawer.appendChild(all);
 
     var jump = el("div", "jump");
     var jh = el("h2");
@@ -206,9 +245,9 @@
   function buildCrumbs() {
     var host = document.querySelector("main .crumbs");
     if (!host || !window.COURSE) return;
-    var num = chapterNum();
+    var key = chapterKey();
     var id = pageId();
-    var ch = window.COURSE.chapter(num);
+    var ch = window.COURSE.chapter(key);
     host.innerHTML = "";
 
     function crumb(href, text, current) {
@@ -228,12 +267,15 @@
     crumb(url("index.html"), t("home"));
     if (!ch) return;
 
-    var onChapterHome = id === "chapter";
     sep();
-    crumb(url(ch.href), t("chapter", { n: num }) + " · " + L(ch.title), onChapterHome);
+    crumb(url("index.html") + "#track-" + ch.track, t(ch.track));
+
+    var onChapterHome = id === ch.key + "-chapter";
+    sep();
+    crumb(url(ch.href), t("chapter", { n: ch.num }) + " · " + L(ch.title), onChapterHome);
     if (onChapterHome) return;
 
-    var p = window.COURSE.page(num, id);
+    var p = window.COURSE.page(key, id);
     if (p) { sep(); crumb("#", L(p), true); }
   }
 
@@ -242,9 +284,9 @@
   function buildPager() {
     var host = document.querySelector("main .pager");
     if (!host || !window.COURSE) return;
-    var num = chapterNum();
-    var list = window.COURSE.pages(num);
-    var i = window.COURSE.indexOf(num, pageId());
+    var key = chapterKey();
+    var list = window.COURSE.pages(key);
+    var i = window.COURSE.indexOf(key, pageId());
     if (i < 0) return;
 
     host.innerHTML = "";

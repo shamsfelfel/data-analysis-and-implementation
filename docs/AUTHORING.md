@@ -18,12 +18,12 @@ src/content/home.html        course home (both tracks)
 src/content/<key>/index.html     chapter home prose         -> section id <key>-chapter
 src/content/<key>/lesson-NN.html one lesson                 -> section id <key>-lesson-NN
 src/content/<key>/lab.html       execution lab prose        -> section id <key>-lab
-src/glossary/<key>.json      the chapter glossary (source)
+src/glossary/<key>/lesson-NN.json  the glossary terms first defined in lesson NN (merged per chapter)
 src/traces/<id>.json         execution-trace specs (source)
 src/diagrams/<id>.<lang>.mmd Mermaid sources (en + ar)
 assets/data/questions/<bank>.js   question banks (hand-written, loaded by tests)
-assets/data/topics/<key>.js       topic tags -> heading ids
-downloads/<key>/             sample datasets / files the lessons link to
+assets/data/topics/<key>-lN.js    topic tags of lesson N -> heading ids (one file per lesson, so authors never collide)
+downloads/<key>/             sample datasets / files the lessons link to (see docs/datasets.md - use THOSE numbers)
 ```
 
 `<key>` is the chapter key: `t1` (Theory chapter 1), `p1` (Practical chapter 1).
@@ -245,7 +245,18 @@ both themes to `assets/diagrams/<id>.html`; `build.py` inlines it where
 Keep node text short (≤ 5 words/line); do not use colours in the source — the
 renderer themes them. **≥ 6 diagrams per chapter**, including ≥ 1 sequence diagram.
 
-## 7. Glossary (`src/glossary/<key>.json`)
+## 7. Glossary (`src/glossary/<key>/lesson-NN.json`)
+
+Each lesson author writes the terms that lesson **introduces** (a term is defined in the running
+text of the first lesson that uses it, so it belongs to exactly one fragment). `build.py` merges
+the fragments of a chapter, sorts them, and writes the data the glossary page loads. Term ids are
+unique across the chapter.
+
+**Where each term is used is computed, not hand-kept**: wrap a mention in the lesson as
+`<span class="term" data-term="nominal">nominal</span>` (inside the English paragraph; and
+`<span class="term" data-term="nominal">اسمي</span>` in the Arabic one). The build records the nearest
+preceding `h2/h3` id for every mention, across all lessons, and adds them to `used`. Mark the first
+mention in each section that really uses the term. `used` in the JSON may add extra headings.
 
 ```json
 [
@@ -257,12 +268,12 @@ renderer themes them. **≥ 6 diagrams per chapter**, including ≥ 1 sequence d
     "see":  ["ordinal"] }
 ]
 ```
-Every term of art a chapter introduces (≥ 40 per chapter). `used` lists heading ids
-where the term is defined or used in earnest (the page shows them as links labelled
-with the lesson and heading). Each term must be **defined in the running text of the
-first lesson that uses it**.
+A chapter has ≥ 40 terms in total (≈ 7–10 per lesson). `used` in the JSON is optional extras;
+the build adds every `data-term` mention. Each term needs `id`, `term`, `def`, `cat`, and at least one
+mention (or `used` entry); `see` lists related term ids of the same chapter. Definitions are one or
+two sentences, in the voice of the lesson, with a concrete example from the chapter's domain.
 
-## 8. Topics (`assets/data/topics/<key>.js`)
+## 8. Topics (`assets/data/topics/<key>-lN.js`, one file per lesson)
 
 ```js
 window.DATopics = window.DATopics || {};
@@ -271,7 +282,9 @@ window.DATopics = window.DATopics || {};
 })(window.DATopics);
 ```
 `href` is a heading id. Every topic is used by ≥ 1 question and points at a real heading;
-every heading that teaches a concept should have a topic.
+every heading that teaches a concept should have a topic. Topic keys are `<chapterkey>-<slug>`
+(`t1-nominal`) and unique across the course. Questions may use topics from **any earlier lesson of any
+chapter** (that is how a review link can send a student back to a prerequisite).
 
 ## 9. Registry (`src/registry.json`)
 

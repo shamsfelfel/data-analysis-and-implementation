@@ -82,6 +82,7 @@
     if (window.CODE) window.CODE.init();
     if (window.DAAssess) window.DAAssess.renderAll(document);
     if (window.DATrace) window.DATrace.mountAll(document);
+    if (window.DAGlossaryUI) window.DAGlossaryUI.mountAll(document);
     if (window.HOME) window.HOME.init();
 
     /* The shell, the copy buttons and the home page all add labels the
@@ -93,7 +94,7 @@
     var body = document.body;
     var id = body.getAttribute("data-page");
     if (id && window.PROGRESS) {
-      window.PROGRESS.record(+(body.getAttribute("data-chapter") || 1), id);
+      window.PROGRESS.record(body.getAttribute("data-chapter") || "", id);
     }
 
     registerSW();

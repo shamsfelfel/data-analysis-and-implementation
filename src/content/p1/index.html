@@ -1,0 +1,50 @@
+<section class="page" id="p1-chapter">
+
+  <span class="kicker">Practical &middot; Chapter 1 &middot; Lab 1</span>
+  <h1><span class="en">Introduction to Data Analysis &amp; Tools Setup</span><span class="ar">مقدمة في تحليل البيانات وتجهيز الأدوات</span></h1>
+
+  <p class="lede en">Week one of the lab. Before you analyse anything you need two things: a clear picture of what analysis is &mdash; the lifecycle from a vague question to a defensible decision &mdash; and a workbench that works. By the end of the chapter you will have Python with JupyterLab, Excel and Power BI Desktop running on your own machine, you will have used all three on the same small dataset, and you will know which one to reach for and why.</p>
+  <p class="lede ar">الأسبوع الأول في المختبر. قبل أن تحلّل أي شيء تحتاج إلى أمرين: صورة واضحة لما هو التحليل &mdash; دورة الحياة من سؤال غامض إلى قرار يمكن الدفاع عنه &mdash; وبيئة عمل تعمل. وبنهاية الفصل سيكون Python مع JupyterLab وExcel وPower BI Desktop تعمل على جهازك، وتكون قد استعملتها الثلاثة على مجموعة البيانات الصغيرة نفسها، وتعرف أيّها تختار ولماذا.</p>
+
+  <div class="note">
+    <h4><span class="en">The running example</span><span class="ar">المثال الجاري</span></h4>
+    <p class="en">A <strong>campus cafeteria</strong>. One month of orders &mdash; order id, date and time, item, category, quantity, unit price, payment method &mdash; saved as a CSV and as an Excel workbook, deliberately a little messy. The manager asks vague questions (&ldquo;what sells?&rdquo;, &ldquo;when are we busy?&rdquo;) and every lesson gets you closer to answering them properly.</p>
+    <p class="ar"><strong>كافتيريا الحرم الجامعي.</strong> شهر من الطلبات &mdash; رقم الطلب والتاريخ والوقت والصنف والفئة والكمية وسعر الوحدة وطريقة الدفع &mdash; محفوظة بصيغة CSV وبصيغة مصنّف Excel، وفيها شيء من الفوضى عمدًا. ويسأل المدير أسئلة غامضة («ما الذي يُباع؟»، «متى نزدحم؟») ويقرّبك كل درس من الإجابة عنها كما ينبغي.</p>
+  </div>
+
+  <h2 id="p1idx-h3"><span class="en">What you will be able to do</span><span class="ar">ماذا ستستطيع أن تفعل</span></h2>
+  <ul class="objectives">
+    <li><span class="en">Turn a vague request into an answerable question and walk it through the analysis lifecycle, naming what each stage produces.</span><span class="ar">تحوّل طلبًا غامضًا إلى سؤال قابل للإجابة وتسيّره عبر دورة حياة التحليل مسمّيًا ما ينتجه كل طور.</span></li>
+    <li><span class="en">Install and verify Python, a virtual environment, JupyterLab, Excel and Power BI Desktop, and know what to do when one of them is not available.</span><span class="ar">تثبّت Python وبيئة افتراضية وJupyterLab وExcel وPower BI Desktop وتتحقق منها، وتعرف ماذا تفعل حين لا تتوفر إحداها.</span></li>
+    <li><span class="en">Use Jupyter notebooks reproducibly: cells, kernels, modes, shortcuts, restart-and-run-all.</span><span class="ar">تستعمل دفاتر Jupyter بطريقة قابلة للتكرار: الخلايا والنواة والأوضاع والاختصارات وإعادة التشغيل مع تنفيذ الكل.</span></li>
+    <li><span class="en">Do a first analysis in Excel and in Power BI Desktop, and spot the habits in each that quietly damage data.</span><span class="ar">تنجز تحليلًا أوليًّا في Excel وفي Power BI Desktop، وتكتشف العادات في كل منهما التي تفسد البيانات بصمت.</span></li>
+    <li><span class="en">Answer the same question in all three tools, compare the results, and choose a tool for a given job.</span><span class="ar">تجيب عن السؤال نفسه في الأدوات الثلاث، وتقارن النتائج، وتختار أداة لمهمة معيّنة.</span></li>
+  </ul>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens &mdash; analysis is the first half of every model</span><span class="ar">منظور الذكاء الاصطناعي &mdash; التحليل هو النصف الأول من كل نموذج</span></h4>
+    <p class="en">Roughly the first 60&ndash;80% of a machine-learning project is the lifecycle you will learn here: framing the question, getting the data, cleaning it, exploring it. The model is the short step in the middle; monitoring it afterwards sends you round the loop again. A student who can run this lifecycle in three tools can join any data or AI team and be useful in week one.</p>
+    <p class="ar">نحو 60&ndash;80% من أي مشروع تعلّم آلي هو دورة الحياة التي ستتعلّمها هنا: صياغة السؤال، والحصول على البيانات، وتنظيفها، واستكشافها. والنموذج هو الخطوة القصيرة في المنتصف؛ ومراقبته بعد ذلك تعيدك إلى الدورة من جديد. فمن يستطيع تشغيل هذه الدورة بثلاث أدوات يمكنه الانضمام إلى أي فريق بيانات أو ذكاء اصطناعي والإفادة منذ الأسبوع الأول.</p>
+  </div>
+
+  <div class="thread">
+    <h4><span class="en">Threads in this chapter</span><span class="ar">الخيوط في هذا الفصل</span></h4>
+    <p class="en"><strong>&ldquo;Answer a question from a table&rdquo;</strong> is solved by hand in a spreadsheet, then with a drag-and-drop model in Power BI, then in pandas &mdash; and Lesson&nbsp;6 lines the three answers up and shows where they disagree and why. It returns in Practical Chapters&nbsp;2, 3 and 8 with faster, more reproducible tools. The data-types background is in <a href="#t1-chapter">Theory Chapter&nbsp;1</a>.</p>
+    <p class="ar"><strong>«أجب عن سؤال من جدول»</strong> يُحَلّ يدويًّا في جدول بيانات، ثم بنموذج السحب والإفلات في Power BI، ثم في pandas &mdash; ويصفّ الدرس 6 الإجابات الثلاث متجاورة ويبيّن أين تختلف ولماذا. ويعود في الفصول العملية 2 و3 و8 بأدوات أسرع وأكثر قابلية للتكرار. وخلفية أنواع البيانات في <a href="#t1-chapter">الفصل النظري 1</a>.</p>
+  </div>
+
+  <div class="callout prereq">
+    <h4><span class="en">Before you start</span><span class="ar">قبل أن تبدأ</span></h4>
+    <p class="en">Introductory Python and a computer you may install software on. Power BI Desktop runs on Windows only; Lesson&nbsp;2 gives the alternatives for macOS and Linux users, and the chapter is written so that the Python and Excel parts stand on their own.</p>
+    <p class="ar">بايثون التمهيدية وحاسوب يُسمح لك بتثبيت البرامج عليه. يعمل Power BI Desktop على ويندوز فقط؛ ويعرض الدرس 2 البدائل لمستخدمي macOS وLinux، وقد كُتب الفصل بحيث يقوم جزءا Python وExcel بنفسيهما.</p>
+  </div>
+
+  <!--GEN:index-->
+
+  <div class="card takeaways">
+    <h3 id="p1idx-s1"><span class="en">The chapter in one line</span><span class="ar">الفصل في سطر واحد</span></h3>
+    <p class="en">Analysis is a loop, not a line &mdash; and the tool is a means: choose it by what must be repeatable, shareable and checkable, not by what you already know.</p>
+    <p class="ar">التحليل حلقة لا خط مستقيم &mdash; والأداة وسيلة: اخترها بما يجب أن يكون قابلًا للتكرار والمشاركة والتدقيق، لا بما تعرفه مسبقًا.</p>
+  </div>
+
+</section>

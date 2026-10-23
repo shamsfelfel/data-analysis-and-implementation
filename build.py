@@ -1,31 +1,39 @@
 #!/usr/bin/env python3
-"""Assemble the authored chapter fragments into the pages of the site.
+"""Assemble the authored fragments and the registry into the pages of the site.
 
-The course is authored as a few large files under ``src/content/`` -- one per
-chapter, plus one for its tests -- each a sequence of ``<section class="page"
-id="...">`` blocks. That is a comfortable way to write a chapter and a poor way
-to ship one: a reader opening Lesson 1 should not download Lesson 7, and a
-service worker should be able to cache a page that changed without re-fetching
-the whole course.
+What is authored by hand
+    src/registry.json              the shape of the course: tracks, chapters, pages
+    src/content/home.html          the course home prose
+    src/content/<key>/index.html   one chapter's home prose        (optional)
+    src/content/<key>/lesson-NN.html  one lesson
+    src/content/<key>/lab.html     the execution-lab prose
+    src/glossary/<key>.json        a chapter's glossary
 
-So this script takes those fragments apart and writes one real HTML file per
-section, each loading only the stylesheets, engines and question banks that its
-own content needs. Where a page lives, what it is called and what it loads all
-come from the registry in ``assets/js/course.js`` -- the same list the drawer,
-the pager and the service worker read, so the site cannot disagree with itself.
+What this script writes (never edit these by hand)
+    index.html, chapters/ lessons/ tests/ exams/ labs/ glossary/
+    assets/js/registry.js          the registry, every page's href filled in
+    assets/js/anchors.js           heading id -> page, and heading id -> title
+    assets/data/glossary-<key>.js  the glossary as data the browser can load
+
+Tests, exams and the glossary page have no authored HTML at all: they are
+synthesised from the registry (a test page is a title, a prerequisite link, a
+mount point for the question engine and a "what next" link).
 
 Two things are rewritten on the way out:
 
-* **Links.** The author writes ``href="#lesson-03"`` because in one file that is
-  what it is. Here that becomes a real path to the page the id now lives on.
-* **Anchors.** Every id is recorded in ``assets/js/anchors.js`` so the topic
-  chips under a question can link to the heading that teaches the idea, wherever
-  that heading ended up.
+* **Links.** The author writes ``href="#t1-lesson-02"`` because in one file that
+  is what it is. Here it becomes a real relative path to the page that id now
+  lives on.  ``href="@/downloads/x.csv"`` becomes a path from the site root.
+* **Diagrams.** ``<figure class="diagram" data-diagram="id">`` gets the SVG
+  fragment that ``tools/render_diagrams.mjs`` wrote to ``assets/diagrams/id.html``.
 
-    python3 build.py            # write the site
-    python3 build.py --check    # build to memory and diff against what is on disk
+    python build.py            # write the site
+    python build.py --check    # build in memory and diff against what is on disk
+    python build.py --strict   # also fail on missing banks / topics / diagrams
 """
 import argparse
+import glob
+import html as htmllib
 import io
 import json
 import os
@@ -34,33 +42,19 @@ import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
-CONTENT = [
-    "src/content/home.html",
-    "src/content/chapter-01.html",
-    "src/content/chapter-01-tests.html",
-]
-
-# Written by this script; listed here so --check can diff it too.
+REGISTRY = "src/registry.json"
+HOME_SRC = "src/content/home.html"
 ANCHORS_JS = "assets/js/anchors.js"
+REGISTRY_JS = "assets/js/registry.js"
 
-SITE_NAME = {"en": "Python OOP by Example", "ar": "البرمجة الكائنية بلغة بايثون"}
+DIRS = {"chapter": "chapters", "lesson": "lessons", "test": "tests",
+        "exam": "exams", "lab": "labs", "glossary": "glossary"}
 
-DESCRIPTION = ("Object-oriented Python taught one problem at a time, in English "
-               "and Arabic, with tests, worked solutions and a step-through "
-               "execution lab.")
+warnings = []
 
-# --------------------------------------------------------------------------
-# The registry, read out of assets/js/course.js.
-#
-# That file is the single source of truth for the shape of the course, and it
-# has to be JavaScript because the browser reads it too. Rather than keep a
-# second copy here in Python, the object literals are pulled out of it with a
-# regular expression -- the file is written by hand in a fixed shape, and
-# verify_chapter.py fails the build if a page listed there has no section to
-# match it.
-# --------------------------------------------------------------------------
 
-COURSE_JS = "assets/js/course.js"
+def warn(msg):
+    warnings.append(msg)
 
 
 def read(rel):
@@ -70,78 +64,351 @@ def read(rel):
     return io.open(path, encoding="utf-8").read()
 
 
-def js_pages():
-    """Every page in the registry, as dicts, in reading order per chapter."""
-    src = read(COURSE_JS)
-    if src is None:
-        raise SystemExit("missing %s" % COURSE_JS)
+def exists(rel):
+    return os.path.exists(os.path.join(ROOT, rel))
 
-    chapters = []
-    for chunk in re.finditer(r"\{\s*\n\s*num:\s*(\d+),(.*?)\n    \}", src, re.S):
-        num = int(chunk.group(1))
-        body = chunk.group(2)
-        pages = []
-        for m in re.finditer(r"\{\s*id:\s*\"([^\"]+)\",\s*kind:\s*\"([^\"]+)\"(.*?)\}",
-                             body, re.S):
-            entry = {"id": m.group(1), "kind": m.group(2)}
-            tail = m.group(3)
-            href = re.search(r'href:\s*"([^"]+)"', tail)
-            bank = re.search(r'bank:\s*"([^"]+)"', tail)
-            n = re.search(r'\bn:\s*(\d+)', tail)
-            en = re.search(r'\ben:\s*"((?:[^"\\]|\\.)*)"', tail)
-            ar = re.search(r'\bar:\s*"((?:[^"\\]|\\.)*)"', tail)
-            if not href:
-                raise SystemExit("registry entry %s has no href" % entry["id"])
-            entry["href"] = href.group(1)
-            entry["bank"] = bank.group(1) if bank else None
-            entry["n"] = int(n.group(1)) if n else None
-            entry["en"] = en.group(1) if en else entry["id"]
-            entry["ar"] = ar.group(1) if ar else entry["id"]
-            pages.append(entry)
-        if pages:
-            chapters.append({"num": num, "pages": pages})
-    if not chapters:
-        raise SystemExit("no chapters found in %s" % COURSE_JS)
-    return chapters
+
+def esc(s):
+    return htmllib.escape(s, quote=True)
+
+
+def E(s):
+    """Escape registry text (it is stored raw, because the browser sets it with textContent)."""
+    return htmllib.escape(s, quote=False)
+
+
+def tbi(entry, tag="span"):
+    """A registry {en, ar} title as two language spans, escaped."""
+    return bi({"en": E(entry["en"]), "ar": E(entry["ar"])}, tag)
+
+
+def bi(entry, tag="span"):
+    """A bilingual {en, ar} value as two language spans."""
+    return ('<%s class="en">%s</%s><%s class="ar">%s</%s>'
+            % (tag, entry["en"], tag, tag, entry["ar"], tag))
 
 
 # --------------------------------------------------------------------------
-# Taking the fragments apart
+# The registry
 # --------------------------------------------------------------------------
 
-SECTION_RE = re.compile(
-    r'<section class="page" id="([^"]+)">(.*?)\n</section>', re.S)
+def load_registry():
+    raw = read(REGISTRY)
+    if raw is None:
+        raise SystemExit("missing %s" % REGISTRY)
+    reg = json.loads(raw)
+    seen = set()
+    for ch in reg["chapters"]:
+        for page in ch["pages"]:
+            kind = page["kind"]
+            if kind not in DIRS:
+                raise SystemExit("page %s: unknown kind %r" % (page["id"], kind))
+            if page["id"] in seen:
+                raise SystemExit("duplicate page id %r in the registry" % page["id"])
+            seen.add(page["id"])
+            if kind == "chapter":
+                page["href"] = "chapters/%s.html" % ch["key"]
+            else:
+                page["href"] = "%s/%s.html" % (DIRS[kind], page["id"])
+    return reg
 
 
-def sections():
-    """{id: inner html} for every authored page section, source order kept."""
+def registry_js(reg):
+    return ("/* Generated by build.py from src/registry.json -- do not edit. */\n"
+            "window.DA_REGISTRY = " +
+            json.dumps(reg, indent=1, ensure_ascii=False, sort_keys=False) + ";\n")
+
+
+# --------------------------------------------------------------------------
+# Authored fragments
+# --------------------------------------------------------------------------
+
+SECTION_RE = re.compile(r'<section class="page" id="([^"]+)">(.*?)\n</section>', re.S)
+
+
+def authored_sections():
+    """{page id: inner html} for every authored section, plus where it came from."""
     out = {}
-    order = []
-    for rel in CONTENT:
+    origin = {}
+    files = [HOME_SRC] + sorted(
+        os.path.relpath(p, ROOT).replace(os.sep, "/")
+        for p in glob.glob(os.path.join(ROOT, "src", "content", "*", "*.html")))
+    for rel in files:
         text = read(rel)
         if text is None:
             continue
         found = SECTION_RE.findall(text)
         if not found:
-            raise SystemExit("no page sections in %s" % rel)
+            raise SystemExit("no <section class=\"page\" id=\"...\"> in %s" % rel)
         for page_id, body in found:
             if page_id in out:
-                raise SystemExit("duplicate page id %r (in %s)" % (page_id, rel))
+                raise SystemExit("duplicate page id %r (in %s and %s)"
+                                 % (page_id, origin[page_id], rel))
             out[page_id] = body
-            order.append(page_id)
-    return out, order
+            origin[page_id] = rel
+    return out, origin
 
+
+# --------------------------------------------------------------------------
+# Synthesised pages
+# --------------------------------------------------------------------------
+
+def page_state(pid):
+    return '<span class="state" data-page-state="%s" hidden></span>' % pid
+
+
+def chapter_index_html(ch):
+    """The cards on a chapter home page, generated from the registry."""
+    key = ch["key"]
+    pages = ch["pages"]
+    lessons = [p for p in pages if p["kind"] == "lesson"]
+    tests = [p for p in pages if p["kind"] == "test"]
+    lab = [p for p in pages if p["kind"] == "lab"]
+    gloss = [p for p in pages if p["kind"] == "glossary"]
+    exams = [p for p in pages if p["kind"] == "exam"]
+
+    h = []
+    h.append('<h2 id="%sidx-h1">%s</h2>' % (key, bi({"en": "The lessons", "ar": "الدروس"})))
+    h.append('<div class="grid">')
+    for p in lessons:
+        h.append(
+            '<a class="lesson-card" href="#%s">\n'
+            '  <span class="n">%02d</span>%s\n'
+            '  <h3>%s</h3>\n'
+            '  <p class="en">%s</p>\n'
+            '  <p class="ar">%s</p>\n'
+            '</a>' % (p["id"], p["n"], page_state(p["id"]), tbi(p["title"]),
+                      E(p["blurb"]["en"]), E(p["blurb"]["ar"])))
+    h.append('</div>')
+
+    h.append('<h2 id="%sidx-h2">%s</h2>' % (key, bi({"en": "Check what stuck", "ar": "تأكّد ممّا رسخ"})))
+    h.append(
+        '<p class="en">Every lesson has a test of its own, sat after that lesson and nothing later. '
+        'The Execution Lab replays the chapter&rsquo;s trickiest programs one line at a time, the glossary '
+        'collects every term and where it is used, and the three chapter tests &mdash; A, B and C, the same '
+        'size &mdash; cover the whole chapter.</p>\n'
+        '<p class="ar">لكل درس اختباره الخاص، يُؤدَّى بعد ذلك الدرس ولا يفترض شيئًا بعده. ويعيد مختبر التنفيذ '
+        'تشغيل أصعب برامج الفصل سطرًا سطرًا، ويجمع القاموس كل مصطلح وأين يُستعمل، أمّا اختبارات الفصل الثلاثة '
+        '&mdash; أ وب وج، وبالحجم نفسه &mdash; فتغطي الفصل كله.</p>')
+    h.append('<div class="grid grid-tight">')
+    for p in tests:
+        h.append('<a class="side-card test" href="#%s"><span class="ic">✎</span>'
+                 '<span class="t">%s</span>%s</a>' % (p["id"], tbi(p["title"]), page_state(p["id"])))
+    for p in lab:
+        h.append('<a class="side-card lab" href="#%s"><span class="ic">▶</span>'
+                 '<span class="t">%s</span>%s</a>' % (
+                     p["id"], bi({"en": "Execution Lab &mdash; watch the code run",
+                                  "ar": "مختبر التنفيذ &mdash; شاهد الكود يُنفَّذ"}), page_state(p["id"])))
+    for p in gloss:
+        h.append('<a class="side-card glossary" href="#%s"><span class="ic">Aa</span>'
+                 '<span class="t">%s</span>%s</a>' % (
+                     p["id"], bi({"en": "Glossary &mdash; every term and where it is used",
+                                  "ar": "القاموس &mdash; كل مصطلح وأين يُستعمل"}), page_state(p["id"])))
+    for p in exams:
+        h.append('<a class="side-card exam" href="#%s"><span class="ic">★</span>'
+                 '<span class="t">%s</span>%s</a>' % (p["id"], tbi(p["title"]), page_state(p["id"])))
+    h.append('</div>')
+    return "\n".join(h)
+
+
+def chapter_default_section(ch):
+    key = ch["key"]
+    kicker = "%s &middot; Chapter %d" % (ch["track"].capitalize(), ch["num"])
+    return (
+        '\n  <span class="kicker">%s</span>\n'
+        '  <h1>%s</h1>\n'
+        '  <p class="lede en">%s</p>\n'
+        '  <p class="lede ar">%s</p>\n'
+        '  <!--GEN:index-->\n' % (kicker, tbi(ch["title"]), E(ch["blurb"]["en"]), E(ch["blurb"]["ar"])))
+
+
+def lesson_link(ch, page_id):
+    return '<a href="#%s">%s</a>' % (page_id, "%s")
+
+
+def test_section(ch, page):
+    """A lesson test: a title, what to read first, the bank, what comes next."""
+    pid = page["id"]
+    n = page["of"]
+    lesson_id = "%s-lesson-%02d" % (ch["key"], n)
+    lesson = next(p for p in ch["pages"] if p["id"] == lesson_id)
+    pages = ch["pages"]
+    i = pages.index(page)
+    nxt = pages[i + 1] if i + 1 < len(pages) else None
+
+    if nxt is not None and nxt["kind"] == "lesson":
+        fwd_en = ('When this test is green, go on to <a href="#%s">%s</a>. If it is not, the "Review" '
+                  'links under each question you missed go straight to the part of the lesson that '
+                  'explains it.' % (nxt["id"], E(nxt["title"]["en"])))
+        fwd_ar = ('إذا نجحت في هذا الاختبار فتابع إلى <a href="#%s">%s</a>. وإن لم تنجح فروابط «مراجعة» '
+                  'تحت كل سؤال أخطأت فيه تنقلك مباشرة إلى جزء الدرس الذي يشرحه.' % (nxt["id"], E(nxt["title"]["ar"])))
+    else:
+        exam_a = "%s-exam-a" % ch["key"]
+        fwd_en = ('That is the last lesson test. Go on to the <a href="#%s-lab">Execution Lab</a>, the '
+                  '<a href="#%s-glossary">glossary</a>, and then the three chapter tests, starting with '
+                  '<a href="#%s">Chapter Test A</a>.' % (ch["key"], ch["key"], exam_a))
+        fwd_ar = ('هذا آخر اختبارات الدروس. تابع إلى <a href="#%s-lab">مختبر التنفيذ</a> و'
+                  '<a href="#%s-glossary">القاموس</a> ثم اختبارات الفصل الثلاثة، بدءًا من '
+                  '<a href="#%s">اختبار الفصل أ</a>.' % (ch["key"], ch["key"], exam_a))
+
+    return (
+        '\n  <span class="kicker">Test %d</span>\n'
+        '  <h1>%s</h1>\n'
+        '  <p class="lede en">Questions on <a href="#%s">Lesson %d</a> alone &mdash; mixed types and difficulties. '
+        'Every question has a hint, an explanation and the answer, all hidden until you ask, and every topic '
+        'tag is a link back to the part of the course to review.</p>\n'
+        '  <p class="lede ar">أسئلة على <a href="#%s">الدرس %d</a> وحده &mdash; بأنواع ومستويات متنوعة. لكل سؤال '
+        'تلميح وشرح وجواب، كلها مخفية حتى تطلبها، وكل وسم موضوع رابط يعيدك إلى جزء المقرر الذي تراجعه.</p>\n'
+        '\n'
+        '  <div class="callout prereq">\n'
+        '    <h4>%s</h4>\n'
+        '    <p class="en">Read <a href="#%s">%s</a> first and do its exercises. This test assumes nothing '
+        'from later lessons, so an answer that needs an idea you have not met yet is not expected of you.</p>\n'
+        '    <p class="ar">اقرأ <a href="#%s">%s</a> أولًا وأنجز تمارينه. ولا يفترض هذا الاختبار شيئًا من الدروس '
+        'اللاحقة، فلا يُنتظر منك جواب يحتاج فكرة لم تقابلها بعد.</p>\n'
+        '  </div>\n'
+        '\n'
+        '  <div class="assess" data-bank="%s" data-mode="test"></div>\n'
+        '\n'
+        '  <div class="callout ahead">\n'
+        '    <h4>%s</h4>\n'
+        '    <p class="en">%s</p>\n'
+        '    <p class="ar">%s</p>\n'
+        '  </div>\n'
+        % (n, tbi(page["title"], "span"), lesson_id, n, lesson_id, n,
+           bi({"en": "Before you start this test", "ar": "قبل أن تبدأ هذا الاختبار"}),
+           lesson_id, E(lesson["title"]["en"]), lesson_id, E(lesson["title"]["ar"]),
+           page["bank"], bi({"en": "What comes next", "ar": "ما التالي"}), fwd_en, fwd_ar))
+
+
+EXAM_FOCUS = {
+    "a": ({"en": "Core", "ar": "الأساسيات"},
+          "the core ideas of the whole chapter &mdash; every lesson is sampled, mostly easy and medium questions.",
+          "الأفكار الأساسية في الفصل كله &mdash; تُؤخذ عيّنة من كل درس، وأغلب الأسئلة سهلة ومتوسطة."),
+    "b": ({"en": "Applied", "ar": "التطبيق"},
+          "applying the chapter to code: reading, tracing, fixing and writing it, and judging which version of a solution is better.",
+          "تطبيق الفصل على الكود: قراءته وتتبّعه وإصلاحه وكتابته، والحكم على أي نسخة من الحل أفضل."),
+    "c": ({"en": "Advanced", "ar": "المتقدم"},
+          "the hard corners that cross lesson boundaries: silent failures, trade-offs, and choosing between approaches.",
+          "الزوايا الأصعب التي تعبر حدود الدروس: الأعطال الصامتة والمفاضلات والاختيار بين الأساليب."),
+}
+
+
+def exam_section(ch, page):
+    letter = page["id"].rsplit("-", 1)[1]
+    name, focus_en, focus_ar = EXAM_FOCUS[letter]
+    key = ch["key"]
+    others = [p for p in ch["pages"] if p["kind"] == "exam" and p["id"] != page["id"]]
+    lessons = [p for p in ch["pages"] if p["kind"] == "lesson"]
+    lesson_links_en = ", ".join('<a href="#%s">%d</a>' % (p["id"], p["n"]) for p in lessons)
+    others_en = " &middot; ".join('<a href="#%s">%s</a>' % (p["id"], E(p["title"]["en"])) for p in others)
+    others_ar = " &middot; ".join('<a href="#%s">%s</a>' % (p["id"], E(p["title"]["ar"])) for p in others)
+    return (
+        '\n  <span class="kicker">Chapter test %s</span>\n'
+        '  <h1>%s</h1>\n'
+        '  <p class="lede en">One of three chapter tests of the same size, together covering all of Chapter %d. '
+        'This one is about %s</p>\n'
+        '  <p class="lede ar">أحد اختبارات الفصل الثلاثة المتساوية في الحجم، وهي معًا تغطي الفصل %d كله. '
+        'يتناول هذا الاختبار %s</p>\n'
+        '\n'
+        '  <div class="callout prereq">\n'
+        '    <h4>%s</h4>\n'
+        '    <p class="en">Finish the lesson tests first (lessons %s). Questions here may combine ideas from '
+        'several lessons; the "Review" links tell you which part to re-read.</p>\n'
+        '    <p class="ar">أنهِ اختبارات الدروس أولًا (الدروس %s). وقد تجمع أسئلة هذا الاختبار بين أفكار من عدة '
+        'دروس؛ وروابط «مراجعة» تخبرك أي جزء تعيد قراءته.</p>\n'
+        '  </div>\n'
+        '\n'
+        '  <div class="assess" data-bank="%s" data-mode="test"></div>\n'
+        '\n'
+        '  <div class="callout ahead">\n'
+        '    <h4>%s</h4>\n'
+        '    <p class="en">Other tests in this chapter: %s. Weak topics are listed with links when you finish.</p>\n'
+        '    <p class="ar">اختبارات أخرى في هذا الفصل: %s. وتُعرض المواضيع الضعيفة بروابطها عند إنهائك.</p>\n'
+        '  </div>\n'
+        % (letter.upper(), tbi(page["title"]), ch["num"], focus_en, ch["num"], focus_ar,
+           bi({"en": "Before you start", "ar": "قبل أن تبدأ"}), lesson_links_en, lesson_links_en,
+           page["bank"], bi({"en": "What comes next", "ar": "ما التالي"}), others_en, others_ar))
+
+
+def glossary_section(ch, page):
+    key = ch["key"]
+    return (
+        '\n  <span class="kicker">Glossary</span>\n'
+        '  <h1>%s</h1>\n'
+        '  <p class="lede en">Every term of art this chapter uses, with its meaning and where it is used. '
+        'Search, filter by category, or flip through the cards and mark what you already know.</p>\n'
+        '  <p class="lede ar">كل مصطلح فنّي يستعمله هذا الفصل، مع معناه وأين يُستعمل. ابحث أو صفِّ حسب الفئة، '
+        'أو تصفّح البطاقات وعلّم ما تعرفه.</p>\n'
+        '  <div data-glossary="%s"></div>\n' % (bi({"en": "Glossary &mdash; %s" % E(ch["title"]["en"]),
+                                                    "ar": "القاموس &mdash; %s" % E(ch["title"]["ar"])}), key))
+
+
+def home_default_section():
+    return '\n  <span class="kicker">Data Analysis</span>\n  <h1>Data Analysis &amp; Implementation</h1>\n  <!--GEN:tracks-->\n'
+
+
+def tracks_html(reg):
+    h = []
+    for tr in reg["tracks"]:
+        chs = [c for c in reg["chapters"] if c["track"] == tr["id"]]
+        h.append('<h2 id="track-%s">%s <span class="code-badge">%s</span></h2>'
+                 % (tr["id"], tbi(tr["title"]), tr["code"]))
+        h.append('<p class="en">%s</p>\n<p class="ar">%s</p>' % (E(tr["blurb"]["en"]), E(tr["blurb"]["ar"])))
+        h.append('<div class="grid">')
+        for c in chs:
+            if not c["ready"]:
+                continue
+            pages = c["pages"]
+            nl = sum(1 for p in pages if p["kind"] == "lesson")
+            ne = sum(1 for p in pages if p["kind"] == "exam")
+            meta_en = "%d lessons &middot; %d lesson tests &middot; %d chapter tests &middot; lab &middot; glossary" % (nl, nl, ne)
+            meta_ar = "%d دروس &middot; %d اختبارات دروس &middot; %d اختبارات فصل &middot; مختبر &middot; قاموس" % (nl, nl, ne)
+            h.append(
+                '<a class="chapter-card" href="#%s-chapter">\n'
+                '  <span class="n">%s%d</span>\n'
+                '  <h3>%s</h3>\n'
+                '  <p class="en">%s</p>\n'
+                '  <p class="ar">%s</p>\n'
+                '  <p class="meta en">%s</p>\n'
+                '  <p class="meta ar">%s</p>\n'
+                '  <span class="chapter-progress" data-chapter-progress="%s" hidden></span>\n'
+                '</a>' % (c["key"], tr["id"][0].upper(), c["num"], tbi(c["title"]),
+                          E(c["blurb"]["en"]), E(c["blurb"]["ar"]), meta_en, meta_ar, c["key"]))
+        h.append('</div>')
+        h.append('<h3>%s</h3>' % bi({"en": "The road ahead", "ar": "الطريق أمامنا"}))
+        h.append('<ol class="roadmap" data-roadmap="%s"></ol>' % tr["id"])
+    return "\n".join(h)
+
+
+# --------------------------------------------------------------------------
+# Anchors and links
+# --------------------------------------------------------------------------
 
 ID_RE = re.compile(r'\sid="([^"]+)"')
+HEADING_RE = re.compile(r'<h([23])\b[^>]*\sid="([^"]+)"[^>]*>(.*?)</h\1>', re.S)
+TAG_RE = re.compile(r"<[^>]+>")
+
+
+def plain(s):
+    s = TAG_RE.sub("", s)
+    s = htmllib.unescape(s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def heading_titles(body):
+    out = {}
+    for _lvl, hid, inner in HEADING_RE.findall(body):
+        en = re.search(r'<span class="en">(.*?)</span>', inner, re.S)
+        ar = re.search(r'<span class="ar">(.*?)</span>', inner, re.S)
+        out[hid] = {"en": plain(en.group(1)) if en else plain(inner),
+                    "ar": plain(ar.group(1)) if ar else plain(inner)}
+    return out
 
 
 def anchor_map(bodies, placement):
-    """Every id in the content, mapped to the page file it now lives on.
-
-    The page ids themselves are included, so ``href="#lesson-03"`` resolves
-    just as well as ``href="#l3-h1"``.
-    """
     anchors = {}
+    headings = {}
     for page_id, body in bodies.items():
         path = placement.get(page_id)
         if not path:
@@ -149,27 +416,43 @@ def anchor_map(bodies, placement):
         anchors[page_id] = path
         for found in ID_RE.findall(body):
             if found in anchors and anchors[found] != path:
-                raise SystemExit("anchor %r appears on two pages" % found)
+                raise SystemExit("anchor %r appears on two pages (%s and %s)" % (found, anchors[found], path))
             anchors[found] = path
-    return anchors
+        headings.update(heading_titles(body))
+    return anchors, headings
 
 
 def rewrite_links(body, path, anchors, base):
-    """Turn the author's in-file ``href="#x"`` into a link that still works.
-
-    An anchor on this same page keeps its bare form -- that is a scroll, not a
-    navigation. One that moved to another page becomes a relative path to it.
-    An unknown anchor is left exactly as written rather than silently pointed
-    somewhere wrong; verify_chapter.py reports those.
-    """
+    """Turn the author's in-file ``href="#x"`` into a link that still works."""
     def sub(m):
         anchor = m.group(1)
         target = anchors.get(anchor)
-        if not target or target == path:
+        if not target:
+            warn("%s: link to unknown anchor #%s" % (path, anchor))
+            return m.group(0)
+        if target == path:
             return m.group(0)
         return 'href="%s%s#%s"' % (base, target, anchor)
 
-    return re.sub(r'href="#([^"]+)"', sub, body)
+    body = re.sub(r'href="#([^"]+)"', sub, body)
+    body = re.sub(r'(href|src)="@/([^"]+)"', lambda m: '%s="%s%s"' % (m.group(1), base, m.group(2)), body)
+    return body
+
+
+DIAGRAM_RE = re.compile(r'(<figure class="diagram"[^>]*?data-diagram="([^"]+)"[^>]*>)')
+HASH_COMMENT_RE = re.compile(r"^<!--.*?-->\s*", re.S)
+
+
+def inline_diagrams(body, path):
+    def sub(m):
+        did = m.group(2)
+        frag = read("assets/diagrams/%s.html" % did)
+        if frag is None:
+            warn("%s: diagram %r has no assets/diagrams/%s.html (run tools/render_diagrams.mjs)" % (path, did, did))
+            return m.group(1)
+        return m.group(1) + "\n" + HASH_COMMENT_RE.sub("", frag).strip() + "\n"
+
+    return DIAGRAM_RE.sub(sub, body)
 
 
 # --------------------------------------------------------------------------
@@ -179,60 +462,55 @@ def rewrite_links(body, path, anchors, base):
 CSS_ALWAYS = ["assets/css/tokens.css", "assets/css/base.css",
               "assets/css/chrome.css", "assets/css/components.css"]
 
-JS_ALWAYS = ["assets/js/course.js", "assets/js/i18n.js", "assets/js/theme.js",
-             "assets/js/progress.js", "assets/js/anchors.js",
+JS_ALWAYS = ["assets/js/registry.js", "assets/js/course.js", "assets/js/i18n.js",
+             "assets/js/theme.js", "assets/js/progress.js", "assets/js/anchors.js",
              "assets/js/chrome.js", "assets/js/code.js"]
 
-BANK_FILE = {
-    "test-01": "assets/data/questions-lesson-01.js",
-    "test-02": "assets/data/questions-lesson-02.js",
-    "test-03": "assets/data/questions-lesson-03.js",
-    "test-04": "assets/data/questions-lesson-04.js",
-    "test-05": "assets/data/questions-lesson-05.js",
-    "test-06": "assets/data/questions-lesson-06.js",
-    "test-07": "assets/data/questions-lesson-07.js",
-    "chapter-test-a": "assets/data/questions-chapter-a.js",
-    "chapter-test-b": "assets/data/questions-chapter-b.js",
-}
+TRACE_RE = re.compile(r'data-trace-id="([^"]+)"')
 
 
-def page_assets(page):
+def page_assets(reg, ch, page, body):
     """The stylesheets and scripts this one page needs, and nothing else."""
     css = list(CSS_ALWAYS)
     js = list(JS_ALWAYS)
+    kind = page["kind"]
 
-    if page["kind"] in ("home", "chapter"):
+    if kind in ("home", "chapter"):
         js.append("assets/js/home.js")
+
+    if 'class="diagram"' in body:
+        css.append("assets/css/diagram.css")
 
     if page.get("bank"):
         css.append("assets/css/assess.css")
-        js.append("assets/data/topics.js")
-        bank = BANK_FILE.get(page["bank"])
-        if not bank:
-            raise SystemExit("no question file for bank %r" % page["bank"])
+        topic_files = sorted(os.path.relpath(f, ROOT).replace(os.sep, "/")
+                             for f in glob.glob(os.path.join(ROOT, "assets", "data", "topics", "*.js")))
+        if not topic_files:
+            warn("%s: no topic files in assets/data/topics/" % page["href"])
+        js.extend(topic_files)
+        bank = "assets/data/questions/%s.js" % page["bank"]
+        if not exists(bank):
+            warn("%s: question bank %s does not exist" % (page["href"], bank))
         js.append(bank)
         js.append("assets/js/assess.js")
 
-    if page["kind"] == "lab":
+    traces = TRACE_RE.findall(body)
+    if traces or kind == "lab":
         css.append("assets/css/trace.css")
-        js.append("assets/data/traces.js")
+        for t in sorted(set(traces)):
+            rel = "assets/data/traces/%s.js" % t
+            if not exists(rel):
+                warn("%s: trace %r has no %s (run tools/trace_gen.py)" % (page["href"], t, rel))
+            js.append(rel)
         js.append("assets/js/trace.js")
+
+    if kind == "glossary":
+        css.append("assets/css/glossary.css")
+        js.append("assets/data/glossary-%s.js" % ch["key"])
+        js.append("assets/js/glossary.js")
 
     js.append("assets/js/app.js")
     return css, js
-
-
-def title_for(page, chapter_num):
-    """The <title>, in both languages, specific enough to tell tabs apart."""
-    if page["kind"] == "home":
-        return SITE_NAME["en"], SITE_NAME["ar"]
-    label_en = page["en"].replace("&", "&amp;")
-    label_ar = page["ar"]
-    if page["kind"] == "chapter":
-        return ("Chapter %d · %s" % (chapter_num, SITE_NAME["en"]),
-                "الفصل %d · %s" % (chapter_num, SITE_NAME["ar"]))
-    return ("%s · %s" % (label_en, SITE_NAME["en"]),
-            "%s · %s" % (label_ar, SITE_NAME["ar"]))
 
 
 HEAD = u"""<!doctype html>
@@ -269,11 +547,11 @@ HEAD = u"""<!doctype html>
 <link rel="apple-touch-icon" href="{base}icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Python OOP">
+<meta name="apple-mobile-web-app-title" content="Data Analysis">
 <meta name="mobile-web-app-capable" content="yes">
 {styles}
 </head>
-<body data-chapter="{chapter}" data-page="{page_id}" data-path="{path}">
+<body data-chapter="{chapter}" data-page="{page_id}" data-kind="{kind}" data-path="{path}">
 <main>
 """
 
@@ -288,39 +566,113 @@ FOOT = u"""</main>
 """
 
 
-def render(page, chapter_num, body, anchors):
-    path = page["href"]
-    depth = path.count("/")
-    base = "../" * depth
+def title_for(reg, ch, page):
+    site = reg["site"]["name"]
+    if page["kind"] == "home":
+        return site["en"], site["ar"]
+    t = page["title"]
+    if page["kind"] == "chapter":
+        return ("%s · Chapter %d · %s" % (ch["title"]["en"], ch["num"], site["en"]),
+                "%s · الفصل %d · %s" % (ch["title"]["ar"], ch["num"], site["ar"]))
+    return ("%s · %s %d · %s" % (t["en"], ch["track"].capitalize(), ch["num"], reg["site"]["short"]["en"]),
+            "%s · %s · %s" % (t["ar"], ch["title"]["ar"], reg["site"]["short"]["ar"]))
 
-    css, js = page_assets(page)
+
+def render(reg, ch, page, body, anchors):
+    path = page["href"]
+    base = "../" * path.count("/")
+
+    body = inline_diagrams(body, path)
+    css, js = page_assets(reg, ch, page, body)
     styles = "\n".join('<link rel="stylesheet" href="%s%s">' % (base, p) for p in css)
     scripts = "\n".join('<script src="%s%s"></script>' % (base, p) for p in js)
-    title_en, title_ar = title_for(page, chapter_num)
+    title_en, title_ar = title_for(reg, ch, page)
 
     head = HEAD.format(
-        description=DESCRIPTION,
-        title_en=title_en,
-        title_ar=title_ar,
-        base=base,
-        styles=styles,
-        chapter=chapter_num,
-        page_id=page["id"],
-        path=path,
-    )
+        description=esc(reg["site"]["description"]),
+        title_en=esc(title_en), title_ar=esc(title_ar),
+        base=base, styles=styles,
+        chapter=ch["key"] if ch else "", page_id=page["id"], kind=page["kind"], path=path)
 
     inner = rewrite_links(body, path, anchors, base)
 
-    # Breadcrumbs and the pager belong to the shell, not to the author: one
-    # empty element each, filled in by chrome.js from the registry, so
-    # reordering a chapter is a registry edit and not eighteen page edits.
     crumbs = '<nav class="crumbs"></nav>\n' if page["kind"] != "home" else ""
-    section = ('<section class="page" id="%s">\n%s%s\n</section>\n'
-               % (page["id"], crumbs, inner))
-
+    section = ('<section class="page" id="%s">\n%s%s\n</section>\n' % (page["id"], crumbs, inner))
     pager = '<nav class="pager"></nav>\n' if page["kind"] != "home" else ""
-
     return head + section + pager + FOOT.format(scripts=scripts)
+
+
+# --------------------------------------------------------------------------
+# Glossary data
+# --------------------------------------------------------------------------
+
+TERM_RE = re.compile(r'<span class="term"[^>]*?data-term="([^"]+)"')
+HEAD_ID_RE = re.compile(r'<h[23]\b[^>]*?\sid="([^"]+)"')
+
+
+def term_usage(bodies, owner):
+    """{chapter key: {term id: [heading ids]}} found by scanning the lessons.
+
+    A term mention is <span class="term" data-term="nominal">nominal</span>. The
+    heading it counts under is the nearest h2/h3 id above it on its page, so the
+    glossary can say "used in Lesson 2 - Four levels of measurement" without
+    anyone maintaining that list by hand.
+    """
+    found = {}
+    for pid, body in bodies.items():
+        ch = owner[pid][0]
+        if ch is None:
+            continue
+        marks = sorted([(m.start(), "h", m.group(1)) for m in HEAD_ID_RE.finditer(body)] +
+                       [(m.start(), "t", m.group(1)) for m in TERM_RE.finditer(body)])
+        cur = None
+        for _pos, kind, val in marks:
+            if kind == "h":
+                cur = val
+            elif cur:
+                lst = found.setdefault(ch["key"], {}).setdefault(val, [])
+                if cur not in lst:
+                    lst.append(cur)
+    return found
+
+
+def glossary_entries(key):
+    """The chapter's glossary: src/glossary/<key>.json plus every fragment in src/glossary/<key>/."""
+    paths = []
+    if exists("src/glossary/%s.json" % key):
+        paths.append("src/glossary/%s.json" % key)
+    paths += sorted(os.path.relpath(f, ROOT).replace(os.sep, "/")
+                    for f in glob.glob(os.path.join(ROOT, "src", "glossary", key, "*.json")))
+    data = []
+    seen = {}
+    for rel in paths:
+        for e in json.loads(read(rel)):
+            for f in ("id", "term", "def", "cat"):
+                if f not in e:
+                    raise SystemExit("%s: entry %r lacks %r" % (rel, e.get("id"), f))
+            if e["id"] in seen:
+                raise SystemExit("glossary %s: term %r defined in %s and %s" % (key, e["id"], seen[e["id"]], rel))
+            seen[e["id"]] = rel
+            data.append(e)
+    return data
+
+
+def glossary_js(key, usage):
+    data = glossary_entries(key)
+    if not data:
+        warn("chapter %s has no glossary entries (src/glossary/%s/*.json)" % (key, key))
+    for e in data:
+        auto = usage.get(key, {}).get(e["id"], [])
+        merged = list(e.get("used") or [])
+        for h in auto:
+            if h not in merged:
+                merged.append(h)
+        e["used"] = merged
+    data.sort(key=lambda e: e["term"]["en"].lower())
+    return ("/* Generated by build.py from src/glossary/ -- do not edit. */\n"
+            "window.DAGlossary = window.DAGlossary || {};\n"
+            "window.DAGlossary[%s] = %s;\n"
+            % (json.dumps(key), json.dumps(data, ensure_ascii=False, indent=1)))
 
 
 # --------------------------------------------------------------------------
@@ -329,43 +681,69 @@ def render(page, chapter_num, body, anchors):
 
 def build():
     """{output path: text} for every file this script owns."""
-    chapters = js_pages()
-    bodies, _order = sections()
+    reg = load_registry()
+    authored, origin = authored_sections()
 
-    # Which file each authored section ends up in.
-    placement = {}
+    # 1. every page's body: authored, or synthesised
+    bodies = {}
     owner = {}
-    for ch in chapters:
+    home_page = {"id": "home", "kind": "home", "href": "index.html", "bank": None,
+                 "title": reg["site"]["name"]}
+    owner["home"] = (None, home_page)
+    bodies["home"] = authored.get("home") or home_default_section()
+    bodies["home"] = bodies["home"].replace("<!--GEN:tracks-->", tracks_html(reg))
+
+    expected = {"home"}
+    for ch in reg["chapters"]:
         for page in ch["pages"]:
-            placement[page["id"]] = page["href"]
-            owner[page["id"]] = (ch["num"], page)
-    placement["home"] = "index.html"
-    owner["home"] = (1, {"id": "home", "kind": "home", "href": "index.html",
-                         "bank": None, "en": SITE_NAME["en"], "ar": SITE_NAME["ar"]})
+            pid = page["id"]
+            expected.add(pid)
+            owner[pid] = (ch, page)
+            k = page["kind"]
+            if k == "chapter":
+                body = authored.get(pid) or chapter_default_section(ch)
+                if "<!--GEN:index-->" not in body:
+                    body = body.rstrip() + "\n  <!--GEN:index-->\n"
+                bodies[pid] = body.replace("<!--GEN:index-->", chapter_index_html(ch))
+            elif k == "test":
+                bodies[pid] = test_section(ch, page)
+            elif k == "exam":
+                bodies[pid] = exam_section(ch, page)
+            elif k == "glossary":
+                bodies[pid] = glossary_section(ch, page)
+            else:  # lesson, lab: authored
+                if pid not in authored:
+                    if ch["ready"]:
+                        warn("no authored content for %s (%s)" % (pid, k))
+                    bodies[pid] = ('\n  <span class="kicker">%s</span>\n  <h1>%s</h1>\n'
+                                   '  <p class="en">Being written.</p><p class="ar">قيد الكتابة.</p>\n'
+                                   % (k, tbi(page["title"])))
+                else:
+                    bodies[pid] = authored[pid]
 
-    missing = [pid for pid in placement if pid not in bodies]
-    if missing:
-        raise SystemExit("registry lists pages with no content section: %s"
-                         % ", ".join(sorted(missing)))
-    extra = [pid for pid in bodies if pid not in placement]
+    extra = [pid for pid in authored if pid not in expected]
     if extra:
-        raise SystemExit("content has sections no page claims: %s"
-                         % ", ".join(sorted(extra)))
+        raise SystemExit("content has sections no registry page claims: %s" % ", ".join(sorted(extra)))
 
-    anchors = anchor_map(bodies, placement)
+    placement = {pid: pg["href"] for pid, (_c, pg) in owner.items()}
+    anchors, headings = anchor_map(bodies, placement)
 
     out = {}
-    for page_id, (chapter_num, page) in owner.items():
-        out[page["href"]] = render(page, chapter_num, bodies[page_id], anchors)
+    for pid, (ch, page) in owner.items():
+        out[page["href"]] = render(reg, ch, page, bodies[pid], anchors)
 
+    out[REGISTRY_JS] = registry_js(reg)
     out[ANCHORS_JS] = (
         "/* Generated by build.py -- do not edit.\n"
-        "   Every id in the chapter content, mapped to the page it lives on,\n"
-        "   so a topic chip under a question can link to the paragraph that\n"
-        "   teaches the idea now that the chapter is many files. */\n"
-        "window.DAAnchors = " +
-        json.dumps(anchors, indent=0, sort_keys=True, ensure_ascii=False)
-            .replace("\n", "\n") + ";\n")
+        "   DAAnchors: every id in the content -> the page it lives on, so a topic chip\n"
+        "   or a glossary link can reach a heading that is on another page.\n"
+        "   DAHeadings: heading id -> its plain-text title in both languages. */\n"
+        "window.DAAnchors = " + json.dumps(anchors, indent=0, sort_keys=True, ensure_ascii=False) + ";\n"
+        "window.DAHeadings = " + json.dumps(headings, indent=0, sort_keys=True, ensure_ascii=False) + ";\n")
+
+    usage = term_usage(bodies, owner)
+    for ch in reg["chapters"]:
+        out["assets/data/glossary-%s.js" % ch["key"]] = glossary_js(ch["key"], usage)
 
     return out
 
@@ -374,9 +752,17 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true",
                     help="compare the build against the files on disk instead of writing them")
+    ap.add_argument("--strict", action="store_true",
+                    help="treat missing banks, topics, traces, diagrams and bad links as errors")
     args = ap.parse_args()
 
     files = build()
+
+    for w in warnings:
+        print("warning: " + w, file=sys.stderr)
+    if args.strict and warnings:
+        print("%d warning(s) with --strict" % len(warnings), file=sys.stderr)
+        return 1
 
     if args.check:
         stale = []

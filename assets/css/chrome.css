@@ -340,3 +340,27 @@ footer.site {
 
 /* The install button only exists once the browser offers it. */
 .topbar .install { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+/* ---------- two-track course: chapter switcher in the drawer, code badges ---------- */
+.drawer .nv-chapter-title { font-size: 14px; margin: 14px 0 8px; color: var(--text); line-height: 1.4; }
+.drawer .allchapters { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+.drawer .allchapters h2 { margin-bottom: 6px; }
+.drawer .allchapters .nv-track { margin: 10px 0 4px; font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--accent); }
+.drawer .allchapters ul { list-style: none; margin: 0; padding: 0; }
+.drawer .allchapters li { margin-bottom: 2px; }
+.drawer .allchapters a { display: flex; gap: 8px; align-items: baseline; padding: 6px 10px; border-radius: 8px;
+  text-decoration: none; color: var(--text); font-size: 13.5px; }
+.drawer .allchapters a::before { content: none; }
+.drawer .allchapters a b { flex: 0 0 auto; min-width: 28px; font-size: 12px; color: var(--accent); }
+.drawer .allchapters a.current { background: var(--accent-soft); font-weight: 600; }
+.drawer .allchapters a:hover { background: var(--surface-2); }
+.code-badge { display: inline-block; vertical-align: middle; margin-inline-start: 8px; font-size: 12px; font-weight: 700;
+  letter-spacing: .04em; padding: 2px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent);
+  font-family: var(--mono); direction: ltr; }
+.side-card.glossary .ic { background: var(--warn-soft); color: var(--warn); font-size: 13px; font-weight: 700; }
+.chapter-card .n { text-transform: none; }
+h2[id^="track-"] { scroll-margin-top: 72px; margin-top: 44px; }
+
+/* ---------- glossary term mentions inside lessons ---------- */
+.term { border-bottom: 1px dotted var(--accent); cursor: help; }

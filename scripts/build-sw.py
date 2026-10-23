@@ -26,7 +26,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Directories whose entire contents ship, and the loose files at the root.
-DIRS = ["assets", "chapters", "lessons", "tests", "exams", "labs", "icons"]
+DIRS = ["assets", "chapters", "lessons", "tests", "exams", "labs", "glossary", "icons", "downloads"]
 FILES = ["index.html", "manifest.webmanifest"]
 
 SKIP_SUFFIX = (".py", ".md", ".map")

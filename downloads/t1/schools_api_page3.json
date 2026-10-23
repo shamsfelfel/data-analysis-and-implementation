@@ -1,0 +1,80 @@
+{
+  "page": 3,
+  "per_page": 5,
+  "total": 13,
+  "pages": 3,
+  "next": null,
+  "results": [
+    {
+      "id": 211,
+      "name": {
+        "en": "School 11 (Gaza)",
+        "ar": "مدرسة 11 (غزة)"
+      },
+      "governorate": "Gaza",
+      "level": "Secondary",
+      "enrolment": {
+        "boys": 196,
+        "girls": 161
+      },
+      "location": {
+        "lat": 31.3057,
+        "lon": 34.3601
+      },
+      "facilities": [
+        "canteen",
+        "lab"
+      ],
+      "contacts": {
+        "phone": "08-9957339"
+      }
+    },
+    {
+      "id": 212,
+      "name": {
+        "en": "School 12 (Khan Younis)",
+        "ar": "مدرسة 12 (خان يونس)"
+      },
+      "governorate": "Khan Younis",
+      "level": "Primary",
+      "enrolment": {
+        "boys": 85,
+        "girls": 222
+      },
+      "location": {
+        "lat": 31.3216,
+        "lon": 34.2054
+      },
+      "facilities": [
+        "library",
+        "lab",
+        "computer room"
+      ]
+    },
+    {
+      "id": 213,
+      "name": {
+        "en": "School 13 (Rafah)",
+        "ar": "مدرسة 13 (رفح)"
+      },
+      "governorate": "Rafah",
+      "level": "Preparatory",
+      "enrolment": {
+        "boys": 194,
+        "girls": 104
+      },
+      "location": {
+        "lat": 31.3003,
+        "lon": 34.2513
+      },
+      "facilities": [
+        "library",
+        "playground",
+        "lab"
+      ],
+      "contacts": {
+        "phone": "08-7445767"
+      }
+    }
+  ]
+}

@@ -1,0 +1,300 @@
+{
+  "results": [
+    {
+      "id": 201,
+      "name": {
+        "en": "School 1 (Gaza)",
+        "ar": "مدرسة 1 (غزة)"
+      },
+      "governorate": "Gaza",
+      "level": "Preparatory",
+      "enrolment": {
+        "boys": 217,
+        "girls": 238
+      },
+      "location": {
+        "lat": 31.5788,
+        "lon": 34.389
+      },
+      "facilities": [
+        "library",
+        "lab"
+      ],
+      "contacts": {
+        "phone": "08-8529025"
+      }
+    },
+    {
+      "id": 202,
+      "name": {
+        "en": "School 2 (Khan Younis)",
+        "ar": "مدرسة 2 (خان يونس)"
+      },
+      "governorate": "Khan Younis",
+      "level": "Secondary",
+      "enrolment": {
+        "boys": 273,
+        "girls": 280
+      },
+      "location": {
+        "lat": 31.5849,
+        "lon": 34.3984
+      },
+      "facilities": [
+        "library"
+      ],
+      "contacts": {
+        "phone": "08-1063067"
+      }
+    },
+    {
+      "id": 203,
+      "name": {
+        "en": "School 3 (Rafah)",
+        "ar": "مدرسة 3 (رفح)"
+      },
+      "governorate": "Rafah",
+      "level": "Primary",
+      "enrolment": {
+        "boys": 272,
+        "girls": 183
+      },
+      "location": {
+        "lat": 31.3345,
+        "lon": 34.303
+      },
+      "facilities": [
+        "lab"
+      ],
+      "contacts": {
+        "phone": "08-2487610",
+        "email": "school3@example.org"
+      }
+    },
+    {
+      "id": 204,
+      "name": {
+        "en": "School 4 (Deir al-Balah)",
+        "ar": "مدرسة 4 (دير البلح)"
+      },
+      "governorate": "Deir al-Balah",
+      "level": "Preparatory",
+      "enrolment": {
+        "boys": 227,
+        "girls": 175
+      },
+      "location": {
+        "lat": 31.3096,
+        "lon": 34.3875
+      },
+      "facilities": [
+        "lab",
+        "playground",
+        "computer room"
+      ]
+    },
+    {
+      "id": 205,
+      "name": {
+        "en": "School 5 (Jabalia)",
+        "ar": "مدرسة 5 (جباليا)"
+      },
+      "governorate": "North Gaza",
+      "level": "Secondary",
+      "enrolment": {
+        "boys": 269,
+        "girls": 244
+      },
+      "location": {
+        "lat": 31.4542,
+        "lon": 34.2693
+      },
+      "facilities": [],
+      "contacts": {
+        "phone": "08-6904966"
+      }
+    },
+    {
+      "id": 206,
+      "name": {
+        "en": "School 6 (Gaza)",
+        "ar": "مدرسة 6 (غزة)"
+      },
+      "governorate": "Gaza",
+      "level": "Primary",
+      "enrolment": {
+        "boys": 84,
+        "girls": 283
+      },
+      "location": {
+        "lat": 31.3519,
+        "lon": 34.2602
+      },
+      "facilities": [
+        "canteen",
+        "computer room"
+      ],
+      "contacts": {
+        "phone": "08-1606369",
+        "email": "school6@example.org"
+      }
+    },
+    {
+      "id": 207,
+      "name": {
+        "en": "School 7 (Khan Younis)",
+        "ar": "مدرسة 7 (خان يونس)"
+      },
+      "governorate": "Khan Younis",
+      "level": "Preparatory",
+      "enrolment": {
+        "boys": 260,
+        "girls": 222
+      },
+      "location": {
+        "lat": 31.3746,
+        "lon": 34.2193
+      },
+      "facilities": [
+        "computer room"
+      ],
+      "contacts": {
+        "phone": "08-2274673"
+      }
+    },
+    {
+      "id": 208,
+      "name": {
+        "en": "School 8 (Rafah)",
+        "ar": "مدرسة 8 (رفح)"
+      },
+      "governorate": "Rafah",
+      "level": "Secondary",
+      "enrolment": {
+        "boys": 107,
+        "girls": 132
+      },
+      "location": {
+        "lat": 31.4442,
+        "lon": 34.2242
+      },
+      "facilities": []
+    },
+    {
+      "id": 209,
+      "name": {
+        "en": "School 9 (Deir al-Balah)",
+        "ar": "مدرسة 9 (دير البلح)"
+      },
+      "governorate": "Deir al-Balah",
+      "level": "Primary",
+      "enrolment": {
+        "boys": 164,
+        "girls": 185
+      },
+      "location": {
+        "lat": 31.3494,
+        "lon": 34.3068
+      },
+      "facilities": [
+        "playground"
+      ],
+      "contacts": {
+        "phone": "08-3746161",
+        "email": "school9@example.org"
+      }
+    },
+    {
+      "id": 210,
+      "name": {
+        "en": "School 10 (Jabalia)",
+        "ar": "مدرسة 10 (جباليا)"
+      },
+      "governorate": "North Gaza",
+      "level": "Preparatory",
+      "enrolment": {
+        "boys": 198,
+        "girls": 267
+      },
+      "location": {
+        "lat": 31.4133,
+        "lon": 34.3863
+      },
+      "facilities": [],
+      "contacts": {
+        "phone": "08-8466796"
+      }
+    },
+    {
+      "id": 211,
+      "name": {
+        "en": "School 11 (Gaza)",
+        "ar": "مدرسة 11 (غزة)"
+      },
+      "governorate": "Gaza",
+      "level": "Secondary",
+      "enrolment": {
+        "boys": 196,
+        "girls": 161
+      },
+      "location": {
+        "lat": 31.3057,
+        "lon": 34.3601
+      },
+      "facilities": [
+        "canteen",
+        "lab"
+      ],
+      "contacts": {
+        "phone": "08-9957339"
+      }
+    },
+    {
+      "id": 212,
+      "name": {
+        "en": "School 12 (Khan Younis)",
+        "ar": "مدرسة 12 (خان يونس)"
+      },
+      "governorate": "Khan Younis",
+      "level": "Primary",
+      "enrolment": {
+        "boys": 85,
+        "girls": 222
+      },
+      "location": {
+        "lat": 31.3216,
+        "lon": 34.2054
+      },
+      "facilities": [
+        "library",
+        "lab",
+        "computer room"
+      ]
+    },
+    {
+      "id": 213,
+      "name": {
+        "en": "School 13 (Rafah)",
+        "ar": "مدرسة 13 (رفح)"
+      },
+      "governorate": "Rafah",
+      "level": "Preparatory",
+      "enrolment": {
+        "boys": 194,
+        "girls": 104
+      },
+      "location": {
+        "lat": 31.3003,
+        "lon": 34.2513
+      },
+      "facilities": [
+        "library",
+        "playground",
+        "lab"
+      ],
+      "contacts": {
+        "phone": "08-7445767"
+      }
+    }
+  ]
+}

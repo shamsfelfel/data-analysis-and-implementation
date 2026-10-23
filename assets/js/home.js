@@ -55,8 +55,8 @@
     var cards = document.querySelectorAll("[data-chapter-progress]");
     if (!window.PROGRESS) return;
     for (var i = 0; i < cards.length; i++) {
-      var num = +cards[i].getAttribute("data-chapter-progress");
-      var p = window.PROGRESS.chapterProgress(num);
+      var key = cards[i].getAttribute("data-chapter-progress");
+      var p = window.PROGRESS.chapterProgress(key);
       if (!p.total || !p.done) { cards[i].hidden = true; continue; }
       cards[i].hidden = false;
       cards[i].innerHTML = "";
@@ -75,12 +75,12 @@
      each test card the score of its bank once answered. */
   function fillChapterPage() {
     if (!window.PROGRESS || !window.COURSE) return;
-    var num = +(document.body.getAttribute("data-chapter") || 1);
+    var key = document.body.getAttribute("data-chapter") || "";
 
     var marks = document.querySelectorAll("[data-page-state]");
     for (var i = 0; i < marks.length; i++) {
       var id = marks[i].getAttribute("data-page-state");
-      var p = window.COURSE.page(num, id);
+      var p = window.COURSE.page(key, id);
       if (!p) continue;
 
       if (p.bank) {
@@ -89,7 +89,7 @@
         marks[i].hidden = false;
         marks[i].textContent = score.right + " / " + score.done;
         marks[i].className = "state score-chip";
-      } else if (window.PROGRESS.isSeen(num, id)) {
+      } else if (window.PROGRESS.isSeen(key, id)) {
         marks[i].hidden = false;
         marks[i].textContent = "✓";
         marks[i].className = "state seen-chip";
@@ -102,24 +102,30 @@
   /* ---------------------------------------------------------- roadmap */
 
   /* The chapters still to be written, listed from the same registry
-     the finished ones come from so the two can never drift apart. */
+     the finished ones come from so the two can never drift apart. One
+     list per track: <ol id="roadmap-theory"> and <ol id="roadmap-practical">. */
   function fillRoadmap() {
-    var host = document.getElementById("roadmap");
-    if (!host || !window.COURSE) return;
+    if (!window.COURSE) return;
     var planned = window.COURSE.planned || [];
-    host.innerHTML = "";
-    for (var i = 0; i < planned.length; i++) {
-      var li = el("li");
-      li.appendChild(el("span", "n", String(planned[i].num)));
-      var name = el("span", "t");
-      name.appendChild(el("span", "en", planned[i].en));
-      name.appendChild(el("span", "ar", planned[i].ar));
-      li.appendChild(name);
-      var tag = el("span", "soon");
-      tag.setAttribute("data-ui", "soon");
-      tag.textContent = t("soon");
-      li.appendChild(tag);
-      host.appendChild(li);
+    var hosts = document.querySelectorAll("[data-roadmap]");
+    for (var h = 0; h < hosts.length; h++) {
+      var host = hosts[h];
+      var trackId = host.getAttribute("data-roadmap");
+      host.innerHTML = "";
+      for (var i = 0; i < planned.length; i++) {
+        if (planned[i].track !== trackId) continue;
+        var li = el("li");
+        li.appendChild(el("span", "n", String(planned[i].num)));
+        var name = el("span", "t");
+        name.appendChild(el("span", "en", planned[i].title.en));
+        name.appendChild(el("span", "ar", planned[i].title.ar));
+        li.appendChild(name);
+        var tag = el("span", "soon");
+        tag.setAttribute("data-ui", "soon");
+        tag.textContent = t("soon");
+        li.appendChild(tag);
+        host.appendChild(li);
+      }
     }
   }
 

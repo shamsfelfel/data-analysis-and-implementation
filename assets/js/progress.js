@@ -68,16 +68,17 @@
     return done ? { done: done, right: right } : null;
   }
 
-  /* How far through a chapter the reader is: lessons opened over
+  /* `key` is the chapter key ("t1", "p1").
+     How far through a chapter the reader is: lessons opened over
      lessons that exist. Tests and the lab are not counted - they
      are optional on a first pass. */
-  function chapterProgress(num) {
-    var list = (window.COURSE && window.COURSE.pages(num)) || [];
+  function chapterProgress(key) {
+    var list = (window.COURSE && window.COURSE.pages(key)) || [];
     var total = 0, done = 0;
     for (var i = 0; i < list.length; i++) {
       if (list[i].kind !== "lesson") continue;
       total++;
-      if (isSeen(num, list[i].id)) done++;
+      if (isSeen(key, list[i].id)) done++;
     }
     return { done: done, total: total, pct: total ? Math.round(done / total * 100) : 0 };
   }

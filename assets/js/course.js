@@ -1,102 +1,28 @@
 /* ============================================================
    The course registry and the UI strings.
 
-   One list describes the whole course: which chapters exist,
-   which pages each chapter holds, in what reading order, and
-   where each page lives on disk. Everything else - the drawer,
-   the breadcrumbs, the previous/next pager, the service-worker
-   precache list, even the build - reads this list rather than
-   hard-coding a path.
+   The shape of the course -- which tracks exist, which chapters
+   each holds, which pages each chapter has, in what reading order
+   -- lives in src/registry.json and reaches the browser as
+   window.DA_REGISTRY (assets/js/registry.js, written by build.py,
+   with every page's href already filled in). This file turns that
+   data into lookups. The drawer, the breadcrumbs, the previous /
+   next pager, the home pages, the service-worker precache list,
+   the build and the end-to-end suite all read the same registry,
+   so the site cannot disagree with itself.
 
-   `href` is always relative to the site root. A page turns it
-   into a working link by prefixing window.DA_BASE, which each
-   page sets to the number of ../ it needs. That is what lets the
-   same files serve from a domain root and from a GitHub Pages
-   project subpath without a rewrite.
+   `href` is always relative to the site root. A page turns it into
+   a working link by prefixing window.DA_BASE, which each page sets
+   to the number of ../ it needs. That is what lets the same files
+   serve from a domain root and from a GitHub Pages project subpath.
    ============================================================ */
 (function () {
   "use strict";
 
-  var CHAPTERS = [
-    {
-      num: 1,
-      slug: "chapter-1",
-      href: "chapters/chapter-1.html",
-      ready: true,
-      title: { en: "Object-Oriented Python", ar: "البرمجة الكائنية في بايثون" },
-      blurb: {
-        en: "Seven lessons that each open with code that hurts and rebuild it with the one OOP idea that fixes that exact pain.",
-        ar: "سبعة دروس يبدأ كل منها بكود مؤلم ثم يعيد بناءه بالفكرة الكائنية الوحيدة التي تعالج ذلك الألم بعينه."
-      },
-      stats: { lessons: 7, questions: 144, exercises: 28, traces: 8 },
-      pages: [
-        { id: "chapter", kind: "chapter", href: "chapters/chapter-1.html",
-          en: "Chapter 1 home", ar: "صفحة الفصل 1" },
-
-        { id: "lesson-01", kind: "lesson", n: 1, href: "lessons/chapter-1-lesson-1.html",
-          en: "Objects & Classes", ar: "الكائنات والأصناف" },
-        { id: "test-01", kind: "test", of: 1, bank: "test-01", href: "tests/chapter-1-test-1.html",
-          en: "Test 1", ar: "اختبار 1" },
-
-        { id: "lesson-02", kind: "lesson", n: 2, href: "lessons/chapter-1-lesson-2.html",
-          en: "State, __init__ & Methods", ar: "الحالة والمُنشئ والدوال" },
-        { id: "test-02", kind: "test", of: 2, bank: "test-02", href: "tests/chapter-1-test-2.html",
-          en: "Test 2", ar: "اختبار 2" },
-
-        { id: "lesson-03", kind: "lesson", n: 3, href: "lessons/chapter-1-lesson-3.html",
-          en: "Encapsulation", ar: "التغليف" },
-        { id: "test-03", kind: "test", of: 3, bank: "test-03", href: "tests/chapter-1-test-3.html",
-          en: "Test 3", ar: "اختبار 3" },
-
-        { id: "lesson-04", kind: "lesson", n: 4, href: "lessons/chapter-1-lesson-4.html",
-          en: "Abstraction & Clean Interfaces", ar: "التجريد والواجهات" },
-        { id: "test-04", kind: "test", of: 4, bank: "test-04", href: "tests/chapter-1-test-4.html",
-          en: "Test 4", ar: "اختبار 4" },
-
-        { id: "lesson-05", kind: "lesson", n: 5, href: "lessons/chapter-1-lesson-5.html",
-          en: "Inheritance & Composition", ar: "الوراثة والتركيب" },
-        { id: "test-05", kind: "test", of: 5, bank: "test-05", href: "tests/chapter-1-test-5.html",
-          en: "Test 5", ar: "اختبار 5" },
-
-        { id: "lesson-06", kind: "lesson", n: 6, href: "lessons/chapter-1-lesson-6.html",
-          en: "Polymorphism & Duck Typing", ar: "تعدد الأشكال" },
-        { id: "test-06", kind: "test", of: 6, bank: "test-06", href: "tests/chapter-1-test-6.html",
-          en: "Test 6", ar: "اختبار 6" },
-
-        { id: "lesson-07", kind: "lesson", n: 7, href: "lessons/chapter-1-lesson-7.html",
-          en: "Capstone: Two Styles, One Program", ar: "المشروع الختامي" },
-        { id: "test-07", kind: "test", of: 7, bank: "test-07", href: "tests/chapter-1-test-7.html",
-          en: "Test 7", ar: "اختبار 7" },
-
-        { id: "lab", kind: "lab", href: "labs/chapter-1-lab.html",
-          en: "Execution Lab", ar: "مختبر التنفيذ" },
-        { id: "chapter-test-a", kind: "exam", bank: "chapter-test-a", href: "exams/chapter-1-exam-a.html",
-          en: "Chapter Test A — Core", ar: "اختبار الفصل أ — الأساسيات" },
-        { id: "chapter-test-b", kind: "exam", bank: "chapter-test-b", href: "exams/chapter-1-exam-b.html",
-          en: "Chapter Test B — Advanced", ar: "اختبار الفصل ب — المتقدم" }
-      ]
-    }
-  ];
-
-  /* Chapters still to be written. They appear on the home page as
-     the road ahead, greyed out and unlinked, so a reader can see
-     where the course is going. Keep in step with README.md. */
-  var PLANNED = [
-    { num: 2,  en: "OOP Design Patterns for ML",        ar: "أنماط التصميم الكائني للتعلّم الآلي" },
-    { num: 3,  en: "NumPy Fundamentals",                ar: "أساسيات NumPy" },
-    { num: 4,  en: "NumPy for ML Math",                 ar: "NumPy لرياضيات التعلّم الآلي" },
-    { num: 5,  en: "np.linalg and Linear Algebra",      ar: "np.linalg والجبر الخطي" },
-    { num: 6,  en: "Pandas Fundamentals",               ar: "أساسيات Pandas" },
-    { num: 7,  en: "Pandas Data Wrangling",             ar: "معالجة البيانات بـ Pandas" },
-    { num: 8,  en: "Pandas Reshaping",                  ar: "إعادة تشكيل البيانات بـ Pandas" },
-    { num: 9,  en: "Encoding and Scaling",              ar: "الترميز والتوحيد" },
-    { num: 10, en: "Missing Data and Pipelines",        ar: "البيانات الناقصة وخطوط المعالجة" },
-    { num: 11, en: "Regression: Derivation and scikit-learn",
-                                                        ar: "الانحدار: الاشتقاق وscikit-learn" }
-  ];
+  var R = window.DA_REGISTRY || { site: {}, tracks: [], chapters: [], planned: [] };
 
   var UI = {
-    brand:    { en: "Python OOP by Example", ar: "البرمجة الكائنية بلغة بايثون" },
+    brand:    { en: "Data Analysis & Implementation", ar: "تحليل البيانات وتطبيقها" },
     menu:     { en: "Course", ar: "المقرر" },
     prev:     { en: "Previous", ar: "السابق" },
     next:     { en: "Next", ar: "التالي" },
@@ -104,8 +30,11 @@
     copied:   { en: "copied", ar: "تم النسخ" },
     score:    { en: "Score: {a} / {b} correct", ar: "النتيجة: {a} من {b} صحيحة" },
     onpage:   { en: "On this page", ar: "في هذه الصفحة" },
+    chapters: { en: "All chapters", ar: "كل الفصول" },
     home:     { en: "Home", ar: "الرئيسية" },
     chapter:  { en: "Chapter {n}", ar: "الفصل {n}" },
+    theory:   { en: "Theory", ar: "النظري" },
+    practical:{ en: "Practical", ar: "العملي" },
     install:  { en: "Install", ar: "تثبيت" },
     offline:  { en: "Works fully offline", ar: "يعمل دون اتصال بالكامل" },
     resume:   { en: "Continue where you stopped", ar: "تابع من حيث توقّفت" },
@@ -117,54 +46,119 @@
     light:    { en: "Light", ar: "فاتح" }
   };
 
+  /* ---------------------------------------------------------- build the model */
+
+  var KIND_ORDER = { chapter: 0, lesson: 1, test: 2, lab: 3, glossary: 4, exam: 5 };
+
+  var chapters = [];
+  var byKey = {};
+  var byId = {};
+  var byHref = {};
+
+  (function build() {
+    var src = R.chapters || [];
+    for (var i = 0; i < src.length; i++) {
+      var c = src[i];
+      var ch = {
+        key: c.key, track: c.track, num: c.num, ready: c.ready !== false,
+        title: c.title, blurb: c.blurb, domain: c.domain || null,
+        href: "", pages: []
+      };
+      for (var j = 0; j < (c.pages || []).length; j++) {
+        var p = c.pages[j];
+        var page = {
+          id: p.id, kind: p.kind, n: p.n || null, of: p.of || null,
+          bank: p.bank || null, href: p.href,
+          title: p.title, blurb: p.blurb || null,
+          en: p.title ? p.title.en : p.id, ar: p.title ? p.title.ar : p.id
+        };
+        ch.pages.push(page);
+        byId[page.id] = { chapter: ch.key, page: page };
+        byHref[page.href] = { chapter: ch.key, page: page };
+        if (page.kind === "chapter") ch.href = page.href;
+      }
+      chapters.push(ch);
+      byKey[ch.key] = ch;
+    }
+  })();
+
   /* ---------------------------------------------------------- lookups */
 
-  function chapter(num) {
-    for (var i = 0; i < CHAPTERS.length; i++) {
-      if (CHAPTERS[i].num === +num) return CHAPTERS[i];
-    }
-    return null;
-  }
+  function chapter(key) { return byKey[key] || null; }
 
   /* The reading order of one chapter, as a flat list. The chapter
      home page is index 0, so "previous" from lesson 1 lands there. */
-  function pages(num) {
-    var c = chapter(num);
+  function pages(key) {
+    var c = byKey[key];
     return c ? c.pages : [];
   }
 
-  function page(num, id) {
-    var list = pages(num);
+  function page(key, id) {
+    var list = pages(key);
     for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
     return null;
   }
 
-  function indexOf(num, id) {
-    var list = pages(num);
+  function indexOf(key, id) {
+    var list = pages(key);
     for (var i = 0; i < list.length; i++) if (list[i].id === id) return i;
     return -1;
+  }
+
+  function pageById(id) { return byId[id] || null; }
+  function pageByHref(href) {
+    return byHref[String(href || "").replace(/#.*$/, "")] || null;
+  }
+
+  function track(id) {
+    var t = R.tracks || [];
+    for (var i = 0; i < t.length; i++) if (t[i].id === id) return t[i];
+    return null;
+  }
+
+  function chaptersOf(trackId) {
+    var out = [];
+    for (var i = 0; i < chapters.length; i++) {
+      if (chapters[i].track === trackId) out.push(chapters[i]);
+    }
+    return out;
   }
 
   /* Every page that is a file of its own, across every chapter -
      what the service worker precaches and what the e2e suite walks. */
   function allPages() {
     var out = [];
-    for (var i = 0; i < CHAPTERS.length; i++) {
-      for (var j = 0; j < CHAPTERS[i].pages.length; j++) {
-        out.push({ chapter: CHAPTERS[i].num, page: CHAPTERS[i].pages[j] });
+    for (var i = 0; i < chapters.length; i++) {
+      for (var j = 0; j < chapters[i].pages.length; j++) {
+        out.push({ chapter: chapters[i].key, page: chapters[i].pages[j] });
       }
     }
     return out;
   }
 
+  /* The pages of a given kind in one chapter, in reading order. */
+  function ofKind(key, kind) {
+    var out = [], list = pages(key);
+    for (var i = 0; i < list.length; i++) if (list[i].kind === kind) out.push(list[i]);
+    return out;
+  }
+
   window.COURSE = {
-    chapters: CHAPTERS,
-    planned: PLANNED,
+    site: R.site || {},
+    tracks: R.tracks || [],
+    chapters: chapters,
+    planned: R.planned || [],
     UI: UI,
+    kindOrder: KIND_ORDER,
     chapter: chapter,
+    chaptersOf: chaptersOf,
+    track: track,
     pages: pages,
     page: page,
     indexOf: indexOf,
+    ofKind: ofKind,
+    pageById: pageById,
+    pageByHref: pageByHref,
     allPages: allPages
   };
 })();

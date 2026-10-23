@@ -1,0 +1,123 @@
+{
+  "page": 1,
+  "per_page": 5,
+  "total": 13,
+  "pages": 3,
+  "next": "https://api.example.org/schools?page=2",
+  "results": [
+    {
+      "id": 201,
+      "name": {
+        "en": "School 1 (Gaza)",
+        "ar": "مدرسة 1 (غزة)"
+      },
+      "governorate": "Gaza",
+      "level": "Preparatory",
+      "enrolment": {
+        "boys": 217,
+        "girls": 238
+      },
+      "location": {
+        "lat": 31.5788,
+        "lon": 34.389
+      },
+      "facilities": [
+        "library",
+        "lab"
+      ],
+      "contacts": {
+        "phone": "08-8529025"
+      }
+    },
+    {
+      "id": 202,
+      "name": {
+        "en": "School 2 (Khan Younis)",
+        "ar": "مدرسة 2 (خان يونس)"
+      },
+      "governorate": "Khan Younis",
+      "level": "Secondary",
+      "enrolment": {
+        "boys": 273,
+        "girls": 280
+      },
+      "location": {
+        "lat": 31.5849,
+        "lon": 34.3984
+      },
+      "facilities": [
+        "library"
+      ],
+      "contacts": {
+        "phone": "08-1063067"
+      }
+    },
+    {
+      "id": 203,
+      "name": {
+        "en": "School 3 (Rafah)",
+        "ar": "مدرسة 3 (رفح)"
+      },
+      "governorate": "Rafah",
+      "level": "Primary",
+      "enrolment": {
+        "boys": 272,
+        "girls": 183
+      },
+      "location": {
+        "lat": 31.3345,
+        "lon": 34.303
+      },
+      "facilities": [
+        "lab"
+      ],
+      "contacts": {
+        "phone": "08-2487610",
+        "email": "school3@example.org"
+      }
+    },
+    {
+      "id": 204,
+      "name": {
+        "en": "School 4 (Deir al-Balah)",
+        "ar": "مدرسة 4 (دير البلح)"
+      },
+      "governorate": "Deir al-Balah",
+      "level": "Preparatory",
+      "enrolment": {
+        "boys": 227,
+        "girls": 175
+      },
+      "location": {
+        "lat": 31.3096,
+        "lon": 34.3875
+      },
+      "facilities": [
+        "lab",
+        "playground",
+        "computer room"
+      ]
+    },
+    {
+      "id": 205,
+      "name": {
+        "en": "School 5 (Jabalia)",
+        "ar": "مدرسة 5 (جباليا)"
+      },
+      "governorate": "North Gaza",
+      "level": "Secondary",
+      "enrolment": {
+        "boys": 269,
+        "girls": 244
+      },
+      "location": {
+        "lat": 31.4542,
+        "lon": 34.2693
+      },
+      "facilities": [],
+      "contacts": {
+        "phone": "08-6904966"
+      }
+    }
+  ]
+}
