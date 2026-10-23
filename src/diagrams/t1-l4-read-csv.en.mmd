@@ -1,0 +1,20 @@
+%% alt: Sequence diagram of what read_csv does. It opens the file and gets raw bytes, decodes them into text using the encoding argument, splits the text into rows of string fields using the delimiter and quoting rules, guesses a type for each column using dtype, decimal, thousands, na_values and parse_dates, and builds the DataFrame. A wrong encoding or delimiter usually raises no error.
+sequenceDiagram
+  autonumber
+  participant F as File on disk
+  participant R as `read_csv`
+  participant D as Decoder
+  participant S as Splitter
+  participant T as Type guesser
+  participant P as DataFrame
+  R->>F: open the path
+  F-->>R: raw bytes
+  R->>D: bytes and `encoding=`
+  D-->>R: text, or UnicodeDecodeError
+  R->>S: text, `sep=`, quotes, `skiprows=`, `header=`
+  S-->>R: rows of string fields
+  R->>T: strings, `dtype=` `decimal=` `na_values=` `parse_dates=`
+  T-->>R: int64, float64, datetime64 or object
+  R->>P: assemble the table
+  P-->>R: the only thing a model ever sees
+  Note over D,S: a wrong choice here is usually silent

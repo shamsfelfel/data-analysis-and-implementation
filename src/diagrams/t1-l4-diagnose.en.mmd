@@ -1,0 +1,15 @@
+%% alt: Flowchart for diagnosing a file that loaded wrong. One column or data in the index means the delimiter is wrong. Garbled Arabic or UnicodeDecodeError means the encoding is wrong. Numbers stored as text need decimal, thousands or na_values. Text dates or a month off need parse_dates, dayfirst or format. Lost leading zeros need dtype string. In Excel, Unnamed columns or numbers like 46038 need header and a serial-date conversion. If none applies, check shape, dtypes and ranges.
+flowchart TD
+  A["The table looks wrong"] --> B(["One column, or data<br/>sitting in the index?"])
+  B -- yes --> B1["Wrong delimiter:<br/>set `sep=`"]
+  B -- no --> C(["Arabic garbled, or<br/>UnicodeDecodeError?"])
+  C -- yes --> C1["Wrong encoding:<br/>`utf-8-sig` or `cp1256`"]
+  C -- no --> D(["Numbers stored as text,<br/>dtype object?"])
+  D -- yes --> D1["`decimal=` `thousands=`<br/>`na_values=`"]
+  D -- no --> E(["Dates are text,<br/>or a month off?"])
+  E -- yes --> E1["`parse_dates=` `dayfirst=`<br/>or `format=`"]
+  E -- no --> F(["IDs lost their<br/>leading zeros?"])
+  F -- yes --> F1["`dtype=` string<br/>for every ID column"]
+  F -- no --> G(["Excel: Unnamed columns<br/>or numbers like 46038?"])
+  G -- yes --> G1["`header=` and a<br/>serial-date conversion"]
+  G -- no --> H["Check shape, dtypes<br/>and value ranges"]

@@ -1,0 +1,20 @@
+%% alt: مخطط تسلسلي لما تفعله read_csv. تفتح الملف وتحصل على بايتات خام، وتفكّ ترميزها إلى نص بحسب الوسيط encoding، وتقسّم النص إلى صفوف من حقول نصية بحسب الفاصل وقواعد التنصيص، وتخمّن نوع كل عمود بحسب dtype وdecimal وthousands وna_values وparse_dates، ثم تبني الجدول. والترميز أو الفاصل الخاطئ لا يرفع عادةً أي خطأ.
+sequenceDiagram
+  autonumber
+  participant F as الملف على القرص
+  participant R as `read_csv`
+  participant D as فاكّ الترميز
+  participant S as المقسِّم
+  participant T as مخمِّن الأنواع
+  participant P as الجدول DataFrame
+  R->>F: افتح المسار
+  F-->>R: بايتات خام
+  R->>D: البايتات و`encoding=`
+  D-->>R: نص، أو UnicodeDecodeError
+  R->>S: النص و`sep=` والتنصيص و`skiprows=` و`header=`
+  S-->>R: صفوف من حقول نصية
+  R->>T: النصوص و`dtype=` `decimal=` `na_values=` `parse_dates=`
+  T-->>R: int64 أو float64 أو datetime64 أو object
+  R->>P: ابنِ الجدول
+  P-->>R: الشيء الوحيد الذي يراه النموذج
+  Note over D,S: الاختيار الخاطئ هنا صامت في الغالب

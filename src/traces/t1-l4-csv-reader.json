@@ -1,0 +1,68 @@
+{
+  "id": "t1-l4-csv-reader",
+  "title": {
+    "en": "How a CSV reader splits a quoted line",
+    "ar": "كيف يقسّم قارئ CSV سطرًا فيه تنصيص"
+  },
+  "lede": {
+    "en": "A record whose second field contains a comma. Watch the one piece of memory a real parser needs: are we inside quotes right now?",
+    "ar": "سجلّ يحتوي حقله الثاني على فاصلة. راقب الذاكرة الوحيدة التي يحتاجها المحلّل الحقيقي: هل نحن داخل علامتي تنصيص الآن؟"
+  },
+  "code": "line = '1,\"Gaza, Rimal\",415'\nfields = []\nfield = \"\"\nin_quotes = False\nfor ch in line:\n    if ch == '\"':\n        in_quotes = not in_quotes\n    elif ch == \",\" and not in_quotes:\n        fields.append(field)\n        field = \"\"\n    else:\n        field += ch\nfields.append(field)\nimport csv\nprint(fields)\nprint(fields == next(csv.reader([line])))\n",
+  "watch": [
+    "ch",
+    "in_quotes",
+    "field",
+    "fields"
+  ],
+  "viz": {
+    "fields": "array"
+  },
+  "max_steps": 160,
+  "notes": {
+    "1": {
+      "en": "One record from the file. The city and district are one field, \"Gaza, Rimal\", wrapped in quotes because it contains a comma.",
+      "ar": "سجلّ واحد من الملف. المدينة والحي حقل واحد هو \"Gaza, Rimal\"، وُضع بين علامتي تنصيص لأنه يحتوي فاصلة."
+    },
+    "4": {
+      "en": "in_quotes is the parser's whole memory. It starts False: we are outside any quoted field.",
+      "ar": "المتغيّر in_quotes هو كل ذاكرة المحلّل. يبدأ False: لسنا داخل أي حقل منصَّص."
+    },
+    "5#1": {
+      "en": "Walk the line one character at a time. No split(), no guessing.",
+      "ar": "نمشي على السطر حرفًا حرفًا. لا split() ولا تخمين."
+    },
+    "7#1": {
+      "en": "The opening quote flips in_quotes to True. The quote mark itself is not copied into the field.",
+      "ar": "علامة التنصيص الأولى تقلب in_quotes إلى True. ولا تُنسخ العلامة نفسها إلى الحقل."
+    },
+    "7#2": {
+      "en": "The closing quote flips it back to False.",
+      "ar": "علامة التنصيص الأخيرة تعيدها إلى False."
+    },
+    "9": {
+      "en": "A comma while in_quotes is False ends the field: store it, start a new one.",
+      "ar": "الفاصلة حين تكون in_quotes تساوي False تنهي الحقل: نخزّنه ونبدأ حقلًا جديدًا."
+    },
+    "12#1": {
+      "en": "Any other character is part of the current field.",
+      "ar": "أي حرف آخر هو جزء من الحقل الحالي."
+    },
+    "12#6": {
+      "en": "This comma is inside the quotes (in_quotes is True), so it is just a character. line.split(\",\") cannot know that; this is the whole difference.",
+      "ar": "هذه الفاصلة داخل التنصيص (in_quotes تساوي True) فهي مجرد حرف. أما line.split(\",\") فلا تعرف ذلك، وهذا هو الفرق كله."
+    },
+    "13": {
+      "en": "End of the line: the last field has no comma after it, so it is stored here.",
+      "ar": "انتهى السطر: الحقل الأخير لا فاصلة بعده، فيُخزَّن هنا."
+    },
+    "15": {
+      "en": "Three fields, not four. The comma inside the quotes stayed in the second field.",
+      "ar": "ثلاثة حقول لا أربعة. بقيت الفاصلة داخل التنصيص في الحقل الثاني."
+    },
+    "16": {
+      "en": "The standard library's csv.reader returns exactly the same list. line.split(\",\") would have returned four pieces.",
+      "ar": "تُرجع csv.reader من المكتبة القياسية القائمة نفسها بالضبط. أما line.split(\",\") فكانت ستُرجع أربع قطع."
+    }
+  }
+}

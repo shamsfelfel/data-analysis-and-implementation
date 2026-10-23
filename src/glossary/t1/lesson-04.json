@@ -1,0 +1,229 @@
+[
+  {
+    "id": "csv",
+    "term": {
+      "en": "CSV (comma-separated values)",
+      "ar": "ملف CSV (القيم المفصولة بفواصل)"
+    },
+    "def": {
+      "en": "A plain text file in which each line is one record and a delimiter separates the fields; the first line usually names the columns. It stores no types: in rental_listings.csv the rent 415 is just the three characters 4, 1, 5 until a reader decides it is a number.",
+      "ar": "ملف نصّي عادي يمثّل كل سطر فيه سجلًّا واحدًا ويفصل فاصلٌ بين الحقول، ويسمّي السطر الأول عادةً الأعمدة. ولا يخزّن أنواعًا: ففي rental_listings.csv يظل الإيجار 415 ثلاثة حروف هي 4 و1 و5 إلى أن يقرّر القارئ أنه رقم."
+    },
+    "cat": {
+      "en": "Files",
+      "ar": "الملفات"
+    },
+    "see": [
+      "delimiter",
+      "header-row",
+      "quoting"
+    ]
+  },
+  {
+    "id": "delimiter",
+    "term": {
+      "en": "Delimiter",
+      "ar": "الفاصل (Delimiter)"
+    },
+    "def": {
+      "en": "The character that separates the fields of a CSV record: a comma, a semicolon or a tab. The Arabic-locale export of rental listings uses a semicolon, so loading it with the default sep=\",\" gives a single column.",
+      "ar": "الحرف الذي يفصل بين حقول سجلّ CSV: فاصلة أو فاصلة منقوطة أو علامة جدولة. ويستعمل تصدير إعلانات التأجير ذو الإعدادات العربية الفاصلة المنقوطة، فتحميله بالقيمة الافتراضية sep=\",\" يعطي عمودًا واحدًا."
+    },
+    "cat": {
+      "en": "Files",
+      "ar": "الملفات"
+    },
+    "see": [
+      "csv",
+      "quoting"
+    ]
+  },
+  {
+    "id": "header-row",
+    "term": {
+      "en": "Header row",
+      "ar": "سطر العناوين (Header row)"
+    },
+    "def": {
+      "en": "The row that holds the column names. In a CSV it is usually line 1; in the Raw sheet of rental_listings.xlsx it is row 4, below a title block, so read_excel needs header=3.",
+      "ar": "الصف الذي يحمل أسماء الأعمدة. وهو في ملف CSV عادةً السطر 1؛ أما في الورقة Raw من rental_listings.xlsx فهو الصف 4 تحت كتلة عنوان، ولذلك تحتاج read_excel إلى header=3."
+    },
+    "cat": {
+      "en": "Files",
+      "ar": "الملفات"
+    },
+    "see": [
+      "csv",
+      "sheet"
+    ]
+  },
+  {
+    "id": "quoting",
+    "term": {
+      "en": "Quoting",
+      "ar": "التنصيص (Quoting)"
+    },
+    "def": {
+      "en": "Wrapping a field in quote marks so that a comma, a newline or a quote inside it is read as data, not as structure; a quote mark inside a quoted field is doubled. The advert \"Small studio, ideal for one person\" is quoted for this reason.",
+      "ar": "لفّ الحقل بعلامتي تنصيص ليُقرأ ما بداخله من فاصلة أو سطر جديد أو علامة تنصيص بيانات لا بنية؛ وتُكتب علامة التنصيص داخل الحقل المنصَّص مرتين. والإعلان \"Small studio, ideal for one person\" منصَّص لهذا السبب."
+    },
+    "cat": {
+      "en": "Files",
+      "ar": "الملفات"
+    },
+    "see": [
+      "csv",
+      "delimiter"
+    ]
+  },
+  {
+    "id": "encoding",
+    "term": {
+      "en": "Encoding",
+      "ar": "الترميز (Encoding)"
+    },
+    "def": {
+      "en": "The agreed table that turns characters into bytes and back, such as UTF-8 or the Windows Arabic code page cp1256. The file holds only bytes, so the reader must be told the encoding: the Arabic city غزة is 6 bytes in UTF-8 and 3 in cp1256.",
+      "ar": "الجدول المتفق عليه الذي يحوّل الحروف إلى بايتات والعكس، مثل UTF-8 أو صفحة ترميز ويندوز العربية cp1256. والملف لا يحمل إلا بايتات، فيجب إخبار القارئ بالترميز: فالمدينة غزة 6 بايتات في UTF-8 و3 في cp1256."
+    },
+    "cat": {
+      "en": "Text",
+      "ar": "النص"
+    },
+    "see": [
+      "bom",
+      "mojibake"
+    ]
+  },
+  {
+    "id": "bom",
+    "term": {
+      "en": "Byte order mark (BOM)",
+      "ar": "علامة ترتيب البايتات (BOM)"
+    },
+    "def": {
+      "en": "The three bytes ef bb bf at the start of a file, the character U+FEFF in UTF-8, which announce \"this file is UTF-8\". The semicolon listings file starts with one, and the codec utf-8-sig reads such a file and drops the mark.",
+      "ar": "البايتات الثلاث ef bb bf في أول الملف، وهي الحرف U+FEFF بترميز UTF-8، تعلن «هذا الملف UTF-8». ويبدأ ملف الإعلانات بالفاصلة المنقوطة بها، والترميز utf-8-sig يقرأ هذا الملف ويُسقط العلامة."
+    },
+    "cat": {
+      "en": "Text",
+      "ar": "النص"
+    },
+    "see": [
+      "encoding",
+      "mojibake"
+    ]
+  },
+  {
+    "id": "mojibake",
+    "term": {
+      "en": "Mojibake",
+      "ar": "الحروف المشوّهة (Mojibake)"
+    },
+    "def": {
+      "en": "Text decoded with the wrong encoding, so valid-looking but meaningless letters appear. UTF-8 bytes of خان يونس read as cp1256 become ط®ط§ظ† ظٹظˆظ†ط³, and no error is raised because every byte is legal in cp1256.",
+      "ar": "نص فُكّ ترميزه بترميز خاطئ فظهرت حروف تبدو صالحة لكنها بلا معنى. فبايتات UTF-8 للعبارة خان يونس إذا قُرئت بـcp1256 صارت ط®ط§ظ† ظٹظˆظ†ط³، ولا يُرفع خطأ لأن كل بايت مشروع في cp1256."
+    },
+    "cat": {
+      "en": "Text",
+      "ar": "النص"
+    },
+    "see": [
+      "encoding",
+      "bom"
+    ]
+  },
+  {
+    "id": "dtype-inference",
+    "term": {
+      "en": "dtype inference",
+      "ar": "استنتاج الأنواع (dtype inference)"
+    },
+    "def": {
+      "en": "pandas's guess, made column by column at read time, of whether a text column is integers, floats or plain text. One cell that does not fit, such as a dash in the rent column, leaves the whole column as object.",
+      "ar": "تخمين pandas، عمودًا عمودًا وقت القراءة، هل العمود النصي أعداد صحيحة أم عشرية أم نص عادي. وخلية واحدة لا تناسب، كشرطة في عمود الإيجار، تترك العمود كله object."
+    },
+    "cat": {
+      "en": "Types",
+      "ar": "الأنواع"
+    },
+    "see": [
+      "na-values",
+      "csv"
+    ]
+  },
+  {
+    "id": "na-values",
+    "term": {
+      "en": "NA values (na_values)",
+      "ar": "قيم NA (na_values)"
+    },
+    "def": {
+      "en": "The strings a reader turns into missing values. pandas has a default list (\"\", \"NA\", \"n/a\", \"None\", ...); na_values adds your own markers such as \"-\", and keep_default_na=False keeps a genuine answer like the generator value \"None\".",
+      "ar": "السلاسل التي يحوّلها القارئ إلى قيم مفقودة. وفي pandas قائمة افتراضية (\"\" و\"NA\" و\"n/a\" و\"None\" ...)؛ ويضيف na_values رموزك أنت مثل \"-\"، ويُبقي keep_default_na=False الجواب الحقيقي مثل قيمة المولّد \"None\"."
+    },
+    "cat": {
+      "en": "Types",
+      "ar": "الأنواع"
+    },
+    "see": [
+      "dtype-inference"
+    ]
+  },
+  {
+    "id": "excel-serial-date",
+    "term": {
+      "en": "Excel serial date",
+      "ar": "الرقم التسلسلي للتاريخ في Excel"
+    },
+    "def": {
+      "en": "How Excel stores a date: the number of days since an origin, which is 1899-12-30 for dates from March 1900 on. In the Raw sheet the first listing is 46038, which is 2026-01-16; pandas converts it with to_datetime(unit=\"D\", origin=\"1899-12-30\").",
+      "ar": "الطريقة التي يخزّن بها Excel التاريخ: عدد الأيام منذ نقطة أصل هي 1899-12-30 للتواريخ من مارس 1900 فصاعدًا. وفي الورقة Raw أول إعلان هو 46038 أي 2026-01-16؛ وتحوّله pandas بـ to_datetime(unit=\"D\", origin=\"1899-12-30\")."
+    },
+    "cat": {
+      "en": "Excel",
+      "ar": "Excel"
+    },
+    "see": [
+      "sheet"
+    ]
+  },
+  {
+    "id": "sheet",
+    "term": {
+      "en": "Sheet",
+      "ar": "الورقة (Sheet)"
+    },
+    "def": {
+      "en": "One named tab of a workbook, a grid that can be its own table. read_excel reads one sheet per call (sheet_name=); the workbook rental_listings.xlsx has two, Raw and Clean.",
+      "ar": "تبويب مسمّى واحد في دفتر Excel، شبكة يمكن أن تكون جدولًا قائمًا بذاته. وتقرأ read_excel ورقة واحدة في كل استدعاء (sheet_name=)؛ وفي الدفتر rental_listings.xlsx ورقتان هما Raw وClean."
+    },
+    "cat": {
+      "en": "Excel",
+      "ar": "Excel"
+    },
+    "see": [
+      "excel-serial-date",
+      "header-row"
+    ]
+  },
+  {
+    "id": "round-trip",
+    "term": {
+      "en": "Round trip",
+      "ar": "الذهاب والعودة (Round trip)"
+    },
+    "def": {
+      "en": "Writing a table to a file, reading it back with the reader you will really use, and comparing the result with the original (for example with pd.testing.assert_frame_equal). It proves the writer and the reader agree, not that the data is right.",
+      "ar": "كتابة جدول إلى ملف، ثم قراءته ثانيةً بالقارئ الذي ستستعمله فعلًا، ومقارنة الناتج بالأصل (مثلًا بـ pd.testing.assert_frame_equal). وهو يثبت أن الكاتب والقارئ متفقان، لا أن البيانات صحيحة."
+    },
+    "cat": {
+      "en": "Files",
+      "ar": "الملفات"
+    },
+    "see": [
+      "csv",
+      "encoding"
+    ]
+  }
+]

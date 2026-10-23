@@ -1,0 +1,48 @@
+{
+  "id": "t1-l4-wrong-delimiter",
+  "title": {
+    "en": "One column, then seven: the semicolon file",
+    "ar": "عمود واحد ثم سبعة: ملف الفاصلة المنقوطة"
+  },
+  "lede": {
+    "en": "The same 30-row file, loaded three ways. Watch the shape badge and the dtype of the area column change as sep= and decimal= are added.",
+    "ar": "الملف نفسه بثلاثين صفًّا، يُحمَّل بثلاث طرق. راقب شارة الشكل ونوع عمود المساحة وهما يتغيّران كلما أضفنا sep= ثم decimal=."
+  },
+  "files": {
+    "rental_listings_ar_semicolon.csv": "﻿listing_id;المدينة;الإيجار_الشهري;المساحة_م2;الغرف;مفروشة;تاريخ_الإعلان\r\n1001;خان يونس;415;119,2;4;نعم;2026-01-16\r\n1002;غزة;445;115,7;3;لا;2026-05-05\r\n1003;غزة;590;126,7;5;لا;2026-01-26\r\n1004;خان يونس;315;109,2;3;لا;2026-01-12\r\n1005;خان يونس;245;;2;لا;2026-05-05\r\n1006;دير البلح;315;85,1;3;لا;2026-05-05\r\n1007;غزة;345;65,4;1;لا;2026-02-11\r\n1008;رفح;285;90,8;3;لا;2026-01-09\r\n1009;جباليا;320;140,5;5;لا;2026-02-09\r\n1010;جباليا;;108,3;4;نعم;2026-03-28\r\n1011;خان يونس;300;67,5;2;نعم;2026-02-27\r\n1012;جباليا;205;81,6;2;لا;2026-01-09\r\n1013;خان يونس;255;80,3;2;نعم;2026-01-14\r\n1014;خان يونس;320;98,0;3;لا;2026-04-13\r\n1015;رفح;255;76,3;2;لا;2026-04-05\r\n1016;خان يونس;395;113,4;5;لا;2026-03-17\r\n1017;رفح;400;110,8;5;لا;2026-02-28\r\n1018;خان يونس;475;;5;لا;2026-03-25\r\n1019;دير البلح;295;106,5;3;لا;2026-04-03\r\n1020;خان يونس;425;128,1;4;نعم;2026-04-01\r\n1021;دير البلح;205;61,1;1;لا;2026-03-31\r\n1022;رفح;280;121,0;4;لا;2026-03-08\r\n1023;رفح;195;65,9;2;نعم;2026-04-03\r\n1024;غزة;390;72,9;2;لا;2026-03-06\r\n1025;غزة;355;88,7;2;لا;2026-04-22\r\n1026;خان يونس;;148,1;5;لا;2026-05-03\r\n1027;دير البلح;410;123,9;5;لا;2026-03-25\r\n1028;غزة;415;118,2;3;لا;2026-05-03\r\n1029;غزة;480;119,5;4;لا;2026-02-09\r\n1030;دير البلح;235;68,5;1;لا;2026-01-30\r\n"
+  },
+  "code": "import pandas as pd\n\npath = \"rental_listings_ar_semicolon.csv\"\nprint(open(path, encoding=\"utf-8-sig\").readline().strip())\ndf = pd.read_csv(path)\ndf = pd.read_csv(path, sep=\";\")\ndf = pd.read_csv(path, sep=\";\", decimal=\",\")\nprint(df.shape)\n",
+  "watch": [
+    "df"
+  ],
+  "viz": {
+    "df": "table"
+  },
+  "max_steps": 40,
+  "notes": {
+    "4": {
+      "en": "Before loading anything, look at the raw first line: the fields are separated by semicolons, and there is not a single comma in it.",
+      "ar": "قبل أي تحميل، انظر إلى السطر الأول الخام: الحقول مفصولة بفاصلة منقوطة، ولا توجد فيه فاصلة واحدة."
+    },
+    "5": {
+      "en": "Now load it the way we loaded the first file: defaults, which means sep=\",\". No error will come.",
+      "ar": "الآن نحمّله كما حمّلنا الملف الأول: بالإعدادات الافتراضية، أي sep=\",\". ولن يظهر أي خطأ."
+    },
+    "6": {
+      "en": "Look at the shape badge: 30 x 1. The header has no comma, so pandas saw ONE column; the data rows do contain a comma (the decimal comma in 119,2), so the first part of every row was pushed into the index. Now add sep=\";\".",
+      "ar": "انظر إلى شارة الشكل: 30 × 1. لا فاصلة في سطر العناوين فرأى pandas عمودًا واحدًا؛ أما صفوف البيانات ففيها فاصلة (الفاصلة العشرية في 119,2) فانزاح الجزء الأول من كل صف إلى الفهرس. الآن نضيف sep=\";\"."
+    },
+    "7": {
+      "en": "Seven columns now, but the area column is still object: \"119,2\" is not a number to pandas. Now add decimal=\",\" so the reader knows the notation.",
+      "ar": "سبعة أعمدة الآن، لكن عمود المساحة ما زال object: القيمة 119,2 ليست رقمًا عند pandas. الآن نضيف decimal=\",\" ليعرف القارئ كتابة الأرقام."
+    },
+    "8": {
+      "en": "The area column is float64 (the two blank cells became NaN). Print the shape to confirm.",
+      "ar": "صار عمود المساحة float64 (وتحوّلت الخليتان الفارغتان إلى NaN). نطبع الشكل للتأكيد."
+    },
+    "end": {
+      "en": "30 rows and 7 columns, with numbers where numbers belong.",
+      "ar": "ثلاثون صفًّا وسبعة أعمدة، والأرقام في مكانها."
+    }
+  }
+}

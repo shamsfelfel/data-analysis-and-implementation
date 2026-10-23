@@ -1,0 +1,27 @@
+%% alt: Mind map of CSV and Excel pitfalls. Delimiter: semicolon instead of comma, decimal comma, thousands separator. Encoding: byte order mark, cp1256, mojibake. Quoting: comma inside text, newline inside a field, doubled quotes. Header: title rows, no header, duplicate names. Types: IDs lose zeros, n/a markers, mixed date formats. Excel: serial dates, merged cells, formulas without cached values.
+mindmap
+  root((Flat file pitfalls))
+    Delimiter
+      semicolon not comma
+      decimal comma
+      thousands separator
+    Encoding
+      byte order mark
+      cp1256 or UTF-8
+      mojibake
+    Quoting
+      comma inside text
+      newline inside a field
+      doubled quote marks
+    Header
+      title rows above it
+      no header at all
+      duplicate names
+    Types
+      IDs lose leading zeros
+      markers like n/a or dash
+      mixed date formats
+    Excel
+      serial number dates
+      merged cells
+      formulas with no value

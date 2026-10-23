@@ -1,0 +1,52 @@
+{
+  "id": "t1-l4-excel-serial",
+  "title": {
+    "en": "An Excel serial number becomes a date",
+    "ar": "رقم Excel التسلسلي يصبح تاريخًا"
+  },
+  "lede": {
+    "en": "Three numbers copied from the Raw sheet of rental_listings.xlsx. A date is just \"days since an origin\": add that many days to 1899-12-30.",
+    "ar": "ثلاثة أرقام منقولة من ورقة Raw في ملف rental_listings.xlsx. التاريخ مجرد «أيام منذ نقطة أصل»: أضف هذا العدد من الأيام إلى 1899-12-30."
+  },
+  "code": "import pandas as pd\n\nserial = pd.Series([46038, 46147, 46048], name=\"listed_on\")\norigin = pd.Timestamp(\"1899-12-30\")\ndates = origin + pd.to_timedelta(serial, unit=\"D\")\nsame = pd.to_datetime(serial, unit=\"D\", origin=\"1899-12-30\")\nprint((dates == same).all())\nprint(dates.min().date(), dates.max().date())\n",
+  "watch": [
+    "serial",
+    "origin",
+    "dates",
+    "same"
+  ],
+  "viz": {
+    "serial": "array"
+  },
+  "max_steps": 40,
+  "notes": {
+    "3": {
+      "en": "We are about to build what read_excel hands you for a date cell in General format: plain integers, the days Excel has counted.",
+      "ar": "سنبني الآن ما يعطيك إياه read_excel لخلية تاريخ بتنسيق General: أعداد صحيحة، هي الأيام التي عدّها Excel."
+    },
+    "4": {
+      "en": "Three integers, no dates yet. Next, the origin.",
+      "ar": "ثلاثة أعداد صحيحة ولا تواريخ بعد. التالي: نقطة الأصل."
+    },
+    "5": {
+      "en": "The origin: day 0 of Excel's calendar is 1899-12-30 for every date from March 1900 on (the appendix explains why it is not 1900-01-01). to_timedelta turns 46038 into \"46038 days\"; adding it to the origin gives a real timestamp.",
+      "ar": "نقطة الأصل: اليوم صفر في تقويم Excel هو 1899-12-30 لكل تاريخ من مارس 1900 فصاعدًا (يشرح الملحق لماذا ليس 1900-01-01). تحوّل to_timedelta العدد 46038 إلى «46038 يومًا»، وإضافته إلى نقطة الأصل تعطي تاريخًا حقيقيًّا."
+    },
+    "6": {
+      "en": "dates now exists: 46038 is 2026-01-16. Next, the built-in way to say the same thing: unit=\"D\" (days) together with origin=.",
+      "ar": "صار dates موجودًا: العدد 46038 هو 2026-01-16. التالي: الطريقة الجاهزة لقول الشيء نفسه: unit=\"D\" (أيام) مع origin=."
+    },
+    "7": {
+      "en": "Both routes should agree. Compare with something you already know before trusting any conversion.",
+      "ar": "يجب أن تتفق الطريقتان. قارن بشيء تعرفه مسبقًا قبل أن تثق بأي تحويل."
+    },
+    "8": {
+      "en": "They agreed (True). Now a sanity check on the range: the dates should fall between January and May 2026, as the Clean sheet says.",
+      "ar": "اتفقتا (True). الآن فحص سلامة للمدى: يجب أن تقع التواريخ بين يناير ومايو 2026، كما تقول ورقة Clean."
+    },
+    "end": {
+      "en": "2026-01-09 would be the earliest in the whole sheet; these three lie inside the expected range.",
+      "ar": "أبكر تاريخ في الورقة كلها هو 2026-01-09؛ وهذه الثلاثة تقع داخل المدى المتوقع."
+    }
+  }
+}
