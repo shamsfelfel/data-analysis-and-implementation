@@ -235,6 +235,45 @@ manual-only: `{t:"sheet", cols:[…], rows:[[…]], hl:["B2"], formula:"=SUM(B2:
 The widget also shows the **call stack** (`stack:[{fn, args, line}]`) when a program
 defines functions.
 
+**What the generator actually emits (authoritative; supersedes the sketch above).**
+Run `python tools/trace_gen.py` (or `--check`). Each program runs in a child process
+(`python -P -s -B`, `PYTHONHASHSEED=0`, 20 s timeout, fresh temp cwd holding `files`, stdin closed), so
+output is deterministic and idempotent. Because it is deterministic, **do not print anything
+machine-specific** (paths, versions, timings, memory addresses).
+
+* **Step** = `{line, vars, locals, frame, fid, stack, out, note, ret?, end?, error?}`. `line` is the
+  statement about to run (multi-line statements fold into their first line; same-line events in one frame
+  merge, so a one-line loop or comprehension is one step). `locals` is null at module level;
+  `frame` is the qualified function name or null; `fid` is the activation id (0 = module, 1.. per call);
+  `stack` is outermost first and always starts with `{fn:"<module>"}`; `ret` appears on a function's
+  return step; a final `end:true` step shows the finished program; `error:{type,msg}` only on the last step
+  of an `expect_error` program. Generators and lambdas are not traced.
+* **Note keys:** `"7"` (every visit), `"7#2"` (second visit), `"7@ret"` (the return step of line 7),
+  `"end"`, `"error"`. A note that never matches only produces a warning.
+* **Spec keys beyond the sketch:** `expect_error: true`, `layout: "stack"` (machine panels under the code),
+  `labels: {vars|globals|stack|out|note: {en,ar}}` (panel headings; useful for manual specs),
+  `pointers: false | {listVar: [idxVars]}` (index variables named `i j k idx lo hi mid left right pos start end
+  pivot …` are drawn as ▲ markers under the cells/bars of a list in scope; override the heuristic here),
+  `watch_locals`, `lang` for manual specs (`excel|dax|m|text|python`). `watch` filters globals only. `viz` accepts
+  `table|array|dict|tree|bars|cells`. Failures name the spec and line (step overflow — default `max_steps` 120,
+  hard cap 400; uncaught exception without `expect_error`; SyntaxError; timeout; missing en/ar; note line out of
+  range; bad `viz`; `id` not equal to the file name). **The spec `id` must equal the file name** (`t1-l3-cast.json` →
+  `"id": "t1-l3-cast"`).
+* **Typed-value extras:** `num.ty` (numpy dtype), `list.n`/`dict.n` (true length) with `more:true` when truncated,
+  `list.shape`/`dtype` for ndarray (a 2-D array is a list of rows), `df.index_name`, `series.len/name/index_name`,
+  `list.ty`/`dict.ty` for subclasses, namedtuples become `obj`; NaT, `<NA>` and None are distinct from NaN;
+  DataFrame cells are formatted exactly as pandas prints them.
+* **Limits:** 12 rows × 10 columns per DataFrame (Series 12 rows); lists 30 items, dicts 20, strings 200 chars,
+  cells 40 chars; ndarray 24 elements (1-D) or 12×12 (2-D); depth 4 then repr; stdout 6000 chars. Keep programs
+  small enough (trim the data you put in `files`).
+* **Manual `sheet` value:** `{t:"sheet", cols:[…] (row 1 = header row of the grid), rows:[[…]], active:"B5"
+  (the formula cell), hl:["B2"] or ["B2:B4"], formula:"=SUM(B2:B4)", result:"…"}`; **`flow`:** `nodes` may be strings
+  or `{label}`.
+* The widget: Back/Next/Start/Run (speed 0.5×/1×/2×)/scrubber, keys ←/→ (swapped in RTL), Home/End, Space = Run/Pause,
+  click a code line to jump; panels Variables (+ "Locals of fn"), Call stack (hidden when there are no functions),
+  Output (hidden when nothing prints) and the bilingual note; lists with pointer variables, bar charts, 2-D grids,
+  dict/object cards, DataFrame/Series tables with changed-cell highlighting, trees, sheets, flows.
+
 Place a trace with `<div data-trace-id="t1-csv-read"></div>`; the build loads the
 trace file and the widget CSS/JS on that page automatically. Each chapter has a
 **lab page** (`<key>-lab`) that collects its traces with a lede for each; the best
