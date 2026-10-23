@@ -562,3 +562,7 @@ ol.steps > li > p:last-child { margin-bottom: 0; }
   details.solution::details-content { content-visibility: visible; }
   .ai-lens, .thread, .objectives, figure.diagram { break-inside: avoid; }
 }
+
+/* the objectives list may be the element itself: <ul class="objectives"> */
+ul.objectives, ol.objectives { list-style: none; margin-inline: 0; }
+ul.objectives > li, ol.objectives > li { list-style: none; }

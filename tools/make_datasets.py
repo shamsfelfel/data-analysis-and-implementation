@@ -301,7 +301,7 @@ cat_rev = good.groupby("category")["line_total"].sum().sort_values(ascending=Fal
 fact("P1 cafeteria_orders.csv: %d rows (lines), columns %s; period 2026-09-01..2026-09-30, closed Fri/Sat"
      % (raw_rows, ", ".join(cols)))
 fact("P1 mess: %d exactly-duplicated lines; %d blank payment; %d item spelling variants (case/space of Latte, Tea, Espresso); "
-     "1 price typo (Shawarma Wrap at 120.0); 1 unit_price 'n/a'; 5 refunds with qty = -1" % (dup_lines, int(df['payment'].isna().sum()), nvar))
+     "1 price typo (Shawarma Wrap at 120.0); 1 unit_price 'n/a' (pandas read_csv reads 'n/a' as missing BY DEFAULT, so there the column loads as float64 with one NaN; Excel and Power BI see it as text/error); 5 refunds with qty = -1" % (dup_lines, int(df['payment'].isna().sum()), nvar))
 fact("P1 distinct order_id: %d; distinct items in raw: %d; distinct items after strip+title: %d"
      % (df["order_id"].nunique(), df["item"].nunique(), good["item_clean"].nunique()))
 fact("P1 after dropping duplicates, refunds, the typo and 'n/a': %d lines; total revenue = %.2f"

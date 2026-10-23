@@ -180,3 +180,17 @@ code:not(pre code) { overflow-wrap: anywhere; }
 @media print {
   .t-op, .t-prop, .t-prompt, .t-out { color: #000; }
 }
+
+/* ---------- in-text links: readable in both themes (the browser's default blue
+   is unreadable on a dark surface). Cards and buttons that happen to be <a>
+   keep their own colours. ---------- */
+.page :is(p, li, td, th, dd, figcaption, summary, h4) a:not(.data-dl):not(.copy),
+.page :is(p, li, td, th, dd, figcaption, summary, h4) a:not(.data-dl):not(.copy):visited {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.page :is(p, li, td, th, dd, figcaption, summary, h4) a:not(.data-dl):not(.copy):hover {
+  text-decoration-thickness: 2px;
+}

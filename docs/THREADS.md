@@ -15,7 +15,7 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 |---|---|---|
 | T1 L3 | hand-written loop over lines, `split(",")`, every value a string | no types, breaks on a comma inside a field, no header handling |
 | T1 L3 | `csv` module → `list[dict]` | still all strings; no vectorised arithmetic; nothing checks the data |
-| T1 L3–L4 | `pd.read_csv(path)` | silently guesses dtypes: a stray `"n/a"` turns a number column into text; dates stay strings |
+| T1 L3–L4 | `pd.read_csv(path)` | silently guesses dtypes: one stray `"1,200"` or `"TBD"` turns a number column into `object` (text) — note `"n/a"`, `"NA"`, `"NaN"`, `"null"` and empty cells are read as missing by default; dates stay strings |
 | T1 L4 | `read_csv(sep=, encoding=, dtype=, parse_dates=, na_values=)` | correct for this file, but the knowledge lives in one call nobody validates |
 | T1 L6 | `load_listings()` — a function that loads **and validates** (shape, dtypes, ranges, missing, duplicates) | covers one file; changes in the source schema are still found only when it fails |
 | P1 L3/L6 | the same load in a notebook / Power Query / Excel Table | three tools, three different silent defaults (see T-QUESTION) |

@@ -11,7 +11,7 @@ invent a different number for the same data. Re-run the script, never hand-edit 
 - T1 rental_listings.xlsx: sheet 'Raw' has 3 title rows above the header at row 4 and listed_on as serial numbers (General format); sheet 'Clean' has real dates. 40 rows. 
 - T1 schools: 13 schools in 3 API pages of 5 (schools_api_page1..3.json) and one document schools.json; contacts missing on 3 schools, email present on 3
 - P1 cafeteria_orders.csv: 771 rows (lines), columns order_id, order_time, item, category, qty, unit_price, payment, customer_type; period 2026-09-01..2026-09-30, closed Fri/Sat
-- P1 mess: 16 exactly-duplicated lines; 17 blank payment; 8 item spelling variants (case/space of Latte, Tea, Espresso); 1 price typo (Shawarma Wrap at 120.0); 1 unit_price 'n/a'; 5 refunds with qty = -1
+- P1 mess: 16 exactly-duplicated lines; 17 blank payment; 8 item spelling variants (case/space of Latte, Tea, Espresso); 1 price typo (Shawarma Wrap at 120.0); 1 unit_price 'n/a' (pandas read_csv reads 'n/a' as missing BY DEFAULT, so there the column loads as float64 with one NaN; Excel and Power BI see it as text/error); 5 refunds with qty = -1
 - P1 distinct order_id: 616; distinct items in raw: 22; distinct items after strip+title: 16
 - P1 after dropping duplicates, refunds, the typo and 'n/a': 748 lines; total revenue = 8062.00
 - P1 top 3 items by revenue: Shawarma Wrap=1368.00; Chicken Rice=1020.00; Falafel Sandwich=917.00
