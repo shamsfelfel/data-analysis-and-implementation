@@ -235,7 +235,7 @@ def content_files(reg, scope):
                 rel = "src/content/%s/index.html" % ch["key"]
             if exists(rel):
                 out[p["id"]] = (ch, p, rel, read(rel))
-            elif p["kind"] != "chapter":
+            elif p["kind"] == "lesson":
                 fail("%s has no authored content (%s)" % (p["id"], rel))
     return out
 
@@ -424,7 +424,11 @@ def check_question(q, at, topics, types_seen):
         elif any(not (0 <= i < len(opts or [])) for i in q["answer"]):
             fail("%s: answer index out of range" % at)
     elif t in ("order", "ordercode"):
-        items, ans = q.get("items") or [], q.get("answer") or []
+        items = q.get("items") or []
+        ans = q.get("answer")
+        if ans is None and t == "ordercode":
+            ans = list(range(len(items)))      # the engine defaults to the order listed
+        ans = ans or []
         if len(items) < 3:
             fail("%s: order needs at least 3 items" % at)
         if sorted(ans) != list(range(len(items))):

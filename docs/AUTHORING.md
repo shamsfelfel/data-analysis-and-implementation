@@ -175,13 +175,13 @@ HTML is allowed in bilingual strings; code fields are raw text (write `>` not `&
 | `output` | `code`; `blanks:[{accept:[…], lines?}]` (typed) **or** `options` (choice) |
 | `trace` | `code`; `blanks` (typed values) **or** `options` |
 | `order` | `items: [{en,ar}]` (already in the correct order is fine; the engine shuffles), `answer: [0,1,2…]` |
-| `ordercode` | `items: [{code:"…"}]`, `answer: […]` — order *code statements* |
+| `ordercode` | `items: [{code:"…"}]` (multi-line items allowed), `answer: […]` optional — defaults to the order you list them in; the engine shuffles. Orders *code statements* |
 | `match` | `pairs: [{l,r}]` (`l`/`r` are `{en,ar}` or `{code}`), optional `leftHead`/`rightHead` |
 | `error` | `code`, `answer: <1-based line or [lines]>`, optional `solution` |
 | `complete` | `code` with a gap; `options:[{code}]` + `answer`, or `blanks` |
 | `compare` | `codeA`, `codeB`, `options: [{en,ar}]` (statements), `answer` |
-| `contrast` | `concepts: [{en,ar},{en,ar}]`, `rows: [{s:{en,ar}, a:0\|1\|2}]` — `0`=only first, `1`=only second, `2`=both |
-| `write` | `starter?`, `lines?`, `checks: [{re:"read_csv\\s*\\(", flags?:"i", label:{en,ar}}]` (all must match), optional `forbid: [{re,label}]`, `solution:{code, en, ar}` |
+| `contrast` | `concepts: [{en,ar},{en,ar}]`, `rows: [{s:{en,ar}, a:0\|1\|2\|3}]` — `0`=only first, `1`=only second, `2`=both, `3`=neither (only when `neither: true`, which adds a fourth column) |
+| `write` | `starter?`, `lines?`, `checks: [{re:"read_csv\\s*\\(", flags?:"i", label:{en,ar}}]` (all must match), optional `forbid: [{re,flags?,label}]` (the label names the thing to avoid and is shown tagged "Avoid"), `solution:{code, en, ar}` (code required). Partial credit = checks passed + forbids absent; an unchanged `starter` counts as no answer; the box stays editable after Check. Any question may also carry `lang: "python"` (etc.) for highlighting |
 
 Rules: every distractor is wrong for a reason the `explain` names; `hint` never
 states the answer; tag 1–3 `topics` (these render as the "Review" links, so tag

@@ -1,21 +1,26 @@
 /* ============================================================
    Assessment engine.
 
-   Question banks are data (src/data/*.js -> window.DABanks);
-   this file turns them into cards, grades them, remembers the
-   answers and reports which topics are weak.
+   Question banks are data (assets/data/questions/*.js ->
+   window.DABanks); this file turns them into cards, grades them,
+   remembers the answers and reports which topics are weak.
 
-   Eleven authored question types ride on five interaction
-   primitives, so there are five widgets and not eleven:
+   Fourteen authored question types ride on eight interaction
+   primitives, so there are eight widgets and not fourteen:
 
-     choice   mcq · multi · tf · compare · complete · output(choice)
-     text     fill · output(typed) · trace(value)
-     order    order
-     match    match
-     pickline error
+     choice    mcq · multi · tf · compare · complete · output(choice)
+               · trace(choice) · error(choice)
+     text      fill · output(typed) · trace(typed) · complete(blanks)
+     order     order · ordercode
+     match     match
+     pickline  error
+     contrast  contrast
+     write     write
 
-   Every card shows its own difficulty and the topics it covers,
-   each topic linking back to the exact heading that teaches it.
+   Every card shows its difficulty and the topics it covers, each
+   topic linking back to the exact heading that teaches it. A wrong,
+   partial or revealed answer repeats those links as "Review".
+   A hint (hidden until asked) never touches the grade.
    Explanation and worked solution are <details>, closed on load.
    ============================================================ */
 (function () {
@@ -28,6 +33,9 @@
     recheck:  { en: "Check again", ar: "أعد التحقّق" },
     showme:   { en: "Show the answer", ar: "أظهر الجواب" },
     clear:    { en: "Clear", ar: "أفرغ" },
+    hint:     { en: "Hint", ar: "تلميح" },
+    hintOff:  { en: "Hide hint", ar: "أخفِ التلميح" },
+    qword:    { en: "question", ar: "السؤال" },
     why:      { en: "Why", ar: "لماذا" },
     sol:      { en: "Worked solution", ar: "الحل المفصّل" },
     ok:       { en: "Correct.", ar: "صحيح." },
@@ -36,10 +44,14 @@
     revealed: { en: "Answer shown — this one is not counted.", ar: "تم إظهار الجواب — لا تُحسب هذه." },
     pickone:  { en: "Choose an answer first.", ar: "اختر جوابًا أولًا." },
     typeone:  { en: "Type an answer first.", ar: "اكتب جوابًا أولًا." },
+    writeone: { en: "Write some code first.", ar: "اكتب بعض الكود أولًا." },
     orderall: { en: "Place every line first.", ar: "ضع كل السطور أولًا." },
     matchall: { en: "Match every pair first.", ar: "وصّل كل الأزواج أولًا." },
     pickline: { en: "Click the line you think is wrong.", ar: "انقر السطر الذي تظنه خطأ." },
+    pickmany: { en: "If several lines are wrong, click each of them.",
+                ar: "إن كان أكثر من سطر خطأ فانقر كل واحد منها." },
     covers:   { en: "Covers:", ar: "يغطي:" },
+    review:   { en: "Review:", ar: "راجع:" },
     tally:    { en: "<b>{d}</b> of <b>{t}</b> answered &middot; <b>{r}</b> correct",
                 ar: "أُجيب عن <b>{d}</b> من <b>{t}</b> &middot; <b>{r}</b> صحيحة" },
     checkall: { en: "Check everything", ar: "تحقّق من الكل" },
@@ -72,22 +84,38 @@
     slots:    { en: "Your order", ar: "ترتيبك" },
     trueL:    { en: "True", ar: "صح" },
     falseL:   { en: "False", ar: "خطأ" },
+    both:     { en: "Both", ar: "كلاهما" },
+    neither:  { en: "Neither", ar: "لا هذا ولا ذاك" },
+    contrastHint: { en: "For each statement, choose the concept it describes.",
+                    ar: "لكل عبارة، اختر المفهوم الذي تصفه." },
+    writeHint:{ en: "Tab inserts 4 spaces. To leave the box with the keyboard, press Esc and then Tab.",
+                ar: "مفتاح Tab يُدخل 4 مسافات. للخروج من الصندوق بلوحة المفاتيح اضغط Esc ثم Tab." },
+    writeLabel:{ en: "Your code", ar: "الكود الخاص بك" },
+    needs:    { en: "What your code needs", ar: "ما يحتاجه كودك" },
+    avoid:    { en: "Avoid", ar: "تجنّب" },
+    met:      { en: "met", ar: "متحقّق" },
+    missing:  { en: "missing", ar: "ناقص" },
+    used:     { en: "used", ar: "مستخدم" },
     outHint:  { en: "Type exactly what the program prints, one line per line of output.",
                 ar: "اكتب ما يطبعه البرنامج بالضبط، سطرًا لكل سطر مُخرَج." }
   };
 
+  /* All fourteen question types, as the chip on every card names them. */
   var TYPES = {
-    mcq:      { en: "Multiple choice",         ar: "اختيار من متعدد" },
-    multi:    { en: "Choose all that apply",   ar: "اختر كل ما ينطبق" },
-    tf:       { en: "True / False",            ar: "صح أو خطأ" },
-    fill:     { en: "Fill in the blank",       ar: "أكمل الفراغ" },
-    order:    { en: "Put in order",            ar: "رتّب الخطوات" },
-    match:    { en: "Match the pairs",         ar: "وصّل بين العمودين" },
-    error:    { en: "Find the error",          ar: "اعثر على الخطأ" },
-    complete: { en: "Complete the code",       ar: "أكمل الكود" },
-    compare:  { en: "Compare two versions",    ar: "قارن بين نسختين" },
-    output:   { en: "Write the output",        ar: "اكتب المُخرَج" },
-    trace:    { en: "Trace the value",         ar: "تتبّع القيمة" }
+    tf:        { en: "True / False",             ar: "صح أو خطأ" },
+    mcq:       { en: "Multiple choice",          ar: "اختيار من متعدد" },
+    multi:     { en: "Choose all that apply",    ar: "اختر كل ما ينطبق" },
+    fill:      { en: "Fill in the blank",        ar: "أكمل الفراغ" },
+    order:     { en: "Put in order",             ar: "رتّب الخطوات" },
+    ordercode: { en: "Order the code statements", ar: "رتّب أسطر الكود" },
+    match:     { en: "Match the pairs",          ar: "وصّل بين العمودين" },
+    error:     { en: "Find the error",           ar: "اعثر على الخطأ" },
+    complete:  { en: "Complete the code",        ar: "أكمل الكود" },
+    compare:   { en: "Compare two versions",     ar: "قارن بين نسختين" },
+    contrast:  { en: "Compare and contrast",     ar: "قارن وميّز" },
+    output:    { en: "Write the output",         ar: "اكتب المُخرَج" },
+    trace:     { en: "Trace the value",          ar: "تتبّع القيمة" },
+    write:     { en: "Write the code",           ar: "اكتب الكود" }
   };
 
   var LEVELS = {
@@ -106,20 +134,70 @@
     var o = UI[k] || { en: k, ar: k };
     return '<span class="en">' + o.en + '</span><span class="ar">' + o.ar + "</span>";
   }
+  /* The same, with {n} filled in. */
+  function LBn(k, n) {
+    var o = UI[k] || { en: k, ar: k };
+    return '<span class="en">' + o.en.replace("{n}", n) + '</span><span class="ar">' +
+           o.ar.replace("{n}", n) + "</span>";
+  }
   function pick(o) { return o ? (o[lang()] || o.en || "") : ""; }
 
   function esc(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
+  function escA(s) { return esc(s).replace(/"/g, "&quot;"); }
   function bi(o) {
     if (!o) return "";
     if (typeof o === "string") return esc(o);
     return '<span class="en">' + (o.en || "") + "</span>" +
            '<span class="ar">' + (o.ar || "") + "</span>";
   }
-  function codeBlock(src, extra) {
-    return '<pre class="code' + (extra ? " " + extra : "") + '"><code>' +
-           esc(String(src).replace(/^\n/, "").replace(/\s+$/, "")) + "</code></pre>";
+
+  /* Arabic number agreement: 1 / 2 / 3-10 / 11+ each take a different form. */
+  function arCount(n, one, two, few, many) {
+    if (n === 1) return one;
+    if (n === 2) return two;
+    return n + " " + (n >= 3 && n <= 10 ? few : many);
+  }
+  function countLabel(n, kind) {
+    var en, ar;
+    if (kind === "types") {
+      en = n + " question type" + (n === 1 ? "" : "s");
+      ar = arCount(n, "نوع واحد من الأسئلة", "نوعان من الأسئلة", "أنواع من الأسئلة", "نوعًا من الأسئلة");
+    } else {
+      en = n + " question" + (n === 1 ? "" : "s");
+      ar = arCount(n, "سؤال واحد", "سؤالان", "أسئلة", "سؤالًا");
+    }
+    return '<span class="en">' + en + '</span><span class="ar">' + ar + "</span>";
+  }
+
+  /* ---------------------------------------------------------- code */
+
+  /* Highlight through the site's highlighter when it exists (code.js);
+     plain escaped text when it does not, or when it throws. */
+  function hl(src, lang) {
+    var f = window.DAHighlight;
+    if (typeof f === "function") {
+      try {
+        var r = f(src, lang);
+        if (typeof r === "string") return r;
+      } catch (e) { /* fall through to plain text */ }
+    }
+    return esc(src);
+  }
+  function trimCode(src) {
+    return String(src == null ? "" : src).replace(/^\n/, "").replace(/\s+$/, "");
+  }
+  function codeBlock(src, extra, lg) {
+    return '<pre class="code' + (extra ? " " + extra : "") + '" dir="ltr"' +
+           (lg ? ' data-lang="' + escA(lg) + '"' : "") + '><code data-done="1">' +
+           hl(trimCode(src), lg) + "</code></pre>";
+  }
+  /* One line reads best as inline code; several need a block. */
+  function codeInline(src, lg) {
+    var s = trimCode(src);
+    if (s.indexOf("\n") > -1) return codeBlock(s, "good", lg);
+    return "<code>" + esc(s) + "</code>";
   }
 
   /* ---------------------------------------------------------- storage */
@@ -137,7 +215,7 @@
   /* ---------------------------------------------------------- topics */
 
   /* A topic chip links to the heading that teaches the idea. That
-     heading now lives on another page, so the anchor id is resolved
+     heading usually lives on another page, so the anchor id is resolved
      through the map the build writes (assets/js/anchors.js) and
      prefixed with the path back to the site root. An id the map does
      not know is left as a plain in-page anchor rather than dropped,
@@ -151,16 +229,23 @@
     return (window.DA_BASE || "") + page + "#" + anchor;
   }
 
-  function topicChips(ids) {
+  /* The <a> elements for a list of topic keys; "" when none resolves. */
+  function topicLinks(ids) {
     var reg = window.DATopics || {};
-    if (!ids || !ids.length) return "";
-    var h = '<div class="qtopics"><span>' + LB("covers") + "</span>";
+    var h = "";
+    if (!ids || !ids.length) return h;
     for (var i = 0; i < ids.length; i++) {
       var t = reg[ids[i]];
       if (!t) continue;
-      h += '<a href="' + esc(topicHref(t.href)) + '">' + bi(t) + "</a>";
+      h += '<a href="' + escA(topicHref(t.href)) + '">' + bi(t) + "</a>";
     }
-    return h + "</div>";
+    return h;
+  }
+
+  function topicChips(ids) {
+    var links = topicLinks(ids);
+    if (!links) return "";
+    return '<div class="qtopics"><span>' + LB("covers") + "</span>" + links + "</div>";
   }
 
   /* ---------------------------------------------------------- helpers */
@@ -198,6 +283,13 @@
     }
     return idx;
   }
+  function touched(host) {
+    host.dispatchEvent(new CustomEvent("qtouch", { bubbles: true }));
+  }
+  function up(n, host, tag) {
+    while (n && n !== host && n.tagName !== tag) n = n.parentNode;
+    return (!n || n === host) ? null : n;
+  }
 
   /* ========================================================== widgets
      Each widget exposes the same contract:
@@ -209,6 +301,11 @@
        clear()           -> back to untouched
        lock(bool)        -> disable/enable input
        answerHtml()      -> the correct answer, for the verdict line
+       empty             -> UI key of the "nothing entered" message
+     Optional:
+       keepOpen          -> stays editable after a check (write)
+       unmark()          -> drop the right/wrong paint (write)
+       relabel()         -> refresh aria labels after a language flip
   */
 
   function wChoice(q, host) {
@@ -221,25 +318,26 @@
     for (var i = 0; i < order.length; i++) {
       var oi = order[i];
       var o = opts[oi];
-      var body = (typeof o === "object" && (o.en || o.ar)) ? bi(o)
-               : (o && o.code) ? codeBlock(o.code) : esc(o);
+      var body = (o && typeof o === "object" && (o.en || o.ar)) ? bi(o)
+               : (o && o.code != null) ? codeBlock(o.code, "", q.lang) : esc(o);
       h += '<li><button type="button" class="opt" aria-pressed="false" data-i="' + oi + '">' +
-           '<span class="tick"></span><span class="ob">' + body + "</span></button></li>";
+           '<span class="tick" aria-hidden="true"></span><span class="ob">' + body + "</span></button></li>";
     }
     host.innerHTML = h + "</ul>";
     var btns = host.querySelectorAll(".opt");
 
     host.addEventListener("click", function (e) {
       var n = e.target;
-      while (n && n !== host && !n.classList.contains("opt")) n = n.parentNode;
+      while (n && n !== host && !(n.classList && n.classList.contains("opt"))) n = n.parentNode;
       if (!n || n === host || n.disabled) return;
       var on = n.getAttribute("aria-pressed") === "true";
-      if (!multi) {
+      if (multi) {
+        n.setAttribute("aria-pressed", on ? "false" : "true");
+      } else {
         for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", "false");
+        n.setAttribute("aria-pressed", "true");
       }
-      n.setAttribute("aria-pressed", on && multi ? "false" : (multi ? "true" : "true"));
-      if (!multi) n.setAttribute("aria-pressed", "true");
-      host.dispatchEvent(new CustomEvent("qtouch", { bubbles: true }));
+      touched(host);
     });
 
     function read() {
@@ -295,41 +393,41 @@
         var out = [];
         for (var i = 0; i < ans.length; i++) {
           var o = opts[ans[i]];
-          out.push((typeof o === "object" && (o.en || o.ar)) ? bi(o)
-                 : (o && o.code) ? "<code>" + esc(o.code) + "</code>" : esc(o));
+          out.push((o && typeof o === "object" && (o.en || o.ar)) ? bi(o)
+                 : (o && o.code != null) ? codeInline(o.code, q.lang) : esc(o));
         }
         return out.join(" &nbsp;+&nbsp; ");
       },
-      empty: L("pickone")
+      empty: "pickone"
     };
   }
 
   function wText(q, host) {
     var blanks = q.blanks || [];
     var asOutput = q.type === "output";
+    var stemId = "qt-" + q.id;
     var h = '<div class="fills">';
     if (asOutput) h += '<p class="fill-hint">' + LB("outHint") + "</p>";
     for (var i = 0; i < blanks.length; i++) {
       var b = blanks[i];
-      var lab = b.label ? bi(b.label)
-              : (blanks.length > 1 ? L("blank").replace("{n}", String(i + 1)) : "");
-      h += '<div class="fill-row">' + (lab ? '<span class="lab">' + lab + "</span>" : "");
+      var labId = "bl-" + q.id + "-" + i;
+      var lab = b.label ? bi(b.label) : (blanks.length > 1 ? LBn("blank", i + 1) : "");
+      var named = ' aria-labelledby="' + (lab ? labId + " " : "") + stemId + '"';
+      h += '<div class="fill-row">' + (lab ? '<span class="lab" id="' + labId + '">' + lab + "</span>" : "");
       if (b.lines) {
-        h += '<textarea class="fillin" data-i="' + i + '" spellcheck="false" rows="' +
-             b.lines + '"></textarea>';
+        h += '<textarea class="fillin" data-i="' + i + '" spellcheck="false" dir="ltr" rows="' +
+             b.lines + '"' + named + "></textarea>";
       } else {
         h += '<input class="fillin' + (b.wide ? " wide" : "") + '" type="text" data-i="' + i +
-             '" spellcheck="false" autocapitalize="off" autocorrect="off"' +
-             (b.ph ? ' placeholder="' + esc(b.ph) + '"' : "") + ">";
+             '" spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off" dir="ltr"' +
+             named + (b.ph ? ' placeholder="' + escA(b.ph) + '"' : "") + ">";
       }
       h += "</div>";
       if (b.hint) h += '<p class="fill-hint">' + bi(b.hint) + "</p>";
     }
     host.innerHTML = h + "</div>";
     var ins = host.querySelectorAll(".fillin");
-    host.addEventListener("input", function () {
-      host.dispatchEvent(new CustomEvent("qtouch", { bubbles: true }));
-    });
+    host.addEventListener("input", function () { touched(host); });
 
     function read() {
       var v = [], any = false;
@@ -380,28 +478,49 @@
       answerHtml: function () {
         var out = [];
         for (var i = 0; i < blanks.length; i++) {
-          out.push("<code>" + esc(blanks[i].accept[0]) + "</code>");
+          out.push(codeInline(blanks[i].accept[0], q.lang));
         }
         return out.join(blanks.length > 1 ? " &middot; " : "");
       },
-      empty: L("typeone")
+      empty: "typeone"
     };
   }
 
+  /* order and ordercode: the same widget. An item that carries `code`
+     is drawn as a monospace, left-to-right tile (one statement, or a
+     few lines of one); any other item is bilingual prose. */
   function wOrder(q, host) {
     var items = q.items || [];
-    var ans = q.answer || [];
-    var order = shuffled(items.length, q.id + "o");
+    var ans = q.answer;
+    if (!ans) {
+      ans = [];
+      for (var a = 0; a < items.length; a++) ans.push(a);
+    }
+    var isCode = q.type === "ordercode";
+    for (var c = 0; c < items.length; c++) if (items[c] && items[c].code != null) isCode = true;
 
+    var order = shuffled(items.length, q.id + "o");
+    /* never present the pool already in the right order */
+    if (order.length > 1 && order.length === ans.length) {
+      var same = true;
+      for (var k = 0; k < ans.length; k++) if (order[k] !== ans[k]) { same = false; break; }
+      if (same) { var tmp = order[0]; order[0] = order[1]; order[1] = tmp; }
+    }
+
+    var cls = isCode ? " codey" : "";
     host.innerHTML =
-      '<p class="order-sep">' + LB("pool") + '</p><ul class="order-pool"></ul>' +
-      '<p class="order-sep">' + LB("slots") + '</p><ul class="order-slots"></ul>';
+      '<p class="order-sep" id="op-' + q.id + '">' + LB("pool") + "</p>" +
+      '<ul class="order-pool' + cls + '" aria-labelledby="op-' + q.id + '"></ul>' +
+      '<p class="order-sep" id="os-' + q.id + '">' + LB("slots") + "</p>" +
+      '<ul class="order-slots' + cls + '" aria-labelledby="os-' + q.id + '"></ul>';
     var pool = host.querySelector(".order-pool");
     var slots = host.querySelector(".order-slots");
 
     function cell(i) {
       var o = items[i];
-      var body = (o && o.code) ? "<code>" + esc(o.code) + "</code>" : bi(o);
+      var body = (o && o.code != null)
+        ? '<code class="oc" dir="ltr">' + hl(trimCode(o.code), q.lang) + "</code>"
+        : bi(o);
       return '<li><button type="button" data-i="' + i + '">' + body + "</button></li>";
     }
     function fill(seq) {
@@ -418,9 +537,8 @@
     fill([]);
 
     host.addEventListener("click", function (e) {
-      var n = e.target;
-      while (n && n !== host && n.tagName !== "BUTTON") n = n.parentNode;
-      if (!n || n === host || n.disabled) return;
+      var n = up(e.target, host, "BUTTON");
+      if (!n || n.disabled) return;
       var i = parseInt(n.getAttribute("data-i"), 10);
       var cur = read() || [];
       if (n.parentNode.parentNode === slots) {
@@ -429,7 +547,7 @@
         cur.push(i);
       }
       fill(cur);
-      host.dispatchEvent(new CustomEvent("qtouch", { bubbles: true }));
+      touched(host);
     });
 
     function read() {
@@ -466,14 +584,14 @@
         for (var i = 0; i < bs.length; i++) bs[i].disabled = !!on;
       },
       answerHtml: function () {
-        var out = [];
+        var out = "";
         for (var i = 0; i < ans.length; i++) {
           var o = items[ans[i]];
-          out.push((i + 1) + ". " + ((o && o.code) ? "<code>" + esc(o.code) + "</code>" : pick(o)));
+          out += "<li>" + ((o && o.code != null) ? codeInline(o.code, q.lang) : bi(o)) + "</li>";
         }
-        return out.join("<br>");
+        return '<ol class="vlist">' + out + "</ol>";
       },
-      empty: L("orderall")
+      empty: "orderall"
     };
   }
 
@@ -484,24 +602,23 @@
     var sel = -1;
     var i;
 
-    var hl = '<div><p class="colhead">' + bi(q.leftHead || { en: "Item", ar: "العنصر" }) + "</p><ul>";
-    for (i = 0; i < pairs.length; i++) {
-      hl += '<li><button type="button" data-side="l" data-i="' + i + '">' +
-            '<span class="tagno" hidden></span>' +
-            ((pairs[i].l && pairs[i].l.code) ? "<code>" + esc(pairs[i].l.code) + "</code>"
-                                             : bi(pairs[i].l)) + "</button></li>";
+    function side(x) {
+      return (x && x.code != null) ? "<code>" + esc(x.code) + "</code>" : bi(x);
     }
-    hl += "</ul></div>";
+    var hl_ = '<div><p class="colhead">' + bi(q.leftHead || { en: "Item", ar: "العنصر" }) + "</p><ul>";
+    for (i = 0; i < pairs.length; i++) {
+      hl_ += '<li><button type="button" data-side="l" data-i="' + i + '">' +
+             '<span class="tagno" hidden></span>' + side(pairs[i].l) + "</button></li>";
+    }
+    hl_ += "</ul></div>";
     var hr = '<div><p class="colhead">' + bi(q.rightHead || { en: "Matches", ar: "المقابل" }) + "</p><ul>";
     for (i = 0; i < order.length; i++) {
       var ri = order[i];
       hr += '<li><button type="button" data-side="r" data-i="' + ri + '">' +
-            '<span class="tagno" hidden></span>' +
-            ((pairs[ri].r && pairs[ri].r.code) ? "<code>" + esc(pairs[ri].r.code) + "</code>"
-                                               : bi(pairs[ri].r)) + "</button></li>";
+            '<span class="tagno" hidden></span>' + side(pairs[ri].r) + "</button></li>";
     }
     hr += "</ul></div>";
-    host.innerHTML = '<div class="match">' + hl + hr + "</div>";
+    host.innerHTML = '<div class="match">' + hl_ + hr + "</div>";
 
     var lefts = host.querySelectorAll('[data-side="l"]');
     var rights = host.querySelectorAll('[data-side="r"]');
@@ -519,11 +636,12 @@
         badge(lefts[i], has ? li + 1 : null);
         lefts[i].classList.toggle("sel", sel === li);
         lefts[i].classList.toggle("done", has);
+        lefts[i].setAttribute("aria-pressed", sel === li ? "true" : "false");
       }
       for (i = 0; i < rights.length; i++) {
-        var ri = parseInt(rights[i].getAttribute("data-i"), 10);
+        var rj = parseInt(rights[i].getAttribute("data-i"), 10);
         var owner = null;
-        for (k = 0; k < picks.length; k++) if (picks[k] === ri) owner = k;
+        for (k = 0; k < picks.length; k++) if (picks[k] === rj) owner = k;
         badge(rights[i], owner != null ? owner + 1 : null);
         rights[i].classList.toggle("done", owner != null);
       }
@@ -531,12 +649,11 @@
     repaint();
 
     host.addEventListener("click", function (e) {
-      var n = e.target;
-      while (n && n !== host && n.tagName !== "BUTTON") n = n.parentNode;
-      if (!n || n === host || n.disabled) return;
-      var side = n.getAttribute("data-side");
+      var n = up(e.target, host, "BUTTON");
+      if (!n || n.disabled) return;
+      var sd = n.getAttribute("data-side");
       var i = parseInt(n.getAttribute("data-i"), 10);
-      if (side === "l") {
+      if (sd === "l") {
         if (picks[i] != null) { picks[i] = null; sel = -1; }
         else sel = (sel === i ? -1 : i);
       } else {
@@ -544,7 +661,7 @@
         if (sel > -1) { picks[sel] = i; sel = -1; }
       }
       repaint();
-      host.dispatchEvent(new CustomEvent("qtouch", { bubbles: true }));
+      touched(host);
     });
 
     function read() {
@@ -593,45 +710,47 @@
       answerHtml: function () {
         var out = [];
         for (var i = 0; i < pairs.length; i++) {
-          var l = (pairs[i].l && pairs[i].l.code) ? pairs[i].l.code : pick(pairs[i].l);
-          var r = (pairs[i].r && pairs[i].r.code) ? pairs[i].r.code : pick(pairs[i].r);
-          out.push(esc(l) + " &rarr; " + esc(r));
+          out.push(side(pairs[i].l) + " &rarr; " + side(pairs[i].r));
         }
         return out.join("<br>");
       },
-      empty: L("matchall")
+      empty: "matchall"
     };
   }
 
   function wPickline(q, host) {
-    var lines = String(q.code).replace(/^\n/, "").replace(/\s+$/, "").split("\n");
+    var lines = trimCode(q.code).split("\n");
     var ans = (typeof q.answer === "number") ? [q.answer] : (q.answer || []);
-    var h = '<div class="pickcode">';
+    var many = ans.length > 1;
+    var h = '<div class="pickcode" role="group" aria-labelledby="qt-' + q.id + '">';
     for (var i = 0; i < lines.length; i++) {
       var n = i + 1;
       var dead = q.skip && q.skip.indexOf(n) > -1;
-      h += '<button type="button" data-n="' + n + '"' + (dead ? " disabled" : "") + '>' +
-           '<span class="ln">' + n + "</span>" +
-           '<span class="lx">' +
-           (window.DAHighlight ? window.DAHighlight(lines[i]) : esc(lines[i])) +
-           "</span></button>";
+      h += '<button type="button" data-n="' + n + '" aria-pressed="false"' + (dead ? " disabled" : "") + ">" +
+           '<span class="ln" aria-hidden="true">' + n + "</span>" +
+           '<span class="lx">' + hl(lines[i], q.lang) + "</span></button>";
     }
     host.innerHTML = h + "</div>" +
-      '<p class="pickcode-note">' + LB("pickline") + "</p>";
+      '<p class="pickcode-note">' + LB("pickline") + (many ? " " + LB("pickmany") : "") + "</p>";
     var btns = host.querySelectorAll(".pickcode button");
 
+    function setSel(b, on) {
+      b.classList.toggle("sel", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    }
     host.addEventListener("click", function (e) {
-      var n = e.target;
-      while (n && n !== host && n.tagName !== "BUTTON") n = n.parentNode;
-      if (!n || n === host || n.disabled) return;
-      var want = ans.length > 1;
-      if (!want) {
-        for (var i = 0; i < btns.length; i++) btns[i].classList.remove("sel");
-        n.classList.add("sel");
+      var n = up(e.target, host, "BUTTON");
+      if (!n || n.disabled) return;
+      if (!many) {
+        /* one wrong line: a new pick replaces the old one. If the author
+           lists one answer but the student wants several, the note above
+           only invites that when the answer is an array. */
+        for (var i = 0; i < btns.length; i++) setSel(btns[i], false);
+        setSel(n, true);
       } else {
-        n.classList.toggle("sel");
+        setSel(n, !n.classList.contains("sel"));
       }
-      host.dispatchEvent(new CustomEvent("qtouch", { bubbles: true }));
+      touched(host);
     });
 
     function read() {
@@ -647,7 +766,7 @@
         if (!p) return;
         for (var i = 0; i < btns.length; i++) {
           var n = parseInt(btns[i].getAttribute("data-n"), 10);
-          btns[i].classList.toggle("sel", p.indexOf(n) > -1);
+          setSel(btns[i], p.indexOf(n) > -1);
         }
       },
       grade: function (p) {
@@ -674,7 +793,10 @@
         }
       },
       clear: function () {
-        for (var i = 0; i < btns.length; i++) btns[i].classList.remove("sel", "right", "wrong");
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].classList.remove("sel", "right", "wrong");
+          btns[i].setAttribute("aria-pressed", "false");
+        }
       },
       lock: function (on) {
         for (var i = 0; i < btns.length; i++) {
@@ -686,18 +808,295 @@
       answerHtml: function () {
         var out = [];
         for (var i = 0; i < ans.length; i++) {
-          out.push("<code>" + ans[i] + ": " + esc(lines[ans[i] - 1].trim()) + "</code>");
+          out.push("<code>" + ans[i] + ": " + esc((lines[ans[i] - 1] || "").trim()) + "</code>");
         }
         return out.join("<br>");
       },
-      empty: LB("pickline")
+      empty: "pickline"
+    };
+  }
+
+  /* contrast: one row per statement, one toggle per concept, plus
+     "both" and (when q.neither is true) "neither".
+     q.rows[i].a: 0 first concept only, 1 second only, 2 both, 3 neither. */
+  function wContrast(q, host) {
+    var concepts = q.concepts || [];
+    var rows = q.rows || [];
+    var neither = q.neither === true;
+    var cols = [0, 1, 2];
+    if (neither) cols.push(3);
+
+    function colHtml(v) {
+      if (v === 2) return LB("both");
+      if (v === 3) return LB("neither");
+      return bi(concepts[v]);
+    }
+
+    var h = '<p class="fill-hint">' + LB("contrastHint") + "</p>" +
+            '<div class="contrast" data-cols="' + cols.length + '">';
+    for (var i = 0; i < rows.length; i++) {
+      var sid = "cs-" + q.id + "-" + i;
+      h += '<div class="crow" data-r="' + i + '">' +
+           '<p class="cs" id="' + sid + '">' + bi(rows[i].s) + "</p>" +
+           '<div class="copts" role="group" aria-labelledby="' + sid + '">';
+      for (var c = 0; c < cols.length; c++) {
+        h += '<button type="button" class="copt" aria-pressed="false" data-v="' + cols[c] + '">' +
+             '<span class="dot" aria-hidden="true"></span><span class="cl">' + colHtml(cols[c]) +
+             "</span></button>";
+      }
+      h += "</div></div>";
+    }
+    host.innerHTML = h + "</div>";
+    var rowEls = host.querySelectorAll(".crow");
+
+    function btnsOf(r) { return rowEls[r].querySelectorAll(".copt"); }
+    function valOf(b) { return parseInt(b.getAttribute("data-v"), 10); }
+    function setPressed(b, on) { b.setAttribute("aria-pressed", on ? "true" : "false"); }
+
+    host.addEventListener("click", function (e) {
+      var n = up(e.target, host, "BUTTON");
+      if (!n || n.disabled || !n.classList.contains("copt")) return;
+      var r = parseInt(n.parentNode.parentNode.getAttribute("data-r"), 10);
+      var bs = btnsOf(r);
+      for (var i = 0; i < bs.length; i++) setPressed(bs[i], bs[i] === n);
+      touched(host);
+    });
+
+    function read() {
+      var v = [], any = false;
+      for (var r = 0; r < rows.length; r++) {
+        var bs = btnsOf(r), got = null;
+        for (var i = 0; i < bs.length; i++) {
+          if (bs[i].getAttribute("aria-pressed") === "true") got = valOf(bs[i]);
+        }
+        v.push(got);
+        if (got != null) any = true;
+      }
+      return any ? v : null;
+    }
+    return {
+      read: read,
+      write: function (p) {
+        if (!p) return;
+        for (var r = 0; r < rows.length; r++) {
+          var bs = btnsOf(r);
+          for (var i = 0; i < bs.length; i++) setPressed(bs[i], p[r] != null && valOf(bs[i]) === p[r]);
+        }
+      },
+      grade: function (p) {
+        p = p || [];
+        var hit = 0;
+        for (var r = 0; r < rows.length; r++) if (p[r] === rows[r].a) hit++;
+        return { right: hit === rows.length, got: hit, total: rows.length };
+      },
+      mark: function (p) {
+        p = p || [];
+        for (var r = 0; r < rows.length; r++) {
+          var bs = btnsOf(r), ok = p[r] === rows[r].a;
+          rowEls[r].classList.toggle("right", ok);
+          rowEls[r].classList.toggle("wrong", !ok);
+          for (var i = 0; i < bs.length; i++) {
+            var v = valOf(bs[i]);
+            bs[i].classList.toggle("right", v === rows[r].a);
+            bs[i].classList.toggle("wrong", p[r] === v && v !== rows[r].a);
+          }
+        }
+      },
+      reveal: function () {
+        for (var r = 0; r < rows.length; r++) {
+          var bs = btnsOf(r);
+          rowEls[r].classList.add("right");
+          rowEls[r].classList.remove("wrong");
+          for (var i = 0; i < bs.length; i++) {
+            var on = valOf(bs[i]) === rows[r].a;
+            setPressed(bs[i], on);
+            bs[i].classList.toggle("right", on);
+            bs[i].classList.remove("wrong");
+          }
+        }
+      },
+      clear: function () {
+        for (var r = 0; r < rows.length; r++) {
+          rowEls[r].classList.remove("right", "wrong");
+          var bs = btnsOf(r);
+          for (var i = 0; i < bs.length; i++) {
+            setPressed(bs[i], false);
+            bs[i].classList.remove("right", "wrong");
+          }
+        }
+      },
+      lock: function (on) {
+        var bs = host.querySelectorAll("button");
+        for (var i = 0; i < bs.length; i++) bs[i].disabled = !!on;
+      },
+      answerHtml: function () {
+        var out = [];
+        for (var r = 0; r < rows.length; r++) {
+          out.push(bi(rows[r].s) + " &rarr; <b>" + colHtml(rows[r].a) + "</b>");
+        }
+        return out.join("<br>");
+      },
+      empty: "pickone"
+    };
+  }
+
+  /* write: a code box checked for required parts.
+     The text is collapsed to single spaces and every check regex must
+     match it; no forbid regex may. A bad regex in the data counts as a
+     failed check (and is reported once in the console), never a crash. */
+  function wWrite(q, host) {
+    var checks = q.checks || [];
+    var forbid = q.forbid || [];
+    var starter = trimCode(q.starter);
+    var rowsN = q.lines > 0 ? q.lines : 8;
+    var solution = (q.solution && q.solution.code) ? trimCode(q.solution.code) : "";
+    var warned = {};
+    if (!solution && window.console) console.warn("[assess] write question " + q.id + " has no solution.code");
+    if (!checks.length && !forbid.length && window.console) {
+      console.warn("[assess] write question " + q.id + " has no checks");
+    }
+
+    host.innerHTML =
+      '<p class="fill-hint" id="wh-' + q.id + '">' + LB("writeHint") + "</p>" +
+      '<textarea class="writein" dir="ltr" wrap="off" spellcheck="false" autocapitalize="off" ' +
+        'autocorrect="off" autocomplete="off" rows="' + rowsN + '" aria-describedby="wh-' + q.id +
+        '" aria-labelledby="qt-' + q.id + '"></textarea>' +
+      '<div class="wchecks" hidden><h5>' + LB("needs") + '</h5><ul></ul></div>';
+    var ta = host.querySelector("textarea");
+    var box = host.querySelector(".wchecks");
+    var list = box.querySelector("ul");
+    ta.value = starter;
+
+    /* ---- keyboard: Tab indents, Esc then Tab leaves ---- */
+    var escaped = false;
+    function indent() {
+      var done = false;
+      try { done = document.execCommand("insertText", false, "    "); } catch (err) { done = false; }
+      if (!done) {
+        var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value;
+        ta.value = v.slice(0, s) + "    " + v.slice(en);
+        ta.selectionStart = ta.selectionEnd = s + 4;
+        ta.dispatchEvent(new CustomEvent("input", { bubbles: true }));
+      }
+    }
+    ta.addEventListener("keydown", function (e) {
+      var key = e.key || (e.keyCode === 9 ? "Tab" : e.keyCode === 27 ? "Escape" : "");
+      if (key === "Escape" || key === "Esc") { escaped = true; return; }
+      if (key === "Tab" && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+        if (escaped || ta.readOnly) { escaped = false; return; }   /* let focus move on */
+        e.preventDefault();
+        indent();
+        return;
+      }
+      if (key !== "Shift" && key !== "Control" && key !== "Alt" && key !== "Meta") escaped = false;
+    });
+    ta.addEventListener("blur", function () { escaped = false; });
+    host.addEventListener("input", function () { touched(host); });
+
+    /* ---- grading ---- */
+    function run(spec, text, id) {
+      /* true / false: did it match; null: the regex itself is bad */
+      try {
+        return new RegExp(spec.re, String(spec.flags || "").replace(/[gy]/g, "")).test(text);
+      } catch (err) {
+        if (!warned[id] && window.console) {
+          warned[id] = true;
+          console.warn("[assess] bad regex in question " + q.id + ": " + spec.re + " (" + err.message + ")");
+        }
+        return null;
+      }
+    }
+    function evaluate(text) {
+      var t = normLine(text), items = [], i, r;
+      for (i = 0; i < checks.length; i++) {
+        r = run(checks[i], t, "c" + i);
+        items.push({ ok: r === true, spec: checks[i], avoid: false });
+      }
+      for (i = 0; i < forbid.length; i++) {
+        r = run(forbid[i], t, "f" + i);
+        items.push({ ok: r === false, spec: forbid[i], avoid: true });
+      }
+      return items;
+    }
+    function itemLabel(it) {
+      return it.spec.label ? bi(it.spec.label) : "<code>" + esc(it.spec.re) + "</code>";
+    }
+
+    function paintChecks(items) {
+      var h = "";
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        h += '<li class="' + (it.ok ? "pass" : "fail") + '">' +
+             '<span class="wi" aria-hidden="true">' + (it.ok ? "&#10003;" : "&#10007;") + "</span>" +
+             (it.avoid ? '<span class="wtag">' + LB("avoid") + "</span> " : "") +
+             '<span class="wl">' + itemLabel(it) + "</span>" +
+             '<span class="sr"> &mdash; ' +
+             (it.ok ? LB("met") : LB(it.avoid ? "used" : "missing")) + "</span></li>";
+      }
+      list.innerHTML = h;
+      box.hidden = !items.length;
+    }
+    function unmark() {
+      ta.classList.remove("right", "wrong");
+      box.hidden = true;
+      list.innerHTML = "";
+    }
+
+    return {
+      keepOpen: true,
+      read: function () {
+        var v = ta.value, t = v.trim();
+        if (!t || t === starter.trim()) return null;
+        return v;
+      },
+      write: function (p) { if (typeof p === "string") ta.value = p; },
+      grade: function (p) {
+        var items = evaluate(p || "");
+        if (!items.length) return { right: true, got: 1, total: 1 };
+        var hit = 0;
+        for (var i = 0; i < items.length; i++) if (items[i].ok) hit++;
+        return { right: hit === items.length, got: hit, total: items.length };
+      },
+      mark: function (p) {
+        var items = evaluate(p || "");
+        var bad = 0;
+        for (var i = 0; i < items.length; i++) if (!items[i].ok) bad++;
+        ta.classList.toggle("right", !bad);
+        ta.classList.toggle("wrong", !!bad);
+        paintChecks(items);
+      },
+      reveal: function () {
+        ta.value = solution;
+        ta.classList.add("right");
+        ta.classList.remove("wrong");
+        box.hidden = true;
+      },
+      clear: function () { ta.value = starter; unmark(); },
+      unmark: unmark,
+      lock: function (on) {
+        ta.readOnly = !!on;
+        ta.setAttribute("aria-readonly", on ? "true" : "false");
+      },
+      answerHtml: function () {
+        if (solution) return codeBlock(solution, "good", q.lang);
+        var out = [];
+        for (var i = 0; i < checks.length; i++) {
+          out.push(checks[i].label ? bi(checks[i].label) : "<code>" + esc(checks[i].re) + "</code>");
+        }
+        return out.join("<br>");
+      },
+      relabel: function () {
+        ta.setAttribute("aria-label", L("writeLabel"));
+      },
+      empty: "writeone"
     };
   }
 
   var WIDGETS = {
     mcq: wChoice, multi: wChoice, tf: wChoice, compare: wChoice,
     complete: wChoice, output: wText, fill: wText, trace: wText,
-    order: wOrder, match: wMatch, error: wPickline
+    order: wOrder, ordercode: wOrder, match: wMatch, error: wPickline,
+    contrast: wContrast, write: wWrite
   };
 
   /* ========================================================== one card */
@@ -715,6 +1114,7 @@
     el.id = "q-" + q.id;
     el.setAttribute("data-level", q.level || "medium");
     el.setAttribute("data-qid", q.id);
+    el.setAttribute("data-type", q.type || "mcq");
 
     var tf = q.type === "tf";
     if (tf && !q.options) {
@@ -726,12 +1126,14 @@
 
     var stem = "";
     if (q.type === "compare" && q.codeA) {
-      stem += '<div class="cmp"><div><h5>' + LB("codeA") + "</h5>" + codeBlock(q.codeA) +
-              "</div><div><h5>" + LB("codeB") + "</h5>" + codeBlock(q.codeB) + "</div></div>";
+      stem += '<div class="cmp"><div><h5>' + LB("codeA") + "</h5>" + codeBlock(q.codeA, "", q.lang) +
+              "</div><div><h5>" + LB("codeB") + "</h5>" + codeBlock(q.codeB, "", q.lang) + "</div></div>";
     } else if (q.code && kind !== "error") {
-      stem += codeBlock(q.code);
+      stem += codeBlock(q.code, "", q.lang);
     }
     if (q.after) stem += "<p>" + bi(q.after) + "</p>";
+
+    var hasHint = !!(q.hint && (q.hint.en || q.hint.ar));
 
     el.innerHTML =
       '<div class="qhead">' +
@@ -741,38 +1143,76 @@
         '<span class="chip kind">' + bi(TYPES[q.type] || TYPES.mcq) + "</span>" +
         topicChips(q.topics) +
       "</div>" +
-      '<div class="qstem"><p>' + bi(q.q) + "</p>" + stem + "</div>" +
-      '<div class="qwidget"></div>' +
+      '<div class="qstem"><p id="qt-' + q.id + '">' + bi(q.q) + "</p>" + stem + "</div>" +
+      '<div class="qwidget" role="group"></div>' +
       '<div class="qactions">' +
         '<button type="button" class="btn primary" data-a="check"></button>' +
+        (hasHint ? '<button type="button" class="btn hintbtn" data-a="hint" aria-expanded="false" ' +
+                   'aria-controls="hint-' + q.id + '"></button>' : "") +
         '<button type="button" class="btn" data-a="show"></button>' +
         '<button type="button" class="btn" data-a="clear"></button>' +
       "</div>" +
-      '<div class="verdict" hidden></div>' +
+      (hasHint ? '<div class="qhint" id="hint-' + q.id + '" role="note" hidden>' +
+                 '<span class="hl">' + LB("hint") + "</span> " + bi(q.hint) + "</div>" : "") +
+      '<div class="verdict" role="status" aria-live="polite" hidden></div>' +
       (q.explain ? '<details class="xp"><summary></summary><div class="inner">' +
                    "<p>" + bi(q.explain) + "</p></div></details>" : "") +
       (q.solution ? '<details class="sl"><summary></summary><div class="inner">' +
-                    (q.solution.code ? codeBlock(q.solution.code, "good") : "") +
+                    (q.solution.code ? codeBlock(q.solution.code, "good", q.lang) : "") +
                     (q.solution.out ? '<div class="output">' + esc(q.solution.out) + "</div>" : "") +
                     (q.solution.en || q.solution.ar ? "<p>" + bi(q.solution) + "</p>" : "") +
                     "</div></details>" : "");
 
-    var widget = (WIDGETS[kind] || wChoice)(q, el.querySelector(".qwidget"));
+    var qw = el.querySelector(".qwidget");
+    var widget = (WIDGETS[kind] || wChoice)(q, qw);
     var verdict = el.querySelector(".verdict");
+    var hintBox = el.querySelector(".qhint");
+    var checkBtn = el.querySelector('[data-a="check"]');
     var state = null;
+    var hintOpen = false;
+    var showingEmpty = false;
+
+    function setBtn(a, key) {
+      var b = el.querySelector('[data-a="' + a + '"]');
+      if (!b) return;
+      b.textContent = L(key);
+      b.setAttribute("aria-label", L(key) + " — " + L("qword") + " " + n);
+    }
 
     function relabel() {
-      el.querySelector('[data-a="check"]').textContent = state ? L("recheck") : L("check");
-      el.querySelector('[data-a="show"]').textContent = L("showme");
-      el.querySelector('[data-a="clear"]').textContent = L("clear");
+      setBtn("check", state ? "recheck" : "check");
+      setBtn("show", "showme");
+      setBtn("clear", "clear");
+      if (hasHint) {
+        setBtn("hint", hintOpen ? "hintOff" : "hint");
+        el.querySelector('[data-a="hint"]').setAttribute("aria-expanded", hintOpen ? "true" : "false");
+      }
+      checkBtn.disabled = !!(state && state.kind === "shown");
+      qw.setAttribute("aria-label", pick(TYPES[q.type] || TYPES.mcq) + " — " + L("qword") + " " + n);
+      if (widget.relabel) widget.relabel();
       var xp = el.querySelector(".xp > summary");
       if (xp) xp.textContent = L("why");
       var sl = el.querySelector(".sl > summary");
       if (sl) sl.textContent = L("sol");
-      if (state) paintVerdict(state, true);
+      if (state) paintVerdict(state);
+      else if (showingEmpty) verdict.textContent = L(widget.empty);
     }
 
-    function paintVerdict(st, quiet) {
+    function reviewHtml() {
+      var links = topicLinks(q.topics);
+      return links ? '<div class="vline vreview"><span class="vl">' + L("review") + "</span> " +
+                     links + "</div>" : "";
+    }
+    function answerLine() {
+      var a = widget.answerHtml();
+      /* a list, a block of code or several lines: the label gets its own line */
+      var stack = /<(ol|pre)[ >]|<br>/.test(a);
+      return '<div class="vline' + (stack ? " stack" : "") + '"><span class="vl">' + L("correctis") +
+             (stack ? "" : ":") + "</span> " + a + "</div>";
+    }
+
+    function paintVerdict(st) {
+      showingEmpty = false;
       verdict.hidden = false;
       if (st.kind === "right") {
         verdict.className = "verdict ok";
@@ -780,27 +1220,24 @@
       } else if (st.kind === "part") {
         verdict.className = "verdict part";
         verdict.innerHTML = L("part").replace("{a}", st.got).replace("{b}", st.total) +
-          '<div style="font-weight:400;margin-top:6px">' + L("correctis") + ": " +
-          widget.answerHtml() + "</div>";
+          answerLine() + reviewHtml();
       } else if (st.kind === "shown") {
         verdict.className = "verdict part";
-        verdict.innerHTML = L("revealed");
+        verdict.innerHTML = L("revealed") + reviewHtml();
       } else {
         verdict.className = "verdict no";
-        verdict.innerHTML = L("no") +
-          '<div style="font-weight:400;margin-top:6px">' + L("correctis") + ": " +
-          widget.answerHtml() + "</div>";
+        verdict.innerHTML = L("no") + answerLine() + reviewHtml();
       }
-      if (!quiet) { /* nothing extra */ }
     }
 
     function check(silent) {
       var p = widget.read();
       if (!p) {
         if (!silent) {
+          showingEmpty = true;
           verdict.hidden = false;
           verdict.className = "verdict part";
-          verdict.textContent = widget.empty;
+          verdict.textContent = L(widget.empty);
         }
         return null;
       }
@@ -808,7 +1245,7 @@
       var kindName = g.right ? "right" : (g.got > 0 ? "part" : "wrong");
       state = { kind: kindName, got: g.got, total: g.total, payload: p };
       widget.mark(p);
-      widget.lock(true);
+      if (!widget.keepOpen) widget.lock(true);
       paintVerdict(state);
       el.setAttribute("data-state", g.right ? "right" : "wrong");
       if (q.explain) el.querySelector(".xp").open = !g.right;
@@ -817,12 +1254,31 @@
       return state;
     }
 
+    /* Editing an answer that stays editable (write) withdraws its verdict
+       until the student checks again. */
+    function withdraw() {
+      if (widget.unmark) widget.unmark();
+      state = null;
+      verdict.hidden = true;
+      el.removeAttribute("data-state");
+      bank.record(q.id, null);
+      relabel();
+    }
+
     el.querySelector(".qactions").addEventListener("click", function (e) {
-      var b = e.target;
-      while (b && b.tagName !== "BUTTON") b = b.parentNode;
+      var b = up(e.target, el, "BUTTON");
       if (!b) return;
       var a = b.getAttribute("data-a");
-      if (a === "check") { widget.lock(false); check(false); }
+      if (a === "check") {
+        if (state && state.kind === "shown") return;   /* Clear first: a revealed answer cannot be re-submitted */
+        widget.lock(false);
+        check(false);
+      }
+      if (a === "hint") {
+        hintOpen = !hintOpen;
+        hintBox.hidden = !hintOpen;
+        relabel();
+      }
       if (a === "show") {
         widget.clear();
         widget.reveal();
@@ -839,6 +1295,7 @@
         widget.clear();
         widget.lock(false);
         state = null;
+        showingEmpty = false;
         verdict.hidden = true;
         el.removeAttribute("data-state");
         bank.record(q.id, null);
@@ -847,7 +1304,11 @@
     });
 
     el.addEventListener("qtouch", function () {
-      if (state) return;
+      if (state) {
+        if (widget.keepOpen && state.kind !== "shown") withdraw();
+        return;
+      }
+      showingEmpty = false;
       verdict.hidden = true;
     });
 
@@ -857,7 +1318,11 @@
       el: el,
       q: q,
       relabel: relabel,
-      check: function () { widget.lock(false); return check(true); },
+      check: function () {
+        if (state) return state;
+        widget.lock(false);
+        return check(true);
+      },
       restore: function (st) {
         if (!st) return;
         if (st.kind === "shown") {
@@ -867,7 +1332,7 @@
         } else if (st.payload) {
           widget.write(st.payload);
           widget.mark(st.payload);
-          widget.lock(true);
+          if (!widget.keepOpen) widget.lock(true);
           state = st;
           paintVerdict(state);
           el.setAttribute("data-state", st.kind === "right" ? "right" : "wrong");
@@ -877,7 +1342,7 @@
       state: function () { return state; },
       reset: function () {
         widget.clear(); widget.lock(false);
-        state = null; verdict.hidden = true;
+        state = null; showingEmpty = false; verdict.hidden = true;
         el.removeAttribute("data-state");
         relabel();
       }
@@ -890,6 +1355,7 @@
     var id = host.getAttribute("data-bank");
     var spec = (window.DABanks || {})[id];
     if (!spec) { host.innerHTML = ""; return null; }
+    var qs = spec.questions || [];
     var mode = spec.mode || host.getAttribute("data-mode") || "test";
     var saved = load(id);
     var cards = [];
@@ -912,20 +1378,24 @@
       if (spec.intro) {
         var intro = document.createElement("div");
         intro.className = "testhead";
+        var mix = { easy: 0, medium: 0, hard: 0 };
+        var seen = {}, nTypes = 0, mi;
+        for (mi = 0; mi < qs.length; mi++) {
+          var lv = qs[mi].level;
+          mix[mix.hasOwnProperty(lv) ? lv : "medium"]++;
+          var ty = qs[mi].type || "mcq";
+          if (!seen[ty]) { seen[ty] = 1; nTypes++; }
+        }
         intro.innerHTML =
           "<h4>" + bi(spec.title || { en: "Test", ar: "اختبار" }) + "</h4>" +
           "<p>" + bi(spec.intro) + "</p>" +
-          '<div class="meta"><span>' + spec.questions.length + " " +
-          '<span class="en">questions</span><span class="ar">سؤالًا</span>' + "</span>" +
-          '<span data-levelmix></span></div>';
-        var mix = { easy: 0, medium: 0, hard: 0 };
-        for (var mi = 0; mi < spec.questions.length; mi++) {
-          mix[spec.questions[mi].level || "medium"]++;
-        }
-        intro.querySelector("[data-levelmix]").innerHTML =
-          "<b>" + mix.easy + "</b> " + bi(LEVELS.easy) + " &middot; " +
-          "<b>" + mix.medium + "</b> " + bi(LEVELS.medium) + " &middot; " +
-          "<b>" + mix.hard + "</b> " + bi(LEVELS.hard);
+          '<div class="meta"><span>' + countLabel(qs.length, "questions") + "</span>" +
+          "<span>" + countLabel(nTypes, "types") + "</span>" +
+          "<span>" +
+            "<b>" + mix.easy + "</b> " + bi(LEVELS.easy) + " &middot; " +
+            "<b>" + mix.medium + "</b> " + bi(LEVELS.medium) + " &middot; " +
+            "<b>" + mix.hard + "</b> " + bi(LEVELS.hard) +
+          "</span></div>";
         frag.appendChild(intro);
       }
 
@@ -942,6 +1412,7 @@
 
       var filter = document.createElement("div");
       filter.className = "qfilter";
+      filter.setAttribute("role", "group");
       filter.innerHTML =
         '<button type="button" data-f="all" aria-pressed="true"></button>' +
         '<button type="button" data-f="easy" aria-pressed="false"></button>' +
@@ -953,8 +1424,8 @@
       bank.filterEl = filter;
     }
 
-    for (var i = 0; i < spec.questions.length; i++) {
-      var card = makeCard(spec.questions[i], i + 1, bank);
+    for (var i = 0; i < qs.length; i++) {
+      var card = makeCard(qs[i], i + 1, bank);
       cards.push(card);
       frag.appendChild(card.el);
     }
@@ -998,7 +1469,7 @@
         var s = cards[i].state();
         if (!s) continue;
         var q = cards[i].q;
-        var l = q.level || "medium";
+        var l = lv.hasOwnProperty(q.level) ? q.level : "medium";
         lv[l][1]++;
         if (s.kind === "right") lv[l][0]++;
         var ts = q.topics || [];
@@ -1032,8 +1503,8 @@
       } else {
         h += '<ul class="seelist">';
         for (i = 0; i < weak.length; i++) {
-          h += '<li><a href="#' + reg[weak[i]].href + '">' + bi(reg[weak[i]]) + "</a> &mdash; " +
-               tp[weak[i]][0] + "/" + tp[weak[i]][1] + "</li>";
+          h += '<li><a href="' + escA(topicHref(reg[weak[i]].href)) + '">' + bi(reg[weak[i]]) +
+               "</a> &mdash; " + tp[weak[i]][0] + "/" + tp[weak[i]][1] + "</li>";
         }
         h += "</ul>";
       }
@@ -1061,17 +1532,16 @@
 
     if (bar) {
       bar.addEventListener("click", function (e) {
-        var b = e.target;
-        while (b && b.tagName !== "BUTTON") b = b.parentNode;
+        var b = up(e.target, bar, "BUTTON");
         if (!b) return;
         var a = b.getAttribute("data-a");
         if (a === "all") {
           for (var i = 0; i < cards.length; i++) if (!cards[i].state()) cards[i].check();
           refresh();
-          if (result) result.scrollIntoView({ behavior: "smooth", block: "start" });
+          if (result && !result.hidden) result.scrollIntoView({ behavior: "smooth", block: "start" });
         }
         if (a === "reset") {
-          for (var j = 0; j < cards.length; j++) { cards[j].reset(); saved[cards[j].q.id] = null; }
+          for (var j = 0; j < cards.length; j++) cards[j].reset();
           saved = {};
           save(id, saved);
           refresh();
@@ -1080,8 +1550,7 @@
       });
 
       bank.filterEl.addEventListener("click", function (e) {
-        var b = e.target;
-        while (b && b.tagName !== "BUTTON") b = b.parentNode;
+        var b = up(e.target, bank.filterEl, "BUTTON");
         if (!b) return;
         var f = b.getAttribute("data-f");
         var bs = bank.filterEl.querySelectorAll("[data-f]");
