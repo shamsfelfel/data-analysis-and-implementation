@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Data analysis taught from first principles to professional practice, in English and Arabic, with tests, a glossary, diagrams and a step-through execution lab.">
+<title data-en="Execution Lab · Theory 1 · Data Analysis" data-ar="مختبر التنفيذ · أنواع البيانات الأساسية ومصادرها · تحليل البيانات">Execution Lab · Theory 1 · Data Analysis</title>
+<script>
+/* Theme, language and the path back to the site root, all before the
+   first paint: a dark reader must not see a white flash, and an Arabic
+   reader must not see a left-to-right page redraw itself. */
+(function () {
+  window.DA_BASE = "../";
+  try {
+    var l = localStorage.getItem("da.lang");
+    if (l === "ar" || l === "en") {
+      document.documentElement.lang = l;
+      document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    }
+    var t = localStorage.getItem("da.theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  } catch (e) {}
+})();
+</script>
+<meta name="theme-color" content="#0d6f6a">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Data Analysis">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/chrome.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/trace.css">
+</head>
+<body data-chapter="t1" data-page="t1-lab" data-kind="lab" data-path="labs/t1-lab.html">
+<main>
+<section class="page" id="t1-lab">
+<nav class="crumbs"></nav>
+
+  <span class="kicker">Execution Lab</span>
+  <h1><span class="en">Execution Lab &mdash; watch the code run</span><span class="ar">مختبر التنفيذ &mdash; شاهد الكود يُنفَّذ</span></h1>
+  <p class="lede en">Step through the programs of this chapter one line at a time. The highlighted line is about to run; beside it you see what exists <em>right now</em> &mdash; variables, lists, tables, trees and the call stack &mdash; with what just changed flagged, and a note on what is happening. Use <strong>Next</strong> and <strong>Back</strong>, press <strong>Run</strong>, drag the slider, or click a line to jump to it.</p>
+  <p class="lede ar">تنقّل في برامج هذا الفصل سطرًا سطرًا. السطر المظلَّل على وشك أن يُنفَّذ؛ وبجانبه ترى ما هو موجود <em>الآن</em> &mdash; المتغيرات والقوائم والجداول والأشجار ومكدّس الاستدعاءات &mdash; مع تمييز ما تغيّر للتو وملاحظة عمّا يجري. استخدم <strong>التالي</strong> و<strong>السابق</strong>، أو اضغط <strong>تشغيل</strong>، أو اسحب المنزلق، أو انقر سطرًا للانتقال إليه.</p>
+  <h2 id="t1lab-h1"><span class="en">Flattening nested JSON into table rows</span><span class="ar">تسطيح JSON متداخل إلى صفوف جدول</span></h2>
+  <p class="en">Two rental listings arrive as JSON text. The first has a nested landlord object, the second has none. Watch flatten() call itself on the nested object, and watch the missing keys become NaN when the rows meet in a DataFrame.</p>
+  <p class="ar">يصل إعلانان للتأجير كنص JSON. في الأول كائن متداخل للمالك، وليس في الثاني. شاهد الدالة flatten() تستدعي نفسها على الكائن المتداخل، وشاهد المفاتيح الغائبة تصبح NaN حين تلتقي الصفوف في DataFrame.</p>
+  <div data-trace-id="t1-l1-flatten"></div>
+  <h2 id="t1lab-h2"><span class="en">Pulling fields out of an advert with regex</span><span class="ar">استخراج الحقول من إعلان نصي بالتعابير النمطية</span></h2>
+  <p class="en">One advert string, four searches. Each successful search adds a key to the fields dict; a search that finds nothing returns None and the dict simply does not grow. Notice the thousands separator in 1,200.</p>
+  <p class="ar">نص إعلان واحد وأربعة أبحاث. كل بحث ناجح يضيف مفتاحًا إلى قاموس fields، وكل بحث لا يجد شيئًا يعيد None فلا ينمو القاموس. لاحظ فاصل الآلاف في 1,200.</p>
+  <div data-trace-id="t1-l1-regex-parse"></div>
+  <h2 id="t1lab-h3"><span class="en">The mean of city codes versus the mode</span><span class="ar">متوسط رموز المدن مقابل المنوال</span></h2>
+  <p class="en">Eight listings carry a city code: 1 = Gaza, 2 = Khan Younis, 3 = Rafah. The codes are numbers, so the loop happily adds them up. Watch the total grow, then see which answer names a real city and which one does not.</p>
+  <p class="ar">لثمانية إعلانات رمز مدينة: 1 = غزة، 2 = خان يونس، 3 = رفح. الرموز أرقام، فتجمعها الحلقة بلا اعتراض. راقب المجموع وهو ينمو، ثم انظر أي الجوابين يسمّي مدينة حقيقية وأيهما لا يفعل.</p>
+  <div data-trace-id="t1-l2-id-mean"></div>
+  <h2 id="t1lab-h4"><span class="en">An ordered Categorical learns the order</span><span class="ar">الفئة المرتّبة تتعلّم الترتيب</span></h2>
+  <p class="en">Four school levels stored as plain text sort alphabetically, which puts Preparatory before Primary. Declare the order once and sorting, comparing and max() all start to follow the meaning.</p>
+  <p class="ar">أربعة مستويات مدرسية مخزّنة نصًّا عاديًّا تُرتَّب أبجديًّا، فتسبق Preparatory كلمةَ Primary. أعلن الترتيب مرة واحدة فيبدأ الفرز والمقارنة وmax() بإتباع المعنى.</p>
+  <div data-trace-id="t1-l2-ordered-cat"></div>
+  <h2 id="t1lab-h5"><span class="en">value_counts is a dictionary being filled</span><span class="ar">value_counts قاموس يُملأ</span></h2>
+  <p class="en">The first ten listings of the rental file, counted by hand. Counting is the one operation every level allows, and it is nothing more than a dictionary whose values grow by one.</p>
+  <p class="ar">أول عشرة إعلانات من ملف التأجير، تُعدّ يدويًّا. العدّ هو العملية الوحيدة التي تسمح بها كل المستويات، وهو لا يزيد على قاموس تكبر قيمه واحدًا واحدًا.</p>
+  <div data-trace-id="t1-l2-value-counts"></div>
+  <h2 id="t1lab-h6"><span class="en">A DataFrame changes dtype after astype</span><span class="ar">جدول DataFrame يغيّر أنواعه بعد astype</span></h2>
+  <p class="en">Three listings, three columns. Watch the dtypes row under the table: rooms goes from float64 to Int64 and city from object to category, while the values you see barely change.</p>
+  <p class="ar">ثلاثة إعلانات وثلاثة أعمدة. راقب صف الأنواع تحت الجدول: يتحول rooms من float64 إلى Int64 وcity من object إلى category، بينما لا تكاد القيم الظاهرة تتغير.</p>
+  <div data-trace-id="t1-l3-astype-frame"></div>
+  <h2 id="t1lab-h7"><span class="en">to_numeric on a Series: what coercion swallows</span><span class="ar">to_numeric على سلسلة: ما الذي يبتلعه القسر</span></h2>
+  <p class="en">Five rents typed as text. Watch coerce turn two of them into NaN, count the casualties, and then rescue the one that was a perfectly good number.</p>
+  <p class="ar">خمسة إيجارات مكتوبة كنص. راقب كيف يحوّل القسر اثنين منها إلى NaN، وعدّ الضحايا، ثم أنقذ القيمة التي كانت رقمًا سليمًا.</p>
+  <div data-trace-id="t1-l3-coerce-series"></div>
+  <h2 id="t1lab-h8"><span class="en">A loop and a vectorised line, side by side</span><span class="ar">حلقة وسطر متجهي، جنبًا إلى جنب</span></h2>
+  <p class="en">The same four rent-per-m2 values computed once with a Python loop and once with one NumPy expression, then filtered with a boolean mask.</p>
+  <p class="ar">قيم الإيجار للمتر المربع الأربع نفسها تُحسب مرة بحلقة بايثون ومرة بتعبير NumPy واحد، ثم تُرشَّح بقناع منطقي.</p>
+  <div data-trace-id="t1-l3-vector-vs-loop"></div>
+  <h2 id="t1lab-h9"><span class="en">How a CSV reader splits a quoted line</span><span class="ar">كيف يقسّم قارئ CSV سطرًا فيه تنصيص</span></h2>
+  <p class="en">A record whose second field contains a comma. Watch the one piece of memory a real parser needs: are we inside quotes right now?</p>
+  <p class="ar">سجلّ يحتوي حقله الثاني على فاصلة. راقب الذاكرة الوحيدة التي يحتاجها المحلّل الحقيقي: هل نحن داخل علامتي تنصيص الآن؟</p>
+  <div data-trace-id="t1-l4-csv-reader"></div>
+  <h2 id="t1lab-h10"><span class="en">An Excel serial number becomes a date</span><span class="ar">رقم Excel التسلسلي يصبح تاريخًا</span></h2>
+  <p class="en">Three numbers copied from the Raw sheet of rental_listings.xlsx. A date is just "days since an origin": add that many days to 1899-12-30.</p>
+  <p class="ar">ثلاثة أرقام منقولة من ورقة Raw في ملف rental_listings.xlsx. التاريخ مجرد «أيام منذ نقطة أصل»: أضف هذا العدد من الأيام إلى 1899-12-30.</p>
+  <div data-trace-id="t1-l4-excel-serial"></div>
+  <h2 id="t1lab-h11"><span class="en">One column, then seven: the semicolon file</span><span class="ar">عمود واحد ثم سبعة: ملف الفاصلة المنقوطة</span></h2>
+  <p class="en">The same 30-row file, loaded three ways. Watch the shape badge and the dtype of the area column change as sep= and decimal= are added.</p>
+  <p class="ar">الملف نفسه بثلاثين صفًّا، يُحمَّل بثلاث طرق. راقب شارة الشكل ونوع عمود المساحة وهما يتغيّران كلما أضفنا sep= ثم decimal=.</p>
+  <div data-trace-id="t1-l4-wrong-delimiter"></div>
+  <h2 id="t1lab-h12"><span class="en">Flattening one school with recursion</span><span class="ar">تسطيح سجلّ مدرسة واحدة بالاستدعاء الذاتي</span></h2>
+  <p class="en">flatten() walks a nested record. Each time it meets an inner object it calls itself with a longer prefix; plain values and lists are copied under their dotted name. Watch the call stack grow and shrink while the flat dictionary fills up.</p>
+  <p class="ar">تمشي الدالة flatten() على سجلّ متشعّب. وكلما صادفت كائنًا داخليًّا استدعت نفسها ببادئة أطول؛ أما القيم العادية والقوائم فتُنسخ تحت اسمها المنقّط. راقب كيف تنمو حزمة الاستدعاءات وتتقلّص بينما يمتلئ القاموس المسطّح.</p>
+  <div data-trace-id="t1-l5-flatten"></div>
+  <h2 id="t1lab-h13"><span class="en">From one API page to a DataFrame</span><span class="ar">من صفحة واحدة من الواجهة إلى DataFrame</span></h2>
+  <p class="en">json.load gives a dict that holds a list of nested records. pd.json_normalize with record_path and meta turns that list into one row per school, with dotted keys turned into flat column names and the page numbers copied onto every row.</p>
+  <p class="ar">تعطيك json.load قاموسًا فيه قائمة سجلات متشعّبة. وتحوّل pd.json_normalize بالوسيطين record_path وmeta هذه القائمة إلى صف لكل مدرسة، وتصير المفاتيح المنقّطة أسماء أعمدة مسطّحة، وتُنسخ أرقام الصفحة على كل صف.</p>
+  <div data-trace-id="t1-l5-normalize"></div>
+  <h2 id="t1lab-h14"><span class="en">A pagination loop that meets a 429</span><span class="ar">حلقة تصفيح تصادف الرمز 429</span></h2>
+  <p class="en">The loop follows next until it is None. On its second page the fake server answers 429 once: the loop reads Retry-After, goes round again with the same url, and carries on. The list of ids grows by five, five, then three.</p>
+  <p class="ar">تتبع الحلقة الحقل next حتى يصير None. وفي الصفحة الثانية يردّ الخادم المزيّف بالرمز 429 مرة واحدة: تقرأ الحلقة Retry-After وتدور من جديد بالعنوان نفسه ثم تواصل. وتنمو قائمة المعرّفات بمقدار خمسة ثم خمسة ثم ثلاثة.</p>
+  <div data-trace-id="t1-l5-pagination"></div>
+  <h2 id="t1lab-h15"><span class="en">Loading the school-damage file, step by step</span><span class="ar">تحميل ملف أضرار المدارس خطوة بخطوة</span></h2>
+  <p class="en">Watch the nine-row capstone file change type by type: lost zeros come back, the two date formats merge, and false zeros become missing values.</p>
+  <p class="ar">راقب ملف المشروع الختامي (تسعة صفوف) وهو يتغيّر نوعًا بعد نوع: تعود الأصفار المفقودة، وتندمج صيغتا التاريخ، وتتحوّل الأصفار الكاذبة إلى قيم مفقودة.</p>
+  <div data-trace-id="t1-l6-capstone-load"></div>
+  <h2 id="t1lab-h16"><span class="en">Blank versus could-not-parse</span><span class="ar">فراغ أم فشل في التحويل؟</span></h2>
+  <p class="en">Step through coerce(): how comparing missing cells before and after parsing separates a legitimate blank from a value that failed to parse.</p>
+  <p class="ar">تنقّل في دالة coerce(): كيف تفصل مقارنة الخلايا المفقودة قبل التحويل وبعده بين الفراغ المشروع والقيمة التي فشل تحويلها.</p>
+  <div data-trace-id="t1-l6-coerce"></div>
+  <h2 id="t1lab-h17"><span class="en">validate() collects problems instead of stopping</span><span class="ar">validate() تجمع المشكلات بدل أن تتوقف عند أولها</span></h2>
+  <p class="en">Step through a validator over a four-row frame and watch the list of problems grow, one rule at a time.</p>
+  <p class="ar">تنقّل خطوة خطوة في دالة تحقّق على جدول من أربعة صفوف، وراقب قائمة المشكلات تكبر قاعدةً بعد قاعدة.</p>
+  <div data-trace-id="t1-l6-validate"></div>
+
+</section>
+<nav class="pager"></nav>
+</main>
+<footer class="site">
+  <span class="en">Works fully offline · nothing you answer leaves this device</span>
+  <span class="ar">يعمل دون اتصال بالكامل · لا تغادر إجاباتك هذا الجهاز</span>
+</footer>
+<script src="../assets/js/registry.js"></script>
+<script src="../assets/js/course.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/anchors.js"></script>
+<script src="../assets/js/chrome.js"></script>
+<script src="../assets/js/code.js"></script>
+<script src="../assets/data/traces/t1-l1-flatten.js"></script>
+<script src="../assets/data/traces/t1-l1-regex-parse.js"></script>
+<script src="../assets/data/traces/t1-l2-id-mean.js"></script>
+<script src="../assets/data/traces/t1-l2-ordered-cat.js"></script>
+<script src="../assets/data/traces/t1-l2-value-counts.js"></script>
+<script src="../assets/data/traces/t1-l3-astype-frame.js"></script>
+<script src="../assets/data/traces/t1-l3-coerce-series.js"></script>
+<script src="../assets/data/traces/t1-l3-vector-vs-loop.js"></script>
+<script src="../assets/data/traces/t1-l4-csv-reader.js"></script>
+<script src="../assets/data/traces/t1-l4-excel-serial.js"></script>
+<script src="../assets/data/traces/t1-l4-wrong-delimiter.js"></script>
+<script src="../assets/data/traces/t1-l5-flatten.js"></script>
+<script src="../assets/data/traces/t1-l5-normalize.js"></script>
+<script src="../assets/data/traces/t1-l5-pagination.js"></script>
+<script src="../assets/data/traces/t1-l6-capstone-load.js"></script>
+<script src="../assets/data/traces/t1-l6-coerce.js"></script>
+<script src="../assets/data/traces/t1-l6-validate.js"></script>
+<script src="../assets/js/trace.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

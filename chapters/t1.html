@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Data analysis taught from first principles to professional practice, in English and Arabic, with tests, a glossary, diagrams and a step-through execution lab.">
+<title data-en="Basic Data Types and Data Sources · Chapter 1 · Data Analysis &amp; Implementation" data-ar="أنواع البيانات الأساسية ومصادرها · الفصل 1 · تحليل البيانات وتطبيقها">Basic Data Types and Data Sources · Chapter 1 · Data Analysis &amp; Implementation</title>
+<script>
+/* Theme, language and the path back to the site root, all before the
+   first paint: a dark reader must not see a white flash, and an Arabic
+   reader must not see a left-to-right page redraw itself. */
+(function () {
+  window.DA_BASE = "../";
+  try {
+    var l = localStorage.getItem("da.lang");
+    if (l === "ar" || l === "en") {
+      document.documentElement.lang = l;
+      document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    }
+    var t = localStorage.getItem("da.theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  } catch (e) {}
+})();
+</script>
+<meta name="theme-color" content="#0d6f6a">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Data Analysis">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/chrome.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body data-chapter="t1" data-page="t1-chapter" data-kind="chapter" data-path="chapters/t1.html">
+<main>
+<section class="page" id="t1-chapter">
+<nav class="crumbs"></nav>
+
+
+  <span class="kicker">Theory &middot; Chapter 1</span>
+  <h1><span class="en">Basic Data Types and Data Sources</span><span class="ar">أنواع البيانات الأساسية ومصادرها</span></h1>
+
+  <p class="lede en">Every analysis begins before the first line of analysis: with a file, a shape, and an unspoken promise about what its values mean. Get that promise wrong &mdash; read a text column as a number, average a rating scale, trust a file that loaded &ldquo;fine&rdquo; &mdash; and everything built on top is wrong in a way that looks right. This chapter teaches you to ask the three questions that come first, and to answer them in Python.</p>
+  <p class="lede ar">يبدأ كل تحليل قبل أول سطر في التحليل: بملف، وشكل، ووعد غير معلن عمّا تعنيه قيمه. فإذا أخطأتَ في هذا الوعد &mdash; قرأتَ عمودًا نصيًّا كأنه رقم، أو حسبتَ متوسط مقياس تقدير، أو وثقتَ بملف «تحمّل بخير» &mdash; كان كل ما بُني فوقه خاطئًا بصورة تبدو صحيحة. يعلّمك هذا الفصل أن تطرح الأسئلة الثلاثة التي تأتي أولًا، وأن تجيب عنها بلغة بايثون.</p>
+
+  <div class="note">
+    <h4><span class="en">The running example</span><span class="ar">المثال الجاري</span></h4>
+    <p class="en">Two small worlds carry the whole chapter: a table of <strong>rental listings</strong> (city, monthly rent, area, rooms, furnished or not, a free-text advert) and a <strong>school-registry API</strong> that returns schools, their governorates and enrolment as JSON. Both are realistic in their mess. You will meet the same listings in every lesson, in a worse state and then in a better one.</p>
+    <p class="ar">يحمل الفصل كله عالمان صغيران: جدول <strong>إعلانات تأجير المنازل</strong> (المدينة والإيجار الشهري والمساحة والغرف والفرش ونصّ إعلان حر)، و<strong>واجهة برمجية لسجل المدارس</strong> تعيد المدارس ومحافظاتها وأعداد طلبتها بصيغة JSON. وكلاهما واقعي في فوضاه. ستقابل الإعلانات نفسها في كل درس، مرة في حال أسوأ ثم في حال أفضل.</p>
+  </div>
+
+  <h2 id="t1idx-h3"><span class="en">What you will be able to do</span><span class="ar">ماذا ستستطيع أن تفعل</span></h2>
+  <ul class="objectives">
+    <li><span class="en">Classify any dataset as structured, semi-structured or unstructured, and say what must happen before a model can use it.</span><span class="ar">تصنّف أي مجموعة بيانات: مُهيكلة أو شبه مُهيكلة أو غير مُهيكلة، وتقول ما الذي يجب أن يحدث قبل أن يستعملها نموذج.</span></li>
+    <li><span class="en">Assign a measurement level &mdash; nominal, ordinal, interval or ratio &mdash; to every column, and name the summaries and charts that level permits.</span><span class="ar">تُسند إلى كل عمود مستوى قياس &mdash; اسميًّا أو ترتيبيًّا أو فتريًّا أو نسبيًّا &mdash; وتسمّي الملخّصات والرسوم التي يسمح بها ذلك المستوى.</span></li>
+    <li><span class="en">Read and set pandas dtypes, handle missing values, and cast safely instead of hopefully.</span><span class="ar">تقرأ أنواع pandas وتضبطها، وتتعامل مع القيم المفقودة، وتحوّل الأنواع بأمان لا بالأمل.</span></li>
+    <li><span class="en">Load CSV, Excel, JSON and API data without silent corruption: delimiters, encodings, dates, serial numbers, status codes, pages and rate limits.</span><span class="ar">تحمّل بيانات CSV وExcel وJSON وواجهات API دون فساد صامت: الفواصل والترميز والتواريخ والأرقام التسلسلية ورموز الاستجابة والصفحات وحدود المعدّل.</span></li>
+    <li><span class="en">Run a validation ritual on every new dataset and justify the format you chose.</span><span class="ar">تُجري طقس تحقّق على كل مجموعة بيانات جديدة وتبرّر الصيغة التي اخترتها.</span></li>
+  </ul>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens &mdash; why this chapter comes first</span><span class="ar">منظور الذكاء الاصطناعي &mdash; لماذا يأتي هذا الفصل أولًا</span></h4>
+    <p class="en">A model eats numbers arranged in a table: rows of examples, columns of features. Everything else &mdash; a JSON reply, an advert, a photograph &mdash; must be turned into that shape first, and the way you turn it decides what the model can learn. Treat a nominal city code as a number and a linear model will believe city 7 is &ldquo;seven times&rdquo; city 1. Let a CSV load a price column as text and the model never sees a price. These are not exotic bugs; they are Tuesday.</p>
+    <p class="ar">يتغذّى النموذج على أرقام مرتّبة في جدول: صفوف من الأمثلة وأعمدة من الخصائص. وكل ما عدا ذلك &mdash; ردّ JSON أو إعلان أو صورة &mdash; يجب أن يُحوَّل أولًا إلى هذا الشكل، وطريقة التحويل تحدّد ما يستطيع النموذج أن يتعلّمه. اعتبر رمز مدينة اسميًّا رقمًا فيظن النموذج الخطي أن المدينة 7 «سبعة أضعاف» المدينة 1. واترك ملف CSV يحمّل عمود السعر نصًّا فلن يرى النموذج سعرًا قط. هذه ليست أعطالًا غريبة؛ إنها أحداث الثلاثاء العادية.</p>
+  </div>
+
+  <div class="thread">
+    <h4><span class="en">Threads that start here</span><span class="ar">خيوط تبدأ من هنا</span></h4>
+    <p class="en"><strong>&ldquo;Load a file&rdquo;</strong> starts as a hand-written loop in Lesson&nbsp;3 and ends as a validated loader in Lesson&nbsp;6; <a href="../chapters/p1.html#p1-chapter">Practical Chapter&nbsp;1</a> then answers the same question in Excel, Power BI and pandas. <strong>&ldquo;What does this column mean?&rdquo;</strong> starts in Lesson&nbsp;2 and returns whenever a later chapter encodes, scales or plots. Each time it returns, the box says what the earlier solution got wrong.</p>
+    <p class="ar"><strong>«حمّل ملفًّا»</strong> يبدأ حلقةً مكتوبة يدويًّا في الدرس 3 وينتهي محمِّلًا مُتحقَّقًا منه في الدرس 6؛ ثم يجيب <a href="../chapters/p1.html#p1-chapter">الفصل العملي 1</a> عن السؤال نفسه في Excel وPower BI وpandas. و<strong>«ماذا يعني هذا العمود؟»</strong> يبدأ في الدرس 2 ويعود كلما رمّز فصل لاحق أو وحّد أو رسم. وفي كل عودة يقول الصندوق ما أخطأ فيه الحل السابق.</p>
+  </div>
+
+  <div class="callout prereq">
+    <h4><span class="en">Before you start</span><span class="ar">قبل أن تبدأ</span></h4>
+    <p class="en">Introductory Python only: variables, lists, dictionaries, loops, functions and f-strings. Anything beyond that &mdash; NumPy arrays, pandas, JSON, HTTP &mdash; is introduced here before it is used.</p>
+    <p class="ar">بايثون التمهيدية فقط: المتغيرات والقوائم والقواميس والحلقات والدوال وصيغ f-strings. وكل ما يتجاوز ذلك &mdash; مصفوفات NumPy وpandas وJSON وHTTP &mdash; يُقدَّم هنا قبل أن يُستعمل.</p>
+  </div>
+
+  <h2 id="t1idx-h1"><span class="en">The lessons</span><span class="ar">الدروس</span></h2>
+<div class="grid">
+<a class="lesson-card" href="../lessons/t1-lesson-01.html#t1-lesson-01">
+  <span class="n">01</span><span class="state" data-page-state="t1-lesson-01" hidden></span>
+  <h3><span class="en">The Three Shapes of Data</span><span class="ar">أشكال البيانات الثلاثة</span></h3>
+  <p class="en">Structured, semi-structured and unstructured data — and why a model can only eat one of them directly.</p>
+  <p class="ar">بيانات مُهيكلة وشبه مُهيكلة وغير مُهيكلة — ولماذا لا يستطيع النموذج أن يتغذّى مباشرة إلا على واحد منها.</p>
+</a>
+<a class="lesson-card" href="../lessons/t1-lesson-02.html#t1-lesson-02">
+  <span class="n">02</span><span class="state" data-page-state="t1-lesson-02" hidden></span>
+  <h3><span class="en">What the Values Mean</span><span class="ar">ماذا تعني القيم؟</span></h3>
+  <p class="en">Nominal, ordinal, interval and ratio: which arithmetic, which summary and which chart each level allows.</p>
+  <p class="ar">الاسمي والترتيبي والفتري والنسبي: أي حساب وأي ملخّص وأي رسم يسمح به كل مستوى.</p>
+</a>
+<a class="lesson-card" href="../lessons/t1-lesson-03.html#t1-lesson-03">
+  <span class="n">03</span><span class="state" data-page-state="t1-lesson-03" hidden></span>
+  <h3><span class="en">From Python Containers to pandas dtypes</span><span class="ar">من حاويات بايثون إلى أنواع pandas</span></h3>
+  <p class="en">Lists and dicts, NumPy arrays, Series and DataFrames; reading dtypes, missing values and safe casting.</p>
+  <p class="ar">القوائم والقواميس ومصفوفات NumPy وSeries وDataFrame؛ وقراءة الأنواع والقيم المفقودة والتحويل الآمن.</p>
+</a>
+<a class="lesson-card" href="../lessons/t1-lesson-04.html#t1-lesson-04">
+  <span class="n">04</span><span class="state" data-page-state="t1-lesson-04" hidden></span>
+  <h3><span class="en">Flat Files: CSV and Excel</span><span class="ar">الملفات المسطّحة: CSV وExcel</span></h3>
+  <p class="en">Delimiters, encodings, headers, dates and Excel's serial numbers — the quiet ways a file loads wrong.</p>
+  <p class="ar">الفواصل والترميز والعناوين والتواريخ والأرقام التسلسلية في إكسل — الطرق الصامتة التي يُحمَّل بها الملف خطأً.</p>
+</a>
+<a class="lesson-card" href="../lessons/t1-lesson-05.html#t1-lesson-05">
+  <span class="n">05</span><span class="state" data-page-state="t1-lesson-05" hidden></span>
+  <h3><span class="en">Nested Data and APIs: JSON</span><span class="ar">البيانات المتشعّبة والواجهات: JSON وAPI</span></h3>
+  <p class="en">Parsing JSON, flattening it into a table, and pulling data from an API with status codes, pages and rate limits.</p>
+  <p class="ar">تحليل JSON وتسطيحه إلى جدول وجلب البيانات من واجهة برمجية برموز الاستجابة والصفحات وحدود المعدّل.</p>
+</a>
+<a class="lesson-card" href="../lessons/t1-lesson-06.html#t1-lesson-06">
+  <span class="n">06</span><span class="state" data-page-state="t1-lesson-06" hidden></span>
+  <h3><span class="en">Did It Really Load? Validation &amp; Capstone</span><span class="ar">هل تحمّلت فعلًا؟ التحقّق والمشروع الختامي</span></h3>
+  <p class="en">A validation ritual for every new dataset, choosing the right format, and a capstone from raw sources to a typed table.</p>
+  <p class="ar">طقس تحقّق لكل مجموعة بيانات جديدة، واختيار الصيغة المناسبة، ومشروع ختامي من المصادر الخام إلى جدول مضبوط الأنواع.</p>
+</a>
+</div>
+<h2 id="t1idx-h2"><span class="en">Check what stuck</span><span class="ar">تأكّد ممّا رسخ</span></h2>
+<p class="en">Every lesson has a test of its own, sat after that lesson and nothing later. The Execution Lab replays the chapter&rsquo;s trickiest programs one line at a time, the glossary collects every term and where it is used, and the three chapter tests &mdash; A, B and C, the same size &mdash; cover the whole chapter.</p>
+<p class="ar">لكل درس اختباره الخاص، يُؤدَّى بعد ذلك الدرس ولا يفترض شيئًا بعده. ويعيد مختبر التنفيذ تشغيل أصعب برامج الفصل سطرًا سطرًا، ويجمع القاموس كل مصطلح وأين يُستعمل، أمّا اختبارات الفصل الثلاثة &mdash; أ وب وج، وبالحجم نفسه &mdash; فتغطي الفصل كله.</p>
+<div class="grid grid-tight">
+<a class="side-card test" href="../tests/t1-test-01.html#t1-test-01"><span class="ic">✎</span><span class="t"><span class="en">Test 1 — The Three Shapes of Data</span><span class="ar">اختبار 1 — أشكال البيانات الثلاثة</span></span><span class="state" data-page-state="t1-test-01" hidden></span></a>
+<a class="side-card test" href="../tests/t1-test-02.html#t1-test-02"><span class="ic">✎</span><span class="t"><span class="en">Test 2 — What the Values Mean</span><span class="ar">اختبار 2 — ماذا تعني القيم؟</span></span><span class="state" data-page-state="t1-test-02" hidden></span></a>
+<a class="side-card test" href="../tests/t1-test-03.html#t1-test-03"><span class="ic">✎</span><span class="t"><span class="en">Test 3 — From Python Containers to pandas dtypes</span><span class="ar">اختبار 3 — من حاويات بايثون إلى أنواع pandas</span></span><span class="state" data-page-state="t1-test-03" hidden></span></a>
+<a class="side-card test" href="../tests/t1-test-04.html#t1-test-04"><span class="ic">✎</span><span class="t"><span class="en">Test 4 — Flat Files: CSV and Excel</span><span class="ar">اختبار 4 — الملفات المسطّحة: CSV وExcel</span></span><span class="state" data-page-state="t1-test-04" hidden></span></a>
+<a class="side-card test" href="../tests/t1-test-05.html#t1-test-05"><span class="ic">✎</span><span class="t"><span class="en">Test 5 — Nested Data and APIs: JSON</span><span class="ar">اختبار 5 — البيانات المتشعّبة والواجهات: JSON وAPI</span></span><span class="state" data-page-state="t1-test-05" hidden></span></a>
+<a class="side-card test" href="../tests/t1-test-06.html#t1-test-06"><span class="ic">✎</span><span class="t"><span class="en">Test 6 — Did It Really Load? Validation &amp; Capstone</span><span class="ar">اختبار 6 — هل تحمّلت فعلًا؟ التحقّق والمشروع الختامي</span></span><span class="state" data-page-state="t1-test-06" hidden></span></a>
+<a class="side-card lab" href="../labs/t1-lab.html#t1-lab"><span class="ic">▶</span><span class="t"><span class="en">Execution Lab &mdash; watch the code run</span><span class="ar">مختبر التنفيذ &mdash; شاهد الكود يُنفَّذ</span></span><span class="state" data-page-state="t1-lab" hidden></span></a>
+<a class="side-card glossary" href="../glossary/t1-glossary.html#t1-glossary"><span class="ic">Aa</span><span class="t"><span class="en">Glossary &mdash; every term and where it is used</span><span class="ar">القاموس &mdash; كل مصطلح وأين يُستعمل</span></span><span class="state" data-page-state="t1-glossary" hidden></span></a>
+<a class="side-card exam" href="../exams/t1-exam-a.html#t1-exam-a"><span class="ic">★</span><span class="t"><span class="en">Chapter Test A — Core</span><span class="ar">اختبار الفصل أ — الأساسيات</span></span><span class="state" data-page-state="t1-exam-a" hidden></span></a>
+<a class="side-card exam" href="../exams/t1-exam-b.html#t1-exam-b"><span class="ic">★</span><span class="t"><span class="en">Chapter Test B — Applied</span><span class="ar">اختبار الفصل ب — التطبيق</span></span><span class="state" data-page-state="t1-exam-b" hidden></span></a>
+<a class="side-card exam" href="../exams/t1-exam-c.html#t1-exam-c"><span class="ic">★</span><span class="t"><span class="en">Chapter Test C — Advanced</span><span class="ar">اختبار الفصل ج — المتقدم</span></span><span class="state" data-page-state="t1-exam-c" hidden></span></a>
+</div>
+
+  <h2 id="t1idx-h4"><span class="en">How to use this chapter</span><span class="ar">كيف تستخدم هذا الفصل</span></h2>
+  <ul>
+    <li><span class="en">Read the problem first and try to name the defect yourself before scrolling.</span><span class="ar">اقرأ المشكلة أولًا وحاول تسمية العيب بنفسك قبل المتابعة.</span></li>
+    <li><span class="en">Type the starting code and run it. Feeling the bug is half the lesson.</span><span class="ar">اكتب الكود الابتدائي وشغّله. الإحساس بالخلل نصف الدرس.</span></li>
+    <li><span class="en">Step through the traces: the right-hand panels show exactly what each line did to the data.</span><span class="ar">تنقّل في التتبّعات: تُظهر اللوحات اليمنى بالضبط ما فعله كل سطر بالبيانات.</span></li>
+    <li><span class="en">Use the hint before the answer, the answer before the explanation, and the Review links when you miss.</span><span class="ar">استعمل التلميح قبل الجواب، والجواب قبل الشرح، وروابط المراجعة عندما تخطئ.</span></li>
+  </ul>
+
+  <div class="card takeaways">
+    <h3 id="t1idx-s1"><span class="en">The chapter in one line</span><span class="ar">الفصل في سطر واحد</span></h3>
+    <p class="en">Before you compute anything, know the shape of the data, the meaning of its values, the type it was stored as, and whether it really arrived intact.</p>
+    <p class="ar">قبل أن تحسب أي شيء، اعرف شكل البيانات، ومعنى قيمها، والنوع الذي خُزّنت به، وهل وصلت فعلًا سليمة.</p>
+  </div>
+
+</section>
+<nav class="pager"></nav>
+</main>
+<footer class="site">
+  <span class="en">Works fully offline · nothing you answer leaves this device</span>
+  <span class="ar">يعمل دون اتصال بالكامل · لا تغادر إجاباتك هذا الجهاز</span>
+</footer>
+<script src="../assets/js/registry.js"></script>
+<script src="../assets/js/course.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/anchors.js"></script>
+<script src="../assets/js/chrome.js"></script>
+<script src="../assets/js/code.js"></script>
+<script src="../assets/js/home.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

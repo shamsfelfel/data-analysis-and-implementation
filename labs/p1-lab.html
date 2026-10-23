@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Data analysis taught from first principles to professional practice, in English and Arabic, with tests, a glossary, diagrams and a step-through execution lab.">
+<title data-en="Execution Lab · Practical 1 · Data Analysis" data-ar="مختبر التنفيذ · مقدمة في تحليل البيانات وتجهيز الأدوات · تحليل البيانات">Execution Lab · Practical 1 · Data Analysis</title>
+<script>
+/* Theme, language and the path back to the site root, all before the
+   first paint: a dark reader must not see a white flash, and an Arabic
+   reader must not see a left-to-right page redraw itself. */
+(function () {
+  window.DA_BASE = "../";
+  try {
+    var l = localStorage.getItem("da.lang");
+    if (l === "ar" || l === "en") {
+      document.documentElement.lang = l;
+      document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    }
+    var t = localStorage.getItem("da.theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  } catch (e) {}
+})();
+</script>
+<meta name="theme-color" content="#0d6f6a">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Data Analysis">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/chrome.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/trace.css">
+</head>
+<body data-chapter="p1" data-page="p1-lab" data-kind="lab" data-path="labs/p1-lab.html">
+<main>
+<section class="page" id="p1-lab">
+<nav class="crumbs"></nav>
+
+  <span class="kicker">Execution Lab</span>
+  <h1><span class="en">Execution Lab &mdash; watch the code run</span><span class="ar">مختبر التنفيذ &mdash; شاهد الكود يُنفَّذ</span></h1>
+  <p class="lede en">Step through the programs of this chapter one line at a time. The highlighted line is about to run; beside it you see what exists <em>right now</em> &mdash; variables, lists, tables, trees and the call stack &mdash; with what just changed flagged, and a note on what is happening. Use <strong>Next</strong> and <strong>Back</strong>, press <strong>Run</strong>, drag the slider, or click a line to jump to it.</p>
+  <p class="lede ar">تنقّل في برامج هذا الفصل سطرًا سطرًا. السطر المظلَّل على وشك أن يُنفَّذ؛ وبجانبه ترى ما هو موجود <em>الآن</em> &mdash; المتغيرات والقوائم والجداول والأشجار ومكدّس الاستدعاءات &mdash; مع تمييز ما تغيّر للتو وملاحظة عمّا يجري. استخدم <strong>التالي</strong> و<strong>السابق</strong>، أو اضغط <strong>تشغيل</strong>، أو اسحب المنزلق، أو انقر سطرًا للانتقال إليه.</p>
+  <h2 id="p1lab-h1"><span class="en">A first peek at the real file</span><span class="ar">نظرة أولى إلى الملف الحقيقي</span></h2>
+  <p class="en">Five questions asked of the real cafeteria file before any cleaning: how big is it, how many orders, how many repeated lines, how many spellings of item, how many missing prices. A preview of Lesson 3 - the point here is what each answer tells you about the file.</p>
+  <p class="ar">خمسة أسئلة تُطرح على ملف الكافتيريا الحقيقي قبل أي تنظيف: ما حجمه، وكم طلبًا فيه، وكم سطرًا مكررًا، وكم طريقة كتابة للصنف، وكم سعرًا مفقودًا. معاينة للدرس 3 — والمهم هنا ماذا يخبرك كل جواب عن الملف.</p>
+  <div data-trace-id="p1-l1-csv-peek"></div>
+  <h2 id="p1lab-h2"><span class="en">One project, stage by stage - with a loop back</span><span class="ar">مشروع واحد، طورًا بطور — مع رجوع إلى الخلف</span></h2>
+  <p class="en">Step through the cafeteria project. The left pane is the plan; the right shows the stage, the current question, the artifact that exists once the line is done, the number of rows in the working table and how many times we looped back. Watch step 4: the data cannot answer the first question, so the project returns to Ask.</p>
+  <p class="ar">تابع مشروع الكافتيريا خطوة خطوة. اللوحة اليسرى هي الخطة؛ واليمنى تعرض الطور والسؤال الحالي والناتج الذي يوجد بعد انتهاء السطر وعدد صفوف الجدول وعدد مرات الرجوع إلى الخلف. انتبه إلى الخطوة 4: البيانات لا تستطيع الإجابة عن السؤال الأول فيعود المشروع إلى طور السؤال.</p>
+  <div data-trace-id="p1-l1-lifecycle-run"></div>
+  <h2 id="p1lab-h3"><span class="en">A workbench check in miniature</span><span class="ar">فحص بيئة العمل في صورة مصغّرة</span></h2>
+  <p class="en">The same idea as check_env.py with three checks: each check() call records PASS or FAIL in a list and keeps going, so one missing package does not hide the others.</p>
+  <p class="ar">الفكرة نفسها في check_env.py لكن بثلاثة فحوص: كل استدعاء لـ check() يسجّل PASS أو FAIL في قائمة ويواصل العمل، فلا تُخفي حزمة مفقودة واحدة ما سواها.</p>
+  <div data-trace-id="p1-l2-check-mini"></div>
+  <h2 id="p1lab-h4"><span class="en">check_env.py on a classmate's computer: red, fix, green</span><span class="ar">check_env.py على حاسوب زميل: أحمر ثم إصلاح ثم أخضر</span></h2>
+  <p class="en">The real script, run twice around one fix. Watch the verdict list and the exit code change.</p>
+  <p class="ar">السكربت الحقيقي، مشغَّل مرتين حول إصلاح واحد. راقب قائمة الأحكام ورمز الخروج وهما يتغيران.</p>
+  <div data-trace-id="p1-l2-check-run"></div>
+  <h2 id="p1lab-h5"><span class="en">A terminal session: folder, environment, packages, freeze</span><span class="ar">جلسة طرفية: مجلد وبيئة وحزم وتجميد</span></h2>
+  <p class="en">Ten commands, step by step. Watch four things change: the current folder, which environment is active, which Python answers, and which packages that Python can see.</p>
+  <p class="ar">عشرة أوامر خطوة بخطوة. راقب أربعة أشياء تتغير: المجلد الحالي، والبيئة المفعّلة، ونسخة Python التي تجيب، والحزم التي تراها.</p>
+  <div data-trace-id="p1-l2-venv-session"></div>
+  <h2 id="p1lab-h6"><span class="en">Trace — the first analysis, line by line</span><span class="ar">تتبّع — التحليل الأول، سطرًا سطرًا</span></h2>
+  <p class="en">The cafeteria analysis as one small program, run on the first 24 order lines of the real file. Watch the table gain a column, then watch three rows that should not be counted disappear and the top item's revenue fall.</p>
+  <p class="ar">تحليل الكافتيريا كبرنامج صغير واحد، يُشغَّل على أول 24 سطر طلب من الملف الحقيقي. شاهد الجدول يكتسب عمودًا، ثم شاهد ثلاثة صفوف لا ينبغي عدّها تختفي وإيراد الصنف الأول يهبط.</p>
+  <div data-trace-id="p1-l3-first-analysis"></div>
+  <h2 id="p1lab-h7"><span class="en">Trace — the same analysis as two functions</span><span class="ar">تتبّع — التحليل نفسه في دالتين</span></h2>
+  <p class="en">The analysis rewritten as load_orders and revenue_by_item. Watch the call stack: each function receives what it needs and returns a result, so a cell that calls it does not depend on any other cell having run first.</p>
+  <p class="ar">التحليل مكتوبًا في الدالتين load_orders وrevenue_by_item. راقب مكدّس الاستدعاءات: كل دالة تستلم ما تحتاجه وتُرجع نتيجة، فلا تعتمد الخلية التي تستدعيها على تشغيل أي خلية أخرى قبلها.</p>
+  <div data-trace-id="p1-l3-functions"></div>
+  <h2 id="p1lab-h8"><span class="en">Trace — a notebook session that lies</span><span class="ar">تتبّع — جلسة دفتر تكذب</span></h2>
+  <p class="en">The same five cells, run in a real session: once in order, then cell 4 again by accident, then Restart & Run All. Watch the kernel's variables and the execution counter, and compare them with the output the page keeps showing.</p>
+  <p class="ar">الخلايا الخمس نفسها في جلسة حقيقية: مرة بالترتيب، ثم الخلية 4 مرة ثانية بالخطأ، ثم Restart & Run All. راقب متغيّرات النواة وعدّاد التنفيذ وقارنها بالناتج الذي تواصل الصفحة عرضه.</p>
+  <div data-trace-id="p1-l3-hidden-state"></div>
+  <h2 id="p1lab-h9"><span class="en">Build a PivotTable step by step</span><span class="ar">بناء جدول محوري خطوة بخطوة</span></h2>
+  <p class="en">Revenue by item, built from a 15-line excerpt of the real Table: the fields you drag, what the PivotTable shows after each drag, and the moment it goes stale. Written by hand because Excel is not Python; menu names vary slightly by version.</p>
+  <p class="ar">الإيراد حسب الصنف، مبنيًّا من مقتطف من 15 بندًا من الجدول الفعلي: الحقول التي تسحبها، وما يعرضه الجدول المحوري بعد كل سحب، واللحظة التي يتقادم فيها. كُتب يدويًّا لأن إكسل ليس بايثون؛ وتختلف أسماء القوائم قليلًا بين الإصدارات.</p>
+  <div data-trace-id="p1-l4-pivot"></div>
+  <h2 id="p1lab-h10"><span class="en">Step through one SUMIFS</span><span class="ar">تتبّع صيغة SUMIFS خطوة بخطوة</span></h2>
+  <p class="en">Which cells does =SUMIFS(...) read, and what is the running total after each row? The excerpt is the first 18 lines of the real file. Excel is not Python, so this walk-through is written by hand (the // notes are not part of a real formula).</p>
+  <p class="ar">ما الخلايا التي تقرؤها الصيغة =SUMIFS(...) وما المجموع الجاري بعد كل صف؟ المقتطف هو أول 18 بندًا من الملف الفعلي. إكسل ليس بايثون، لذا كُتبت هذه الخطوات يدويًّا (ملاحظات // ليست جزءًا من صيغة حقيقية).</p>
+  <div data-trace-id="p1-l4-sumifs"></div>
+  <h2 id="p1lab-h11"><span class="en">How XLOOKUP finds a menu price</span><span class="ar">كيف يجد XLOOKUP سعر القائمة</span></h2>
+  <p class="en">One real order line (sheet row 62), first with a stray trailing space, then with TRIM applied. Watch which Menu cells the lookup compares and returns. Written by hand because Excel is not Python.</p>
+  <p class="ar">بند طلب فعلي واحد (صف الورقة 62)، أولًا بفراغ زائد في آخره ثم بعد تطبيق TRIM. راقب أي خلايا من Menu تقارنها عملية البحث وأيها تُعيد. كُتب يدويًّا لأن إكسل ليس بايثون.</p>
+  <div data-trace-id="p1-l4-xlookup"></div>
+  <h2 id="p1lab-h12"><span class="en">Applied Steps, one at a time</span><span class="ar">الخطوات المطبَّقة، خطوة بخطوة</span></h2>
+  <p class="en">Step through the Orders query line by line. The grid is a real excerpt of the file: ten of the 771 lines and five of the eight columns, so you can see exactly which row each step touches; the counters are for the whole file. Highlighted cells are what the step just changed, and the output pane lists the Applied Steps recorded so far.</p>
+  <p class="ar">تابع استعلام الطلبات سطرًا بسطر. الشبكة مقتطف حقيقي من الملف: عشرة من 771 سطرًا وخمسة من ثمانية أعمدة، لترى بالضبط أي صف تلمسه كل خطوة؛ أما العدّادات فللملف كله. الخلايا المظلَّلة هي ما غيّرته الخطوة للتو، وتسرد لوحة المُخرَجات الخطوات المطبَّقة حتى الآن.</p>
+  <div data-trace-id="p1-l5-applied-steps"></div>
+  <h2 id="p1lab-h13"><span class="en">One measure, many answers: filter context</span><span class="ar">مقياس واحد وإجابات كثيرة: سياق المرشِّح</span></h2>
+  <p class="en">The Falafel Sandwich bar and the three measures of this lesson. Watch the filter context decide which rows SUMX may see, then watch the same formulas give different numbers when the filter is removed. The rows are real; only the first six of the 84 Falafel lines are drawn.</p>
+  <p class="ar">عمود Falafel Sandwich والمقاييس الثلاثة في هذا الدرس. شاهد سياق المرشِّح يقرر أي الصفوف تراها SUMX، ثم شاهد الصيغ نفسها تعطي أرقامًا مختلفة عند إزالة المرشِّح. الصفوف حقيقية؛ ورُسمت فقط أول ستة من أسطر الفلافل الـ 84.</p>
+  <div data-trace-id="p1-l5-measure-context"></div>
+  <h2 id="p1lab-h14"><span class="en">How a filter travels through a relationship</span><span class="ar">كيف يعبر المرشِّح العلاقة</span></h2>
+  <p class="en">A slicer on the Menu table narrows the Orders table through the relationship, and the measures answer for what is left. Then a slicer on Orders shows that the filter does not flow backwards. All counts are from the cleaned cafeteria data.</p>
+  <p class="ar">يضيّق مقطِّع على جدول Menu جدولَ Orders عبر العلاقة، وتجيب المقاييس عمّا تبقّى. ثم يُظهر مقطِّع على Orders أن المرشِّح لا يجري إلى الخلف. كل الأعداد من بيانات الكافتيريا المنظَّفة.</p>
+  <div data-trace-id="p1-l5-relationship-filter"></div>
+  <h2 id="p1lab-h15"><span class="en">clean() then answer(): the table shrinks rule by rule</span><span class="ar">clean() ثم answer(): الجدول يتقلّص قاعدةً بعد قاعدة</span></h2>
+  <p class="en">Twelve real lines from the cafeteria file: one exact duplicate, one refund, one price typo, one 'n/a' price, three spellings of Latte and one of Espresso, and a blank payment. Watch which rule removes which line, then how the answer is computed from what is left.</p>
+  <p class="ar">اثنا عشر سطرًا حقيقيًّا من ملف الكافتيريا: تكرار تامّ واحد، واسترجاع واحد، وخطأ طباعي في سعر، وسعر «n/a»، وثلاث كتابات لـ Latte وأخرى لـ Espresso، ودفع فارغ. راقب أي قاعدة تُزيل أي سطر، ثم كيف تُحسب الإجابة ممّا تبقّى.</p>
+  <div data-trace-id="p1-l6-clean-answer"></div>
+  <h2 id="p1lab-h16"><span class="en">Three tools, one answer, one reconciliation</span><span class="ar">ثلاث أدوات، إجابة واحدة، ومطابقة واحدة</span></h2>
+  <p class="en">Step through the same 12-line excerpt in pandas, Excel and Power BI, line the three answers up in a reconciliation table, then break one rule in one tool and see how the table points at it.</p>
+  <p class="ar">تتبّع المقتطف نفسه ذا الاثني عشر سطرًا في pandas وإكسل وPower BI، وصُفّ الإجابات الثلاث في جدول مطابقة، ثم اكسر قاعدة واحدة في أداة واحدة وانظر كيف يدلّك الجدول عليها.</p>
+  <div data-trace-id="p1-l6-three-tools"></div>
+
+</section>
+<nav class="pager"></nav>
+</main>
+<footer class="site">
+  <span class="en">Works fully offline · nothing you answer leaves this device</span>
+  <span class="ar">يعمل دون اتصال بالكامل · لا تغادر إجاباتك هذا الجهاز</span>
+</footer>
+<script src="../assets/js/registry.js"></script>
+<script src="../assets/js/course.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/anchors.js"></script>
+<script src="../assets/js/chrome.js"></script>
+<script src="../assets/js/code.js"></script>
+<script src="../assets/data/traces/p1-l1-csv-peek.js"></script>
+<script src="../assets/data/traces/p1-l1-lifecycle-run.js"></script>
+<script src="../assets/data/traces/p1-l2-check-mini.js"></script>
+<script src="../assets/data/traces/p1-l2-check-run.js"></script>
+<script src="../assets/data/traces/p1-l2-venv-session.js"></script>
+<script src="../assets/data/traces/p1-l3-first-analysis.js"></script>
+<script src="../assets/data/traces/p1-l3-functions.js"></script>
+<script src="../assets/data/traces/p1-l3-hidden-state.js"></script>
+<script src="../assets/data/traces/p1-l4-pivot.js"></script>
+<script src="../assets/data/traces/p1-l4-sumifs.js"></script>
+<script src="../assets/data/traces/p1-l4-xlookup.js"></script>
+<script src="../assets/data/traces/p1-l5-applied-steps.js"></script>
+<script src="../assets/data/traces/p1-l5-measure-context.js"></script>
+<script src="../assets/data/traces/p1-l5-relationship-filter.js"></script>
+<script src="../assets/data/traces/p1-l6-clean-answer.js"></script>
+<script src="../assets/data/traces/p1-l6-three-tools.js"></script>
+<script src="../assets/js/trace.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

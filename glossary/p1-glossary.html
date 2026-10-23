@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Data analysis taught from first principles to professional practice, in English and Arabic, with tests, a glossary, diagrams and a step-through execution lab.">
+<title data-en="Glossary · Practical 1 · Data Analysis" data-ar="قاموس المصطلحات · مقدمة في تحليل البيانات وتجهيز الأدوات · تحليل البيانات">Glossary · Practical 1 · Data Analysis</title>
+<script>
+/* Theme, language and the path back to the site root, all before the
+   first paint: a dark reader must not see a white flash, and an Arabic
+   reader must not see a left-to-right page redraw itself. */
+(function () {
+  window.DA_BASE = "../";
+  try {
+    var l = localStorage.getItem("da.lang");
+    if (l === "ar" || l === "en") {
+      document.documentElement.lang = l;
+      document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    }
+    var t = localStorage.getItem("da.theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  } catch (e) {}
+})();
+</script>
+<meta name="theme-color" content="#0d6f6a">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Data Analysis">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/chrome.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/glossary.css">
+</head>
+<body data-chapter="p1" data-page="p1-glossary" data-kind="glossary" data-path="glossary/p1-glossary.html">
+<main>
+<section class="page" id="p1-glossary">
+<nav class="crumbs"></nav>
+
+  <span class="kicker">Glossary</span>
+  <h1><span class="en">Glossary &mdash; Introduction to Data Analysis &amp; Tools Setup</span><span class="ar">القاموس &mdash; مقدمة في تحليل البيانات وتجهيز الأدوات</span></h1>
+  <p class="lede en">Every term of art this chapter uses, with its meaning and where it is used. Search, filter by category, or flip through the cards and mark what you already know.</p>
+  <p class="lede ar">كل مصطلح فنّي يستعمله هذا الفصل، مع معناه وأين يُستعمل. ابحث أو صفِّ حسب الفئة، أو تصفّح البطاقات وعلّم ما تعرفه.</p>
+  <div data-glossary="p1"></div>
+
+</section>
+<nav class="pager"></nav>
+</main>
+<footer class="site">
+  <span class="en">Works fully offline · nothing you answer leaves this device</span>
+  <span class="ar">يعمل دون اتصال بالكامل · لا تغادر إجاباتك هذا الجهاز</span>
+</footer>
+<script src="../assets/js/registry.js"></script>
+<script src="../assets/js/course.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/anchors.js"></script>
+<script src="../assets/js/chrome.js"></script>
+<script src="../assets/js/code.js"></script>
+<script src="../assets/data/glossary-p1.js"></script>
+<script src="../assets/js/glossary.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

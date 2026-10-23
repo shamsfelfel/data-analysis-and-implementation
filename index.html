@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Data analysis taught from first principles to professional practice, in English and Arabic, with tests, a glossary, diagrams and a step-through execution lab.">
+<title data-en="Data Analysis &amp; Implementation" data-ar="تحليل البيانات وتطبيقها">Data Analysis &amp; Implementation</title>
+<script>
+/* Theme, language and the path back to the site root, all before the
+   first paint: a dark reader must not see a white flash, and an Arabic
+   reader must not see a left-to-right page redraw itself. */
+(function () {
+  window.DA_BASE = "";
+  try {
+    var l = localStorage.getItem("da.lang");
+    if (l === "ar" || l === "en") {
+      document.documentElement.lang = l;
+      document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    }
+    var t = localStorage.getItem("da.theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  } catch (e) {}
+})();
+</script>
+<meta name="theme-color" content="#0d6f6a">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Data Analysis">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/base.css">
+<link rel="stylesheet" href="assets/css/chrome.css">
+<link rel="stylesheet" href="assets/css/components.css">
+</head>
+<body data-chapter="" data-page="home" data-kind="home" data-path="index.html">
+<main>
+<section class="page" id="home">
+
+
+  <span class="kicker">Data Analysis &middot; DSAI</span>
+  <h1><span class="en">From raw files to findings you can defend — and data a model can learn from</span><span class="ar">من الملفات الخام إلى استنتاجات يمكنك الدفاع عنها — وبيانات يستطيع النموذج أن يتعلّم منها</span></h1>
+
+  <p class="lede en">One course in two tracks. <strong>Theory</strong> explains what data is, how it is shaped, cleaned, drawn and read, and why each step decides whether an AI model works. <strong>Practical</strong> is the lab: Python, Excel and Power BI, step by step, on real-looking datasets. Every lesson ends with a test, every chapter with three, and the hard programs run one line at a time in an execution lab.</p>
+  <p class="lede ar">مقرر واحد في مسارين. يشرح <strong>النظري</strong> ما البيانات وكيف تُشكَّل وتُنظَّف وتُرسم وتُقرأ، ولماذا تقرّر كل خطوة منها هل ينجح نموذج الذكاء الاصطناعي. أمّا <strong>العملي</strong> فهو المختبر: Python وExcel وPower BI خطوة بخطوة على مجموعات بيانات واقعية. ينتهي كل درس باختبار وكل فصل بثلاثة اختبارات، وتُشغَّل البرامج الصعبة سطرًا سطرًا في مختبر التنفيذ.</p>
+
+  <div id="resume" hidden></div>
+
+  <h2 id="track-theory"><span class="en">Theory — Data Analysis and Representation</span><span class="ar">النظري — تحليل وتمثيل البيانات</span> <span class="code-badge">DSAI 2305</span></h2>
+<p class="en">What the ideas are and why they matter: data types and sources, transformation, visualisation, EDA, time series, Excel, Power BI, augmentation.</p>
+<p class="ar">ما هي الأفكار ولماذا تهم: أنواع البيانات ومصادرها، والتحويل، والتصوير، والتحليل الاستكشافي، والسلاسل الزمنية، وإكسل، وPower BI، وتعزيز البيانات.</p>
+<div class="grid">
+<a class="chapter-card" href="chapters/t1.html#t1-chapter">
+  <span class="n">T1</span>
+  <h3><span class="en">Basic Data Types and Data Sources</span><span class="ar">أنواع البيانات الأساسية ومصادرها</span></h3>
+  <p class="en">How data is organised, what its values mean, how pandas types it, and how it reaches you from CSV, Excel, JSON and APIs.</p>
+  <p class="ar">كيف تُنظَّم البيانات، وماذا تعني قيمها، وكيف يُنمِّطها pandas، وكيف تصلك من CSV وإكسل وJSON وواجهات API.</p>
+  <p class="meta en">6 lessons &middot; 6 lesson tests &middot; 3 chapter tests &middot; lab &middot; glossary</p>
+  <p class="meta ar">6 دروس &middot; 6 اختبارات دروس &middot; 3 اختبارات فصل &middot; مختبر &middot; قاموس</p>
+  <span class="chapter-progress" data-chapter-progress="t1" hidden></span>
+</a>
+</div>
+<h3><span class="en">The road ahead</span><span class="ar">الطريق أمامنا</span></h3>
+<ol class="roadmap" data-roadmap="theory"></ol>
+<h2 id="track-practical"><span class="en">Practical — Data Analysis and Visualization Lab</span><span class="ar">العملي — مختبر تحليل البيانات وتصويرها</span> <span class="code-badge">DSAI 1103</span></h2>
+<p class="en">Hands-on labs with Python, Excel and Power BI: from setting up your tools to an end-to-end pipeline and dashboard.</p>
+<p class="ar">مختبرات عملية بـ Python وإكسل وPower BI: من تجهيز الأدوات إلى خط معالجة كامل ولوحة معلومات.</p>
+<div class="grid">
+<a class="chapter-card" href="chapters/p1.html#p1-chapter">
+  <span class="n">P1</span>
+  <h3><span class="en">Introduction to Data Analysis &amp; Tools Setup</span><span class="ar">مقدمة في تحليل البيانات وتجهيز الأدوات</span></h3>
+  <p class="en">Set up Excel, Power BI Desktop and Jupyter, learn the analysis lifecycle, and answer one question three ways.</p>
+  <p class="ar">جهّز إكسل وPower BI Desktop وJupyter، وتعلّم دورة حياة التحليل، وأجب عن سؤال واحد بثلاث طرق.</p>
+  <p class="meta en">6 lessons &middot; 6 lesson tests &middot; 3 chapter tests &middot; lab &middot; glossary</p>
+  <p class="meta ar">6 دروس &middot; 6 اختبارات دروس &middot; 3 اختبارات فصل &middot; مختبر &middot; قاموس</p>
+  <span class="chapter-progress" data-chapter-progress="p1" hidden></span>
+</a>
+</div>
+<h3><span class="en">The road ahead</span><span class="ar">الطريق أمامنا</span></h3>
+<ol class="roadmap" data-roadmap="practical"></ol>
+
+  <h2 id="home-h1"><span class="en">How every lesson is built</span><span class="ar">كيف يُبنى كل درس</span></h2>
+
+  <div class="grid grid-tight">
+    <div class="card">
+      <h4><span class="en">Code that evolves</span><span class="ar">كود يتطوّر</span></h4>
+      <p class="en">Each idea starts with the obvious solution, then improves it version by version. Every version fixes a named defect — and the tests ask you which version is better and why.</p>
+      <p class="ar">تبدأ كل فكرة بالحل البديهي ثم تُحسَّن نسخةً بعد نسخة. تعالج كل نسخة عيبًا مسمّى — وتسألك الاختبارات أي النسخ أفضل ولماذا.</p>
+    </div>
+    <div class="card">
+      <h4><span class="en">An AI lens on everything</span><span class="ar">منظور الذكاء الاصطناعي في كل شيء</span></h4>
+      <p class="en">Each concept shows where it decides whether a model trains well or fails silently: features and labels, leakage, encoding, API data, drift.</p>
+      <p class="ar">يبيّن كل مفهوم أين يقرّر نجاح تدريب النموذج أو فشله الصامت: الخصائص والتسمية، والتسرّب، والترميز، وبيانات الواجهات، والانزياح.</p>
+    </div>
+    <div class="card">
+      <h4><span class="en">Problem threads</span><span class="ar">خيوط المشكلات</span></h4>
+      <p class="en">The same kinds of problem return in later chapters solved better, with the side effects and gaps of the old solution named — so you see why each new tool exists.</p>
+      <p class="ar">تعود أنواع المشكلات نفسها في فصول لاحقة بحلول أفضل، مع تسمية آثار الحل القديم وثغراته الجانبية — لترى لماذا وُجدت كل أداة جديدة.</p>
+    </div>
+    <div class="card">
+      <h4><span class="en">Fourteen kinds of question</span><span class="ar">أربعة عشر نوعًا من الأسئلة</span></h4>
+      <p class="en">True/false, multiple choice, fill in the blank, match, re-order, order the code, predict the output, trace, find the error, complete, compare and contrast, write code. Each has a hint, an answer and an explanation — all hidden until you ask — and links back to what to review.</p>
+      <p class="ar">صح/خطأ، واختيار من متعدد، وإكمال الفراغ، والتوصيل، وإعادة الترتيب، وترتيب أسطر الكود، وتوقّع المُخرَج، والتتبّع، واكتشاف الخطأ، والإكمال، والمقارنة، وكتابة الكود. لكل سؤال تلميح وجواب وشرح — كلها مخفية حتى تطلبها — وروابط تعيدك إلى ما تراجعه.</p>
+    </div>
+  </div>
+
+  <h2 id="home-h2"><span class="en">What you need before you start</span><span class="ar">ما تحتاجه قبل أن تبدأ</span></h2>
+
+  <div class="note">
+    <h4><span class="en">Introductory Python, and nothing more</span><span class="ar">بايثون التمهيدية، ولا شيء أكثر</span></h4>
+    <p class="en">Variables, lists, dictionaries, loops, functions and f-strings. No statistics and no machine learning are assumed: every term is defined before it is used. For the Practical track you will install Python and, optionally, Excel and Power BI Desktop — Practical Chapter&nbsp;1 walks you through it.</p>
+    <p class="ar">المتغيرات والقوائم والقواميس والحلقات والدوال وصيغ f-strings. لا يُفترض أي إحصاء ولا تعلّم آلي: يُعرَّف كل مصطلح قبل استعماله. وفي المسار العملي ستثبّت Python واختياريًا Excel وPower BI Desktop — ويرشدك الفصل العملي الأول إلى ذلك.</p>
+  </div>
+
+  <h2 id="home-h3"><span class="en">Reading it offline, and installing it</span><span class="ar">القراءة دون اتصال والتثبيت</span></h2>
+
+  <ul>
+    <li><span class="en">Open the course once with a connection and every page, style, diagram and question is stored on the device. After that it opens with the network off.</span><span class="ar">افتح المقرر مرة واحدة باتصال، فتُخزَّن كل صفحة ونمط ورسم وسؤال على الجهاز. وبعدها يُفتح والشبكة مغلقة.</span></li>
+    <li><span class="en">On Chrome or Edge an <strong>Install</strong> button appears in the top bar; on iPhone use <strong>Share &rarr; Add to Home Screen</strong>.</span><span class="ar">في كروم أو إيدج يظهر زر <strong>تثبيت</strong> في الشريط العلوي؛ وعلى الآيفون استخدم <strong>مشاركة &larr; إضافة إلى الشاشة الرئيسية</strong>.</span></li>
+    <li><span class="en">Answers, scores and the page you stopped at are kept on your device and nowhere else. Nothing is uploaded, and there is no account to make.</span><span class="ar">تُحفظ الإجابات والنتائج والصفحة التي توقفت عندها على جهازك وحده. لا يُرفع شيء، ولا يوجد حساب تنشئه.</span></li>
+  </ul>
+
+  <div class="card takeaways">
+    <h3 id="home-s1"><span class="en">Why this course exists</span><span class="ar">لماذا هذا المقرر</span></h3>
+    <p class="en">Most failed analyses and most failed models do not fail loudly. A column loads as text, a date is read as a number, a join duplicates rows, a chart quietly lies — and the result looks plausible. This course teaches you to see those failures before they reach a decision.</p>
+    <p class="ar">أغلب التحليلات الفاشلة وأغلب النماذج الفاشلة لا تفشل بصخب. عمود يُحمَّل نصًّا، وتاريخ يُقرأ رقمًا، ودمج يكرّر الصفوف، ورسم يكذب بهدوء — والنتيجة تبدو معقولة. يعلّمك هذا المقرر أن ترى هذه الأعطال قبل أن تصل إلى قرار.</p>
+  </div>
+
+</section>
+</main>
+<footer class="site">
+  <span class="en">Works fully offline · nothing you answer leaves this device</span>
+  <span class="ar">يعمل دون اتصال بالكامل · لا تغادر إجاباتك هذا الجهاز</span>
+</footer>
+<script src="assets/js/registry.js"></script>
+<script src="assets/js/course.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/anchors.js"></script>
+<script src="assets/js/chrome.js"></script>
+<script src="assets/js/code.js"></script>
+<script src="assets/js/home.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

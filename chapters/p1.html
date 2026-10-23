@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Data analysis taught from first principles to professional practice, in English and Arabic, with tests, a glossary, diagrams and a step-through execution lab.">
+<title data-en="Introduction to Data Analysis &amp; Tools Setup · Chapter 1 · Data Analysis &amp; Implementation" data-ar="مقدمة في تحليل البيانات وتجهيز الأدوات · الفصل 1 · تحليل البيانات وتطبيقها">Introduction to Data Analysis &amp; Tools Setup · Chapter 1 · Data Analysis &amp; Implementation</title>
+<script>
+/* Theme, language and the path back to the site root, all before the
+   first paint: a dark reader must not see a white flash, and an Arabic
+   reader must not see a left-to-right page redraw itself. */
+(function () {
+  window.DA_BASE = "../";
+  try {
+    var l = localStorage.getItem("da.lang");
+    if (l === "ar" || l === "en") {
+      document.documentElement.lang = l;
+      document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    }
+    var t = localStorage.getItem("da.theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  } catch (e) {}
+})();
+</script>
+<meta name="theme-color" content="#0d6f6a">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Data Analysis">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/chrome.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+</head>
+<body data-chapter="p1" data-page="p1-chapter" data-kind="chapter" data-path="chapters/p1.html">
+<main>
+<section class="page" id="p1-chapter">
+<nav class="crumbs"></nav>
+
+
+  <span class="kicker">Practical &middot; Chapter 1 &middot; Lab 1</span>
+  <h1><span class="en">Introduction to Data Analysis &amp; Tools Setup</span><span class="ar">مقدمة في تحليل البيانات وتجهيز الأدوات</span></h1>
+
+  <p class="lede en">Week one of the lab. Before you analyse anything you need two things: a clear picture of what analysis is &mdash; the lifecycle from a vague question to a defensible decision &mdash; and a workbench that works. By the end of the chapter you will have Python with JupyterLab, Excel and Power BI Desktop running on your own machine, you will have used all three on the same small dataset, and you will know which one to reach for and why.</p>
+  <p class="lede ar">الأسبوع الأول في المختبر. قبل أن تحلّل أي شيء تحتاج إلى أمرين: صورة واضحة لما هو التحليل &mdash; دورة الحياة من سؤال غامض إلى قرار يمكن الدفاع عنه &mdash; وبيئة عمل تعمل. وبنهاية الفصل سيكون Python مع JupyterLab وExcel وPower BI Desktop تعمل على جهازك، وتكون قد استعملتها الثلاثة على مجموعة البيانات الصغيرة نفسها، وتعرف أيّها تختار ولماذا.</p>
+
+  <div class="note">
+    <h4><span class="en">The running example</span><span class="ar">المثال الجاري</span></h4>
+    <p class="en">A <strong>campus cafeteria</strong>. One month of orders &mdash; order id, date and time, item, category, quantity, unit price, payment method &mdash; saved as a CSV and as an Excel workbook, deliberately a little messy. The manager asks vague questions (&ldquo;what sells?&rdquo;, &ldquo;when are we busy?&rdquo;) and every lesson gets you closer to answering them properly.</p>
+    <p class="ar"><strong>كافتيريا الحرم الجامعي.</strong> شهر من الطلبات &mdash; رقم الطلب والتاريخ والوقت والصنف والفئة والكمية وسعر الوحدة وطريقة الدفع &mdash; محفوظة بصيغة CSV وبصيغة مصنّف Excel، وفيها شيء من الفوضى عمدًا. ويسأل المدير أسئلة غامضة («ما الذي يُباع؟»، «متى نزدحم؟») ويقرّبك كل درس من الإجابة عنها كما ينبغي.</p>
+  </div>
+
+  <h2 id="p1idx-h3"><span class="en">What you will be able to do</span><span class="ar">ماذا ستستطيع أن تفعل</span></h2>
+  <ul class="objectives">
+    <li><span class="en">Turn a vague request into an answerable question and walk it through the analysis lifecycle, naming what each stage produces.</span><span class="ar">تحوّل طلبًا غامضًا إلى سؤال قابل للإجابة وتسيّره عبر دورة حياة التحليل مسمّيًا ما ينتجه كل طور.</span></li>
+    <li><span class="en">Install and verify Python, a virtual environment, JupyterLab, Excel and Power BI Desktop, and know what to do when one of them is not available.</span><span class="ar">تثبّت Python وبيئة افتراضية وJupyterLab وExcel وPower BI Desktop وتتحقق منها، وتعرف ماذا تفعل حين لا تتوفر إحداها.</span></li>
+    <li><span class="en">Use Jupyter notebooks reproducibly: cells, kernels, modes, shortcuts, restart-and-run-all.</span><span class="ar">تستعمل دفاتر Jupyter بطريقة قابلة للتكرار: الخلايا والنواة والأوضاع والاختصارات وإعادة التشغيل مع تنفيذ الكل.</span></li>
+    <li><span class="en">Do a first analysis in Excel and in Power BI Desktop, and spot the habits in each that quietly damage data.</span><span class="ar">تنجز تحليلًا أوليًّا في Excel وفي Power BI Desktop، وتكتشف العادات في كل منهما التي تفسد البيانات بصمت.</span></li>
+    <li><span class="en">Answer the same question in all three tools, compare the results, and choose a tool for a given job.</span><span class="ar">تجيب عن السؤال نفسه في الأدوات الثلاث، وتقارن النتائج، وتختار أداة لمهمة معيّنة.</span></li>
+  </ul>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens &mdash; analysis is the first half of every model</span><span class="ar">منظور الذكاء الاصطناعي &mdash; التحليل هو النصف الأول من كل نموذج</span></h4>
+    <p class="en">Roughly the first 60&ndash;80% of a machine-learning project is the lifecycle you will learn here: framing the question, getting the data, cleaning it, exploring it. The model is the short step in the middle; monitoring it afterwards sends you round the loop again. A student who can run this lifecycle in three tools can join any data or AI team and be useful in week one.</p>
+    <p class="ar">نحو 60&ndash;80% من أي مشروع تعلّم آلي هو دورة الحياة التي ستتعلّمها هنا: صياغة السؤال، والحصول على البيانات، وتنظيفها، واستكشافها. والنموذج هو الخطوة القصيرة في المنتصف؛ ومراقبته بعد ذلك تعيدك إلى الدورة من جديد. فمن يستطيع تشغيل هذه الدورة بثلاث أدوات يمكنه الانضمام إلى أي فريق بيانات أو ذكاء اصطناعي والإفادة منذ الأسبوع الأول.</p>
+  </div>
+
+  <div class="thread">
+    <h4><span class="en">Threads in this chapter</span><span class="ar">الخيوط في هذا الفصل</span></h4>
+    <p class="en"><strong>&ldquo;Answer a question from a table&rdquo;</strong> is solved by hand in a spreadsheet, then with a drag-and-drop model in Power BI, then in pandas &mdash; and Lesson&nbsp;6 lines the three answers up and shows where they disagree and why. It returns in Practical Chapters&nbsp;2, 3 and 8 with faster, more reproducible tools. The data-types background is in <a href="../chapters/t1.html#t1-chapter">Theory Chapter&nbsp;1</a>.</p>
+    <p class="ar"><strong>«أجب عن سؤال من جدول»</strong> يُحَلّ يدويًّا في جدول بيانات، ثم بنموذج السحب والإفلات في Power BI، ثم في pandas &mdash; ويصفّ الدرس 6 الإجابات الثلاث متجاورة ويبيّن أين تختلف ولماذا. ويعود في الفصول العملية 2 و3 و8 بأدوات أسرع وأكثر قابلية للتكرار. وخلفية أنواع البيانات في <a href="../chapters/t1.html#t1-chapter">الفصل النظري 1</a>.</p>
+  </div>
+
+  <div class="callout prereq">
+    <h4><span class="en">Before you start</span><span class="ar">قبل أن تبدأ</span></h4>
+    <p class="en">Introductory Python and a computer you may install software on. Power BI Desktop runs on Windows only; Lesson&nbsp;2 gives the alternatives for macOS and Linux users, and the chapter is written so that the Python and Excel parts stand on their own.</p>
+    <p class="ar">بايثون التمهيدية وحاسوب يُسمح لك بتثبيت البرامج عليه. يعمل Power BI Desktop على ويندوز فقط؛ ويعرض الدرس 2 البدائل لمستخدمي macOS وLinux، وقد كُتب الفصل بحيث يقوم جزءا Python وExcel بنفسيهما.</p>
+  </div>
+
+  <h2 id="p1idx-h1"><span class="en">The lessons</span><span class="ar">الدروس</span></h2>
+<div class="grid">
+<a class="lesson-card" href="../lessons/p1-lesson-01.html#p1-lesson-01">
+  <span class="n">01</span><span class="state" data-page-state="p1-lesson-01" hidden></span>
+  <h3><span class="en">The Data Analysis Lifecycle</span><span class="ar">دورة حياة تحليل البيانات</span></h3>
+  <p class="en">From a vague question to a decision: ask, acquire, clean, explore, model, communicate — and where AI projects differ.</p>
+  <p class="ar">من سؤال غامض إلى قرار: اسأل، واجمع، ونظّف، واستكشف، وانمذج، وتواصل — وأين تختلف مشاريع الذكاء الاصطناعي.</p>
+</a>
+<a class="lesson-card" href="../lessons/p1-lesson-02.html#p1-lesson-02">
+  <span class="n">02</span><span class="state" data-page-state="p1-lesson-02" hidden></span>
+  <h3><span class="en">Setting Up Your Workbench</span><span class="ar">تجهيز بيئة العمل</span></h3>
+  <p class="en">Python, a virtual environment, JupyterLab, Excel and Power BI Desktop installed and verified — plus a map of which tool for which job.</p>
+  <p class="ar">بايثون وبيئة افتراضية وJupyterLab وإكسل وPower BI Desktop مثبّتة ومفحوصة — مع خريطة لأي أداة لأي عمل.</p>
+</a>
+<a class="lesson-card" href="../lessons/p1-lesson-03.html#p1-lesson-03">
+  <span class="n">03</span><span class="state" data-page-state="p1-lesson-03" hidden></span>
+  <h3><span class="en">Jupyter Notebooks Done Right</span><span class="ar">دفاتر Jupyter كما يجب</span></h3>
+  <p class="en">Cells, kernels, modes and shortcuts — and the hidden-state trap that makes notebooks lie.</p>
+  <p class="ar">الخلايا والنواة والأوضاع والاختصارات — وفخّ الحالة الخفية الذي يجعل الدفاتر تكذب.</p>
+</a>
+<a class="lesson-card" href="../lessons/p1-lesson-04.html#p1-lesson-04">
+  <span class="n">04</span><span class="state" data-page-state="p1-lesson-04" hidden></span>
+  <h3><span class="en">Excel as an Analysis Tool</span><span class="ar">إكسل أداةً للتحليل</span></h3>
+  <p class="en">Tables, structured references, data types and a first look at a dataset — and the Excel habits that silently corrupt data.</p>
+  <p class="ar">الجداول والمراجع المهيكلة وأنواع البيانات ونظرة أولى على مجموعة بيانات — وعادات إكسل التي تفسد البيانات بصمت.</p>
+</a>
+<a class="lesson-card" href="../lessons/p1-lesson-05.html#p1-lesson-05">
+  <span class="n">05</span><span class="state" data-page-state="p1-lesson-05" hidden></span>
+  <h3><span class="en">Power BI Desktop: First Tour</span><span class="ar">Power BI Desktop: الجولة الأولى</span></h3>
+  <p class="en">Get Data, Power Query, the model and report views, and your first visuals — what Power BI automates and what it hides.</p>
+  <p class="ar">جلب البيانات وPower Query وعرضا النموذج والتقرير وأولى الرسوم — ما تؤتمته Power BI وما تخفيه.</p>
+</a>
+<a class="lesson-card" href="../lessons/p1-lesson-06.html#p1-lesson-06">
+  <span class="n">06</span><span class="state" data-page-state="p1-lesson-06" hidden></span>
+  <h3><span class="en">One Question, Three Tools</span><span class="ar">سؤال واحد بثلاث أدوات</span></h3>
+  <p class="en">Answer the same business question in Excel, Power BI and pandas, compare the results line by line, and finish the chapter project.</p>
+  <p class="ar">أجب عن السؤال التجاري نفسه في إكسل وPower BI وpandas، وقارن النتائج سطرًا بسطر، وأنجز مشروع الفصل.</p>
+</a>
+</div>
+<h2 id="p1idx-h2"><span class="en">Check what stuck</span><span class="ar">تأكّد ممّا رسخ</span></h2>
+<p class="en">Every lesson has a test of its own, sat after that lesson and nothing later. The Execution Lab replays the chapter&rsquo;s trickiest programs one line at a time, the glossary collects every term and where it is used, and the three chapter tests &mdash; A, B and C, the same size &mdash; cover the whole chapter.</p>
+<p class="ar">لكل درس اختباره الخاص، يُؤدَّى بعد ذلك الدرس ولا يفترض شيئًا بعده. ويعيد مختبر التنفيذ تشغيل أصعب برامج الفصل سطرًا سطرًا، ويجمع القاموس كل مصطلح وأين يُستعمل، أمّا اختبارات الفصل الثلاثة &mdash; أ وب وج، وبالحجم نفسه &mdash; فتغطي الفصل كله.</p>
+<div class="grid grid-tight">
+<a class="side-card test" href="../tests/p1-test-01.html#p1-test-01"><span class="ic">✎</span><span class="t"><span class="en">Test 1 — The Data Analysis Lifecycle</span><span class="ar">اختبار 1 — دورة حياة تحليل البيانات</span></span><span class="state" data-page-state="p1-test-01" hidden></span></a>
+<a class="side-card test" href="../tests/p1-test-02.html#p1-test-02"><span class="ic">✎</span><span class="t"><span class="en">Test 2 — Setting Up Your Workbench</span><span class="ar">اختبار 2 — تجهيز بيئة العمل</span></span><span class="state" data-page-state="p1-test-02" hidden></span></a>
+<a class="side-card test" href="../tests/p1-test-03.html#p1-test-03"><span class="ic">✎</span><span class="t"><span class="en">Test 3 — Jupyter Notebooks Done Right</span><span class="ar">اختبار 3 — دفاتر Jupyter كما يجب</span></span><span class="state" data-page-state="p1-test-03" hidden></span></a>
+<a class="side-card test" href="../tests/p1-test-04.html#p1-test-04"><span class="ic">✎</span><span class="t"><span class="en">Test 4 — Excel as an Analysis Tool</span><span class="ar">اختبار 4 — إكسل أداةً للتحليل</span></span><span class="state" data-page-state="p1-test-04" hidden></span></a>
+<a class="side-card test" href="../tests/p1-test-05.html#p1-test-05"><span class="ic">✎</span><span class="t"><span class="en">Test 5 — Power BI Desktop: First Tour</span><span class="ar">اختبار 5 — Power BI Desktop: الجولة الأولى</span></span><span class="state" data-page-state="p1-test-05" hidden></span></a>
+<a class="side-card test" href="../tests/p1-test-06.html#p1-test-06"><span class="ic">✎</span><span class="t"><span class="en">Test 6 — One Question, Three Tools</span><span class="ar">اختبار 6 — سؤال واحد بثلاث أدوات</span></span><span class="state" data-page-state="p1-test-06" hidden></span></a>
+<a class="side-card lab" href="../labs/p1-lab.html#p1-lab"><span class="ic">▶</span><span class="t"><span class="en">Execution Lab &mdash; watch the code run</span><span class="ar">مختبر التنفيذ &mdash; شاهد الكود يُنفَّذ</span></span><span class="state" data-page-state="p1-lab" hidden></span></a>
+<a class="side-card glossary" href="../glossary/p1-glossary.html#p1-glossary"><span class="ic">Aa</span><span class="t"><span class="en">Glossary &mdash; every term and where it is used</span><span class="ar">القاموس &mdash; كل مصطلح وأين يُستعمل</span></span><span class="state" data-page-state="p1-glossary" hidden></span></a>
+<a class="side-card exam" href="../exams/p1-exam-a.html#p1-exam-a"><span class="ic">★</span><span class="t"><span class="en">Chapter Test A — Core</span><span class="ar">اختبار الفصل أ — الأساسيات</span></span><span class="state" data-page-state="p1-exam-a" hidden></span></a>
+<a class="side-card exam" href="../exams/p1-exam-b.html#p1-exam-b"><span class="ic">★</span><span class="t"><span class="en">Chapter Test B — Applied</span><span class="ar">اختبار الفصل ب — التطبيق</span></span><span class="state" data-page-state="p1-exam-b" hidden></span></a>
+<a class="side-card exam" href="../exams/p1-exam-c.html#p1-exam-c"><span class="ic">★</span><span class="t"><span class="en">Chapter Test C — Advanced</span><span class="ar">اختبار الفصل ج — المتقدم</span></span><span class="state" data-page-state="p1-exam-c" hidden></span></a>
+</div>
+
+  <div class="card takeaways">
+    <h3 id="p1idx-s1"><span class="en">The chapter in one line</span><span class="ar">الفصل في سطر واحد</span></h3>
+    <p class="en">Analysis is a loop, not a line &mdash; and the tool is a means: choose it by what must be repeatable, shareable and checkable, not by what you already know.</p>
+    <p class="ar">التحليل حلقة لا خط مستقيم &mdash; والأداة وسيلة: اخترها بما يجب أن يكون قابلًا للتكرار والمشاركة والتدقيق، لا بما تعرفه مسبقًا.</p>
+  </div>
+
+</section>
+<nav class="pager"></nav>
+</main>
+<footer class="site">
+  <span class="en">Works fully offline · nothing you answer leaves this device</span>
+  <span class="ar">يعمل دون اتصال بالكامل · لا تغادر إجاباتك هذا الجهاز</span>
+</footer>
+<script src="../assets/js/registry.js"></script>
+<script src="../assets/js/course.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/anchors.js"></script>
+<script src="../assets/js/chrome.js"></script>
+<script src="../assets/js/code.js"></script>
+<script src="../assets/js/home.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>
