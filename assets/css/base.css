@@ -170,3 +170,13 @@ code:not(pre code) { overflow-wrap: anywhere; }
   .code { background: #fff; color: #000; border: 1px solid #999; }
   .t-kw, .t-str, .t-com, .t-num, .t-fn, .t-self { color: #000; }
 }
+
+/* ---------- more code tokens (other languages, REPL sessions) ---------- */
+.t-op     { color: #98a6bd; }
+.t-prop   { color: #ffb27a; }
+.t-prompt { color: #5fd3c6; font-weight: 700; user-select: none; -webkit-user-select: none; }
+.t-out    { color: #8f9bb0; }
+
+@media print {
+  .t-op, .t-prop, .t-prompt, .t-out { color: #000; }
+}

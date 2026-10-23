@@ -114,16 +114,23 @@ Links to files in `downloads/` are `href="@/downloads/t1/rents.csv"`. Every clai
 |---|---|
 | `<div class="note">` `.problem` `.tip` `.warn` | info / the pain / a pro tip / a trap |
 | `<div class="callout prereq">` `.ahead` | what to read before / where to go next |
-| `<pre class="code [good\|bad]" data-lang="python"><code>` | code. `data-lang`: `python` (default) `json` `excel` `dax` `m` `sql` `bash` `csv` `text` |
+| `<pre class="code [good\|bad]" data-lang="python"><code>` | code. `data-lang`: `python` (default) `json` `excel` `dax` `m` `sql` `bash` (also PowerShell/shell) `csv` (colours the header row only) `text` `py-repl` (`>>>` prompts, dimmed output). Aliases: `py sh shell ps1 xlsx pq tsql repl tsv txt`; unknown values render as plain text. Excel accepts `// comment`; DAX colours `Name =` at line start; M colours step names. A language badge and a copy button are added automatically |
 | `<div class="output">` | verified program output |
 | `<div class="exercise"><h4>…</h4>…<details class="solution"><summary>…</summary>…</details></div>` | practice with a hidden worked solution |
 | `<div class="quiz"><p class="q">…</p><ul class="options"><li><button class="opt" data-correct="true">…</button></li>…</ul><div class="feedback" hidden>…</div></div>` | inline check (see the sibling course for exact markup) |
-| `<div class="ai-lens"><h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>…</div>` | the AI flavour box (≥ 1 per concept section) |
+| `<div class="ai-lens"><h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>…</div>` | the AI flavour box (≥ 1 per concept section). The header **must be an `<h4>` that is a direct child** (icons are drawn on `h4::before`); same for `.thread` |
 | `<div class="thread"><h4>Thread · name</h4>…</div>` | link this problem to its solutions in other chapters; state the gap |
 | `<figure class="diagram" data-diagram="t1-three-shapes"><figcaption><span class="en">…</span><span class="ar">…</span></figcaption></figure>` | a pre-rendered Mermaid diagram (see §6) |
 | `<div class="evolve">` | **versioned code evolution** (see below) |
 | `<div data-trace-id="t1-csv-read"></div>` | a step-through widget (see §5); also allowed inline in lessons |
 | `<div class="obj-table">` / plain `<table>` | tables (wrap wide ones in `<div class="table-wrap">`) |
+| `<ul class="objectives">` | learning objectives with tick markers (no generated heading; an optional `<h4>` is a small label) |
+| `<table class="sheet">` | a spreadsheet look for showing Excel data: row/column headers are `<th>`; cell classes `hd num fx err hl` (`hl` = highlighted/selected cell); always LTR |
+| `<ol class="steps">` / `.step-list` | numbered set-up procedures with large step badges |
+| `<a class="data-dl" href="@/downloads/p1/cafeteria_orders.csv">` | a "download the sample file" button-link |
+| `<span class="badge win-only">` (`free`, `paid`, `account`) | small pills for tool requirements |
+| `<kbd>Ctrl</kbd>` | keyboard keys |
+| `<span class="term" data-term="nominal">…</span>` | a glossary term mention (feeds the glossary's "used in" list; dotted underline) |
 
 **Evolve (the primary teaching device).**
 
