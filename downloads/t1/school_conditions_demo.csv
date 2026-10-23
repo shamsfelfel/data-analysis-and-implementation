@@ -1,0 +1,14 @@
+school_id,governorate,level,students,damage_level,classroom_temp_c,repair_weeks
+201,Gaza,Preparatory,455,partial,14.5,12
+202,Khan Younis,Secondary,553,total,12.0,41
+203,Rafah,Primary,455,slight,15.5,3
+204,Deir al-Balah,Preparatory,402,partial,13.0,10
+205,North Gaza,Secondary,513,total,11.5,44
+206,Gaza,Primary,367,slight,16.0,2
+207,Khan Younis,Preparatory,482,partial,13.5,14
+208,Rafah,Secondary,239,partial,14.0,11
+209,Deir al-Balah,Primary,349,slight,15.0,4
+210,North Gaza,Preparatory,465,partial,13.0,9
+211,Gaza,Secondary,357,total,12.5,38
+212,Khan Younis,Primary,307,slight,17.0,3
+213,Rafah,Preparatory,298,total,11.0,36

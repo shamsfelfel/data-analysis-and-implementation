@@ -1,0 +1,9 @@
+%% alt: The four kinds of analytics question as a ladder. Descriptive asks what happened, for example total sales in September. Diagnostic asks why it happened, for example why Sunday is busier. Predictive asks what will happen, for example orders at noon next Sunday. Prescriptive asks what we should do, for example how many wraps to prepare. Each step adds something to the one before.
+flowchart TD
+  D["1 Descriptive<br/>What happened?<br/>Total sales in September"]
+  G["2 Diagnostic<br/>Why did it happen?<br/>Why is Sunday busier?"]
+  P["3 Predictive<br/>What will happen?<br/>Orders at noon next Sunday"]
+  R["4 Prescriptive<br/>What should we do?<br/>How many wraps to prepare"]
+  D -- "adds reasons" --> G
+  G -- "adds a forecast" --> P
+  P -- "adds a decision rule" --> R

@@ -13,6 +13,7 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 
 | Where | Solution | Gap that the next row closes |
 |---|---|---|
+| T1 L1 | one loader per shape chosen by eye (`open`, `json.loads`, `pd.read_csv`) | each assumes its shape, nothing checks the result, types are guessed — `read_csv` on the free-text adverts file silently returns a (7, 5) table whose header is the first advert |
 | T1 L3 | hand-written loop over lines, `split(",")`, every value a string | no types, breaks on a comma inside a field, no header handling |
 | T1 L3 | `csv` module → `list[dict]` | still all strings; no vectorised arithmetic; nothing checks the data |
 | T1 L3–L4 | `pd.read_csv(path)` | silently guesses dtypes: one stray `"1,200"` or `"TBD"` turns a number column into `object` (text) — note `"n/a"`, `"NA"`, `"NaN"`, `"null"` and empty cells are read as missing by default; dates stay strings |
@@ -26,7 +27,8 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 | Where | Solution | Gap |
 |---|---|---|
 | T1 L1 | "is it a table?" — structured vs semi vs unstructured | says nothing about the *values* |
-| T1 L2 | measurement levels: nominal / ordinal / interval / ratio decide the legal summary and chart | a level is a human judgement; pandas does not know it |
+| T1 L2 | measurement levels: nominal / ordinal / interval / ratio decide the legal summary and chart; naive baseline `df.select_dtypes("number")` picks `listing_id` | a level is a human judgement; pandas selects by storage, not by meaning |
+| T1 L2 | `FAMILY`/`LEVEL`/`ORDER` dicts plus `summary_for(series, level, order)` | the level is code stored beside the data: nothing checks it against the data or dtype, and a value missing from `order` silently becomes `NaN` — L3 closes this by putting the level into the dtype |
 | T1 L3 | encode the level in the dtype (`category`, ordered `CategoricalDtype`, `Int64`, `datetime64`) | dtype ≠ level (a city code stored as `int64` is still nominal) |
 | T2–T4 (planned) | encoding, scaling, binning, EDA summaries chosen by level | — |
 
@@ -34,7 +36,8 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 
 | Where | Solution | Gap |
 |---|---|---|
-| T1 L1 | read a rent out of an advert by eye / `str.split` | breaks on "1,200 NIS/month" vs "650 USD" |
+| T1 L1 | read a rent out of an advert by `str.split` by position → a regex per field → `None` for "not found" → ranges plus a `problems` column | only knows the phrasings we anticipated ("1,200 NIS/month" vs "650 USD") |
+| T1 L2 | `read_csv(dtype={"school_code": str})` to keep an identifier as text | `"007"` parses "too well" to the integer 7 when you forget; L4's `dtype=`, `parse_dates=`, `na_values=` complete the recipe |
 | T1 L3 | `pd.to_numeric(errors="coerce")` | turns every failure into `NaN` — the *reason* is lost, and so is the count unless you ask |
 | T1 L4 | `thousands=`, `decimal=`, `parse_dates=` at read time; Excel serial dates → `pd.to_datetime(unit="D", origin="1899-12-30")` | fixes known formats; unknown formats still become `NaN` |
 | T1 L5 | `pd.json_normalize` for nested fields | missing nested keys become `NaN` without warning |
@@ -55,6 +58,7 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 
 | Where | Solution | Gap |
 |---|---|---|
+| P1 L1 | a written question card (question, decision, scope, success criteria, "so what" test) | computes nothing; two people can still disagree if they clean differently — closed by the L3/L4/L5 answers and the L6 line-up |
 | P1 L4 | Excel: Table + `SUMIFS` + PivotTable | the dirty rows are in the table; deleting them by hand is not repeatable; formulas live in cells |
 | P1 L5 | Power BI: Get Data → Power Query steps → visual | steps are repeatable, but the model hides assumptions (summarisation, auto date hierarchy) |
 | P1 L3 | pandas in a notebook | repeatable and diff-able, but only if the notebook runs top to bottom |
@@ -74,6 +78,7 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 
 | Where | Solution | Gap |
 |---|---|---|
+| P1 L1 | a written decision log (rule, lines removed, reason) beside an untouched raw file | it is prose, so it can go stale and nothing checks it against what was actually done |
 | P1 L2 | a README with install steps | steps go stale |
 | P1 L3 | notebook "Restart & Run All" | hidden-state bugs when cells are run out of order |
 | P1 L4 | Excel: named Table and formulas | manual clicks leave no trail |

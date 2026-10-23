@@ -1,0 +1,19 @@
+%% alt: مخطط حالات لخلية في دفتر Jupyter. الخلية الفارغة تصبح معدَّلة عند كتابة الشيفرة. الضغط على Shift+Enter يجعلها قيد التشغيل وتظهر كـ In [*]. تنتهي الخلية بحالة منتهية إن لم يقع خطأ، أو بحالة فاشلة إن وقع استثناء. تعديل خلية منتهية أو فاشلة يعيدها إلى حالة معدَّلة.
+stateDiagram-v2
+  state "فارغة" as Empty
+  state "معدَّلة" as Edited
+  state "قيد التشغيل" as Running
+  state "منتهية" as Done
+  state "فاشلة" as Failed
+  [*] --> Empty
+  Empty --> Edited : كتابة شيفرة
+  Edited --> Running : `Shift+Enter`
+  Running --> Done : بلا خطأ
+  Running --> Failed : استثناء
+  Failed --> Edited : إصلاح الشيفرة
+  Done --> Edited : تغيير الشيفرة
+  Done --> [*]
+  note right of Running
+    تظهر كـ `In [*]`
+    حتى تنتهي
+  end note

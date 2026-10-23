@@ -1,0 +1,9 @@
+%% alt: Decision flowchart with three questions for any column. Question 1: can the values be put in a natural order? If not, the column is nominal, so count and take the mode. If yes, question 2: are the gaps between neighbours equal and known? If not, the column is ordinal, so use the median and an ordered bar chart. If yes, question 3: is zero "none of it" in every unit? If not, the column is interval, so use the mean and differences. If yes, the column is ratio, so ratios and totals are also allowed.
+flowchart TD
+  S(["Pick one column"]) --> Q1{"1. Can the values be put<br/>in a natural order?"}
+  Q1 -- "no, only names" --> N["Nominal<br/>count, mode, bar chart"]
+  Q1 -- "yes" --> Q2{"2. Are the gaps between<br/>neighbours equal and known?"}
+  Q2 -- "no" --> O["Ordinal<br/>median, rank, ordered bars"]
+  Q2 -- "yes" --> Q3{"3. Does zero mean<br/>none of it, in every unit?"}
+  Q3 -- "no" --> I["Interval<br/>mean, differences, histogram"]
+  Q3 -- "yes" --> R["Ratio<br/>ratios and totals too"]

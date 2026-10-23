@@ -1,0 +1,152 @@
+[
+  {
+    "id": "structured",
+    "term": {"en": "Structured data", "ar": "البيانات المُهيكلة (Structured data)"},
+    "def": {
+      "en": "Data in the shape of a table: every record is a row, every field is a column, every row has the same columns, and each column holds one type of value. Example: the listings table, with city, monthly_rent and rooms on all 60 rows.",
+      "ar": "بيانات على هيئة جدول: كل سجل صف، وكل حقل عمود، ولكل صف الأعمدة نفسها، وكل عمود يحمل نوعًا واحدًا من القيم. مثال: جدول الإعلانات الذي فيه city وmonthly_rent وrooms في الصفوف الستين كلها."
+    },
+    "cat": {"en": "Shapes of data", "ar": "أشكال البيانات"},
+    "see": ["schema", "schema-on-write", "semi-structured", "unstructured"]
+  },
+  {
+    "id": "semi-structured",
+    "term": {"en": "Semi-structured data", "ar": "البيانات شبه المُهيكلة (Semi-structured data)"},
+    "def": {
+      "en": "Data whose records describe themselves with keys but are not forced to share the same keys or nesting. Example: schools.json, where every school has a name and an enrolment but only 10 of 13 have a contacts object.",
+      "ar": "بيانات تصف سجلاتها نفسها بالمفاتيح دون أن تُلزَم بالمفاتيح نفسها أو بالتداخل نفسه. مثال: schools.json حيث لكل مدرسة اسم وأعداد طلبة لكن 10 مدارس من 13 فقط فيها كائن contacts."
+    },
+    "cat": {"en": "Shapes of data", "ar": "أشكال البيانات"},
+    "see": ["key-value", "metadata", "schema-on-read", "nosql"]
+  },
+  {
+    "id": "unstructured",
+    "term": {"en": "Unstructured data", "ar": "البيانات غير المُهيكلة (Unstructured data)"},
+    "def": {
+      "en": "Raw content with no fields: text, images, audio, video. To ask a question about it you must first create the fields yourself. Example: the free-text advert a landlord typed.",
+      "ar": "محتوى خام بلا حقول: نصوص وصور وصوت وفيديو. ولكي تسأل عنه سؤالًا عليك أن تصنع الحقول بنفسك أولًا. مثال: نص الإعلان الحر الذي كتبه مالك."
+    },
+    "cat": {"en": "Shapes of data", "ar": "أشكال البيانات"},
+    "see": ["feature-extraction", "embedding", "data-lake"]
+  },
+  {
+    "id": "record",
+    "term": {"en": "Record", "ar": "السجل (Record)"},
+    "def": {
+      "en": "One thing a dataset describes. Example: one rental listing (a row in the CSV) or one school (a single object in the results list of schools.json).",
+      "ar": "الشيء الواحد الذي تصفه مجموعة البيانات. مثال: إعلان تأجير واحد (صف في CSV) أو مدرسة واحدة (كائن واحد في قائمة results في schools.json)."
+    },
+    "cat": {"en": "Describing data", "ar": "وصف البيانات"},
+    "see": ["field", "schema"]
+  },
+  {
+    "id": "field",
+    "term": {"en": "Field", "ar": "الحقل (Field)"},
+    "def": {
+      "en": "One fact about a record: a column in a table or a key in a JSON object. Example: monthly_rent in a listing, or governorate in a school.",
+      "ar": "معلومة واحدة عن السجل: عمود في جدول أو مفتاح في كائن JSON. مثال: monthly_rent في إعلان، أو governorate في مدرسة."
+    },
+    "cat": {"en": "Describing data", "ar": "وصف البيانات"},
+    "see": ["record", "key-value"]
+  },
+  {
+    "id": "schema",
+    "term": {"en": "Schema", "ar": "المخطط (Schema)"},
+    "def": {
+      "en": "The agreement about which fields exist, what they are called, what type each holds and which may be empty. Example: \"a listing has city (text) and monthly_rent (a whole number above 0)\". It may be declared in advance, carried inside each record, or exist nowhere.",
+      "ar": "الاتفاق على الحقول الموجودة وأسمائها ونوع كل منها وأيها يجوز تركه فارغًا. مثال: «للإعلان city (نص) وmonthly_rent (عدد صحيح أكبر من 0)». وقد يكون معلنًا مسبقًا، أو محمولًا داخل كل سجل، أو غير موجود أصلًا."
+    },
+    "cat": {"en": "Describing data", "ar": "وصف البيانات"},
+    "see": ["schema-on-write", "schema-on-read", "metadata"]
+  },
+  {
+    "id": "schema-on-write",
+    "term": {"en": "Schema-on-write", "ar": "المخطط عند الكتابة (Schema-on-write)"},
+    "def": {
+      "en": "Declaring the schema first and checking every new record at the door, as a database table does. A rent of \"negotiable\" is rejected at insert time, so nobody has to clean it later.",
+      "ar": "إعلان المخطط أولًا وفحص كل سجل جديد عند الباب كما يفعل جدول قاعدة بيانات. فالإيجار «negotiable» يُرفض عند الإدخال فلا يضطر أحد إلى تنظيفه لاحقًا."
+    },
+    "cat": {"en": "Storage and access", "ar": "التخزين والوصول"},
+    "see": ["schema-on-read", "structured", "sql-query"]
+  },
+  {
+    "id": "schema-on-read",
+    "term": {"en": "Schema-on-read", "ar": "المخطط عند القراءة (Schema-on-read)"},
+    "def": {
+      "en": "Saving records without checking them and discovering the schema when you read. Flexible for the producer, but every reader must handle missing keys and wrong types, as with a school that has no contacts.",
+      "ar": "حفظ السجلات دون فحصها واكتشاف المخطط عند القراءة. مرن للمُنتِج، لكن على كل قارئ أن يتعامل مع المفاتيح الغائبة والأنواع الخاطئة، كما في مدرسة بلا contacts."
+    },
+    "cat": {"en": "Storage and access", "ar": "التخزين والوصول"},
+    "see": ["schema-on-write", "semi-structured", "nosql", "data-lake"]
+  },
+  {
+    "id": "metadata",
+    "term": {"en": "Metadata", "ar": "البيانات الوصفية (Metadata)"},
+    "def": {
+      "en": "Data about the data: what a value is, its unit, its source. In JSON the keys are metadata repeated inside every record; in a CSV the header row is the metadata. Example: the key \"currency\": \"USD\" next to a rent of 590.",
+      "ar": "بيانات عن البيانات: ما هي القيمة ووحدتها ومصدرها. في JSON تكون المفاتيح بيانات وصفية تتكرر داخل كل سجل؛ وفي CSV يكون صف العناوين هو البيانات الوصفية. مثال: المفتاح \"currency\": \"USD\" بجانب إيجار 590."
+    },
+    "cat": {"en": "Describing data", "ar": "وصف البيانات"},
+    "see": ["key-value", "schema"]
+  },
+  {
+    "id": "key-value",
+    "term": {"en": "Key–value pair", "ar": "زوج مفتاح–قيمة (Key–value)"},
+    "def": {
+      "en": "A name (the key) attached to a value. In Python a dict; in JSON an object. Example: \"governorate\": \"Deir al-Balah\".",
+      "ar": "اسم (المفتاح) مربوط بقيمة. في بايثون قاموس dict وفي JSON كائن. مثال: \"governorate\": \"Deir al-Balah\"."
+    },
+    "cat": {"en": "Describing data", "ar": "وصف البيانات"},
+    "see": ["metadata", "field", "semi-structured"]
+  },
+  {
+    "id": "nosql",
+    "term": {"en": "NoSQL database", "ar": "قاعدة بيانات NoSQL"},
+    "def": {
+      "en": "A database that does not force a table schema on its records; document stores such as MongoDB keep each record as a JSON-like document. Example: a collection of listings where only some documents have a solar_panels key.",
+      "ar": "قاعدة بيانات لا تفرض مخطط جدول على سجلاتها؛ ومخازن المستندات مثل MongoDB تحفظ كل سجل مستندًا شبيهًا بـ JSON. مثال: مجموعة إعلانات لا يحمل مفتاح solar_panels إلا بعض مستنداتها."
+    },
+    "cat": {"en": "Storage and access", "ar": "التخزين والوصول"},
+    "see": ["semi-structured", "schema-on-read", "data-lake"]
+  },
+  {
+    "id": "data-lake",
+    "term": {"en": "Data lake", "ar": "بحيرة البيانات (Data lake)"},
+    "def": {
+      "en": "Cheap storage that keeps data in its raw form, whatever its shape, and gives it structure later when someone needs it. Example: one place holding listing tables, school JSON replies, scanned forms and voice notes side by side.",
+      "ar": "تخزين رخيص يحفظ البيانات بصورتها الخام مهما كان شكلها، ويمنحها بنية لاحقًا حين يحتاجها أحد. مثال: مكان واحد يحوي جداول الإعلانات وردود JSON للمدارس واستمارات ممسوحة ورسائل صوتية جنبًا إلى جنب."
+    },
+    "cat": {"en": "Storage and access", "ar": "التخزين والوصول"},
+    "see": ["schema-on-read", "unstructured", "nosql"]
+  },
+  {
+    "id": "sql-query",
+    "term": {"en": "SQL query", "ar": "استعلام SQL (SQL query)"},
+    "def": {
+      "en": "A question written in SQL, the language of databases: which columns, which rows, grouped how. Example: SELECT city, AVG(monthly_rent) FROM listings GROUP BY city.",
+      "ar": "سؤال مكتوب بلغة SQL، لغة قواعد البيانات: أي الأعمدة وأي الصفوف وكيف تُجمَّع. مثال: SELECT city, AVG(monthly_rent) FROM listings GROUP BY city."
+    },
+    "cat": {"en": "Storage and access", "ar": "التخزين والوصول"},
+    "see": ["structured", "schema-on-write"]
+  },
+  {
+    "id": "feature-extraction",
+    "term": {"en": "Feature extraction", "ar": "استخراج السمات (Feature extraction)"},
+    "def": {
+      "en": "Turning raw content into named numeric fields (columns) by rules or by a trained model. Example: has_balcony = 1 from the words of an advert, or rooms = 3 from \"3 rooms\".",
+      "ar": "تحويل المحتوى الخام إلى حقول رقمية مسمّاة (أعمدة) بقواعد أو بنموذج مدرَّب. مثال: has_balcony = 1 من كلمات إعلان، أو rooms = 3 من \"3 rooms\"."
+    },
+    "cat": {"en": "Preparing for models", "ar": "التهيئة للنماذج"},
+    "see": ["unstructured", "embedding"]
+  },
+  {
+    "id": "embedding",
+    "term": {"en": "Embedding", "ar": "التضمين (Embedding)"},
+    "def": {
+      "en": "A list of numbers, produced by a trained model from a piece of text (or an image), arranged so that similar meanings get similar lists. Example: two adverts, one saying \"balcony\" and one \"terrace\", end up with nearby embeddings. Introduced only as an idea in this lesson.",
+      "ar": "قائمة من الأرقام ينتجها نموذج مدرَّب من قطعة نص (أو صورة) مرتبة بحيث تحصل المعاني المتقاربة على قوائم متقاربة. مثال: إعلانان، أحدهما يقول \"balcony\" والآخر \"terrace\"، يحصلان على تضمينين متقاربين. تُقدَّم الفكرة وحدها في هذا الدرس."
+    },
+    "cat": {"en": "Preparing for models", "ar": "التهيئة للنماذج"},
+    "see": ["feature-extraction", "unstructured"]
+  }
+]

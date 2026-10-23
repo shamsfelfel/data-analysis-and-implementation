@@ -1,0 +1,55 @@
+{
+  "id": "t1-l1-regex-parse",
+  "title": {
+    "en": "Pulling fields out of an advert with regex",
+    "ar": "استخراج الحقول من إعلان نصي بالتعابير النمطية"
+  },
+  "lede": {
+    "en": "One advert string, four searches. Each successful search adds a key to the fields dict; a search that finds nothing returns None and the dict simply does not grow. Notice the thousands separator in 1,200.",
+    "ar": "نص إعلان واحد وأربعة أبحاث. كل بحث ناجح يضيف مفتاحًا إلى قاموس fields، وكل بحث لا يجد شيئًا يعيد None فلا ينمو القاموس. لاحظ فاصل الآلاف في 1,200."
+  },
+  "code": "import re\n\nadvert = \"Flat in Rafah, 3 rooms, 95 m2, 1,200 NIS/month, furnished\"\nfields = {}\n\nm = re.search(r\"(\\d+)\\s*rooms?\", advert)\nif m:\n    fields[\"rooms\"] = int(m.group(1))\n\nm = re.search(r\"(\\d+)\\s*m2\", advert)\nif m:\n    fields[\"area_m2\"] = int(m.group(1))\n\nm = re.search(r\"(\\d[\\d,]*)\\s*(USD|NIS)\", advert)\nif m:\n    fields[\"rent\"] = int(m.group(1).replace(\",\", \"\"))\n    fields[\"currency\"] = m.group(2)\n\nm = re.search(r\"(\\d+)\\s*floors?\", advert)\nif m:\n    fields[\"floor\"] = int(m.group(1))\n\nprint(fields)\n",
+  "watch": [
+    "advert",
+    "m",
+    "fields"
+  ],
+  "viz": {
+    "fields": "dict"
+  },
+  "max_steps": 60,
+  "notes": {
+    "4": {
+      "en": "An empty dict: the table row we are going to fill, field by field.",
+      "ar": "قاموس فارغ: هو صف الجدول الذي سنملؤه حقلًا بعد حقل."
+    },
+    "6": {
+      "en": "Look for digits followed by the word room or rooms. m becomes a Match object if something is found, or None if not.",
+      "ar": "ابحث عن أرقام يتبعها كلمة room أو rooms. تصبح m كائن مطابقة إن وُجد شيء، وإلا None."
+    },
+    "8": {
+      "en": "Group 1 is the part inside the first parentheses: the digits. int() turns the text \"3\" into the number 3.",
+      "ar": "المجموعة 1 هي ما بين القوسين الأولين: الأرقام. وint() تحوّل النص \"3\" إلى العدد 3."
+    },
+    "16": {
+      "en": "The pattern allows digits and commas, so it matches 1,200. The comma must be removed before int() can read the number.",
+      "ar": "يسمح النمط بالأرقام والفواصل فيطابق 1,200. ويجب حذف الفاصلة قبل أن تستطيع int() قراءة العدد."
+    },
+    "17": {
+      "en": "Group 2 is the currency. Keep it: 1,200 NIS is not 1,200 USD.",
+      "ar": "المجموعة 2 هي العملة. احتفظ بها: 1,200 شيكل ليست 1,200 دولار."
+    },
+    "19": {
+      "en": "This advert never mentions a floor, so the search finds nothing and returns None.",
+      "ar": "لا يذكر هذا الإعلان أي طابق، فلا يجد البحث شيئًا ويعيد None."
+    },
+    "20": {
+      "en": "m is None, which counts as false, so the body of the if (line 21) is skipped and no \"floor\" key is created. Absent is not zero: a real pipeline must record that explicitly.",
+      "ar": "m تساوي None وهي تُعدّ قيمة زائفة، فيُتخطى جسم if (السطر 21) ولا يُنشأ المفتاح \"floor\". الغياب ليس صفرًا، وخط معالجة حقيقي يجب أن يسجّل ذلك صراحة."
+    },
+    "end": {
+      "en": "Three searches succeeded and one found nothing: the dict has four keys (rooms, area_m2, rent, currency) and no floor.",
+      "ar": "نجحت ثلاثة أبحاث ولم يجد واحد شيئًا: في القاموس أربعة مفاتيح (rooms وarea_m2 وrent وcurrency) ولا مفتاح للطابق."
+    }
+  }
+}

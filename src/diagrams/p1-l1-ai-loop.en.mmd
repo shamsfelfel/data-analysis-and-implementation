@@ -1,0 +1,12 @@
+%% alt: The lifecycle of an AI project drawn as a loop. Ask and define the target, acquire data, clean, explore, then split into train, validation and test sets, train a model, and evaluate on held-out data. If the score is not good enough, go back to explore and rework the features. If it is good enough, deploy and monitor. Monitoring that detects drift sends the project back to the start.
+flowchart TD
+  A(["Ask: define the target"]) --> B["Acquire data"]
+  B --> C["Clean"]
+  C --> D["Explore, choose features"]
+  D --> E["Split: train, validation, test"]
+  E --> F["Train a model"]
+  F --> G{"Evaluate on held-out data"}
+  G -- "not good enough" --> D
+  G -- "good enough" --> H["Deploy"]
+  H --> I["Monitor"]
+  I -. "drift: retrain or re-ask" .-> A

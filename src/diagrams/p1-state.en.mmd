@@ -1,0 +1,14 @@
+%% alt: State diagram of a notebook cell. An empty cell becomes edited when you type code. Shift+Enter makes it running, shown as In [*]. A running cell ends Done if there is no error or Failed if an exception is raised. Editing a done or failed cell sends it back to edited.
+stateDiagram-v2
+  [*] --> Empty
+  Empty --> Edited : type code
+  Edited --> Running : Shift+Enter
+  Running --> Done : no error
+  Running --> Failed : exception
+  Failed --> Edited : fix the code
+  Done --> Edited : change the code
+  Done --> [*]
+  note right of Running
+    shown as In [*]
+    until it finishes
+  end note

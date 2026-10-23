@@ -1,0 +1,27 @@
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["t1-record-field-schema"] = { href: "t1l1-s2", en: "record, field and schema", ar: "السجل والحقل والمخطط" };
+  T["t1-three-questions"] = { href: "t1l1-s3", en: "the three questions and the three shapes", ar: "الأسئلة الثلاثة والأشكال الثلاثة" };
+  T["t1-wrong-loader-silent"] = { href: "t1l1-s1", en: "look before you load (a wrong loader fails silently)", ar: "انظر قبل أن تحمّل (المحمِّل الخطأ يفشل بصمت)" };
+  T["t1-structured-table"] = { href: "t1l1-h2", en: "structured data: a table with a schema", ar: "البيانات المُهيكلة: جدول بمخطط" };
+  T["t1-lists-to-dataframe"] = { href: "t1l1-s4", en: "parallel lists, list of dicts, DataFrame", ar: "القوائم المتوازية وقائمة القواميس وإطار البيانات" };
+  T["t1-schema-on-write"] = { href: "t1l1-s5", en: "schema-on-write", ar: "المخطط عند الكتابة" };
+  T["t1-sql-vs-dataframe"] = { href: "t1l1-s6", en: "a SQL query and its DataFrame twin", ar: "استعلام SQL وما يقابله في إطار البيانات" };
+  T["t1-semi-structured"] = { href: "t1l1-s7", en: "semi-structured data and self-describing records", ar: "البيانات شبه المُهيكلة والسجلات الواصفة لنفسها" };
+  T["t1-schema-on-read"] = { href: "t1l1-s8", en: "schema-on-read and surveying keys", ar: "المخطط عند القراءة ومسح المفاتيح" };
+  T["t1-optional-keys"] = { href: "t1l1-s9", en: "optional keys: KeyError, .get default, explicit NaN", ar: "المفاتيح الاختيارية: KeyError و.get وNaN الصريح" };
+  T["t1-flatten-nested-record"] = { href: "t1l1-s10", en: "flattening a nested record into a row", ar: "تسطيح سجل متداخل إلى صف" };
+  T["t1-unstructured"] = { href: "t1l1-s11", en: "unstructured data: text, images, audio", ar: "البيانات غير المُهيكلة: نص وصور وصوت" };
+  T["t1-feature-extraction"] = { href: "t1l1-s12", en: "feature extraction and its silent traps", ar: "استخراج السمات ومزالقه الصامتة" };
+  T["t1-embeddings-intro"] = { href: "t1l1-s13", en: "embeddings: text as numbers (intro)", ar: "التضمينات: النص أرقامًا (تمهيد)" };
+  T["t1-shape-comparison"] = { href: "t1l1-s14", en: "comparing the three shapes", ar: "مقارنة الأشكال الثلاثة" };
+  T["t1-where-data-lives"] = { href: "t1l1-s15", en: "where each shape lives: warehouse, document store, data lake", ar: "أين يعيش كل شكل: مستودع ومخزن مستندات وبحيرة" };
+  T["t1-hybrid-shapes"] = { href: "t1l1-s16", en: "hybrid datasets: name the dominant shape", ar: "مجموعات البيانات الهجينة: سمِّ الشكل الغالب" };
+  T["t1-one-listing-three-shapes"] = { href: "t1l1-s17", en: "one listing in three shapes", ar: "إعلان واحد بثلاثة أشكال" };
+  T["t1-three-loaders"] = { href: "t1l1-s18", en: "bringing each shape into Python", ar: "إدخال كل شكل إلى بايثون" };
+  T["t1-model-needs-table"] = { href: "t1l1-s19", en: "why a model can eat only the table", ar: "لماذا لا يأكل النموذج إلا الجدول" };
+  T["t1-regex-primer"] = { href: "t1l1-s20", en: "regular expressions: the basic pieces", ar: "التعابير النمطية: القطع الأساسية" };
+  T["t1-regex-trace"] = { href: "t1l1-s21", en: "regex search, groups and None", ar: "بحث التعابير النمطية والمجموعات وNone" };
+  T["t1-advert-parser-evolution"] = { href: "t1l1-s22", en: "from split-by-position to a validated parser", ar: "من القصّ بالموضع إلى محلِّل متحقَّق منه" };
+  T["t1-not-found-and-ranges"] = { href: "t1l1-h7", en: "explicit not-found, ranges and a problems column", ar: "«لم يوجد» الصريح والنطاقات وعمود المشاكل" };
+})(window.DATopics);

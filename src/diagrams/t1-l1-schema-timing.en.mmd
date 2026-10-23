@@ -1,0 +1,22 @@
+%% alt: Sequence diagram comparing when the schema is checked. With schema-on-write, the store checks every new listing at insert time and rejects a bad one, so the consumer later reads clean rows. With schema-on-read, the store saves whatever it receives, and the consumer must check for missing keys and wrong types while reading.
+sequenceDiagram
+  autonumber
+  participant P as Producer
+  participant S as Store
+  participant C as Consumer
+  alt Schema-on-write, a database table
+    P->>S: insert listing, rent = "negotiable"
+    Note over S: check the schema NOW<br/>rent must be a number
+    S-->>P: rejected
+    P->>S: insert listing, rent = 415
+    S-->>P: accepted
+    C->>S: SELECT AVG(rent)
+    S-->>C: clean rows, same columns
+  else Schema-on-read, JSON documents
+    P->>S: save whatever it has
+    Note over S: no check at the door
+    S-->>P: saved
+    C->>S: read the documents
+    S-->>C: raw documents
+    Note over C: check the schema NOW<br/>missing keys? wrong types?
+  end

@@ -1,0 +1,52 @@
+{
+  "id": "t1-l2-ordered-cat",
+  "title": {
+    "en": "An ordered Categorical learns the order",
+    "ar": "الفئة المرتّبة تتعلّم الترتيب"
+  },
+  "lede": {
+    "en": "Four school levels stored as plain text sort alphabetically, which puts Preparatory before Primary. Declare the order once and sorting, comparing and max() all start to follow the meaning.",
+    "ar": "أربعة مستويات مدرسية مخزّنة نصًّا عاديًّا تُرتَّب أبجديًّا، فتسبق Preparatory كلمةَ Primary. أعلن الترتيب مرة واحدة فيبدأ الفرز والمقارنة وmax() بإتباع المعنى."
+  },
+  "code": "import pandas as pd\n\norder = [\"Primary\", \"Preparatory\", \"Secondary\"]\nlevels = pd.Series([\"Secondary\", \"Primary\", \"Preparatory\", \"Primary\"])\n\nprint(sorted(levels))\n\ntyped = levels.astype(pd.CategoricalDtype(order, ordered=True))\nprint(typed.sort_values().tolist())\nprint((typed >= \"Preparatory\").tolist())\nprint(typed.max())\n",
+  "watch": [
+    "order",
+    "levels",
+    "typed"
+  ],
+  "viz": {
+    "levels": "table",
+    "typed": "table"
+  },
+  "max_steps": 60,
+  "notes": {
+    "3": {
+      "en": "The order is written down by a human, once, from the lowest level to the highest. pandas cannot guess it.",
+      "ar": "الترتيب يكتبه إنسان مرة واحدة، من أدنى مستوى إلى أعلاه. لا يستطيع pandas تخمينه."
+    },
+    "6": {
+      "en": "Plain strings sort by letters: 'Preparatory' < 'Primary' < 'Secondary'. The middle level jumps ahead of the lowest one, with no error.",
+      "ar": "النصوص العادية تُرتَّب بحسب الحروف: 'Preparatory' < 'Primary' < 'Secondary'. فيقفز المستوى الأوسط أمام الأدنى بلا أي خطأ."
+    },
+    "8": {
+      "en": "Same four values, new dtype. The values did not change; what changed is that the column now knows the order of its categories.",
+      "ar": "القيم الأربع نفسها بنوع جديد. لم تتغيّر القيم؛ الذي تغيّر أن العمود صار يعرف ترتيب فئاته."
+    },
+    "9": {
+      "en": "Sorting now follows the declared order: Primary, Primary, Preparatory, Secondary.",
+      "ar": "صار الفرز يتبع الترتيب المعلَن: Primary وPrimary وPreparatory وSecondary."
+    },
+    "10": {
+      "en": "A comparison with a category name is legal only because the order is declared. True means 'Preparatory or higher'.",
+      "ar": "المقارنة مع اسم فئة جائزة لأن الترتيب معلَن فقط. تعني True «Preparatory أو أعلى»."
+    },
+    "11": {
+      "en": "max() returns the highest category by the declared order, not the last one alphabetically.",
+      "ar": "تُرجع max() أعلى فئة بحسب الترتيب المعلَن لا آخرها أبجديًّا."
+    },
+    "end": {
+      "en": "An ordered category supports order (sort, <, max) but not arithmetic: there is still no mean, because the gaps are unknown.",
+      "ar": "تدعم الفئة المرتّبة الترتيب (الفرز و< وmax) لكن لا حساب فيها: ما زال لا متوسط، لأن المسافات مجهولة."
+    }
+  }
+}

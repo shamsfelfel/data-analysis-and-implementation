@@ -1,0 +1,1889 @@
+<section class="page" id="t1-lesson-03">
+
+  <span class="kicker">Lesson 3</span>
+  <h1><span class="en">From Python Containers to pandas dtypes</span><span class="ar">من حاويات بايثون إلى أنواع pandas</span></h1>
+
+  <p class="lede en">By the end of this lesson you will take the 60 rental listings from a Python list of dictionaries full of strings to a typed pandas table, and you will be able to say, for every column, which dtype it should have, what that dtype costs in memory, what it lets you do, and what it does to a missing value. On the way you get a fast, honest NumPy and pandas recap for a student who has only met the basics.</p>
+  <p class="lede ar">بنهاية هذا الدرس ستنقل إعلانات التأجير الستين من قائمة قواميس مليئة بالنصوص إلى جدول pandas مضبوط الأنواع، وستقول عن كل عمود: أي نوع (dtype) يناسبه، وكم يكلّف في الذاكرة، وماذا يتيح لك، وماذا يفعل بالقيمة المفقودة. وفي الطريق تحصل على مراجعة سريعة وأمينة لـ NumPy وpandas لطالب لم يرَ منهما إلا الأساسيات.</p>
+
+  <div class="note">
+    <h4><span class="en">The setting</span><span class="ar">الإطار</span></h4>
+    <p class="en"><a href="#t1-lesson-02">Lesson 2</a> asked what each column <em>means</em>: nominal, ordinal, interval or ratio. This lesson asks the next question: what does Python actually <em>store</em>, and does it match the meaning? A rent is a ratio-scale quantity, yet it can sit in memory as text; a room count is a whole number, yet one blank cell can turn it into a decimal. We work on the same 60 listings, the file <a href="@/downloads/t1/rental_listings.csv">rental_listings.csv</a>, starting from the worst representation and improving it step by step.</p>
+    <p class="ar">سأل <a href="#t1-lesson-02">الدرس 2</a> عمّا <em>تعنيه</em> كل خانة: اسمي أم ترتيبي أم فتري أم نسبي. ويسأل هذا الدرس السؤال التالي: ماذا <em>تخزّن</em> بايثون فعلًا، وهل يطابق ذلك المعنى؟ الإيجار كمية من المقياس النسبي، ومع ذلك قد يقبع في الذاكرة نصًّا؛ وعدد الغرف عدد صحيح، ومع ذلك قد تحوّله خلية فارغة واحدة إلى عدد عشري. نعمل على الإعلانات الستين نفسها، أي الملف <a href="@/downloads/t1/rental_listings.csv">rental_listings.csv</a>، ونبدأ من أسوأ تمثيل ونحسّنه خطوة بعد خطوة.</p>
+  </div>
+
+  <div class="callout prereq">
+    <h4><span class="en">Before you start</span><span class="ar">قبل أن تبدأ</span></h4>
+    <p class="en">Lists, dictionaries, loops and functions from the introductory course, plus the vocabulary of <a href="#t1-lesson-01">Lesson 1</a> (a table is rows and columns) and <a href="#t1-lesson-02">Lesson 2</a> (measurement levels). Basic pandas is enough; everything else is introduced here before it is used.</p>
+    <p class="ar">القوائم والقواميس والحلقات والدوال من المقرر التمهيدي، ومفردات <a href="#t1-lesson-01">الدرس 1</a> (الجدول صفوف وأعمدة) و<a href="#t1-lesson-02">الدرس 2</a> (مستويات القياس). وتكفي أساسيات pandas؛ وكل ما عدا ذلك يُقدَّم هنا قبل استعماله.</p>
+  </div>
+
+  <div class="tip">
+    <h4><span class="en">How the code in this lesson runs</span><span class="ar">كيف يعمل الكود في هذا الدرس</span></h4>
+    <p class="en">Download the CSV into your working folder. Every snippet is independent: it starts from a fresh session, and the ones marked as using <code>df</code> assume exactly these three lines. Outputs were produced by running the snippets with pandas 2.2, NumPy 2.2 and Python 3.13; a newer pandas may print a few things differently (pandas 3 changes two defaults: text columns get a dedicated string dtype and copy-on-write is on), so check <code>pd.__version__</code> when your output differs.</p>
+    <p class="ar">نزّل ملف CSV إلى مجلد عملك. كل مقطع كود مستقل: يبدأ من جلسة جديدة، والمقاطع التي تستعمل <code>df</code> تفترض هذه الأسطر الثلاثة بالضبط. وقد أُخذت المخرجات بتشغيل المقاطع على pandas 2.2 وNumPy 2.2 وبايثون 3.13؛ وقد تطبع إصدارات pandas الأحدث بعض الأشياء بصورة مختلفة (فإصدار pandas 3 يغيّر افتراضَين: يمنح أعمدة النصوص نوعًا نصيًّا خاصًّا ويفعّل النسخ عند الكتابة)، فتحقّق من <code>pd.__version__</code> إذا اختلف مخرجك.</p>
+<pre class="code" data-lang="python"><code>import numpy as np
+import pandas as pd
+df = pd.read_csv("rental_listings.csv")      # the 60 listings</code></pre>
+  </div>
+
+  <div class="objectives">
+    <h4><span class="en">By the end you can</span><span class="ar">بنهاية الدرس تستطيع أن</span></h4>
+    <ul>
+      <li><span class="en">Say where a list of dictionaries stops being a usable table, and name the three missing powers (vector maths, types, speed).</span><span class="ar">تحدّد أين تتوقف قائمة القواميس عن كونها جدولًا صالحًا للاستعمال، وتسمّي القدرات الثلاث الناقصة (الحساب المتجهي والأنواع والسرعة).</span></li>
+      <li><span class="en">Use NumPy arrays: shape, one dtype, vectorised arithmetic, boolean masks and broadcasting, and predict the dtype when types mix.</span><span class="ar">تستعمل مصفوفات NumPy: الشكل والنوع الواحد والحساب المتجهي والأقنعة المنطقية والبثّ، وتتنبأ بالنوع عندما تختلط الأنواع.</span></li>
+      <li><span class="en">Select from a Series and a DataFrame with <code>[]</code>, <code>.loc</code>, <code>.iloc</code> and masks, and add a computed column.</span><span class="ar">تنتقي من Series ومن DataFrame بـ<code>[]</code> و<code>.loc</code> و<code>.iloc</code> والأقنعة، وتضيف عمودًا محسوبًا.</span></li>
+      <li><span class="en">Read and choose pandas dtypes, and state what each costs in memory and what operation it unlocks.</span><span class="ar">تقرأ أنواع pandas وتختارها، وتذكر كلفة كل نوع في الذاكرة والعملية التي يتيحها.</span></li>
+      <li><span class="en">Tell <code>None</code>, <code>NaN</code>, <code>pd.NA</code> and <code>NaT</code> apart, predict how a missing value changes a dtype and an average, and cast with <code>astype</code> or <code>to_numeric(errors="coerce")</code> while counting what coercion swallowed.</span><span class="ar">تميّز بين <code>None</code> و<code>NaN</code> و<code>pd.NA</code> و<code>NaT</code>، وتتنبأ بأثر القيمة المفقودة في النوع وفي المتوسط، وتحوّل الأنواع بـ<code>astype</code> أو <code>to_numeric(errors="coerce")</code> مع عدّ ما ابتلعه القسر.</span></li>
+    </ul>
+  </div>
+
+  <figure class="diagram" data-diagram="t1-l3-family">
+    <figcaption><span class="en">The family this lesson walks through: each step adds one power to the one before.</span><span class="ar">العائلة التي يمشي عليها هذا الدرس: كل خطوة تضيف قدرة واحدة إلى ما قبلها.</span></figcaption>
+  </figure>
+
+  <h2 id="t1l3-h1"><span class="en">Concept 1 — Python's own containers, and where they stop</span><span class="ar">المفهوم 1 — حاويات بايثون نفسها، وأين تتوقف</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">Whatever file or API reply you load reaches Python inside a <em>container</em> before it ever becomes a table. For 60 rental listings the obvious container is a list with one dictionary per listing, and it works right up to the moment you ask it to do arithmetic across rows, to sort by rent, or to cope with a blank cell. Each of those three failures is quiet, or shows up far from its cause.</p>
+    <p class="ar">أيًّا كان الملف أو ردّ الواجهة البرمجية الذي تحمّله، فإنه يصل إلى بايثون داخل <em>حاوية</em> قبل أن يصير جدولًا. وللإعلانات الستين تكون الحاوية البديهية قائمةً فيها قاموس لكل إعلان، وتعمل جيدًا حتى اللحظة التي تطلب منها حسابًا عبر الصفوف أو الترتيب بالإيجار أو التعامل مع خلية فارغة. وكل واحد من هذه الإخفاقات الثلاثة صامت، أو يظهر بعيدًا عن سببه.</p>
+  </div>
+
+  <h3 id="t1l3-s1"><span class="en">The four containers in two minutes</span><span class="ar">الحاويات الأربع في دقيقتين</span></h3>
+
+  <p class="en">You met these in the introductory course; here is what each one is <em>for</em> when the data is a table of listings.</p>
+  <p class="ar">عرفتَ هذه في المقرر التمهيدي؛ وهذا ما تصلح له كل واحدة منها حين تكون البيانات جدول إعلانات.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="en">Container</span><span class="ar">الحاوية</span></th>
+          <th><span class="en">Looks like</span><span class="ar">شكلها</span></th>
+          <th><span class="en">Can change?</span><span class="ar">قابلة للتعديل؟</span></th>
+          <th><span class="en">In the listings world</span><span class="ar">في عالم الإعلانات</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>list</code></td>
+          <td><code>["Gaza", "Rafah"]</code></td>
+          <td><span class="en">yes</span><span class="ar">نعم</span></td>
+          <td><span class="en">an ordered run of values: all the cities, or all the rows</span><span class="ar">سلسلة مرتّبة من القيم: كل المدن، أو كل الصفوف</span></td>
+        </tr>
+        <tr>
+          <td><code>tuple</code></td>
+          <td><code>(31.5788, 34.389)</code></td>
+          <td><span class="en">no</span><span class="ar">لا</span></td>
+          <td><span class="en">a fixed group that belongs together, such as a latitude and longitude</span><span class="ar">مجموعة ثابتة من القيم المتلازمة، كخط العرض وخط الطول</span></td>
+        </tr>
+        <tr>
+          <td><code>dict</code></td>
+          <td><code>{"city": "Gaza", "monthly_rent": 445}</code></td>
+          <td><span class="en">yes</span><span class="ar">نعم</span></td>
+          <td><span class="en">one record: keys are column names, values are the cells</span><span class="ar">سجل واحد: المفاتيح أسماء الأعمدة والقيم هي الخلايا</span></td>
+        </tr>
+        <tr>
+          <td><code>set</code></td>
+          <td><code>{"Gaza", "Rafah"}</code></td>
+          <td><span class="en">yes</span><span class="ar">نعم</span></td>
+          <td><span class="en">distinct values with no order and no repeats: which cities occur</span><span class="ar">قيم مميزة بلا ترتيب ولا تكرار: أي المدن تظهر</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <pre class="code" data-lang="python"><code>listing = {"listing_id": 1001, "city": "Khan Younis", "monthly_rent": 415, "furnished": True}
+cities = ["Gaza", "Rafah", "Gaza", "Khan Younis", "Rafah", "Gaza"]
+point = (31.5788, 34.389)            # latitude, longitude of one school
+
+print(listing["city"], listing.get("rooms"))
+print(len(cities), len(set(cities)), sorted(set(cities)))
+try:
+    point[0] = 0
+except TypeError as e:
+    print("TypeError:", e)
+try:
+    listing["rooms"]
+except KeyError as e:
+    print("KeyError:", e)</code></pre>
+<div class="output">Khan Younis None
+6 3 ['Gaza', 'Khan Younis', 'Rafah']
+TypeError: 'tuple' object does not support item assignment
+KeyError: 'rooms'</div>
+
+  <p class="en">The <code>dict</code> is the container that matters most here, because one dictionary is one row. A <em>list of dictionaries</em> is therefore the natural in-memory shape of a table, and it is exactly what a JSON API hands you (Lesson 5). Note the two ways a dictionary reports a missing key: <code>.get</code> returns <code>None</code> quietly, while square brackets raise <code>KeyError</code> loudly. Keep that distinction in mind; missing values return in Concept 5.</p>
+  <p class="ar">القاموس (<code>dict</code>) هو الحاوية الأهم هنا لأن القاموس الواحد هو صف واحد. و<em>قائمة القواميس</em> هي إذن الشكل الطبيعي للجدول في الذاكرة، وهي بالضبط ما تسلّمك إياه واجهة JSON (الدرس 5). لاحظ طريقتين يُبلغ بهما القاموس عن مفتاح مفقود: <code>.get</code> تعيد <code>None</code> بهدوء، بينما الأقواس المربعة ترفع <code>KeyError</code> بصوت عالٍ. ابقِ هذا الفرق في ذهنك؛ فالقيم المفقودة تعود في المفهوم 5.</p>
+
+  <h3 id="t1l3-s2"><span class="en">A table made of dictionaries, and how it gets built</span><span class="ar">جدول مصنوع من قواميس، وكيف يُبنى</span></h3>
+
+  <p class="en">Suppose you have never heard of <code>read_csv</code>. The first thing anyone writes is a loop that cuts every line of the file at the commas. Run it and look at what comes back, not at whether it crashed.</p>
+  <p class="ar">افترض أنك لم تسمع بـ<code>read_csv</code> قط. أول ما يكتبه أي شخص حلقة تقطع كل سطر من الملف عند الفواصل. شغّلها وانظر إلى ما عاد، لا إلى ما إذا كانت قد انهارت.</p>
+
+  <pre class="code bad" data-lang="python"><code>from collections import Counter
+
+lines = open("rental_listings.csv", encoding="utf-8").read().splitlines()
+header = lines[0].split(",")
+rows = [line.split(",") for line in lines[1:]]
+
+print(len(header), "columns in the header")
+print(rows[0])
+print(Counter(len(r) for r in rows))</code></pre>
+<div class="output">9 columns in the header
+['1001', 'Khan Younis', 'Khan Younis', '415', '119.2', '4', 'yes', '2026-01-16', '"Small studio', ' ideal for one person', ' internet ready"']
+Counter({11: 40, 12: 20})</div>
+
+  <div class="warn">
+    <h4><span class="en">Nothing crashed, and the table is wrong</span><span class="ar">لم ينهَر شيء، والجدول خاطئ</span></h4>
+    <p class="en">The header has 9 names, but 40 rows came back with 11 pieces and 20 with 12. The advert column contains commas inside quotes (<code>"Small studio, ideal for one person, internet ready"</code>), so one cell was cut into three. The rent happened to survive because <code>advert</code> is the last column; put a comma in <code>city</code> and every field to its right would shift by one, with no error.</p>
+    <p class="ar">في الترويسة 9 أسماء، لكن 40 صفًّا عادت بـ11 قطعة و20 بـ12. يحتوي عمود الإعلان على فواصل داخل علامات اقتباس (<code>"Small studio, ideal for one person, internet ready"</code>)، فقُطعت خلية واحدة إلى ثلاث. ونجا الإيجار مصادفةً لأن <code>advert</code> هو آخر عمود؛ ولو وضعتَ فاصلة في <code>city</code> لانزاح كل حقل على يمينها خانة واحدة دون أي خطأ.</p>
+  </div>
+
+  <p class="en">Python's standard <code>csv</code> module understands quoting. <code>csv.DictReader</code> reads the header once and gives you one dictionary per row, which is the list of dictionaries we wanted.</p>
+  <p class="ar">تفهم وحدة <code>csv</code> القياسية في بايثون علامات الاقتباس. وتقرأ <code>csv.DictReader</code> الترويسة مرة واحدة وتعطيك قاموسًا لكل صف، وهذه هي قائمة القواميس التي أردناها.</p>
+
+  <pre class="code" data-lang="python"><code>import csv
+
+with open("rental_listings.csv", newline="", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+print(len(rows), "rows")
+print(rows[0])
+print({type(v).__name__ for v in rows[0].values()})
+print([r["listing_id"] for r in rows if r["monthly_rent"] == ""])</code></pre>
+<div class="output">60 rows
+{'listing_id': '1001', 'city': 'Khan Younis', 'governorate': 'Khan Younis', 'monthly_rent': '415', 'area_m2': '119.2', 'rooms': '4', 'furnished': 'yes', 'listed_on': '2026-01-16', 'advert': 'Small studio, ideal for one person, internet ready'}
+{'str'}
+['1010', '1026']</div>
+
+  <p class="en">Now every advert is whole. But look at the line that prints the set of value types: <code>{'str'}</code>. Every cell, including the rent <code>'415'</code> and the area <code>'119.2'</code>, is still a string, and the two blank rents (listings 1010 and 1026) are empty strings, not "missing".</p>
+  <p class="ar">الآن صار كل إعلان كاملًا. لكن انظر إلى السطر الذي يطبع مجموعة أنواع القيم: <code>{'str'}</code>. كل خلية، بما فيها الإيجار <code>'415'</code> والمساحة <code>'119.2'</code>، ما زالت نصًّا، والإيجاران الفارغان (الإعلانان 1010 و1026) سلسلتان فارغتان لا «قيمتان مفقودتان».</p>
+
+  <div class="thread">
+    <h4><span class="en">Thread · Load a file into something analysable</span><span class="ar">خيط · تحميل ملف إلى شيء قابل للتحليل</span></h4>
+    <p class="en"><strong>Earlier solution:</strong> a hand-written loop with <code>split(",")</code>. <strong>Its gap:</strong> no types, no header handling, and it breaks on a comma inside a field. <strong>Next solution:</strong> the <code>csv</code> module producing a list of dictionaries. <strong>Its gap:</strong> still all strings, no vectorised arithmetic, nothing checks the data. <strong>What this lesson adds:</strong> <code>pd.read_csv</code>, which parses the quoting <em>and</em> builds typed columns, at the price of guessing those types silently (Concepts 4 and 7). <strong>Still open:</strong> <a href="#t1-lesson-04">Lesson 4</a> controls the guess with <code>sep</code>, <code>encoding</code>, <code>dtype</code> and <code>parse_dates</code>, and <a href="#t1-lesson-06">Lesson 6</a> validates the result.</p>
+    <p class="ar"><strong>الحل السابق:</strong> حلقة مكتوبة يدويًّا بـ<code>split(",")</code>. <strong>ثغرته:</strong> بلا أنواع ولا معالجة للترويسة، وتنكسر عند فاصلة داخل حقل. <strong>الحل التالي:</strong> وحدة <code>csv</code> التي تنتج قائمة قواميس. <strong>ثغرته:</strong> ما زال كل شيء نصوصًا، ولا حساب متجهي، ولا شيء يفحص البيانات. <strong>ما يضيفه هذا الدرس:</strong> <code>pd.read_csv</code> الذي يحلّل الاقتباس <em>ويبني</em> أعمدة ذات أنواع، لكنه يخمّن تلك الأنواع بصمت (المفهومان 4 و7). <strong>ما زال مفتوحًا:</strong> يضبط <a href="#t1-lesson-04">الدرس 4</a> هذا التخمين بـ<code>sep</code> و<code>encoding</code> و<code>dtype</code> و<code>parse_dates</code>، ويتحقق <a href="#t1-lesson-06">الدرس 6</a> من النتيجة.</p>
+  </div>
+
+  <h3 id="t1l3-s3"><span class="en">Three limits of a list of dictionaries</span><span class="ar">ثلاثة حدود لقائمة القواميس</span></h3>
+
+  <p class="en">Try the three things an analyst does in the first five minutes: divide one column by another, sort by rent, and add the rents up.</p>
+  <p class="ar">جرّب الأمور الثلاثة التي يفعلها المحلل في أول خمس دقائق: قسمة عمود على آخر، والترتيب بالإيجار، وجمع الإيجارات.</p>
+
+  <pre class="code bad" data-lang="python"><code>import csv
+
+with open("rental_listings.csv", newline="", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+r = rows[0]
+try:
+    print(r["monthly_rent"] / r["area_m2"])
+except TypeError as e:
+    print("1. TypeError:", e)
+
+print("2.", sorted(["1000", "415", "99"]), sorted([1000, 415, 99]))
+
+try:
+    total = sum(float(r["monthly_rent"]) for r in rows)
+except ValueError as e:
+    print("3. ValueError:", e)</code></pre>
+<div class="output">1. TypeError: unsupported operand type(s) for /: 'str' and 'str'
+2. ['1000', '415', '99'] [99, 415, 1000]
+3. ValueError: could not convert string to float: ''</div>
+
+  <ol>
+    <li><span class="en"><strong>No vectorised maths.</strong> Division is not defined between two strings, and even with numbers you would write a loop that touches one dictionary at a time. The container has no idea that a "column" exists.</span><span class="ar"><strong>لا حساب متجهي.</strong> القسمة غير معرّفة بين نصّين، وحتى لو كانا رقمين لكتبتَ حلقة تلمس قاموسًا واحدًا في كل مرة. فالحاوية لا تعرف أن «عمودًا» موجود أصلًا.</span></li>
+    <li><span class="en"><strong>No types.</strong> Strings sort alphabetically, so <code>'1000'</code> comes before <code>'415'</code> and <code>'99'</code> comes last. A "highest rent" computed on text is silently wrong whenever the numbers have different lengths.</span><span class="ar"><strong>لا أنواع.</strong> تُرتَّب النصوص أبجديًّا، فتأتي <code>'1000'</code> قبل <code>'415'</code> وتأتي <code>'99'</code> أخيرًا. وأعلى إيجار محسوب على نصوص يكون خاطئًا بصمت متى اختلفت أطوال الأرقام.</span></li>
+    <li><span class="en"><strong>No notion of missing.</strong> A blank cell is <code>''</code>. <code>float('')</code> crashes at the first blank, and the usual quick fix, <code>float(x or 0)</code>, turns an unknown rent into a rent of zero.</span><span class="ar"><strong>لا مفهوم للمفقود.</strong> الخلية الفارغة هي <code>''</code>. و<code>float('')</code> تنهار عند أول خلية فارغة، والإصلاح السريع المعتاد <code>float(x or 0)</code> يحوّل الإيجار المجهول إلى إيجار قيمته صفر.</span></li>
+  </ol>
+
+  <p class="en">There is a fourth limit, speed, which we measure in Concept 2 once we have something to compare against.</p>
+  <p class="ar">وهناك حدّ رابع هو السرعة، نقيسه في المفهوم 2 حين يصبح عندنا ما نقارن به.</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">What does <code>sorted(["1000", "415", "99"])</code> return?</span><span class="ar">ماذا تعيد <code>sorted(["1000", "415", "99"])</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>['99', '415', '1000']</code>, because Python understands that these look like numbers.</span><span class="ar"><code>['99', '415', '1000']</code>، لأن بايثون تفهم أنها تبدو كأرقام.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>['1000', '415', '99']</code>, because text is compared character by character.</span><span class="ar"><code>['1000', '415', '99']</code>، لأن النص يُقارَن حرفًا بحرف.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">A <code>TypeError</code>, because strings that look like numbers cannot be sorted.</span><span class="ar">خطأ <code>TypeError</code>، لأن النصوص التي تبدو أرقامًا لا يمكن ترتيبها.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>['99', '1000', '415']</code>, shortest string first.</span><span class="ar"><code>['99', '1000', '415']</code>، الأقصر أولًا.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">Text is compared one character at a time, left to right: <code>'1'</code> sorts before <code>'4'</code>, which sorts before <code>'9'</code>. The first option is the tempting one because we read <code>"415"</code> as a number; Python does not, because nothing told it the cell is a number. That is the whole reason this lesson is about types.</div>
+      <div class="ar">يُقارَن النص حرفًا حرفًا من اليسار: <code>'1'</code> قبل <code>'4'</code> وهي قبل <code>'9'</code>. والخيار الأول مغرٍ لأننا نقرأ <code>"415"</code> رقمًا، أما بايثون فلا، لأن أحدًا لم يخبرها أن الخلية رقم. وهذا هو سبب أن يدور هذا الدرس حول الأنواع.</div>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">A model eats a numeric matrix, never a list of dictionaries of strings. Whatever sits between the file and that matrix is your responsibility, so convert once, in one place, and make the conversion visible. A feature such as "rank of the rent" computed on text ranks <code>'99'</code> above <code>'415'</code> and nobody notices, because the column still looks like rents. And the quick fix <code>float(x or 0)</code> manufactures a training row whose rent is zero for 2 of the 60 listings: a made-up label, not a missing one.</p>
+    <p class="ar">يتغذّى النموذج على مصفوفة رقمية، لا على قائمة قواميس من النصوص. وكل ما يقع بين الملف وتلك المصفوفة مسؤوليتك، فحوِّل مرة واحدة وفي مكان واحد واجعل التحويل ظاهرًا. وميزة مثل «ترتيب الإيجار» محسوبة على نصوص تضع <code>'99'</code> فوق <code>'415'</code> ولا يلاحظ أحد، لأن العمود ما زال يشبه إيجارات. والإصلاح السريع <code>float(x or 0)</code> يصنع صف تدريب إيجاره صفر في إعلانين من الستين: تسمية مختلَقة لا قيمة مفقودة.</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب أمين</span></h4>
+    <p class="en">A list of dictionaries is still the right tool for ten records, for a JSON payload you will forward unchanged, or for a configuration. It is readable, it needs no import, and it is exactly what the standard library produces. It stops being right the moment you compute <em>across</em> rows, which is most of data analysis.</p>
+    <p class="ar">ما زالت قائمة القواميس هي الأداة الصحيحة لعشرة سجلات، أو لحمولة JSON ستمرّرها دون تغيير، أو لإعدادات. فهي مقروءة، ولا تحتاج استيرادًا، وهي بالضبط ما تنتجه المكتبة القياسية. لكنها تكفّ عن الصلاحية لحظة تحسب <em>عبر</em> الصفوف، وهذا معظم تحليل البيانات.</p>
+  </div>
+
+  <h2 id="t1l3-h2"><span class="en">Concept 2 — NumPy: one dtype, one block, no loops</span><span class="ar">المفهوم 2 — NumPy: نوع واحد، كتلة واحدة، بلا حلقات</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">Dividing one column by another, filtering the expensive listings, adding up a total: in a list of dictionaries each of these is a Python loop that touches one object at a time, and every number is its own boxed object scattered through memory. NumPy's answer is to store the numbers <em>packed together in one block</em> and to apply an operation to the whole block in a single step.</p>
+    <p class="ar">قسمة عمود على آخر، وترشيح الإعلانات الغالية، وجمع إجمالي: في قائمة القواميس يكون كل ذلك حلقة بايثون تلمس كائنًا واحدًا في كل مرة، وكل رقم كائن مستقل ومغلَّف ومبعثر في الذاكرة. أما جواب NumPy فهو أن تُخزَّن الأرقام <em>متراصّة في كتلة واحدة</em> وتُطبَّق العملية على الكتلة كلها في خطوة واحدة.</p>
+  </div>
+
+  <h3 id="t1l3-s4"><span class="en">The ndarray: shape, ndim, dtype</span><span class="ar">المصفوفة ndarray: الشكل والأبعاد والنوع</span></h3>
+
+  <p class="en">An <span class="term" data-term="ndarray">ndarray</span> (an n-dimensional array) is a fixed-size grid of values that <em>all have the same type</em>. That type is its <span class="term" data-term="dtype">dtype</span>: <code>float64</code> means every cell is an 8-byte decimal number. Its <code>shape</code> is the length along each axis and <code>ndim</code> is the number of axes: one axis for a column of rents, two for a table.</p>
+  <p class="ar">المصفوفة <span class="term" data-term="ndarray">ndarray</span> (مصفوفة ذات أبعاد متعددة) شبكة ثابتة الحجم من القيم <em>كلها من النوع نفسه</em>. وهذا النوع هو <span class="term" data-term="dtype">نوع البيانات (dtype)</span>: فالنوع <code>float64</code> يعني أن كل خلية عدد عشري من 8 بايت. أما <code>shape</code> فهو الطول على كل محور، و<code>ndim</code> عدد المحاور: محور واحد لعمود إيجارات، ومحوران لجدول.</p>
+
+  <pre class="code" data-lang="python"><code>import numpy as np
+
+rent = np.array([415.0, 445.0, 590.0, 315.0])      # listings 1001 to 1004
+print(rent)
+print(rent.dtype, rent.shape, rent.ndim, rent.size)
+
+grid = np.array([[415.0, 119.2, 4],
+                 [445.0, 115.7, 3]])
+print(grid.shape, grid.ndim, grid.dtype)
+
+print(np.array(["415", "445"]).dtype)</code></pre>
+<div class="output">[415. 445. 590. 315.]
+float64 (4,) 1 4
+(2, 3) 2 float64
+&lt;U3</div>
+
+  <p class="en">The last line is a quiet warning. NumPy does not parse text for you: an array of the strings <code>"415"</code> and <code>"445"</code> has dtype <code>&lt;U3</code> ("Unicode text, up to 3 characters"), and arithmetic on it will fail or, worse, concatenate.</p>
+  <p class="ar">والسطر الأخير تحذير هادئ. فـNumPy لا تحلّل النص نيابةً عنك: مصفوفة السلسلتين <code>"415"</code> و<code>"445"</code> نوعها <code>&lt;U3</code> («نص يونيكود حتى 3 أحرف»)، والحساب عليها سيفشل أو، وهو الأسوأ، سيربط النصوص.</p>
+
+  <h3 id="t1l3-s5"><span class="en">Vectorised arithmetic and boolean masks</span><span class="ar">الحساب المتجهي والأقنعة المنطقية</span></h3>
+
+  <p class="en"><span class="term" data-term="vectorisation">Vectorisation</span> means writing one operation on whole arrays and letting compiled code run the loop for you. Comparisons vectorise too, and a comparison produces a <span class="term" data-term="boolean-mask">boolean mask</span>: an array of <code>True</code> and <code>False</code>, one per element, which you can use to select, to count, or to average.</p>
+  <p class="ar">يعني <span class="term" data-term="vectorisation">العمل المتجهي (vectorisation)</span> أن تكتب عملية واحدة على مصفوفات كاملة وتترك لكود مترجَم أن ينفّذ الحلقة عنك. وتعمل المقارنات بالطريقة نفسها، والمقارنة تنتج <span class="term" data-term="boolean-mask">قناعًا منطقيًّا (boolean mask)</span>: مصفوفة من <code>True</code> و<code>False</code> قيمة لكل عنصر، تستعملها للانتقاء أو للعدّ أو لأخذ متوسط.</p>
+
+  <pre class="code" data-lang="python"><code>import numpy as np
+
+rent = np.array([415.0, 445.0, 590.0, 315.0])
+area = np.array([119.2, 115.7, 126.7, 109.2])
+
+print((rent / area).round(2))        # rent per m2 for all four, no loop
+big = rent &gt; 400                     # a boolean mask: one True/False per listing
+print(big, big.dtype)
+print(rent[big])                     # keep only the positions where the mask is True
+print(big.sum(), big.mean())         # True counts as 1: how many, and what share</code></pre>
+<div class="output">[3.48 3.85 4.66 2.88]
+[ True  True  True False] bool
+[415. 445. 590.]
+3 0.75</div>
+
+  <p class="en">Two habits to take from this. First, <code>big.sum()</code> and <code>big.mean()</code> work because <code>True</code> counts as 1: the sum is "how many", the mean is "what share". Second, the mask and the data have the same length, so <code>rent[big]</code> keeps exactly the positions where the mask is true. The trace below runs the loop and the vectorised line next to each other.</p>
+  <p class="ar">عادتان تأخذهما من هذا. الأولى: تعمل <code>big.sum()</code> و<code>big.mean()</code> لأن <code>True</code> تُحسب 1، فالمجموع هو «كم» والمتوسط هو «أي نسبة». والثانية: القناع والبيانات بالطول نفسه، فتُبقي <code>rent[big]</code> بالضبط المواضع التي يكون القناع فيها صحيحًا. ويشغّل التتبع أدناه الحلقة والسطر المتجهي جنبًا إلى جنب.</p>
+
+  <div data-trace-id="t1-l3-vector-vs-loop"></div>
+
+  <h3 id="t1l3-s6"><span class="en">Broadcasting: two examples and two traps</span><span class="ar">البثّ: مثالان وفخّان</span></h3>
+
+  <p class="en">What if the two arrays do not have the same shape? <span class="term" data-term="broadcasting">Broadcasting</span> is the rule NumPy uses to combine them anyway, by stretching the smaller one along any axis where it has size 1 (or no axis at all). Example 1 multiplies a whole array by a single number. Example 2 subtracts a row of column means from a whole table, which is the first step of nearly every feature-scaling recipe.</p>
+  <p class="ar">ماذا لو لم يكن للمصفوفتين الشكل نفسه؟ <span class="term" data-term="broadcasting">البثّ (broadcasting)</span> هو القاعدة التي تستعملها NumPy لدمجهما رغم ذلك، بمدّ الأصغر على كل محور حجمه 1 (أو لا محور له أصلًا). المثال الأول يضرب مصفوفة كاملة في عدد واحد. والمثال الثاني يطرح صفّ متوسطات الأعمدة من جدول كامل، وهي الخطوة الأولى في كل وصفة لتحجيم الخصائص تقريبًا.</p>
+
+  <pre class="code" data-lang="python"><code>import numpy as np
+
+rent = np.array([415.0, 445.0, 590.0, 315.0])
+print(rent * 1.10)                   # example 1: the scalar is stretched to every cell
+
+X = np.array([[415.0, 119.2, 4],
+              [445.0, 115.7, 3],
+              [590.0, 126.7, 5],
+              [315.0, 109.2, 3]])
+col_mean = X.mean(axis=0)            # one mean per column
+print(X.shape, col_mean.shape)
+centred = X - col_mean               # example 2: (4, 3) minus (3,) gives (4, 3)
+print(centred.round(2))
+print(np.allclose(centred.mean(axis=0), 0))</code></pre>
+<div class="output">[456.5 489.5 649.  346.5]
+(4, 3) (3,)
+[[ -26.25    1.5     0.25]
+ [   3.75   -2.     -0.75]
+ [ 148.75    9.      1.25]
+ [-126.25   -8.5    -0.75]]
+True</div>
+
+  <p class="en">The rule, in one sentence: line the shapes up from the right; two sizes are compatible if they are equal or if one of them is 1. Here <code>(4, 3)</code> against <code>(3,)</code> lines up as 3 with 3 and 4 with nothing, so the row of means is reused for each of the four rows. The Appendix works through the rule step by step.</p>
+  <p class="ar">القاعدة في جملة: صُفَّ الأشكال من اليمين؛ ويتوافق حجمان إن تساويا أو كان أحدهما 1. هنا يصطف <code>(4, 3)</code> مع <code>(3,)</code> فيقابل 3 العددَ 3 ويقابل 4 لا شيء، فيُعاد استعمال صفّ المتوسطات لكل صف من الصفوف الأربعة. ويشرح الملحق القاعدة خطوة بخطوة.</p>
+
+  <pre class="code bad" data-lang="python"><code>import numpy as np
+
+try:
+    np.ones(3) + np.ones(4)
+except ValueError as e:
+    print("ValueError:", e)
+
+a = np.array([1.0, 2.0, 3.0])
+print((a + a.reshape(3, 1)).shape)   # no error: every cell is paired with every cell</code></pre>
+<div class="output">ValueError: operands could not be broadcast together with shapes (3,) (4,)
+(3, 3)</div>
+
+  <div class="warn">
+    <h4><span class="en">One trap is loud, the other is silent</span><span class="ar">أحد الفخّين صاخب والآخر صامت</span></h4>
+    <p class="en">Shapes <code>(3,)</code> and <code>(4,)</code> are incompatible, so NumPy raises <code>ValueError</code>. That is the good case. Shapes <code>(3,)</code> and <code>(3, 1)</code> <em>are</em> compatible: both are stretched, and you get a 3-by-3 table pairing every element with every other, with no warning. If you wanted three values and got nine, check whether a <code>reshape</code> or a stray <code>[:, None]</code> put a size-1 axis in the way.</p>
+    <p class="ar">الشكلان <code>(3,)</code> و<code>(4,)</code> غير متوافقين، فترفع NumPy الخطأ <code>ValueError</code>. وهذه هي الحالة الجيدة. أما الشكلان <code>(3,)</code> و<code>(3, 1)</code> فمتوافقان: يُمَدّ كلاهما، فتحصل على جدول 3×3 يقرن كل عنصر بكل عنصر، دون أي تحذير. فإن أردتَ ثلاث قيم وحصلتَ على تسع، فتحقّق هل وضع <code>reshape</code> أو <code>[:, None]</code> زائد محورًا حجمه 1 في الطريق.</p>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">A feature matrix <code>X</code> has shape <code>(60, 4)</code> and <code>m = X.mean(axis=0)</code>. What does <code>X - m</code> give?</span><span class="ar">لدينا مصفوفة خصائص <code>X</code> شكلها <code>(60, 4)</code> وقد حسبنا <code>m = X.mean(axis=0)</code>. ماذا تعطي <code>X - m</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="true"><span class="en">A <code>(60, 4)</code> array: each column has its own mean subtracted.</span><span class="ar">مصفوفة <code>(60, 4)</code>: يُطرح من كل عمود متوسطه هو.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">A <code>ValueError</code>, because 60 and 4 are different sizes.</span><span class="ar">الخطأ <code>ValueError</code> لأن 60 و4 حجمان مختلفان.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">A <code>(60, 60)</code> array pairing every row with every mean.</span><span class="ar">مصفوفة <code>(60, 60)</code> تقرن كل صف بكل متوسط.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">A single number: the total of the differences.</span><span class="ar">عدد واحد: مجموع الفروق.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">The mean has shape <code>(4,)</code>. Lined up from the right, its 4 meets the 4 columns and the 60 rows meet nothing, so the row of means is reused on every row. The <code>ValueError</code> option is tempting because the two shapes differ, but differing is fine when the sizes that meet are equal or 1. The <code>(60, 60)</code> trap needs a <em>column</em> shape such as <code>(60, 1)</code>.</div>
+      <div class="ar">شكل المتوسط <code>(4,)</code>. وإذا صُفَّ من اليمين فإن الـ4 فيه تقابل الأعمدة الأربعة والصفوف الستون لا تقابل شيئًا، فيُعاد استعمال صفّ المتوسطات على كل صف. وخيار <code>ValueError</code> مغرٍ لأن الشكلين مختلفان، لكن الاختلاف مقبول متى كان الحجمان المتقابلان متساويين أو أحدهما 1. أما فخّ <code>(60, 60)</code> فيحتاج شكل <em>عمود</em> مثل <code>(60, 1)</code>.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l3-s7"><span class="en">Why it is faster, with a measured number</span><span class="ar">لماذا هي أسرع، برقم مقيس</span></h3>
+
+  <p class="en">Two things make the NumPy line fast. First, the array is one contiguous block of 8-byte numbers, while a Python list is a block of pointers to separate float objects of 24 bytes each: more memory, and a trip across memory for every element. Second, the loop over the block runs in compiled code, often with the processor's wide vector instructions, instead of the interpreter executing a few bytecodes per element. Here is the same sum over a million rents, once in a Python loop and once as <code>data.sum()</code>.</p>
+  <p class="ar">شيئان يجعلان سطر NumPy سريعًا. الأول: المصفوفة كتلة متصلة من أرقام حجم كل منها 8 بايت، أما قائمة بايثون فكتلة من المؤشرات إلى كائنات float منفصلة حجم كل منها 24 بايت: ذاكرة أكبر ورحلة عبر الذاكرة لكل عنصر. والثاني: تعمل الحلقة على الكتلة بكود مترجَم، وغالبًا بتعليمات المعالج المتجهة العريضة، بدل أن ينفّذ المفسّر بضع تعليمات وسيطة لكل عنصر. وهذا هو المجموع نفسه على مليون إيجار، مرة بحلقة بايثون ومرة بـ<code>data.sum()</code>.</p>
+
+  <pre class="code" data-lang="python"><code>import sys
+import timeit
+import numpy as np
+
+n = 1_000_000
+data = np.random.default_rng(0).uniform(200, 600, n)
+as_list = data.tolist()
+
+def loop_sum(xs):
+    total = 0.0
+    for x in xs:
+        total += x
+    return total
+
+t_loop = min(timeit.repeat(lambda: loop_sum(as_list), number=3, repeat=5)) / 3
+t_numpy = min(timeit.repeat(lambda: data.sum(), number=30, repeat=5)) / 30
+print(f"python loop : {t_loop * 1000:6.1f} ms")
+print(f"numpy sum   : {t_numpy * 1000:6.2f} ms")
+print(f"ratio       : about {t_loop / t_numpy:.0f}x")
+print("array bytes :", data.nbytes)
+print("list bytes  :", sys.getsizeof(as_list) + sum(sys.getsizeof(x) for x in as_list))</code></pre>
+<div class="output">python loop :   88.5 ms
+numpy sum   :   2.79 ms
+ratio       : about 32x
+array bytes : 8000000
+list bytes  : 32000056</div>
+
+  <div class="warn">
+    <h4><span class="en">Read the ratio, not the milliseconds</span><span class="ar">اقرأ النسبة لا الملّي ثانية</span></h4>
+    <p class="en">Timings depend on the machine, what else is running and the size of the data; this block is one run, and on another run or another computer the numbers will differ. What stays true is the shape of the result: tens of times faster, and about a quarter of the memory (8 MB against 32 MB here). For four numbers NumPy is not faster at all, because setting up the call costs more than the work.</p>
+    <p class="ar">تتوقف الأزمنة على الجهاز وعلى ما يعمل معه وعلى حجم البيانات؛ وهذه الكتلة تشغيل واحد، وفي تشغيل آخر أو على حاسوب آخر ستختلف الأرقام. الذي يبقى صحيحًا هو شكل النتيجة: أسرع بعشرات المرات، وبنحو ربع الذاكرة (8 ميغابايت مقابل 32 هنا). أما في أربعة أرقام فليست NumPy أسرع إطلاقًا، لأن تهيئة الاستدعاء تكلّف أكثر من العمل.</p>
+  </div>
+
+  <h3 id="t1l3-s8"><span class="en">Upcasting: what happens when types mix</span><span class="ar">الترقية الضمنية: ماذا يحدث حين تختلط الأنواع</span></h3>
+
+  <p class="en">An array has one dtype, so when you mix types NumPy picks one that fits everything: this is <em>upcasting</em>. Integers mixed with decimals become <code>float64</code>. Numbers mixed with text become text, with no error. Numbers mixed with <code>None</code> become <code>object</code>, which is a list in disguise: slow, and with no vector maths. Narrow types such as <code>int8</code> hold only a small range, and going past it wraps around silently.</p>
+  <p class="ar">للمصفوفة نوع واحد، فعندما تخلط الأنواع تختار NumPy نوعًا يتسع للجميع: وهذه هي <em>الترقية الضمنية (upcasting)</em>. الأعداد الصحيحة مع العشرية تصير <code>float64</code>. والأعداد مع النص تصير نصًّا، بلا أي خطأ. والأعداد مع <code>None</code> تصير <code>object</code>، وهي قائمة متنكّرة: بطيئة وبلا حساب متجهي. والأنواع الضيقة مثل <code>int8</code> تحمل مدى صغيرًا فقط، وتجاوزه يلتف حولها بصمت.</p>
+
+  <pre class="code" data-lang="python"><code>import numpy as np
+
+print(np.array([415, 445]).dtype, (np.array([415, 445]) / 2).dtype)
+print(np.array([1, 2.5]).dtype)
+print(np.array([1, "a"]), np.array([1, "a"]).dtype)
+print(np.array([1, None]), np.array([1, None]).dtype)
+print((np.array([True, False]) + 1).dtype)
+
+small = np.array([120], dtype=np.int8)     # int8 holds -128 to 127
+print(small + 10)                          # no error, no warning</code></pre>
+<div class="output">int64 float64
+float64
+['1' 'a'] &lt;U21
+[1 None] object
+int64
+[-126]</div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">What does <code>np.array([415, "n/a"])</code> give?</span><span class="ar">ماذا تعطي <code>np.array([415, "n/a"])</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>array([415., nan])</code>: NumPy turns the unparseable text into NaN.</span><span class="ar"><code>array([415., nan])</code>: تحوّل NumPy النص غير القابل للتحليل إلى NaN.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">A <code>ValueError</code>, because a number and a string cannot share an array.</span><span class="ar">الخطأ <code>ValueError</code> لأن العدد والنص لا يشتركان في مصفوفة.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">A text array <code>['415' 'n/a']</code> with a <code>&lt;U..</code> dtype: the number became a string.</span><span class="ar">مصفوفة نصية <code>['415' 'n/a']</code> نوعها <code>&lt;U..</code>: صار العدد نصًّا.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">An <code>int64</code> array with the text silently dropped.</span><span class="ar">مصفوفة <code>int64</code> أُسقط منها النص بصمت.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">NumPy keeps both values and upcasts to the one type that holds them: text. No error, no NaN. The first option describes what <em>pandas</em> can do when you ask it to, with <code>to_numeric(errors="coerce")</code> (Concept 6); NumPy never decides to throw a value away on its own. After this line every <code>*</code> or <code>+</code> on the array is a text operation or an error, which is why a numeric column that loaded as text is so costly.</div>
+      <div class="ar">تُبقي NumPy القيمتين وترقّي النوع إلى الوحيد الذي يحملهما: النص. لا خطأ ولا NaN. والخيار الأول يصف ما تستطيع <em>pandas</em> فعله حين تطلب منها ذلك بـ<code>to_numeric(errors="coerce")</code> (المفهوم 6)؛ أما NumPy فلا تقرر من تلقاء نفسها التخلص من قيمة. وبعد هذا السطر يصير كل <code>*</code> أو <code>+</code> على المصفوفة عملية نصية أو خطأ، ولهذا يكلّف العمود الرقمي الذي حُمّل نصًّا كل هذا الثمن.</div>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en"><strong>NumPy is the lingua franca.</strong> scikit-learn turns a DataFrame into an array before it fits anything, and PyTorch's <code>torch.from_numpy</code> shares memory with an existing array instead of copying it. A library that wants "a matrix of features" wants an <code>ndarray</code>, so the dtype of your array <em>is</em> the dtype of your features: a text array (<code>&lt;U3</code>) or an <code>object</code> array cannot be a feature matrix, and finding that out at <code>fit</code> time is late.</p>
+    <p class="ar"><strong>NumPy هي اللغة المشتركة.</strong> تحوّل scikit-learn الجدول DataFrame إلى مصفوفة قبل أن تدرّب أي شيء، وتشارك <code>torch.from_numpy</code> في PyTorch الذاكرةَ مع مصفوفة موجودة بدل نسخها. والمكتبة التي تريد «مصفوفة خصائص» تريد <code>ndarray</code>، فنوع مصفوفتك <em>هو</em> نوع خصائصك: المصفوفة النصية (<code>&lt;U3</code>) أو مصفوفة <code>object</code> لا تصلح مصفوفةَ خصائص، واكتشاف ذلك عند <code>fit</code> متأخر.</p>
+    <p class="en"><strong>float32 against float64.</strong> NumPy defaults to <code>float64</code> (8 bytes). Deep-learning frameworks default to <code>float32</code> (4 bytes): half the memory (a matrix of 1,000,000 rows by 100 columns is 800 MB as <code>float64</code> and 400 MB as <code>float32</code>), faster on GPUs, and about seven significant digits, which is plenty for weights and pixels but not for exact whole numbers: <code>np.float32(16_777_216) + np.float32(1)</code> is still <code>16777216.0</code>. Use <code>float64</code> for accounting and analysis, <code>float32</code> for training, and convert at the boundary with <code>X.astype("float32")</code>.</p>
+    <p class="ar"><strong>float32 مقابل float64.</strong> الافتراضي في NumPy هو <code>float64</code> (8 بايت). والافتراضي في أطر التعلم العميق هو <code>float32</code> (4 بايت): نصف الذاكرة (مصفوفة من 1,000,000 صف في 100 عمود تساوي 800 ميغابايت بـ<code>float64</code> و400 بـ<code>float32</code>)، وأسرع على وحدات المعالجة الرسومية، وبنحو سبع خانات معنوية، وهذا وفير للأوزان والبكسلات لكنه لا يكفي للأعداد الصحيحة الدقيقة: فـ<code>np.float32(16_777_216) + np.float32(1)</code> ما زال يساوي <code>16777216.0</code>. استعمل <code>float64</code> للمحاسبة والتحليل و<code>float32</code> للتدريب، وحوّل عند الحدّ بـ<code>X.astype("float32")</code>.</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب أمين</span></h4>
+    <p class="en">An array is fixed in size (appending copies the whole thing), has no labels (you track positions yourself), and for a few dozen numbers a plain list is just as quick. NumPy pays off when the data is large, uniform and numeric, which is the situation in nearly every model-training pipeline and in the numeric columns of nearly every table.</p>
+    <p class="ar">المصفوفة ثابتة الحجم (والإلحاق ينسخها كلها)، وبلا تسميات (فأنت تتابع المواضع بنفسك)، وفي بضع عشرات من الأرقام تكون القائمة العادية سريعة بالقدر نفسه. تؤتي NumPy ثمارها حين تكون البيانات كبيرة ومنتظمة ورقمية، وهذا حال كل خط تدريب نماذج تقريبًا وحال الأعمدة الرقمية في كل جدول تقريبًا.</p>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 1 — Scale every feature with one line</span><span class="ar">تمرين 1 — حجّم كل الخصائص بسطر واحد</span></h4>
+    <p class="en">Each column of <code>X</code> (rent, area, rooms for four listings) is on its own scale. Compute <code>z</code>, where every value is replaced by <code>(value - column mean) / column standard deviation</code>, <strong>without a loop</strong>. Then check that each column of <code>z</code> now has mean 0 (use <code>np.allclose</code>) and standard deviation 1. Predict first: what is the shape of <code>X.std(axis=0)</code>, and why does the division work?</p>
+    <p class="ar">لكل عمود في <code>X</code> (الإيجار والمساحة والغرف لأربعة إعلانات) مقياسه الخاص. احسب <code>z</code> بحيث تُستبدل كل قيمة بـ<code>(القيمة - متوسط العمود) / الانحراف المعياري للعمود</code> <strong>دون حلقة</strong>. ثم تحقّق أن لكل عمود من <code>z</code> الآن متوسطًا 0 (استعمل <code>np.allclose</code>) وانحرافًا معياريًّا 1. تنبّأ أولًا: ما شكل <code>X.std(axis=0)</code>، ولماذا تنجح القسمة؟</p>
+    <pre class="code" data-lang="python"><code>import numpy as np
+
+X = np.array([[415.0, 119.2, 4],
+              [445.0, 115.7, 3],
+              [590.0, 126.7, 5],
+              [315.0, 109.2, 3]])
+# z = ...                    # (value - column mean) / column std, with no loop
+# print(z.round(2))
+# print(np.allclose(z.mean(axis=0), 0), z.std(axis=0))</code></pre>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+      <pre class="code good" data-lang="python"><code>import numpy as np
+
+X = np.array([[415.0, 119.2, 4],
+              [445.0, 115.7, 3],
+              [590.0, 126.7, 5],
+              [315.0, 109.2, 3]])
+z = (X - X.mean(axis=0)) / X.std(axis=0)     # (4, 3) - (3,) and (4, 3) / (3,)
+print(z.round(2))
+print(np.allclose(z.mean(axis=0), 0), z.std(axis=0))</code></pre>
+<div class="output">[[-0.27  0.24  0.3 ]
+ [ 0.04 -0.32 -0.9 ]
+ [ 1.51  1.43  1.51]
+ [-1.28 -1.35 -0.9 ]]
+True [1. 1. 1.]</div>
+      <p class="en"><code>X.std(axis=0)</code> has shape <code>(3,)</code>, one value per column, so both the subtraction and the division broadcast a row across the four listings. Because the scaling is two array expressions, it works unchanged on 60 listings or 6 million. Note that this is the same recipe a model-training pipeline applies, so the means and deviations must come from the <em>training</em> rows only (an issue the later chapters on data preparation return to).</p>
+      <p class="ar">شكل <code>X.std(axis=0)</code> هو <code>(3,)</code>، قيمة لكل عمود، فتبثّ عمليتا الطرح والقسمة صفًّا على الإعلانات الأربعة. ولأن التحجيم تعبيران على مصفوفات، فإنه يعمل دون تغيير على 60 إعلانًا أو على 6 ملايين. ولاحظ أن هذه هي الوصفة نفسها التي يطبّقها خط تدريب النماذج، ولذلك يجب أن تأتي المتوسطات والانحرافات من صفوف <em>التدريب</em> وحدها (وهي مسألة تعود إليها فصول تجهيز البيانات اللاحقة).</p>
+    </details>
+  </div>
+
+  <h2 id="t1l3-h3"><span class="en">Concept 3 — pandas: arrays with labels</span><span class="ar">المفهوم 3 — pandas: مصفوفات بتسميات</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">NumPy gives speed, but a row is only a position: "the seventh number". Which listing is that? A real table also has columns of <em>different</em> types (a city, a rent, a date), and its row labels must stay glued to the rows when you filter or sort. pandas wraps NumPy arrays in labels, and then bundles labelled columns into a table.</p>
+    <p class="ar">تمنحك NumPy السرعة، لكن الصف عندها مجرد موضع: «الرقم السابع». فأي إعلان هذا؟ وللجدول الحقيقي أيضًا أعمدة من أنواع <em>مختلفة</em> (مدينة وإيجار وتاريخ)، ويجب أن تبقى تسميات صفوفه ملتصقة بالصفوف حين ترشّح أو ترتّب. وتغلّف pandas مصفوفات NumPy بتسميات، ثم تجمع الأعمدة المسمّاة في جدول.</p>
+  </div>
+
+  <h3 id="t1l3-s9"><span class="en">Series: values plus an index</span><span class="ar">السلسلة Series: قيم مع فهرس</span></h3>
+
+  <p class="en">A <span class="term" data-term="series">Series</span> is a one-dimensional array (a single dtype) with an <span class="term" data-term="index">index</span>: a label for each value. Here the labels are listing ids. You can reach a value by its label with <code>.loc</code> or by its position with <code>.iloc</code>, and the underlying NumPy array is always one call away with <code>.to_numpy()</code>.</p>
+  <p class="ar">السلسلة <span class="term" data-term="series">Series</span> مصفوفة أحادية البعد (بنوع واحد) لها <span class="term" data-term="index">فهرس (index)</span>: تسمية لكل قيمة. وهنا التسميات أرقام الإعلانات. تصل إلى القيمة بتسميتها عبر <code>.loc</code> أو بموضعها عبر <code>.iloc</code>، وتبقى مصفوفة NumPy التي تحتها على بعد استدعاء واحد: <code>.to_numpy()</code>.</p>
+
+  <pre class="code" data-lang="python"><code>import pandas as pd
+
+rent = pd.Series([415, 445, 590, 315], index=[1001, 1002, 1003, 1004], name="monthly_rent")
+print(rent)
+print(rent.index.tolist(), rent.to_numpy(), rent.dtype)
+print(rent.loc[1003], rent.iloc[2])
+
+a = pd.Series([1, 2, 3], index=["a", "b", "c"])
+b = pd.Series([10, 20, 30], index=["b", "c", "d"])
+print(a + b)                         # added by label, not by position</code></pre>
+<div class="output">1001    415
+1002    445
+1003    590
+1004    315
+Name: monthly_rent, dtype: int64
+[1001, 1002, 1003, 1004] [415 445 590 315] int64
+590 590
+a     NaN
+b    12.0
+c    23.0
+d     NaN
+dtype: float64</div>
+
+  <p class="en">The last two lines show the point of the index. Adding two Series lines the values up <em>by label</em>, not by position, and a label found on only one side gives <code>NaN</code>. That is powerful when the labels are meaningful (two tables of the same listings in different orders still add correctly) and a silent trap when they are not.</p>
+  <p class="ar">يُظهر السطران الأخيران فائدة الفهرس. فجمع سلسلتين يصفّ القيم <em>بالتسمية</em> لا بالموضع، وتسمية موجودة في جانب واحد تعطي <code>NaN</code>. وهذا قوي حين تكون التسميات ذات معنى (فجدولان للإعلانات نفسها بترتيبين مختلفين يُجمعان جمعًا صحيحًا)، وهو فخ صامت حين لا تكون كذلك.</p>
+
+  <h3 id="t1l3-s10"><span class="en">DataFrame, and the four ways to select from it</span><span class="ar">الجدول DataFrame، وطرق الانتقاء منه الأربع</span></h3>
+
+  <p class="en">A <span class="term" data-term="dataframe">DataFrame</span> is a table: a dictionary of Series that share one index, so each column has its <em>own</em> dtype but all columns agree on the row labels. It is the list of dictionaries of Concept 1, flipped so that the columns are the unit and each column is typed.</p>
+  <p class="ar">الجدول <span class="term" data-term="dataframe">DataFrame</span> هو جدول: قاموس من السلاسل تشترك في فهرس واحد، فلكل عمود نوعه <em>الخاص</em> لكن الأعمدة كلها تتفق على تسميات الصفوف. هو قائمة القواميس في المفهوم 1 مقلوبةً بحيث يصير العمود هو الوحدة وكل عمود له نوع.</p>
+
+  <pre class="code" data-lang="python"><code>print(df.shape)
+print(df.columns.tolist())
+print(type(df["city"]).__name__, type(df[["city"]]).__name__)
+print(df[["listing_id", "city", "monthly_rent"]].head(3))</code></pre>
+<div class="output">(60, 9)
+['listing_id', 'city', 'governorate', 'monthly_rent', 'area_m2', 'rooms', 'furnished', 'listed_on', 'advert']
+Series DataFrame
+   listing_id         city  monthly_rent
+0        1001  Khan Younis         415.0
+1        1002         Gaza         445.0
+2        1003         Gaza         590.0</div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="en">You write</span><span class="ar">تكتب</span></th>
+          <th><span class="en">You get</span><span class="ar">تحصل على</span></th>
+          <th><span class="en">Selects by</span><span class="ar">ينتقي بـ</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>df["city"]</code></td><td><span class="en">a Series (one column)</span><span class="ar">سلسلة (عمود واحد)</span></td><td><span class="en">column name</span><span class="ar">اسم العمود</span></td></tr>
+        <tr><td><code>df[["city", "monthly_rent"]]</code></td><td><span class="en">a DataFrame (a list of names)</span><span class="ar">جدول (قائمة أسماء)</span></td><td><span class="en">column names</span><span class="ar">أسماء الأعمدة</span></td></tr>
+        <tr><td><code>df.loc[rows, cols]</code></td><td><span class="en">cells, rows or columns</span><span class="ar">خلايا أو صفوف أو أعمدة</span></td><td><span class="en"><strong>labels</strong>; a slice includes both ends</span><span class="ar"><strong>التسميات</strong>؛ والشريحة تشمل الطرفين</span></td></tr>
+        <tr><td><code>df.iloc[rows, cols]</code></td><td><span class="en">cells, rows or columns</span><span class="ar">خلايا أو صفوف أو أعمدة</span></td><td><span class="en"><strong>positions</strong>; a slice excludes the end</span><span class="ar"><strong>المواضع</strong>؛ والشريحة تستثني النهاية</span></td></tr>
+        <tr><td><code>df[mask]</code></td><td><span class="en">only the rows where the mask is True</span><span class="ar">الصفوف التي يكون فيها القناع True فقط</span></td><td><span class="en">a boolean Series</span><span class="ar">سلسلة منطقية</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <pre class="code" data-lang="python"><code>print(df.loc[0:2, ["city", "monthly_rent"]])     # labels 0 to 2: both ends included
+print(df.iloc[0:2, [1, 3]])                      # positions 0 and 1: the end is excluded
+
+rafah = df[df["city"] == "Rafah"]
+print(rafah.index[:5].tolist())                  # the old labels travelled with the rows
+try:
+    rafah.loc[0]
+except KeyError as e:
+    print("KeyError:", e)
+print(rafah.iloc[0]["listing_id"])</code></pre>
+<div class="output">          city  monthly_rent
+0  Khan Younis         415.0
+1         Gaza         445.0
+2         Gaza         590.0
+          city  monthly_rent
+0  Khan Younis         415.0
+1         Gaza         445.0
+[7, 14, 16, 21, 22]
+KeyError: 0
+1008</div>
+
+  <p class="en">The last four lines are the one to remember. <code>df[df["city"] == "Rafah"]</code> keeps the <em>old labels</em> (7, 14, 16, ...), so label 0 no longer exists and <code>.loc[0]</code> raises <code>KeyError</code>, while position 0 (<code>.iloc[0]</code>) is listing 1008. The loud error is the lucky outcome: on a frame whose labels happen to include 0, <code>.loc[0]</code> would quietly return a different row from the one you meant.</p>
+  <p class="ar">الأسطر الأربعة الأخيرة هي ما يجب تذكّره. فـ<code>df[df["city"] == "Rafah"]</code> تُبقي <em>التسميات القديمة</em> (7 و14 و16 ...)، فالتسمية 0 لم تعد موجودة و<code>.loc[0]</code> ترفع <code>KeyError</code>، بينما الموضع 0 (<code>.iloc[0]</code>) هو الإعلان 1008. والخطأ الصاخب هو النتيجة المحظوظة: ففي جدول تتضمن تسمياته الرقم 0 مصادفةً ستعيد <code>.loc[0]</code> بهدوء صفًّا غير الذي قصدته.</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">On <code>df</code> with the default index 0 to 59, how many rows do <code>df.loc[0:2]</code> and <code>df.iloc[0:2]</code> return?</span><span class="ar">على <code>df</code> بالفهرس الافتراضي 0 إلى 59، كم صفًّا تعيد <code>df.loc[0:2]</code> وكم تعيد <code>df.iloc[0:2]</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">2 and 2: both are ordinary Python slices.</span><span class="ar">2 و2: كلتاهما شريحة بايثون عادية.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">3 and 3: both include the end.</span><span class="ar">3 و3: كلتاهما تشمل النهاية.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">3 and 2: <code>.loc</code> includes the end label, <code>.iloc</code> excludes the end position.</span><span class="ar">3 و2: تشمل <code>.loc</code> تسمية النهاية وتستثني <code>.iloc</code> موضع النهاية.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">2 and 3: <code>.loc</code> is the one that excludes the end.</span><span class="ar">2 و3: <code>.loc</code> هي التي تستثني النهاية.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en"><code>.loc[0:2]</code> means "from label 0 to label 2" and a label range has no natural "one past the end", so it includes 2: three rows. <code>.iloc[0:2]</code> is the familiar Python slice of positions 0 and 1: two rows. The "both are ordinary slices" option is the tempting one; only <code>.iloc</code> behaves like the slices you know from lists.</div>
+      <div class="ar">تعني <code>.loc[0:2]</code> «من التسمية 0 إلى التسمية 2»، ومدى التسميات لا «موضع تالٍ للنهاية» فيه بطبيعته، فتُشمل 2: ثلاثة صفوف. أما <code>.iloc[0:2]</code> فهي شريحة بايثون المألوفة للموضعين 0 و1: صفّان. وخيار «كلتاهما شريحة عادية» هو المغري؛ فلا تتصرف كشرائح القوائم التي تعرفها إلا <code>.iloc</code>.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l3-s11"><span class="en">Boolean filtering and new columns</span><span class="ar">الترشيح المنطقي والأعمدة الجديدة</span></h3>
+
+  <p class="en">Masks from Concept 2 work on columns. Combine them with <code>&amp;</code> (and), <code>|</code> (or) and <code>~</code> (not), each comparison in its own parentheses; the words <code>and</code> and <code>or</code> do not work on whole columns. <code>.isin([...])</code> is "is one of these".</p>
+  <p class="ar">تعمل الأقنعة التي رأيتها في المفهوم 2 على الأعمدة. اجمعها بـ<code>&amp;</code> (و) و<code>|</code> (أو) و<code>~</code> (ليس)، وكل مقارنة بين قوسين خاصين بها؛ أما الكلمتان <code>and</code> و<code>or</code> فلا تعملان على أعمدة كاملة. و<code>.isin([...])</code> تعني «هي واحدة من هذه».</p>
+
+  <pre class="code" data-lang="python"><code>rent = df["monthly_rent"]
+print((rent &gt; 400).sum(), (rent &lt;= 400).sum())   # two blanks are in neither group
+
+gaza_big = (df["city"] == "Gaza") &amp; (df["rooms"] &gt;= 4)
+print(gaza_big.sum())
+print(df.loc[gaza_big, ["listing_id", "monthly_rent", "rooms"]])
+
+north = df["governorate"].isin(["North Gaza", "Rafah"])
+print(north.sum(), (~north).sum())</code></pre>
+<div class="output">14 44
+3
+    listing_id  monthly_rent  rooms
+2         1003         590.0    5.0
+28        1029         480.0    4.0
+36        1037         445.0    4.0
+20 40</div>
+
+  <div class="warn">
+    <h4><span class="en">14 + 44 is not 60</span><span class="ar">14 + 44 لا تساوي 60</span></h4>
+    <p class="en">Listings with rent above 400 plus listings with rent at most 400 gives 58, because a missing rent is neither: every comparison with <code>NaN</code> is false. Two listings fall out of <em>both</em> groups, and a report that says "14 expensive, the rest cheap" silently files them under "cheap". Count what a mask leaves out.</p>
+    <p class="ar">الإعلانات التي إيجارها فوق 400 مع الإعلانات التي إيجارها 400 فما دون تعطي 58، لأن الإيجار المفقود ليس هذا ولا ذاك: كل مقارنة مع <code>NaN</code> خاطئة. فيسقط إعلانان من <em>المجموعتين</em> معًا، وتقرير يقول «14 غالية والباقي رخيصة» يضعهما بصمت تحت «رخيصة». عُدّ ما يتركه القناع خارجه.</p>
+  </div>
+
+  <p class="en">A new column is one assignment, computed for all rows at once. Arithmetic with a missing value gives a missing value, so the new column inherits the gaps of both inputs: 2 listings with no rent and 4 with no area leave 6 rows with no rent per square metre.</p>
+  <p class="ar">العمود الجديد تعيين واحد يُحسب لكل الصفوف دفعة واحدة. والحساب مع قيمة مفقودة يعطي قيمة مفقودة، فيرث العمود الجديد فجوات المدخلين معًا: إعلانان بلا إيجار وأربعة بلا مساحة يتركان 6 صفوف بلا إيجار للمتر المربع.</p>
+
+  <pre class="code" data-lang="python"><code>df["rent_per_m2"] = (df["monthly_rent"] / df["area_m2"]).round(2)
+print(df[["listing_id", "monthly_rent", "area_m2", "rent_per_m2"]].head(5))
+print(df["rent_per_m2"].dtype, df["rent_per_m2"].isna().sum())</code></pre>
+<div class="output">   listing_id  monthly_rent  area_m2  rent_per_m2
+0        1001         415.0    119.2         3.48
+1        1002         445.0    115.7         3.85
+2        1003         590.0    126.7         4.66
+3        1004         315.0    109.2         2.88
+4        1005         245.0      NaN          NaN
+float64 6</div>
+
+  <p class="en">To <em>change</em> values for some rows, use one <code>.loc[row_mask, "column"] = value</code>. The tempting form <code>df[mask]["column"] = value</code> is two operations: the first returns a temporary copy, and the assignment goes into the copy.</p>
+  <p class="ar">ولكي <em>تغيّر</em> قيم بعض الصفوف استعمل <code>.loc[قناع_الصفوف, "العمود"] = قيمة</code> مرة واحدة. أما الصيغة المغرية <code>df[mask]["column"] = value</code> فهي عمليتان: الأولى تعيد نسخة مؤقتة، ويذهب التعيين إلى النسخة.</p>
+
+  <pre class="code bad" data-lang="python"><code>import warnings
+
+with warnings.catch_warnings(record=True) as caught:
+    warnings.simplefilter("always")
+    df[df["city"] == "Gaza"]["monthly_rent"] = 0     # chained: assigns into a temporary copy
+print(caught[0].category.__name__)
+print(df["monthly_rent"].sum())                      # nothing changed
+
+df.loc[df["city"] == "Gaza", "monthly_rent"] = 0     # one .loc call: row mask, column name
+print(df["monthly_rent"].sum())</code></pre>
+<div class="output">SettingWithCopyWarning
+19500.0
+12620.0</div>
+
+  <p class="en">The warning is the only evidence; the total stayed at 19500.0. With one <code>.loc</code> call the Gaza rents really became 0 (and the sum dropped to 12620.0). Treat <code>SettingWithCopyWarning</code> as an error.</p>
+  <p class="ar">التحذير هو الدليل الوحيد؛ فقد بقي المجموع 19500.0. أما مع استدعاء <code>.loc</code> واحد فقد صارت إيجارات غزة صفرًا فعلًا (وهبط المجموع إلى 12620.0). عامل <code>SettingWithCopyWarning</code> معاملة الخطأ.</p>
+
+  <h3 id="t1l3-s12"><span class="en">Worked example: the total rent, three ways</span><span class="ar">مثال محلول: إجمالي الإيجارات بثلاث طرق</span></h3>
+
+  <p class="en">Question: what is the total monthly rent asked across the listings? It sounds trivial, which is why it exposes every container's weakness. Step through the three versions and notice that each one fixes a named defect of the one before.</p>
+  <p class="ar">السؤال: ما إجمالي الإيجار الشهري المطلوب في الإعلانات؟ يبدو تافهًا، ولهذا يكشف نقطة ضعف كل حاوية. تنقّل بين النسخ الثلاث ولاحظ أن كل نسخة تصلح عيبًا مسمًّى في التي قبلها.</p>
+
+  <div class="evolve" id="t1l3-e1">
+    <div class="ver" data-title-en="Version 1 — loop over strings" data-title-ar="النسخة 1 — حلقة على نصوص">
+      <pre class="code bad" data-lang="python"><code>import csv
+
+with open("rental_listings.csv", newline="", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+total = 0.0
+for row in rows:
+    if row["monthly_rent"] != "":          # float("") would crash
+        total += float(row["monthly_rent"])
+print(total)</code></pre>
+<div class="output">19500.0</div>
+      <p class="en"><strong>What it does:</strong> reads the list of dictionaries and adds up <code>float(...)</code> of each rent, skipping blanks. <strong>What is wrong:</strong> it answers, but nothing says that it skipped two listings, so 19500.0 reads like a total over 60. Delete the <code>if</code> and it dies on listing 1010 with <code>ValueError: could not convert string to float: ''</code>. Every number is converted one at a time in Python, and the next question ("total of rent per square metre?") needs another loop.</p>
+      <p class="ar"><strong>ما يفعله:</strong> يقرأ قائمة القواميس ويجمع <code>float(...)</code> لكل إيجار، متخطيًا الفارغ. <strong>العيب:</strong> يجيب، لكن لا شيء يقول إنه تخطّى إعلانين، فيُقرأ 19500.0 كأنه مجموع ستين. احذف الشرط <code>if</code> فينهار عند الإعلان 1010 بالخطأ <code>ValueError: could not convert string to float: ''</code>. ويُحوَّل كل رقم على حدة في بايثون، والسؤال التالي («إجمالي الإيجار للمتر المربع؟») يحتاج حلقة أخرى.</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 — a NumPy array" data-title-ar="النسخة 2 — مصفوفة NumPy">
+      <pre class="code" data-lang="python"><code>import csv
+import numpy as np
+
+with open("rental_listings.csv", newline="", encoding="utf-8") as f:
+    rows = list(csv.DictReader(f))
+
+rents = np.array([float(r["monthly_rent"]) if r["monthly_rent"] else np.nan
+                  for r in rows])
+print(rents.sum())
+print(np.nansum(rents))</code></pre>
+<div class="output">nan
+19500.0</div>
+      <p class="en"><strong>What changed:</strong> the blank becomes an explicit <code>np.nan</code> and the rents live in one <code>float64</code> array. <strong>What it fixes:</strong> the missing value is now a real value you can count (<code>np.isnan(rents).sum()</code> is 2), and <code>rents / areas</code> or <code>rents &gt; 400</code> need no loop. <strong>What is still wrong:</strong> <code>rents.sum()</code> prints <code>nan</code>, because one NaN poisons a NumPy sum, and you must remember <code>np.nansum</code>. The array also has no labels: the NaN sits at position 9, and you must keep a second list to know that position 9 is listing 1010.</p>
+      <p class="ar"><strong>ما تغيّر:</strong> صار الفراغ <code>np.nan</code> صريحًا، وصارت الإيجارات في مصفوفة <code>float64</code> واحدة. <strong>ما يصلحه:</strong> المفقود الآن قيمة حقيقية تستطيع عدّها (<code>np.isnan(rents).sum()</code> تساوي 2)، و<code>rents / areas</code> أو <code>rents &gt; 400</code> لا تحتاجان حلقة. <strong>ما زال خاطئًا:</strong> تطبع <code>rents.sum()</code> القيمة <code>nan</code>، لأن NaN واحدة تسمّم مجموع NumPy، وعليك أن تتذكر <code>np.nansum</code>. وليس للمصفوفة تسميات: فالـNaN في الموضع 9، وعليك أن تحتفظ بقائمة ثانية لتعرف أن الموضع 9 هو الإعلان 1010.</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 — a pandas Series" data-title-ar="النسخة 3 — سلسلة pandas">
+      <pre class="code good" data-lang="python"><code>import pandas as pd
+
+df = pd.read_csv("rental_listings.csv", index_col="listing_id")
+rent = df["monthly_rent"]
+print(rent.sum(), "from", rent.count(), "of", len(rent), "listings")
+print(rent[rent.isna()].index.tolist())</code></pre>
+<div class="output">19500.0 from 58 of 60 listings
+[1010, 1026]</div>
+      <p class="en"><strong>What changed:</strong> <code>read_csv</code> parses the quoting, infers a <code>float64</code> column, and the listing ids become the index. <strong>What it fixes:</strong> <code>.sum()</code> skips missing values by default, <code>.count()</code> reports how many values were really there, and the two blank rents are named by their <em>label</em>, 1010 and 1026, not by a position. <strong>What is still imperfect:</strong> the skipping is still silent, so the report must say "19500 over 58 of 60 listings", and the dtype was guessed by <code>read_csv</code>, not chosen by you (Concepts 4 to 7).</p>
+      <p class="ar"><strong>ما تغيّر:</strong> تحلّل <code>read_csv</code> الاقتباس وتستنتج عمود <code>float64</code>، وتصير أرقام الإعلانات هي الفهرس. <strong>ما يصلحه:</strong> تتخطى <code>.sum()</code> القيم المفقودة افتراضيًّا، وتخبر <code>.count()</code> كم قيمة كانت موجودة فعلًا، ويُسمّى الإيجاران الفارغان بـ<em>تسميتهما</em> 1010 و1026 لا بموضع. <strong>ما زال ناقصًا:</strong> التخطي ما زال صامتًا، فيجب أن يقول التقرير «19500 على 58 من 60 إعلانًا»، ونوع العمود خمّنته <code>read_csv</code> ولم تخترْه أنت (المفاهيم 4 إلى 7).</p>
+    </div>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">Series <code>a</code> has labels a, b, c and <code>b</code> has labels b, c, d. In <code>a + b</code>, why are the results for labels "a" and "d" <code>NaN</code>?</span><span class="ar">للسلسلة <code>a</code> التسميات a وb وc وللسلسلة <code>b</code> التسميات b وc وd. في <code>a + b</code>، لماذا تكون نتيجتا التسميتين «a» و«d» هما <code>NaN</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">pandas adds by position, and the third position overflows.</span><span class="ar">تجمع pandas بالموضع، وينفد الموضع الثالث.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">The Series have different lengths, so pandas gives up on the ends.</span><span class="ar">للسلسلتين طولان مختلفان، فتستسلم pandas عند الأطراف.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">pandas adds by label, and a label present on only one side has nothing to add to.</span><span class="ar">تجمع pandas بالتسمية، والتسمية الموجودة في جانب واحد ليس عندها ما تُجمع معه.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Integer Series cannot be added unless their indexes are identical.</span><span class="ar">لا يمكن جمع سلسلتين صحيحتين ما لم يتطابق فهرساهما.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">Alignment by label is the defining feature of the index. Labels "b" and "c" exist on both sides and add (12 and 23); "a" and "d" exist on one side only, so the result is missing. The by-position answer is tempting because that is how NumPy arrays behave, but a Series is an array <em>plus</em> labels, and the labels win. No error is raised, and the integers quietly became <code>float64</code> to make room for the NaN (Concept 5).</div>
+      <div class="ar">المحاذاة بالتسمية هي السمة المميّزة للفهرس. التسميتان «b» و«c» موجودتان في الجانبين فتُجمعان (12 و23)؛ و«a» و«d» في جانب واحد فتكون النتيجة مفقودة. وجواب الموضع مغرٍ لأن هذا ما تفعله مصفوفات NumPy، لكن السلسلة مصفوفة <em>وتسميات</em>، والتسميات هي الغالبة. ولا يُرفع خطأ، وقد صارت الأعداد الصحيحة <code>float64</code> بهدوء لتفسح مكانًا لـNaN (المفهوم 5).</div>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">Features <code>X</code> and labels <code>y</code> must be filtered by the <em>same</em> mask. Filter only <code>X</code> and then combine it with the unfiltered <code>y</code> (a residual, a loss, a correlation) and pandas aligns them by label instead of failing:</p>
+    <p class="ar">يجب ترشيح الخصائص <code>X</code> والتسميات <code>y</code> بالقناع <em>نفسه</em>. فإذا رشّحتَ <code>X</code> وحدها ثم جمعتها مع <code>y</code> غير المرشَّحة (باقٍ أو خسارة أو ارتباط) فإن pandas تحاذيهما بالتسمية بدل أن تفشل:</p>
+    <pre class="code bad" data-lang="python"><code>good = df[df["rooms"] &gt;= 4]                  # 21 listings
+y = df["monthly_rent"]                       # all 60, NOT filtered the same way
+gap = y - good["monthly_rent"]               # pandas lines the two up by label
+print(len(good), len(gap), gap.isna().sum())</code></pre>
+<div class="output">21 60 41</div>
+    <p class="en">21 listings were kept, yet the result has 60 entries and 41 of them are NaN: 39 rows with no partner on the other side plus 2 more whose rent is missing. If that result flows into an average the NaN are skipped and the number looks fine, computed on 19 pairs instead of the 60 you meant.</p>
+    <p class="ar">أُبقي على 21 إعلانًا، ومع ذلك فللنتيجة 60 مدخلًا و41 منها NaN: 39 صفًّا بلا شريك في الجانب الآخر، وإعلانان آخران إيجارهما مفقود. وإذا مرّت هذه النتيجة إلى متوسط فستُتخطى قيم NaN ويبدو الرقم سليمًا، وقد حُسب على 19 زوجًا بدل الستين التي قصدتها.</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب أمين</span></h4>
+    <p class="en">pandas pays for labels and mixed types with memory and per-call overhead: for one numeric column and no labels, a bare NumPy array is lighter and faster. The index is a feature until it is a surprise (alignment, labels surviving a filter). If a script only needs to read a CSV and print three numbers, the <code>csv</code> module is enough; the cost of pandas buys its value once you select, group, join and clean.</p>
+    <p class="ar">تدفع pandas ثمن التسميات والأنواع المختلطة من الذاكرة ومن كلفة كل استدعاء: ففي عمود رقمي واحد بلا تسميات تكون مصفوفة NumPy العارية أخف وأسرع. والفهرس ميزة إلى أن يصير مفاجأة (المحاذاة وبقاء التسميات بعد الترشيح). وإذا كان السكربت يحتاج فقط قراءة ملف CSV وطباعة ثلاثة أرقام فوحدة <code>csv</code> تكفي؛ ويؤتي ثمن pandas أُكله حين تنتقي وتجمّع وتضم وتنظّف.</p>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 2 — Compute with a mask, and count what it drops</span><span class="ar">تمرين 2 — احسب بقناع وعُدّ ما يُسقطه</span></h4>
+    <p class="en">Using <code>df</code>, find the listings that are in <strong>Khan Younis or Rafah</strong>, are <strong>not furnished</strong>, and have <strong>at least 3 rooms</strong>. Print how many listings match, for how many of them rent per square metre can be computed, and the mean rent per square metre (2 decimals). Predict first: will the second number be smaller than the first, and why?</p>
+    <p class="ar">باستعمال <code>df</code> أوجد الإعلانات الواقعة في <strong>خان يونس أو رفح</strong> والتي هي <strong>غير مفروشة</strong> ولها <strong>3 غرف على الأقل</strong>. اطبع كم إعلانًا يطابق، وفي كم منها يمكن حساب الإيجار للمتر المربع، ومتوسط الإيجار للمتر المربع (برقمين عشريين). تنبّأ أولًا: هل سيكون الرقم الثاني أصغر من الأول، ولماذا؟</p>
+    <pre class="code" data-lang="python"><code># Using df from the setup:
+# 1. build one mask: city is Khan Younis or Rafah, furnished == "no", rooms &gt;= 3
+# 2. compute rent per m2 for those listings
+# 3. print how many listings match, how many have a usable rent per m2, and the mean (2 decimals)</code></pre>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+      <pre class="code good" data-lang="python"><code>mask = df["city"].isin(["Khan Younis", "Rafah"]) &amp; (df["furnished"] == "no") &amp; (df["rooms"] &gt;= 3)
+sub = df[mask]
+per_m2 = sub["monthly_rent"] / sub["area_m2"]
+print(mask.sum(), per_m2.count(), round(per_m2.mean(), 2))</code></pre>
+<div class="output">13 11 2.94</div>
+      <p class="en">13 listings match, but only 11 have both a rent and an area, so the average is over 11. The mean of a division skips the rows where either input is missing, so the honest sentence is "2.94 per m² over 11 of the 13 matching listings". The mask itself has no gaps (a comparison with a missing value is simply false), but the arithmetic after it does.</p>
+      <p class="ar">يطابق 13 إعلانًا، لكن 11 منها فقط لها إيجار ومساحة معًا، فالمتوسط على 11. ويتخطى متوسط ناتج القسمة الصفوفَ التي ينقص فيها أحد المدخلين، فالجملة الأمينة هي «2.94 للمتر المربع على 11 من الإعلانات الـ13 المطابقة». والقناع نفسه بلا فجوات (فالمقارنة مع قيمة مفقودة خاطئة ببساطة)، أما الحساب الذي يليه ففيه فجوات.</p>
+    </details>
+  </div>
+
+  <h2 id="t1l3-h4"><span class="en">Concept 4 — The dtypes, one by one</span><span class="ar">المفهوم 4 — الأنواع، واحدًا واحدًا</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en"><code>read_csv</code> chooses a dtype for every column before you have seen a single value. That choice decides which operations the column allows, how much memory it takes, and whether a model can see it at all. And the default choices are not good ones: look at how many columns of our listings come back as the catch-all <code>object</code>.</p>
+    <p class="ar">تختار <code>read_csv</code> نوعًا لكل عمود قبل أن ترى قيمة واحدة منه. وهذا الاختيار يقرر العمليات التي يسمح بها العمود، وحجم الذاكرة التي يشغلها، وهل يستطيع النموذج أن يراه أصلًا. والاختيارات الافتراضية ليست جيدة: انظر كم عمودًا من أعمدة إعلاناتنا يعود بالنوع الشامل <code>object</code>.</p>
+  </div>
+
+  <h3 id="t1l3-s13"><span class="en">Reading the dtypes pandas chose</span><span class="ar">قراءة الأنواع التي اختارتها pandas</span></h3>
+
+  <pre class="code" data-lang="python"><code>print(df.dtypes)</code></pre>
+<div class="output">listing_id        int64
+city             object
+governorate      object
+monthly_rent    float64
+area_m2         float64
+rooms           float64
+furnished        object
+listed_on        object
+advert           object
+dtype: object</div>
+
+  <p class="en">Read it as pandas would defend it. <code>listing_id</code> is whole numbers: <code>int64</code>. The rent and the area have decimals or blanks: <code>float64</code>. <code>rooms</code> is whole numbers in a file, yet it is <code>float64</code>, because one blank forced the column to a type that can hold a gap (Concept 5). And five columns are <code>object</code>, pandas' way of saying "I do not know, so I keep each cell as a Python object": the cities and governorates (fine, they are text), but also <code>furnished</code> (a yes/no flag) and <code>listed_on</code> (a <em>date</em>, still just text).</p>
+  <p class="ar">اقرأه كما كانت pandas ستدافع عنه. <code>listing_id</code> أعداد صحيحة: <code>int64</code>. والإيجار والمساحة فيهما كسور أو فراغات: <code>float64</code>. و<code>rooms</code> أعداد صحيحة في الملف، لكنه <code>float64</code>، لأن فراغًا واحدًا أجبر العمود على نوع يتسع لفجوة (المفهوم 5). وخمسة أعمدة <code>object</code>، وهي طريقة pandas في قول «لا أعرف، فأحتفظ بكل خلية ككائن بايثون»: المدن والمحافظات (لا بأس، فهي نصوص)، لكن أيضًا <code>furnished</code> (علَم نعم/لا) و<code>listed_on</code> (وهو <em>تاريخ</em>، لكنه ما زال نصًّا).</p>
+
+  <h3 id="t1l3-s14"><span class="en">The dtype table</span><span class="ar">جدول الأنواع</span></h3>
+
+  <p class="en">Here are the dtypes you will actually use. The memory column is measured on 50,000 values in the snippet further down, not guessed. The rule that makes the nullable names easy to remember: <strong>a capital first letter (<code>Int64</code>, <code>Float64</code>, <code>boolean</code>) is pandas' own nullable type, which can hold a missing value without changing kind.</strong></p>
+  <p class="ar">هذه هي الأنواع التي ستستعملها فعلًا. وعمود الذاكرة مقيس على 50,000 قيمة في المقطع أدناه، وليس تخمينًا. والقاعدة التي تسهّل حفظ الأنواع القابلة للنقص: <strong>الحرف الأول الكبير (<code>Int64</code> و<code>Float64</code> و<code>boolean</code>) يعني نوع pandas الخاص القابل للنقص، الذي يحمل قيمة مفقودة دون أن يغيّر جنسه.</strong></p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>dtype</th>
+          <th><span class="en">Holds</span><span class="ar">يحمل</span></th>
+          <th><span class="en">Bytes per value</span><span class="ar">بايت لكل قيمة</span></th>
+          <th><span class="en">What it unlocks</span><span class="ar">ما يتيحه</span></th>
+          <th><span class="en">Watch out</span><span class="ar">احذر</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>object</code></td>
+          <td><span class="en">anything, usually text</span><span class="ar">أي شيء، وغالبًا نص</span></td>
+          <td><span class="en">about 58 for a short word</span><span class="ar">نحو 58 لكلمة قصيرة</span></td>
+          <td><span class="en">only what any Python object allows</span><span class="ar">ما يسمح به أي كائن بايثون فقط</span></td>
+          <td><span class="en">hides mixed content (numbers and text in one column); slow</span><span class="ar">يخفي المحتوى المختلط (أرقام ونصوص في عمود واحد)؛ بطيء</span></td>
+        </tr>
+        <tr>
+          <td><code>string</code></td>
+          <td><span class="en">text only</span><span class="ar">نص فقط</span></td>
+          <td><span class="en">about the same as object (pandas 2.2)</span><span class="ar">مثل object تقريبًا (pandas 2.2)</span></td>
+          <td><span class="en"><code>.str</code> methods with a clean <code>&lt;NA&gt;</code></span><span class="ar">دوال <code>.str</code> مع <code>&lt;NA&gt;</code> نظيفة</span></td>
+          <td><span class="en">refuses non-text, which is the point</span><span class="ar">يرفض غير النص، وهذا هو المقصود</span></td>
+        </tr>
+        <tr>
+          <td><code>int64</code></td>
+          <td><span class="en">whole numbers</span><span class="ar">أعداد صحيحة</span></td>
+          <td>8</td>
+          <td><span class="en">sums, means, comparisons, arithmetic</span><span class="ar">مجاميع ومتوسطات ومقارنات وحساب</span></td>
+          <td><span class="en">cannot hold a missing value</span><span class="ar">لا يحمل قيمة مفقودة</span></td>
+        </tr>
+        <tr>
+          <td><code>float64</code></td>
+          <td><span class="en">decimal numbers</span><span class="ar">أعداد عشرية</span></td>
+          <td>8</td>
+          <td><span class="en">everything numeric; holds <code>NaN</code></span><span class="ar">كل ما هو عددي؛ ويحمل <code>NaN</code></span></td>
+          <td><span class="en">where integers land when a gap arrives</span><span class="ar">حيث تهبط الأعداد الصحيحة عند ظهور فجوة</span></td>
+        </tr>
+        <tr>
+          <td><code>bool</code></td>
+          <td>True / False</td>
+          <td>1</td>
+          <td><span class="en">masks, <code>&amp;</code>, <code>|</code>, <code>.sum()</code></span><span class="ar">أقنعة و<code>&amp;</code> و<code>|</code> و<code>.sum()</code></span></td>
+          <td><span class="en">a missing value turns it into <code>object</code></span><span class="ar">القيمة المفقودة تحوّله إلى <code>object</code></span></td>
+        </tr>
+        <tr>
+          <td><code>datetime64[ns]</code></td>
+          <td><span class="en">instants in time</span><span class="ar">لحظات زمنية</span></td>
+          <td>8</td>
+          <td><span class="en"><code>.dt.month</code>, differences, time grouping</span><span class="ar"><code>.dt.month</code> والفروق والتجميع الزمني</span></td>
+          <td><span class="en">its missing value is <code>NaT</code></span><span class="ar">قيمته المفقودة هي <code>NaT</code></span></td>
+        </tr>
+        <tr>
+          <td><code>category</code></td>
+          <td><span class="en">a few labels that repeat</span><span class="ar">تسميات قليلة تتكرر</span></td>
+          <td><span class="en">about 1 plus a small table</span><span class="ar">نحو 1 مع جدول صغير</span></td>
+          <td><span class="en">small memory, <code>.cat.codes</code>, order if <code>ordered=True</code></span><span class="ar">ذاكرة صغيرة و<code>.cat.codes</code> وترتيب إن كان <code>ordered=True</code></span></td>
+          <td><span class="en">a label outside the list becomes <code>NaN</code></span><span class="ar">التسمية الخارجة عن القائمة تصير <code>NaN</code></span></td>
+        </tr>
+        <tr>
+          <td><code>Int64</code>, <code>Float64</code>, <code>boolean</code></td>
+          <td><span class="en">like the lower-case ones, plus gaps</span><span class="ar">مثل الأنواع الصغيرة، مع فجوات</span></td>
+          <td>9, 9, 2</td>
+          <td><span class="en">integers and flags that may be missing (<code>pd.NA</code>)</span><span class="ar">أعداد صحيحة وأعلام قد تكون مفقودة (<code>pd.NA</code>)</span></td>
+          <td><span class="en">not every library accepts them yet</span><span class="ar">لا تقبلها كل المكتبات بعد</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 id="t1l3-s15"><span class="en">Dates: what datetime64 unlocks</span><span class="ar">التواريخ: ما يتيحه datetime64</span></h3>
+
+  <p class="en">A date stored as text is just letters. ISO text (<code>2026-01-16</code>) at least sorts correctly, but you cannot ask it for a month, a weekday or the gap between two dates. Convert it once with <code>pd.to_datetime</code> and the <code>.dt</code> accessor appears, subtraction returns a <code>timedelta64</code> (a duration), and grouping by month becomes one line.</p>
+  <p class="ar">التاريخ المخزَّن نصًّا مجرد حروف. ونص ISO (<code>2026-01-16</code>) يُرتَّب على الأقل ترتيبًا صحيحًا، لكنك لا تستطيع أن تسأله عن شهر أو يوم أسبوع أو الفاصل بين تاريخين. حوّله مرة واحدة بـ<code>pd.to_datetime</code> فيظهر المُدخَل <code>.dt</code>، ويعيد الطرح <code>timedelta64</code> (مدة)، ويصير التجميع بالشهر سطرًا واحدًا.</p>
+
+  <pre class="code" data-lang="python"><code>import pandas as pd
+
+as_text = pd.Series(["2026-01-16", "2026-05-05"])
+try:
+    as_text.dt.month
+except AttributeError as e:
+    print("AttributeError:", e)
+
+as_date = pd.to_datetime(as_text)
+print(as_date.dtype)
+print(as_date.dt.month.tolist(), as_date.dt.day_name().tolist())
+gap = as_date[1] - as_date[0]
+print(gap, gap.days)</code></pre>
+<div class="output">AttributeError: Can only use .dt accessor with datetimelike values
+datetime64[ns]
+[1, 5] ['Friday', 'Tuesday']
+109 days 00:00:00 109</div>
+
+  <h3 id="t1l3-s16"><span class="en">category, and ordered categories</span><span class="ar">النوع category، والفئات المرتّبة</span></h3>
+
+  <p class="en">The <span class="term" data-term="category-dtype">category dtype</span> stores each distinct label once, in a small table, and keeps one small integer code per row. Add <code>ordered=True</code> and the labels get a rank, which is exactly what an <em>ordinal</em> column from Lesson 2 needs. Schools in the registry have a stage, Primary, then Preparatory, then Secondary; as plain text they sort alphabetically (Preparatory before Primary), which is wrong, and as an ordered category they sort and compare in school order.</p>
+  <p class="ar">يخزّن <span class="term" data-term="category-dtype">النوع category</span> كل تسمية مميزة مرة واحدة في جدول صغير، ويحتفظ برمز صحيح صغير لكل صف. وأضف <code>ordered=True</code> فتصير للتسميات رتبة، وهذا ما يحتاجه العمود <em>الترتيبي</em> من الدرس 2 بالضبط. ولمدارس السجل مرحلة: ابتدائية فإعدادية فثانوية؛ وكنص تُرتَّب أبجديًّا (Preparatory قبل Primary) وهذا خطأ، وكفئة مرتّبة تُرتَّب وتُقارَن بترتيب المراحل المدرسية.</p>
+
+  <pre class="code" data-lang="python"><code>import pandas as pd
+
+stage = pd.CategoricalDtype(["Primary", "Preparatory", "Secondary"], ordered=True)
+level = pd.Series(["Preparatory", "Secondary", "Primary", "Preparatory"], dtype=stage)
+print(level.cat.categories.tolist(), level.cat.ordered)
+print((level &lt; "Secondary").tolist())
+print(level.sort_values().tolist())
+print(level.cat.codes.tolist())
+
+plain = pd.Series(["Preparatory", "Secondary", "Primary", "Preparatory"])
+print(plain.sort_values().tolist())          # alphabetical, not school order
+
+typo = pd.Series(["Primary", "Primry", "Secondary"], dtype=stage)
+print(typo.tolist(), typo.isna().sum())      # the typo became NaN, with no error</code></pre>
+<div class="output">['Primary', 'Preparatory', 'Secondary'] True
+[True, False, True, True]
+['Primary', 'Preparatory', 'Preparatory', 'Secondary']
+[1, 2, 0, 1]
+['Preparatory', 'Preparatory', 'Primary', 'Secondary']
+['Primary', nan, 'Secondary'] 1</div>
+
+  <div class="warn">
+    <h4><span class="en">A typo becomes NaN, quietly</span><span class="ar">الخطأ المطبعي يصير NaN بهدوء</span></h4>
+    <p class="en">The last line is the price of a closed list of labels: <code>"Primry"</code> is not in the categories, and pandas does not raise, it stores <code>NaN</code>. That is the right behaviour for catching bad labels <em>if you then count them</em> (<code>.isna().sum()</code> is 1 here), and a silent loss if you do not.</p>
+    <p class="ar">السطر الأخير هو ثمن القائمة المغلقة من التسميات: <code>"Primry"</code> ليست في الفئات، ولا ترفع pandas خطأً بل تخزّن <code>NaN</code>. وهذا هو السلوك الصحيح لاصطياد التسميات السيئة <em>إذا عددتَها بعد ذلك</em> (فـ<code>.isna().sum()</code> تساوي 1 هنا)، وهو خسارة صامتة إن لم تفعل.</p>
+  </div>
+
+  <div class="thread">
+    <h4><span class="en">Thread · What may I do with this column?</span><span class="ar">خيط · ماذا يجوز لي أن أفعل بهذا العمود؟</span></h4>
+    <p class="en"><strong>Earlier solution:</strong> <a href="#t1-lesson-02">Lesson 2</a> gave every column a measurement level (nominal, ordinal, interval, ratio) that decides the legal summary and chart. <strong>Its gap:</strong> a level is a human judgement; pandas does not know it. <strong>What this lesson adds:</strong> write the level into the dtype. Nominal becomes <code>category</code>, ordinal becomes an ordered <code>CategoricalDtype</code>, counts become <code>Int64</code>, measured quantities <code>float64</code>, dates <code>datetime64</code>. Now <code>level &lt; "Secondary"</code> works and <code>unordered &lt; "x"</code> raises. <strong>Still open:</strong> the dtype is not the level. <code>listing_id</code> loads as <code>int64</code> and pandas will happily average it, although it is nominal; the dtype only says what the level is if <em>you</em> set it (Concept 7 does). Encoding, scaling and summaries by level come back in the data-transformation and EDA chapters.</p>
+    <p class="ar"><strong>الحل السابق:</strong> أعطى <a href="#t1-lesson-02">الدرس 2</a> كل عمود مستوى قياس (اسمي أو ترتيبي أو فتري أو نسبي) يحدد الملخص والرسم المشروعين. <strong>ثغرته:</strong> المستوى حكم بشري، وpandas لا تعرفه. <strong>ما يضيفه هذا الدرس:</strong> اكتب المستوى في النوع. يصير الاسمي <code>category</code> والترتيبي <code>CategoricalDtype</code> مرتّبًا، والعدّ <code>Int64</code> والكميات المقيسة <code>float64</code> والتواريخ <code>datetime64</code>. فتعمل الآن <code>level &lt; "Secondary"</code> وترفع المقارنة على فئة غير مرتّبة خطأً. <strong>ما زال مفتوحًا:</strong> النوع ليس المستوى. فـ<code>listing_id</code> يُحمَّل <code>int64</code> وسيحسب pandas متوسطه دون اعتراض مع أنه اسمي؛ والنوع لا يقول ما المستوى إلا إذا ضبطتَه <em>أنت</em> (وهذا ما يفعله المفهوم 7). ويعود الترميز والتحجيم والملخصات حسب المستوى في فصلَي تحويل البيانات والتحليل الاستكشافي.</p>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en"><code>pd.Series(["Primary", "Primry", "Secondary"], dtype=stage)</code> uses an ordered categorical dtype that lists only the three correct spellings. What happens to <code>"Primry"</code>?</span><span class="ar">تستعمل <code>pd.Series(["Primary", "Primry", "Secondary"], dtype=stage)</code> نوعًا فئويًّا مرتّبًا لا يذكر إلا التهجئات الثلاث الصحيحة. ماذا يحدث لـ<code>"Primry"</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">A <code>ValueError</code> stops the line, because the label is not allowed.</span><span class="ar">يوقف الخطأ <code>ValueError</code> السطر لأن التسمية غير مسموحة.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">It is stored as <code>NaN</code>, with no error.</span><span class="ar">تُخزَّن <code>NaN</code> دون أي خطأ.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">pandas adds "Primry" as a fourth category at the end.</span><span class="ar">تضيف pandas «Primry» فئة رابعة في النهاية.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">pandas corrects it to the closest valid spelling, "Primary".</span><span class="ar">تصحّحها pandas إلى أقرب تهجئة صحيحة «Primary».</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">When values are converted to a categorical dtype with a fixed list, anything outside the list becomes missing. The error option is the tempting one (a closed list <em>sounds</em> strict), but only assigning a new label to an existing categorical with <code>s[0] = "Kindergarten"</code> raises. Pandas never guesses the nearest spelling. The defence is one line: count the NaN after the conversion and compare with what you had before.</div>
+      <div class="ar">عندما تُحوَّل القيم إلى نوع فئوي بقائمة ثابتة، يصير كل ما هو خارج القائمة مفقودًا. وخيار الخطأ هو المغري (فالقائمة المغلقة <em>تبدو</em> صارمة)، لكن الذي يرفع خطأً هو فقط تعيين تسمية جديدة في فئة موجودة بـ<code>s[0] = "Kindergarten"</code>. ولا تخمّن pandas أقرب تهجئة أبدًا. والدفاع سطر واحد: عدّ NaN بعد التحويل وقارنه بما كان قبله.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l3-s17"><span class="en">What a dtype costs in memory</span><span class="ar">كم يكلّف النوع من الذاكرة</span></h3>
+
+  <p class="en">Same 50,000 values, different dtypes. Each row of the table below is a measurement, not a rule of thumb.</p>
+  <p class="ar">القيم الخمسون ألفًا نفسها بأنواع مختلفة. وكل سطر في الجدول أدناه قياس لا قاعدة تقريبية.</p>
+
+  <pre class="code" data-lang="python"><code>import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(42)
+n = 50_000
+gov = pd.Series(rng.choice(["Gaza", "North Gaza", "Deir al-Balah", "Khan Younis", "Rafah"], n))
+rooms = pd.Series(rng.integers(1, 6, n))
+dates = pd.Series(pd.date_range("2026-01-01", periods=n, freq="h").strftime("%Y-%m-%d"))
+yn = pd.Series(rng.choice(["yes", "no"], n))
+
+table = {
+    "governorate  object": gov,
+    "governorate  category": gov.astype("category"),
+    "rooms        int64": rooms,
+    "rooms        int8": rooms.astype("int8"),
+    "rooms        Int64": rooms.astype("Int64"),
+    "listed_on    object (text)": dates,
+    "listed_on    datetime64": pd.to_datetime(dates),
+    "furnished    object (yes/no)": yn,
+    "furnished    bool": yn.eq("yes"),
+}
+for name, s in table.items():
+    print(f"{name:30}{s.memory_usage(index=False, deep=True):&gt;10,} bytes")</code></pre>
+<div class="output">governorate  object            2,880,358 bytes
+governorate  category             50,460 bytes
+rooms        int64               400,000 bytes
+rooms        int8                 50,000 bytes
+rooms        Int64               450,000 bytes
+listed_on    object (text)     2,950,000 bytes
+listed_on    datetime64          400,000 bytes
+furnished    object (yes/no)   2,574,937 bytes
+furnished    bool                 50,000 bytes</div>
+
+  <p class="en">Read down the pairs. A governorate name stored as text costs about 58 bytes per row and as a category about 1. A date as text costs about 59 bytes and as <code>datetime64</code> 8. A yes/no flag as text costs about 51 bytes and as <code>bool</code> 1. A rooms column that never exceeds 5 fits in an <code>int8</code> at an eighth of the <code>int64</code> price, and the nullable <code>Int64</code> costs one extra mask byte per value to remember the gaps.</p>
+  <p class="ar">اقرأ الأزواج من الأعلى. اسم المحافظة نصًّا يكلّف نحو 58 بايتًا للصف، وكفئة نحو 1. والتاريخ نصًّا يكلّف نحو 59 بايتًا، وبالنوع <code>datetime64</code> يكلّف 8. وعلَم نعم/لا نصًّا يكلّف نحو 51 بايتًا، وبالنوع <code>bool</code> يكلّف 1. وعمود غرف لا يتجاوز 5 يتسع في <code>int8</code> بثُمن ثمن <code>int64</code>، وتكلّف <code>Int64</code> القابلة للنقص بايتًا إضافيًّا لكل قيمة هو قناع يتذكر الفجوات.</p>
+
+  <p class="en">But <code>category</code> is not magic. It pays when the number of distinct labels is <em>much smaller</em> than the number of rows. Give it a column where nearly every value is different and it costs more than text, because you pay for the table of labels and the codes.</p>
+  <p class="ar">لكن <code>category</code> ليس سحرًا. فهو يفيد حين يكون عدد التسميات المميزة <em>أقل بكثير</em> من عدد الصفوف. أعطه عمودًا تكاد كل قيمة فيه تختلف عن غيرها فيكلّف أكثر من النص، لأنك تدفع ثمن جدول التسميات والرموز معًا.</p>
+
+  <pre class="code bad" data-lang="python"><code>import numpy as np
+import pandas as pd
+
+ids = pd.Series([f"L{i:06d}" for i in range(50_000)])      # every value different
+as_cat = ids.astype("category")
+print(ids.memory_usage(index=False, deep=True), as_cat.memory_usage(index=False, deep=True))
+print(as_cat.nunique(), "categories for", len(ids), "rows")</code></pre>
+<div class="output">2800000 4056808
+50000 categories for 50000 rows</div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">A table has 2,000,000 rows. Which column gains most from <code>astype("category")</code>?</span><span class="ar">في جدول مليونا صف. أي عمود يستفيد أكثر من <code>astype("category")</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>listing_id</code>, with 2,000,000 different codes.</span><span class="ar"><code>listing_id</code> بمليوني رمز مختلف.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>advert</code>, free text that is almost never repeated.</span><span class="ar"><code>advert</code> نص حر يكاد لا يتكرر.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>governorate</code>, with 5 different values.</span><span class="ar"><code>governorate</code> بخمس قيم مختلفة.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>monthly_rent</code>, because numbers compress well.</span><span class="ar"><code>monthly_rent</code> لأن الأرقام تُضغط جيدًا.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">Category replaces each value by a small code and keeps one copy of each label, so the saving grows with how often labels repeat: 5 labels over 2,000,000 rows is the best case. The two high-cardinality columns would cost <em>more</em> (the measurement above). A rent is a quantity, not a label; converting it to category would turn arithmetic into a lookup and lose <code>mean()</code>.</div>
+      <div class="ar">يستبدل category كل قيمة برمز صغير ويحتفظ بنسخة واحدة من كل تسمية، فيزداد التوفير بقدر تكرار التسميات: 5 تسميات على مليوني صف هي أفضل الحالات. أما العمودان عاليا التنوع فسيكلفان <em>أكثر</em> (القياس أعلاه). والإيجار كمية لا تسمية؛ وتحويله إلى category يجعل الحساب بحثًا ويفقدك <code>mean()</code>.</div>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en"><strong>The dtype decides what the model can see.</strong> A common first step is to keep only the numeric columns. Watch what that does to our listings:</p>
+    <p class="ar"><strong>النوع يقرر ما يستطيع النموذج أن يراه.</strong> من الخطوات الأولى الشائعة أن تُبقي على الأعمدة العددية فقط. انظر ماذا يفعل ذلك بإعلاناتنا:</p>
+    <pre class="code" data-lang="python"><code>X = df.select_dtypes(include="number")
+print(X.columns.tolist())
+print(sorted(set(df.columns) - set(X.columns)))
+
+months = pd.to_datetime(df["listed_on"]).dt.month
+print(months.value_counts().sort_index().to_dict())</code></pre>
+<div class="output">['listing_id', 'monthly_rent', 'area_m2', 'rooms']
+['advert', 'city', 'furnished', 'governorate', 'listed_on']
+{1: 14, 2: 16, 3: 12, 4: 13, 5: 5}</div>
+    <p class="en">Two silent failures in three lines. The feature matrix quietly drops five columns, among them <code>furnished</code> and <code>listed_on</code>, because they are <code>object</code>, so the model can never learn whether furnishing or the month of listing matters; and it keeps <code>listing_id</code>, an identifier, which a model will treat as a quantity. Once <code>listed_on</code> is a real date, <code>.dt.month</code> gives a usable seasonal feature (14, 16, 12, 13 and 5 listings in January to May); as text it carries no seasonality at all. For categories with very many values (a user id with 50,000 distinct values) <code>category</code> does not save memory and one-hot encoding would create 50,000 columns, so such features go through embeddings or hashing instead.</p>
+    <p class="ar">إخفاقان صامتان في ثلاثة أسطر. تُسقط مصفوفة الخصائص بهدوء خمسة أعمدة، منها <code>furnished</code> و<code>listed_on</code>، لأنها <code>object</code>، فلا يستطيع النموذج أبدًا أن يتعلم هل يهمّ الفرش أو شهر الإعلان؛ وتُبقي <code>listing_id</code>، وهو معرّف، والنموذج سيعامله كمية. وحين يصير <code>listed_on</code> تاريخًا حقيقيًّا يعطي <code>.dt.month</code> ميزة موسمية صالحة (14 و16 و12 و13 و5 إعلانات من يناير إلى مايو)؛ أما كنص فلا يحمل أي موسمية. وفي الفئات ذات القيم الكثيرة جدًّا (معرّف مستخدم بـ50,000 قيمة مميزة) لا يوفّر <code>category</code> ذاكرة، وسيُنشئ الترميز الأحادي 50,000 عمود، فتمرّ مثل هذه الخصائص عبر التضمينات (embeddings) أو التجزئة بدلًا من ذلك.</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب أمين</span></h4>
+    <p class="en">On 60 rows none of the memory numbers matter; choose dtypes for <em>meaning and safety</em> first (a date should be a date, a closed list of labels should be a category) and for memory only when the table stops fitting. The nullable types fix a real problem, but libraries written for NumPy dtypes sometimes convert them back, so at the model boundary you may need <code>.to_numpy(dtype="float64", na_value=np.nan)</code> (Concept 7). And in pandas 2.2 the <code>string</code> dtype costs the same as <code>object</code>; its benefit is clarity and consistent missing values, not memory.</p>
+    <p class="ar">في 60 صفًّا لا يهم أي رقم من أرقام الذاكرة؛ فاختر الأنواع من أجل <em>المعنى والسلامة</em> أولًا (التاريخ يكون تاريخًا، والقائمة المغلقة من التسميات تكون category) ومن أجل الذاكرة فقط حين لا يعود الجدول يتسع. وتحلّ الأنواع القابلة للنقص مشكلة حقيقية، لكن المكتبات المكتوبة لأنواع NumPy تحوّلها أحيانًا إلى الأصل، فقد تحتاج عند حدّ النموذج إلى <code>.to_numpy(dtype="float64", na_value=np.nan)</code> (المفهوم 7). وفي pandas 2.2 يكلّف النوع <code>string</code> ما يكلّفه <code>object</code>؛ ومنفعته الوضوح وتوحيد القيم المفقودة لا الذاكرة.</p>
+  </div>
+
+  <h2 id="t1l3-h5"><span class="en">Concept 5 — Missing values: None, NaN, NA and NaT</span><span class="ar">المفهوم 5 — القيم المفقودة: None وNaN وNA وNaT</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">An empty cell is the most ordinary thing in real data: our listings file has 2 blank rents, 4 blank areas and 1 blank room count. And Python has at least four different ways to say "nothing here". They compare differently, they live in different dtypes, and one of them silently changes the type of the column it sits in.</p>
+    <p class="ar">الخلية الفارغة أكثر الأشياء اعتيادًا في البيانات الحقيقية: ففي ملف إعلاناتنا إيجاران فارغان وأربع مساحات فارغة وعدد غرف فارغ واحد. ولدى بايثون أربع طرق على الأقل لقول «لا شيء هنا». وهي تُقارَن بصور مختلفة، وتعيش في أنواع مختلفة، وواحدة منها تغيّر بصمت نوعَ العمود الذي تجلس فيه.</p>
+  </div>
+
+  <h3 id="t1l3-s18"><span class="en">Four spellings of "missing"</span><span class="ar">أربع تهجئات لـ«مفقود»</span></h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="en">Value</span><span class="ar">القيمة</span></th>
+          <th><span class="en">What it is</span><span class="ar">ما هي</span></th>
+          <th><span class="en">Lives in</span><span class="ar">تعيش في</span></th>
+          <th><span class="en">Behaves like</span><span class="ar">تتصرف مثل</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>None</code></td>
+          <td><span class="en">Python's "no object"</span><span class="ar">«لا كائن» في بايثون</span></td>
+          <td><code>object</code></td>
+          <td><span class="en">an ordinary value: <code>None == None</code> is <code>True</code></span><span class="ar">قيمة عادية: <code>None == None</code> تساوي <code>True</code></span></td>
+        </tr>
+        <tr>
+          <td><code>np.nan</code></td>
+          <td><span class="en">the floating-point "not a number"</span><span class="ar">القيمة العشرية «ليس رقمًا»</span></td>
+          <td><code>float64</code></td>
+          <td><span class="en">contagious: <code>nan + 1</code> is <code>nan</code>; it is not equal even to itself</span><span class="ar">معدية: <code>nan + 1</code> تساوي <code>nan</code>؛ ولا تساوي حتى نفسها</span></td>
+        </tr>
+        <tr>
+          <td><code>pd.NA</code></td>
+          <td><span class="en">pandas' own "missing", one for every kind</span><span class="ar">«المفقود» الخاص بـpandas، واحد لكل الأنواع</span></td>
+          <td><code>Int64</code>, <code>boolean</code>, <code>string</code></td>
+          <td><span class="en">contagious, and it refuses to be treated as <code>True</code> or <code>False</code></span><span class="ar">معدية، وترفض أن تُعامَل كـ<code>True</code> أو <code>False</code></span></td>
+        </tr>
+        <tr>
+          <td><code>pd.NaT</code></td>
+          <td><span class="en">"not a time"</span><span class="ar">«ليس زمنًا»</span></td>
+          <td><code>datetime64</code></td>
+          <td><span class="en">the missing date; <code>NaN</code>'s cousin</span><span class="ar">التاريخ المفقود؛ ابن عمّ <code>NaN</code></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="en"><span class="term" data-term="nan">NaN</span> ("not a number") is a real floating-point value defined by the IEEE standard, so it can only live in a float column. <span class="term" data-term="pd-na">pd.NA</span> is pandas' newer, single marker for "a value is missing" that works in integer, boolean and string columns too. Run them side by side.</p>
+  <p class="ar">القيمة <span class="term" data-term="nan">NaN</span> («ليس رقمًا») قيمة عشرية حقيقية يحدّدها معيار IEEE، ولذلك لا تعيش إلا في عمود عشري. أما <span class="term" data-term="pd-na">pd.NA</span> فعلامة pandas الأحدث والواحدة على أن «القيمة مفقودة»، وتعمل في الأعمدة الصحيحة والمنطقية والنصية أيضًا. شغّلها جنبًا إلى جنب.</p>
+
+  <pre class="code" data-lang="python"><code>import numpy as np
+import pandas as pd
+
+print(None == None, np.nan == np.nan, pd.NA == pd.NA)
+print(type(None).__name__, type(np.nan).__name__, type(pd.NA).__name__, type(pd.NaT).__name__)
+print([pd.isna(x) for x in (None, np.nan, pd.NA, pd.NaT)])
+print(np.nan + 1, pd.NA + 1)
+try:
+    if pd.NA:
+        pass
+except TypeError as e:
+    print("TypeError:", e)</code></pre>
+<div class="output">True False &lt;NA&gt;
+NoneType float NAType NaTType
+[True, True, True, True]
+nan &lt;NA&gt;
+TypeError: boolean value of NA is ambiguous</div>
+
+  <p class="en">Three consequences. <code>np.nan == np.nan</code> is <code>False</code>, so <code>df[df["rent"] == np.nan]</code> finds nothing, ever: always ask with <code>.isna()</code>, which recognises all four spellings. <code>pd.NA == pd.NA</code> is itself missing, not <code>True</code>, because "is an unknown equal to an unknown?" has no answer. And <code>if pd.NA:</code> raises, which is deliberate: it stops you from letting an unknown quietly choose a branch.</p>
+  <p class="ar">ثلاث نتائج. <code>np.nan == np.nan</code> تساوي <code>False</code>، فلن تجد <code>df[df["rent"] == np.nan]</code> شيئًا أبدًا: اسأل دائمًا بـ<code>.isna()</code> التي تتعرف على التهجئات الأربع كلها. و<code>pd.NA == pd.NA</code> مفقودة هي نفسها لا <code>True</code>، لأن «هل يساوي المجهولُ المجهولَ؟» لا جواب له. و<code>if pd.NA:</code> ترفع خطأً، وهذا مقصود: يمنعك أن تدع مجهولًا يختار فرعًا بهدوء.</p>
+
+  <h3 id="t1l3-s19"><span class="en">Why one NaN turns integers into floats</span><span class="ar">لماذا تحوّل NaN واحدة الأعداد الصحيحة إلى عشرية</span></h3>
+
+  <p class="en">An <code>int64</code> uses every one of its bit patterns for a number; there is no spare pattern that could mean "nothing here". A <code>float64</code> does have one reserved: NaN (the Appendix shows it). So when pandas meets a gap in a column of whole numbers it has only one way to store it: upcast the <em>whole column</em> to <code>float64</code>.</p>
+  <p class="ar">يستعمل النوع <code>int64</code> كل نمط من أنماط بتّاته لعدد؛ فلا يوجد نمط فائض يمكن أن يعني «لا شيء هنا». أما <code>float64</code> فله نمط محجوز: NaN (يعرضه الملحق). فعندما تصادف pandas فجوة في عمود أعداد صحيحة لا تجد إلا طريقة واحدة لتخزينها: ترقية <em>العمود كله</em> إلى <code>float64</code>.</p>
+
+  <pre class="code" data-lang="python"><code>import pandas as pd
+
+print(pd.Series([415, 445, 590]).dtype)
+print(pd.Series([415, 445, None]).dtype)
+print(pd.Series([415, 445, None], dtype="Int64").tolist())
+print(pd.Series(["Gaza", None, "Rafah"]).isna().tolist())</code></pre>
+<div class="output">int64
+float64
+[415, 445, &lt;NA&gt;]
+[False, True, False]</div>
+
+  <p class="en">In our file this is exactly what happened to <code>rooms</code> (listing 1042 has no room count), and it is more than cosmetic: numbers read <code>4.0</code> instead of <code>4</code> in every generated sentence and label, and a whole-number identifier above 9,007,199,254,740,992 (2<sup>53</sup>) can no longer be stored exactly as a float. The evolution below fixes the rooms column in three steps.</p>
+  <p class="ar">وهذا بالضبط ما حدث في ملفنا للعمود <code>rooms</code> (الإعلان 1042 بلا عدد غرف)، وهو أكثر من شكلي: تُقرأ الأرقام <code>4.0</code> بدل <code>4</code> في كل جملة وتسمية مولَّدة، ولا يعود ممكنًا تخزين معرّف صحيح فوق 9,007,199,254,740,992 (2<sup>53</sup>) تخزينًا دقيقًا كعدد عشري. ويصلح التطور أدناه عمود الغرف في ثلاث خطوات.</p>
+
+  <div class="evolve" id="t1l3-e2">
+    <div class="ver" data-title-en="Version 1 — read it and hope" data-title-ar="النسخة 1 — اقرأ وتمنَّ">
+      <pre class="code bad" data-lang="python"><code>import pandas as pd
+
+df = pd.read_csv("rental_listings.csv")
+print(df["rooms"].dtype)
+print(df["rooms"].head(5).tolist())
+print(f"{df['rooms'][0]}-room flat")</code></pre>
+<div class="output">float64
+[4.0, 3.0, 5.0, 3.0, 2.0]
+4.0-room flat</div>
+      <p class="en"><strong>What it does:</strong> loads the file and uses <code>rooms</code> as it came. <strong>What is wrong:</strong> the column is <code>float64</code> because one value is blank, so a room count prints as <code>4.0</code> and a generated label reads "4.0-room flat". No error and no warning announced the change of type, and any other table that stores rooms as integers now disagrees with this one.</p>
+      <p class="ar"><strong>ما يفعله:</strong> يحمّل الملف ويستعمل <code>rooms</code> كما جاء. <strong>العيب:</strong> العمود <code>float64</code> لأن قيمة واحدة فارغة، فيُطبع عدد الغرف <code>4.0</code> وتُقرأ التسمية المولَّدة «4.0-room flat». ولم يعلن خطأ ولا تحذير عن تغيّر النوع، وأي جدول آخر يخزّن الغرف أعدادًا صحيحة صار يخالف هذا الجدول.</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 — cast after loading" data-title-ar="النسخة 2 — حوِّل بعد التحميل">
+      <pre class="code" data-lang="python"><code>import pandas as pd
+
+df = pd.read_csv("rental_listings.csv")
+df["rooms"] = df["rooms"].astype("Int64")
+print(df["rooms"].dtype)
+print(df["rooms"].head(5).tolist())
+print(f"{df['rooms'][0]}-room flat")
+print(df.loc[41, "rooms"], df["rooms"].isna().sum())</code></pre>
+<div class="output">Int64
+[4, 3, 5, 3, 2]
+4-room flat
+&lt;NA&gt; 1</div>
+      <p class="en"><strong>What changed:</strong> one <code>astype("Int64")</code> after the load. <strong>What it fixes:</strong> the room counts are whole numbers again, the gap is an honest <code>&lt;NA&gt;</code> (not <code>0</code>, not <code>4.0</code>), and the label reads "4-room flat". The cast is also strict: it refuses to truncate a value that is not a whole number.</p>
+      <p class="ar"><strong>ما تغيّر:</strong> استدعاء واحد لـ<code>astype("Int64")</code> بعد التحميل. <strong>ما يصلحه:</strong> عادت أعداد الغرف أعدادًا صحيحة، وصارت الفجوة <code>&lt;NA&gt;</code> صادقة (لا <code>0</code> ولا <code>4.0</code>)، وتُقرأ التسمية «4-room flat». والتحويل صارم أيضًا: يرفض أن يبتر قيمة ليست عددًا صحيحًا.</p>
+      <pre class="code bad" data-lang="python"><code>import pandas as pd
+
+try:
+    pd.Series([2.5, 3.0]).astype("Int64")
+except TypeError as e:
+    print("TypeError:", e)</code></pre>
+<div class="output">TypeError: cannot safely cast non-equivalent float64 to int64</div>
+      <p class="en"><strong>What is still imperfect:</strong> the knowledge "rooms is a nullable integer" lives in the analysis script, and you must remember to repeat the cast after every load, in every notebook. Until you do, the column is wrong.</p>
+      <p class="ar"><strong>ما زال ناقصًا:</strong> معرفة أن «rooms عدد صحيح قابل للنقص» تعيش في سكربت التحليل، وعليك أن تتذكر تكرار التحويل بعد كل تحميل وفي كل دفتر. وإلى أن تفعل يبقى العمود خاطئًا.</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 — declare the dtype at read time" data-title-ar="النسخة 3 — أعلن النوع عند القراءة">
+      <pre class="code good" data-lang="python"><code>import pandas as pd
+
+df = pd.read_csv("rental_listings.csv", dtype={"rooms": "Int64"})
+print(df["rooms"].dtype)
+print(df["rooms"].head(5).tolist())
+print(f"{df['rooms'][0]}-room flat")
+print(df.loc[41, "rooms"], df["rooms"].isna().sum())</code></pre>
+<div class="output">Int64
+[4, 3, 5, 3, 2]
+4-room flat
+&lt;NA&gt; 1</div>
+      <p class="en"><strong>What changed:</strong> the dtype moves into the load call, <code>dtype={"rooms": "Int64"}</code>. <strong>What it fixes:</strong> the column is correct from the first line after the load, the declaration sits next to the file name where the next reader will see it, and a file that suddenly contains a non-integer, say <code>3.5</code> rooms, fails <em>at load time</em> instead of being discovered three steps later.</p>
+      <p class="ar"><strong>ما تغيّر:</strong> انتقل النوع إلى استدعاء التحميل: <code>dtype={"rooms": "Int64"}</code>. <strong>ما يصلحه:</strong> يكون العمود صحيحًا منذ أول سطر بعد التحميل، ويجلس الإعلان بجانب اسم الملف حيث يراه القارئ التالي، وأي ملف يحتوي فجأة قيمة غير صحيحة، لنقل <code>3.5</code> غرفة، يفشل <em>عند التحميل</em> بدل أن يُكتشف بعد ثلاث خطوات.</p>
+      <pre class="code bad" data-lang="python"><code>import io
+import pandas as pd
+
+text = "listing_id,rooms\n1,3\n2,3.5\n"
+try:
+    pd.read_csv(io.StringIO(text), dtype={"rooms": "Int64"})
+except TypeError as e:
+    print("TypeError:", e)</code></pre>
+<div class="output">TypeError: cannot safely cast non-equivalent object to int64</div>
+      <p class="en"><strong>What is still imperfect:</strong> you must know which dtype each column deserves, and nothing yet checks that the loaded table matches what you declared. <a href="#t1-lesson-04">Lesson 4</a> goes through the arguments of <code>read_csv</code>, and <a href="#t1-lesson-06">Lesson 6</a> turns the check into a function that fails loudly.</p>
+      <p class="ar"><strong>ما زال ناقصًا:</strong> عليك أن تعرف النوع الذي يستحقه كل عمود، ولا يوجد بعد ما يفحص أن الجدول المحمَّل يطابق ما أعلنتَه. يستعرض <a href="#t1-lesson-04">الدرس 4</a> معاملات <code>read_csv</code>، ويحوّل <a href="#t1-lesson-06">الدرس 6</a> الفحص إلى دالة تفشل بصوت عالٍ.</p>
+    </div>
+  </div>
+
+  <div data-trace-id="t1-l3-astype-frame"></div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">What is the dtype of <code>pd.Series([415, 445, None])</code>?</span><span class="ar">ما نوع <code>pd.Series([415, 445, None])</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>int64</code>, with the <code>None</code> stored as 0.</span><span class="ar"><code>int64</code> مع تخزين <code>None</code> صفرًا.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>Int64</code>, because pandas sees the gap and picks the nullable type.</span><span class="ar"><code>Int64</code> لأن pandas ترى الفجوة وتختار النوع القابل للنقص.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>object</code>, because the list mixes numbers with <code>None</code>.</span><span class="ar"><code>object</code> لأن القائمة تخلط الأرقام مع <code>None</code>.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>float64</code>: <code>None</code> becomes <code>NaN</code> and the integers become <code>415.0</code> and <code>445.0</code>.</span><span class="ar"><code>float64</code>: تصير <code>None</code> هي <code>NaN</code> وتصير الأعداد <code>415.0</code> و<code>445.0</code>.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">pandas never picks the nullable types on its own; you must ask for <code>dtype="Int64"</code>. Given plain numbers plus <code>None</code> it converts <code>None</code> to <code>NaN</code> and upcasts to <code>float64</code>. The <code>object</code> answer is tempting because a Python list really does mix types, but pandas reads the list and looks for the narrowest numeric type that holds everything. The <code>int64</code> answer would invent a rent of 0.</div>
+      <div class="ar">لا تختار pandas الأنواع القابلة للنقص من تلقاء نفسها؛ عليك أن تطلب <code>dtype="Int64"</code>. فإذا أعطيتها أرقامًا عادية مع <code>None</code> حوّلت <code>None</code> إلى <code>NaN</code> ورقّت النوع إلى <code>float64</code>. وجواب <code>object</code> مغرٍ لأن قائمة بايثون تخلط الأنواع فعلًا، لكن pandas تقرأ القائمة وتبحث عن أضيق نوع عددي يتسع للجميع. وجواب <code>int64</code> سيخترع إيجارًا قيمته 0.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l3-s20"><span class="en">Aggregations skip NaN, and how to see it</span><span class="ar">الدوال التجميعية تتخطى NaN، وكيف ترى ذلك</span></h3>
+
+  <p class="en">pandas aggregations (<code>sum</code>, <code>mean</code>, <code>min</code>, <code>count</code> ...) skip missing values by default. That is convenient, and it is a decision made on your behalf. Four checks on the rent column make the decision visible.</p>
+  <p class="ar">تتخطى الدوال التجميعية في pandas (<code>sum</code> و<code>mean</code> و<code>min</code> و<code>count</code> ...) القيم المفقودة افتراضيًّا. وهذا مريح، وهو قرار يُتخذ نيابةً عنك. وأربعة فحوص على عمود الإيجار تجعل القرار مرئيًّا.</p>
+
+  <pre class="code" data-lang="python"><code>rent = df["monthly_rent"]
+print(rent.sum(), rent.count(), round(rent.mean(), 2))
+print(round(rent.sum() / len(rent), 2), "&lt;- the 'mean' if you divide by all 60 rows")
+print(rent.sum(skipna=False))
+print(rent.to_numpy().sum(), np.nansum(rent.to_numpy()))
+print(rent.fillna(0).mean())                 # filling with 0 changes the answer
+print((rent &gt; 400).sum() + (rent &lt;= 400).sum())</code></pre>
+<div class="output">19500.0 58 336.21
+325.0 &lt;- the 'mean' if you divide by all 60 rows
+nan
+nan 19500.0
+325.0
+58</div>
+
+  <ol>
+    <li><span class="en"><code>count()</code> is 58, not 60; <code>mean()</code> divides by that 58. Reporting the mean without the 58 hides that 2 listings are unknown.</span><span class="ar">قيمة <code>count()</code> هي 58 لا 60؛ و<code>mean()</code> تقسم على هذه الـ58. ومن يذكر المتوسط دون الـ58 يُخفي أن إعلانين مجهولان.</span></li>
+    <li><span class="en"><code>sum(skipna=False)</code> returns <code>nan</code>: the same data, the opposite policy.</span><span class="ar">تعيد <code>sum(skipna=False)</code> القيمة <code>nan</code>: البيانات نفسها بسياسة معاكسة.</span></li>
+    <li><span class="en">NumPy does <em>not</em> skip. <code>rent.to_numpy().sum()</code> is <code>nan</code>; you need <code>np.nansum</code>. The same numbers give different answers depending on which library does the adding.</span><span class="ar">لا تتخطى NumPy. فـ<code>rent.to_numpy().sum()</code> تساوي <code>nan</code>؛ وتحتاج <code>np.nansum</code>. والأرقام نفسها تعطي جوابين مختلفين بحسب المكتبة التي تجمع.</span></li>
+    <li><span class="en"><code>fillna(0)</code> "fixes" the gap by inventing two zero rents, and the mean falls from 336.21 to 325.0. A made-up value is worse than a visible gap.</span><span class="ar">تُصلح <code>fillna(0)</code> الفجوة باختراع إيجارين قيمتهما صفر، فينزل المتوسط من 336.21 إلى 325.0. والقيمة المختلَقة أسوأ من الفجوة المرئية.</span></li>
+  </ol>
+
+  <div class="quiz">
+    <p class="q"><span class="en">A colleague reports "average rent: 325.0", computed as the total divided by all 60 listings. The pandas mean of the rent column is 336.21. Which statement is right?</span><span class="ar">يذكر زميل «متوسط الإيجار: 325.0» محسوبًا كالمجموع مقسومًا على الإعلانات الستين كلها. ومتوسط pandas لعمود الإيجار هو 336.21. أي العبارات صحيحة؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">Both are correct averages; they only differ in rounding.</span><span class="ar">كلاهما متوسط صحيح؛ والفرق في التقريب فقط.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">325.0 is right, because the average of 60 listings must be divided by 60.</span><span class="ar">325.0 صحيح لأن متوسط ستين إعلانًا يجب أن يُقسم على 60.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">336.21 is the average over the 58 known rents; 325.0 treats the 2 unknown rents as zero rents.</span><span class="ar">336.21 هو المتوسط على الإيجارات الـ58 المعروفة؛ أما 325.0 فيعامل الإيجارين المجهولين كأنهما إيجاران صفريان.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">336.21 is wrong, because pandas ignores two listings.</span><span class="ar">336.21 خاطئ لأن pandas تتجاهل إعلانين.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">Dividing the total of 58 known rents by 60 is the same as averaging 58 real rents and 2 zeros. Whether 336.21 is the <em>right</em> estimate for all 60 listings depends on why two rents are missing, but it is the average of what was actually observed, and it is only honest when reported with its 58. The "pandas ignores two" option sounds like a complaint, yet ignoring unknowns is what an average of known values means.</div>
+      <div class="ar">قسمة مجموع 58 إيجارًا معروفًا على 60 تساوي متوسط 58 إيجارًا حقيقيًّا وصفرين. وهل 336.21 هو التقدير <em>الصحيح</em> للإعلانات الستين كلها فهذا يتوقف على سبب فقدان إيجارين، لكنه متوسط ما شوهد فعلًا، ولا يكون أمينًا إلا إذا ذُكر مع الـ58. وخيار «تتجاهل pandas إعلانين» يبدو شكوى، لكن تجاهل المجهول هو معنى متوسط القيم المعروفة.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l3-s21"><span class="en">Nullable dtypes: gaps without changing kind</span><span class="ar">الأنواع القابلة للنقص: فجوات دون تغيير الجنس</span></h3>
+
+  <p class="en">A <span class="term" data-term="nullable-dtype">nullable dtype</span> (<code>Int64</code>, <code>Float64</code>, <code>boolean</code>, <code>string</code>) stores a separate mask of which cells are missing next to the data, so an integer column can have gaps and stay integer. Its missing value is <code>pd.NA</code>, and comparisons with it are themselves missing rather than false.</p>
+  <p class="ar">يخزّن <span class="term" data-term="nullable-dtype">النوع القابل للنقص (nullable dtype)</span> (<code>Int64</code> و<code>Float64</code> و<code>boolean</code> و<code>string</code>) قناعًا منفصلًا بالخلايا المفقودة بجانب البيانات، فيمكن لعمود صحيح أن يحتوي فجوات ويبقى صحيحًا. وقيمته المفقودة هي <code>pd.NA</code>، والمقارنات معها مفقودة هي نفسها لا خاطئة.</p>
+
+  <pre class="code" data-lang="python"><code>import numpy as np
+import pandas as pd
+
+ri = pd.Series([1, 2, None, 4], dtype="Int64")
+print(ri.sum(), ri.count(), ri.isna().sum())
+print((ri &gt; 1).tolist(), (ri &gt; 1).dtype)
+print(ri[ri &gt; 1].tolist())
+print(ri.to_numpy(dtype="float64", na_value=np.nan))</code></pre>
+<div class="output">7 3 1
+[False, True, &lt;NA&gt;, True] boolean
+[2, 4]
+[ 1.  2. nan  4.]</div>
+
+  <p class="en">The sum stays an integer (7), <code>count</code> reports 3 real values, and a comparison gives a <code>boolean</code> mask with an <code>&lt;NA&gt;</code> in it. When such a mask selects rows, pandas treats <code>&lt;NA&gt;</code> as "do not keep", so you get 2 and 4. The last line is the exit door for a library that wants plain NumPy: choose the float type and say what the gap becomes.</p>
+  <p class="ar">يبقى المجموع عددًا صحيحًا (7)، وتخبر <code>count</code> بوجود 3 قيم حقيقية، وتعطي المقارنة قناعًا من النوع <code>boolean</code> فيه <code>&lt;NA&gt;</code>. وحين يختار قناع كهذا صفوفًا تعامل pandas القيمة <code>&lt;NA&gt;</code> على أنها «لا تُبقِ»، فتحصل على 2 و4. والسطر الأخير هو باب الخروج لمكتبة تريد NumPy عادية: اختر النوع العشري وقل ماذا تصير الفجوة.</p>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en"><strong>A NaN in the features becomes a NaN loss.</strong> Fit the made-up model "rent = 2 &times; area + 20 &times; rooms" to the listings. Arithmetic with a NaN gives a NaN, and a mean of NaNs is a NaN:</p>
+    <p class="ar"><strong>قيمة NaN في الخصائص تصير خسارة NaN.</strong> طبّق النموذج المختلق «الإيجار = 2 × المساحة + 20 × الغرف» على الإعلانات. الحساب مع NaN يعطي NaN، ومتوسط قيم NaN هو NaN:</p>
+    <pre class="code bad" data-lang="python"><code>X = df[["area_m2", "rooms"]].to_numpy(dtype=float)
+y = df["monthly_rent"].to_numpy()
+w = np.array([2.0, 20.0])                    # a made-up model: rent = 2*area + 20*rooms
+pred = X @ w
+
+print(np.isnan(X).sum(), "NaN in X,", np.isnan(y).sum(), "NaN in y")
+print("loss, all 60 rows       :", np.mean((pred - y) ** 2))
+ok = ~np.isnan(X).any(axis=1) &amp; ~np.isnan(y)
+print("loss,", ok.sum(), "complete rows :", round(np.mean((pred[ok] - y[ok]) ** 2), 1))
+
+grad = 2 * X.T @ (pred - y) / len(y)         # the direction a training step would follow
+print("gradient:", grad, "-&gt; new weights:", w - 0.0001 * grad)</code></pre>
+<div class="output">5 NaN in X, 2 NaN in y
+loss, all 60 rows       : nan
+loss, 53 complete rows : 11735.0
+gradient: [nan nan] -&gt; new weights: [nan nan]</div>
+    <p class="en">Seven missing cells spoil the loss of all 60 rows. Worse, the gradient, the direction a training step follows, is NaN too, so the first update turns <em>every</em> weight into NaN and training "runs" while printing <code>nan</code> forever. Many scikit-learn estimators refuse such input with a clear <code>ValueError</code>, which is the kinder failure; a hand-written loop or a neural network layer simply propagates it. What to do about the gaps (drop the rows, fill them from the training rows only, add a "was missing" flag) is a modelling decision that belongs to the later data-preparation chapters. Your job here is to <em>know the count before you train</em>: <code>df.isna().sum()</code>.</p>
+    <p class="ar">سبع خلايا مفقودة تفسد خسارة الصفوف الستين كلها. والأسوأ أن المشتقة (الاتجاه الذي تتبعه خطوة التدريب) NaN أيضًا، فيحوّل التحديث الأول <em>كل</em> الأوزان إلى NaN، ويبقى التدريب «يعمل» وهو يطبع <code>nan</code> إلى الأبد. وترفض كثير من مقدّرات scikit-learn مثل هذا المدخل بخطأ <code>ValueError</code> واضح، وهو الإخفاق الألطف؛ أما حلقة مكتوبة يدويًّا أو طبقة شبكة عصبية فتنشره ببساطة. وماذا نفعل بالفجوات (حذف الصفوف، أو ملؤها من صفوف التدريب وحدها، أو إضافة علَم «كانت مفقودة») قرار نمذجة يعود إلى فصول تجهيز البيانات اللاحقة. أما عملك هنا فهو أن <em>تعرف العدد قبل أن تدرّب</em>: <code>df.isna().sum()</code>.</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب أمين</span></h4>
+    <p class="en">The nullable types are not free upgrades. They use one extra byte per value, some operations are slower, and a library that expects NumPy may convert them back to <code>float64</code> or <code>object</code>. If your data has no gaps in a column, plain <code>int64</code> is the simpler, faster choice; reach for <code>Int64</code> when a gap is real and the integer-ness matters. Also, "skip the NaN" is only right when the gaps are random; if the unknown rents are the unusually <em>high</em> ones, every average above is biased, and no library can tell you that.</p>
+    <p class="ar">الأنواع القابلة للنقص ليست ترقيات مجانية. فهي تستعمل بايتًا إضافيًّا لكل قيمة، وبعض العمليات معها أبطأ، وقد تحوّلها مكتبة تتوقع NumPy إلى <code>float64</code> أو <code>object</code>. فإن لم يكن في عمودك فجوات فالنوع العادي <code>int64</code> أبسط وأسرع؛ ولا تلجأ إلى <code>Int64</code> إلا حين تكون الفجوة حقيقية وتهمّك صحّة العدد. وكذلك فإن «تخطَّ NaN» لا يكون صحيحًا إلا إذا كانت الفجوات عشوائية؛ وإن كانت الإيجارات المجهولة هي الإيجارات <em>المرتفعة</em> على غير العادة فكل متوسط أعلاه منحاز، ولا تستطيع مكتبة أن تخبرك بذلك.</p>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 3 — Predict the dtype</span><span class="ar">تمرين 3 — تنبّأ بالنوع</span></h4>
+    <p class="en">Write down, <em>before running anything</em>, the dtype each of these eight lines produces. Two of them are traps where the answer is not what the values suggest.</p>
+    <p class="ar">اكتب، <em>قبل أن تشغّل أي شيء</em>، النوع الذي ينتجه كل سطر من هذه الأسطر الثمانية. اثنان منها فخّان لا يكون فيهما الجواب ما توحي به القيم.</p>
+    <pre class="code" data-lang="python"><code>import pandas as pd
+
+a = pd.Series([1, 2, 3]).dtype
+b = pd.Series([1, 2, None]).dtype
+c = pd.Series([1, 2, None], dtype="Int64").dtype
+d = pd.Series(["1", "2"]).dtype
+e = (pd.Series([1, 2]) / 2).dtype
+f = pd.Series([True, False, None]).dtype
+g = pd.to_datetime(pd.Series(["2026-01-05"])).dtype
+h = (pd.to_datetime(pd.Series(["2026-05-05"])) - pd.to_datetime(pd.Series(["2026-01-05"]))).dtype</code></pre>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+      <pre class="code good" data-lang="python"><code>import pandas as pd
+
+a = pd.Series([1, 2, 3]).dtype
+b = pd.Series([1, 2, None]).dtype
+c = pd.Series([1, 2, None], dtype="Int64").dtype
+d = pd.Series(["1", "2"]).dtype
+e = (pd.Series([1, 2]) / 2).dtype
+f = pd.Series([True, False, None]).dtype
+g = pd.to_datetime(pd.Series(["2026-01-05"])).dtype
+h = (pd.to_datetime(pd.Series(["2026-05-05"])) - pd.to_datetime(pd.Series(["2026-01-05"]))).dtype
+for name, value in zip("abcdefgh", (a, b, c, d, e, f, g, h)):
+    print(name, value)</code></pre>
+<div class="output">a int64
+b float64
+c Int64
+d object
+e float64
+f object
+g datetime64[ns]
+h timedelta64[ns]</div>
+      <p class="en"><code>b</code> is the integer-plus-gap rule: <code>float64</code>. <code>c</code> asks for the nullable type explicitly: <code>Int64</code>. <code>d</code> is text that merely looks like numbers: <code>object</code>. <code>e</code> shows that division always produces a float, even for whole numbers. <code>f</code> is the second trap: a <code>None</code> inside booleans leaves <code>object</code>, not <code>bool</code> (use <code>dtype="boolean"</code> to keep a flag with gaps). <code>g</code> and <code>h</code>: a converted date is <code>datetime64[ns]</code> and the difference of two dates is a <code>timedelta64[ns]</code>.</p>
+      <p class="ar"><code>b</code> هي قاعدة العدد الصحيح مع فجوة: <code>float64</code>. و<code>c</code> تطلب النوع القابل للنقص صراحة: <code>Int64</code>. و<code>d</code> نص يشبه الأرقام فقط: <code>object</code>. و<code>e</code> تبيّن أن القسمة تنتج عشريًّا دائمًا حتى للأعداد الصحيحة. و<code>f</code> هي الفخ الثاني: <code>None</code> داخل قيم منطقية تترك <code>object</code> لا <code>bool</code> (استعمل <code>dtype="boolean"</code> لتحتفظ بعلَم فيه فجوات). و<code>g</code> و<code>h</code>: التاريخ المحوَّل هو <code>datetime64[ns]</code> وفرق تاريخين هو <code>timedelta64[ns]</code>.</p>
+    </details>
+  </div>
+
+  <h2 id="t1l3-h6"><span class="en">Concept 6 — Casting safely: strict, forgiving, and counted</span><span class="ar">المفهوم 6 — التحويل الآمن: صارم ومتسامح ومحسوب</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">Sooner or later a column arrives as text and has to become a number or a date. Python offers a strict conversion that stops at the first value it dislikes, and a forgiving one that carries on and hides the damage. The skill is choosing between them, and, whichever you choose, counting what happened.</p>
+    <p class="ar">عاجلًا أو آجلًا يصل عمود نصًّا ويجب أن يصير رقمًا أو تاريخًا. تقدّم بايثون تحويلًا صارمًا يتوقف عند أول قيمة لا تعجبه، وآخر متسامحًا يمضي ويخفي الضرر. والمهارة في الاختيار بينهما، وفي أن تعدّ ما حدث أيًّا كان اختيارك.</p>
+  </div>
+
+  <h3 id="t1l3-s22"><span class="en">Three casting tools</span><span class="ar">ثلاث أدوات للتحويل</span></h3>
+
+  <p class="en"><span class="term" data-term="type-casting">Type casting</span> means converting values from one dtype to another. <span class="term" data-term="coercion">Coercion</span> is one particular policy for doing it: when a value cannot be converted, store a missing value instead of raising an error.</p>
+  <p class="ar"><span class="term" data-term="type-casting">تحويل النوع (type casting)</span> يعني تحويل القيم من نوع إلى آخر. أما <span class="term" data-term="coercion">القسر (coercion)</span> فسياسة بعينها في ذلك: إذا تعذّر تحويل قيمة خُزّنت قيمة مفقودة بدل رفع خطأ.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="en">Tool</span><span class="ar">الأداة</span></th>
+          <th><span class="en">Policy</span><span class="ar">السياسة</span></th>
+          <th><span class="en">On a value it cannot convert</span><span class="ar">عند قيمة يتعذّر تحويلها</span></th>
+          <th><span class="en">Reach for it when</span><span class="ar">استعملها حين</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>s.astype("Int64")</code></td>
+          <td><span class="en">strict</span><span class="ar">صارمة</span></td>
+          <td><span class="en">raises (but see the next section: some lossy casts do not)</span><span class="ar">ترفع خطأً (لكن انظر القسم التالي: بعض التحويلات المُتلِفة لا ترفع)</span></td>
+          <td><span class="en">the data <em>should</em> be clean and a surprise must stop the run</span><span class="ar">يُفترض أن تكون البيانات نظيفة وأن توقف المفاجأةُ التشغيل</span></td>
+        </tr>
+        <tr>
+          <td><code>pd.to_numeric(s, errors="coerce")</code></td>
+          <td><span class="en">forgiving</span><span class="ar">متسامحة</span></td>
+          <td><span class="en">stores <code>NaN</code>, no message</span><span class="ar">تخزّن <code>NaN</code> دون رسالة</span></td>
+          <td><span class="en">you expect some junk and will <em>count</em> it</span><span class="ar">تتوقع بعض الشوائب وستقوم بـ<em>عدّها</em></span></td>
+        </tr>
+        <tr>
+          <td><code>pd.to_datetime(s, format=..., errors="coerce")</code></td>
+          <td><span class="en">forgiving, with a format</span><span class="ar">متسامحة، بصيغة محددة</span></td>
+          <td><span class="en">stores <code>NaT</code>, no message</span><span class="ar">تخزّن <code>NaT</code> دون رسالة</span></td>
+          <td><span class="en">dates as text; always name the format</span><span class="ar">تواريخ نصية؛ سمِّ الصيغة دائمًا</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure class="diagram" data-diagram="t1-l3-cast-sequence">
+    <figcaption><span class="en">The same text column, converted two ways: the strict call raises on <code>n/a</code> and keeps nothing; the coercing call finishes and leaves you to count the NaN.</span><span class="ar">العمود النصي نفسه محوَّلًا بطريقتين: النداء الصارم يرفع خطأً عند <code>n/a</code> ولا يُبقي شيئًا؛ والنداء القاسر ينتهي ويتركك لعدّ قيم NaN.</span></figcaption>
+  </figure>
+
+  <h3 id="t1l3-s23"><span class="en">The casts that never complain</span><span class="ar">التحويلات التي لا تشتكي أبدًا</span></h3>
+
+  <p class="en">"Strict" means strict about what is <em>impossible</em>, not about what is <em>lossy</em>. Four common <code>astype</code> calls succeed while destroying information:</p>
+  <p class="ar">«صارم» تعني صارمًا فيما هو <em>مستحيل</em>، لا فيما هو <em>مُتلِف</em>. أربعة استدعاءات شائعة لـ<code>astype</code> تنجح وهي تُتلف المعلومات:</p>
+
+  <pre class="code bad" data-lang="python"><code>import numpy as np
+import pandas as pd
+
+print(pd.Series([2.9, 3.7, -1.5]).astype(int).tolist())          # cuts the decimals off
+print(pd.Series(["no", "yes", "no"]).astype(bool).tolist())      # any non-empty text is True
+
+s = pd.Series([1.0, np.nan, 3.0])
+print(s.astype(str).tolist(), s.astype(str).isna().sum())        # NaN became the text "nan"
+print(pd.Series([300, 70000]).astype("int16").tolist())          # 70000 does not fit in 16 bits
+
+try:
+    s.astype(int)
+except ValueError as e:
+    print(type(e).__name__ + ":", e)</code></pre>
+<div class="output">[2, 3, -1]
+[True, True, True]
+['1.0', 'nan', '3.0'] 0
+[300, 4464]
+IntCastingNaNError: Cannot convert non-finite values (NA or inf) to integer</div>
+
+  <ol>
+    <li><span class="en"><code>astype(int)</code> on decimals cuts the fraction toward zero: 2.9 becomes 2 and -1.5 becomes -1. It does not round.</span><span class="ar">يقطع <code>astype(int)</code> على الأعداد العشرية الكسر باتجاه الصفر: تصير 2.9 هي 2 وتصير -1.5 هي -1. ولا يقرّب.</span></li>
+    <li><span class="en"><code>astype(bool)</code> on text asks only "is the string non-empty?", so <code>"no"</code> becomes <code>True</code>. Map the words explicitly instead (<code>.map({"yes": True, "no": False})</code>).</span><span class="ar">يسأل <code>astype(bool)</code> على النص فقط «هل السلسلة غير فارغة؟»، فتصير <code>"no"</code> هي <code>True</code>. حوّل الكلمات صراحة بدلًا من ذلك (<code>.map({"yes": True, "no": False})</code>).</span></li>
+    <li><span class="en"><code>astype(str)</code> turns a missing value into the four-letter text <code>"nan"</code>, and then <code>isna()</code> reports 0 missing. Use <code>astype("string")</code>, which keeps a real <code>&lt;NA&gt;</code>.</span><span class="ar">يحوّل <code>astype(str)</code> القيمة المفقودة إلى النص ذي الأحرف الأربعة <code>"nan"</code>، ثم تُبلغ <code>isna()</code> عن 0 مفقود. استعمل <code>astype("string")</code> الذي يُبقي <code>&lt;NA&gt;</code> حقيقية.</span></li>
+    <li><span class="en">A narrow target type wraps around: 70000 does not fit in 16 bits, and <code>astype("int16")</code> returns 4464 instead of complaining.</span><span class="ar">النوع الهدف الضيق يلتف حول نفسه: لا تتسع 70000 في 16 بتًّا، فيعيد <code>astype("int16")</code> القيمة 4464 بدل أن يشتكي.</span></li>
+  </ol>
+
+  <p class="en">The one cast that does complain is the last line: an integer type cannot hold NaN at all, so pandas raises. That is the error that sends people to <code>Int64</code>.</p>
+  <p class="ar">والتحويل الوحيد الذي يشتكي هو السطر الأخير: فالنوع الصحيح لا يحمل NaN أصلًا، فترفع pandas خطأً. وهذا هو الخطأ الذي يرسل الناس إلى <code>Int64</code>.</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">What does <code>pd.Series(["no", "yes", "no"]).astype(bool)</code> return?</span><span class="ar">ماذا تعيد <code>pd.Series(["no", "yes", "no"]).astype(bool)</code>؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>[False, True, False]</code>: pandas understands yes and no.</span><span class="ar"><code>[False, True, False]</code>: تفهم pandas نعم ولا.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">A <code>ValueError</code>: the strings are not valid booleans.</span><span class="ar">الخطأ <code>ValueError</code>: السلاسل ليست قيمًا منطقية صالحة.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>[True, True, True]</code>: every non-empty string is truthy.</span><span class="ar"><code>[True, True, True]</code>: كل سلسلة غير فارغة تُعدّ صحيحة.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>[True, False, True]</code>: the word "no" is recognised, the rest are True.</span><span class="ar"><code>[True, False, True]</code>: تُعرف كلمة «no» والباقي True.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">The conversion applies Python's truthiness rule to each cell: any non-empty string is true. The first option is the one everybody wants to be true, which is exactly why this bug survives review. The result is a clean <code>bool</code> column with every flat "furnished". The reliable form is an explicit mapping, then a count of values the mapping did not recognise.</div>
+      <div class="ar">يطبّق التحويل قاعدة الصدق في بايثون على كل خلية: أي سلسلة غير فارغة صحيحة. والخيار الأول هو الذي يتمنى الجميع أن يكون صحيحًا، ولهذا يعيش هذا الخلل بعد المراجعة. والنتيجة عمود <code>bool</code> نظيف تكون فيه كل الشقق «مفروشة». والصيغة الموثوقة هي تحويل صريح بقاموس، ثم عدّ القيم التي لم يتعرف عليها القاموس.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l3-s24"><span class="en">Worked example: cleaning a rent column</span><span class="ar">مثال محلول: تنظيف عمود الإيجار</span></h3>
+
+  <p class="en">A scraper hands you six rents as text: two ordinary numbers, a <code>1,200</code> with a thousands separator, and two different ways of saying "unknown". (If the column had come through <code>read_csv</code>, the text <code>n/a</code> would already have become NaN, because <code>read_csv</code> treats <code>n/a</code>, <code>NA</code>, <code>NaN</code>, <code>null</code> and empty cells as missing by default; but <code>1,200</code> and <code>TBD</code> would stay as text and drag the whole column to <code>object</code>. <a href="#t1-lesson-04">Lesson 4</a> shows <code>na_values</code> and <code>thousands</code>. Here we hold the raw text so every step is visible.)</p>
+  <p class="ar">يسلّمك مستخلص بيانات من الويب ستة إيجارات نصًّا: رقمان عاديان، و<code>1,200</code> بفاصل آلاف، وطريقتان مختلفتان لقول «مجهول». (ولو جاء العمود عبر <code>read_csv</code> لصار النص <code>n/a</code> هو NaN أصلًا، لأن <code>read_csv</code> تعامل <code>n/a</code> و<code>NA</code> و<code>NaN</code> و<code>null</code> والخلايا الفارغة على أنها مفقودة افتراضيًّا؛ لكن <code>1,200</code> و<code>TBD</code> كانتا ستبقيان نصًّا وتسحبان العمود كله إلى <code>object</code>. ويعرض <a href="#t1-lesson-04">الدرس 4</a> المعاملين <code>na_values</code> و<code>thousands</code>. أمسكنا هنا بالنص الخام ليظهر كل خطوة.)</p>
+
+  <div class="evolve" id="t1l3-e3">
+    <div class="ver" data-title-en="Version 1 — astype(float) and pray" data-title-ar="النسخة 1 — astype(float) وتمنَّ">
+      <pre class="code bad" data-lang="python"><code>import pandas as pd
+
+raw = pd.Series(["415", "445", "n/a", "1,200", "590", "TBD"], name="rent")
+try:
+    rent = raw.astype(float)
+except ValueError as e:
+    print("ValueError:", e)</code></pre>
+<div class="output">ValueError: could not convert string to float: 'n/a'</div>
+      <p class="en"><strong>What it does:</strong> asks pandas to turn six texts into floats in one strict call. <strong>What is wrong:</strong> it stops at the first value it dislikes, <code>'n/a'</code>, and says nothing about the other two that would also have failed (<code>'1,200'</code> and <code>'TBD'</code>). The crash is loud, which is good, but the message names one offender, so fixing it only moves the crash to the next value. (The <code>try/except</code> above only lets us print the message; in a script the run would simply stop.)</p>
+      <p class="ar"><strong>ما يفعله:</strong> يطلب من pandas تحويل ستة نصوص إلى أعداد عشرية في استدعاء صارم واحد. <strong>العيب:</strong> يتوقف عند أول قيمة لا تعجبه، <code>'n/a'</code>، ولا يقول شيئًا عن القيمتين الأخريين اللتين كانتا ستفشلان أيضًا (<code>'1,200'</code> و<code>'TBD'</code>). الانهيار صاخب وهذا جيد، لكن الرسالة تسمّي مخالفة واحدة، فإصلاحها ينقل الانهيار إلى القيمة التالية. (والـ<code>try/except</code> أعلاه يتيح لنا فقط طباعة الرسالة؛ أما في سكربت فيتوقف التشغيل ببساطة.)</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 — to_numeric with coerce" data-title-ar="النسخة 2 — to_numeric مع القسر">
+      <pre class="code" data-lang="python"><code>import pandas as pd
+
+raw = pd.Series(["415", "445", "n/a", "1,200", "590", "TBD"], name="rent")
+rent = pd.to_numeric(raw, errors="coerce")
+print(rent.tolist())
+print(rent.mean())</code></pre>
+<div class="output">[415.0, 445.0, nan, nan, 590.0, nan]
+483.3333333333333</div>
+      <p class="en"><strong>What changed:</strong> the forgiving converter, <code>errors="coerce"</code>. <strong>What it fixes:</strong> no crash, and the result is a proper <code>float64</code> column. <strong>What is still wrong:</strong> three of six values vanished without a word, and one of them, <code>'1,200'</code>, was a perfectly good number. The mean, 483.33, is now computed from three rents and looks completely normal.</p>
+      <p class="ar"><strong>ما تغيّر:</strong> المحوِّل المتسامح <code>errors="coerce"</code>. <strong>ما يصلحه:</strong> لا انهيار، والنتيجة عمود <code>float64</code> سليم. <strong>ما زال خاطئًا:</strong> اختفت ثلاث قيم من ست دون كلمة، وإحداها <code>'1,200'</code> كانت رقمًا سليمًا تمامًا. والمتوسط 483.33 محسوب الآن من ثلاثة إيجارات ويبدو عاديًّا تمامًا.</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 — coerce, then count" data-title-ar="النسخة 3 — اقسِر ثم عُدّ">
+      <pre class="code" data-lang="python"><code>import pandas as pd
+
+raw = pd.Series(["415", "445", "n/a", "1,200", "590", "TBD"], name="rent")
+rent = pd.to_numeric(raw, errors="coerce")
+bad = rent.isna() &amp; raw.notna()
+print(bad.sum(), "of", len(raw), "values swallowed:", raw[bad].tolist())</code></pre>
+<div class="output">3 of 6 values swallowed: ['n/a', '1,200', 'TBD']</div>
+      <p class="en"><strong>What changed:</strong> one mask, <code>rent.isna() &amp; raw.notna()</code>: "was something in the text, is nothing in the number". <strong>What it fixes:</strong> the damage is visible: 3 of 6 values, and the offenders are printed, so you can see that <code>'1,200'</code> is a real number rejected for its comma, while <code>'n/a'</code> and <code>'TBD'</code> are genuine unknowns. (A plain <code>rent.isna().sum()</code> would not do: it also counts values that were already missing before the conversion.) <strong>What is still imperfect:</strong> it only reports. The rejected 1,200 is still lost.</p>
+      <p class="ar"><strong>ما تغيّر:</strong> قناع واحد، <code>rent.isna() &amp; raw.notna()</code>: «كان في النص شيئًا وصار في الرقم لا شيء». <strong>ما يصلحه:</strong> صار الضرر مرئيًّا: 3 قيم من 6، وتُطبع المخالفات، فترى أن <code>'1,200'</code> رقم حقيقي رُفض بسبب فاصلته، بينما <code>'n/a'</code> و<code>'TBD'</code> مجهولان حقيقيان. (ولا يكفي <code>rent.isna().sum()</code> وحده: فهو يعدّ أيضًا القيم التي كانت مفقودة قبل التحويل.) <strong>ما زال ناقصًا:</strong> إنه يُبلغ فقط. والـ1,200 المرفوضة ما زالت ضائعة.</p>
+    </div>
+    <div class="ver" data-title-en="Version 4 — clean the known pattern first" data-title-ar="النسخة 4 — نظّف النمط المعروف أولًا">
+      <pre class="code good" data-lang="python"><code>import pandas as pd
+
+raw = pd.Series(["415", "445", "n/a", "1,200", "590", "TBD"], name="rent")
+clean = raw.str.replace(",", "", regex=False)
+rent = pd.to_numeric(clean, errors="coerce")
+bad = rent.isna() &amp; raw.notna()
+print(bad.sum(), "of", len(raw), "values swallowed:", raw[bad].tolist())
+print(rent.mean())</code></pre>
+<div class="output">2 of 6 values swallowed: ['n/a', 'TBD']
+662.5</div>
+      <p class="en"><strong>What changed:</strong> strip the thousands separator from the raw text <em>before</em> converting. <strong>What it fixes:</strong> only the two genuine unknowns are left, the count is stable at 2 and the real 1,200 survives, which moves the mean from 483.33 to 662.5 (four rents instead of three). Every step is counted, so a surprise value next month would raise the number.</p>
+      <p class="ar"><strong>ما تغيّر:</strong> إزالة فاصل الآلاف من النص الخام <em>قبل</em> التحويل. <strong>ما يصلحه:</strong> لم يبقَ إلا المجهولان الحقيقيان، والعدد ثابت عند 2، وتنجو الـ1,200 الحقيقية، فينتقل المتوسط من 483.33 إلى 662.5 (أربعة إيجارات بدل ثلاثة). وكل خطوة معدودة، فأي قيمة مفاجئة الشهر القادم سترفع العدد.</p>
+      <pre class="code bad" data-lang="python"><code>import pandas as pd
+
+print(pd.to_numeric(pd.Series(["1,5"]).str.replace(",", "", regex=False)).tolist())</code></pre>
+<div class="output">[15]</div>
+      <p class="en"><strong>What is still imperfect:</strong> deleting commas assumes the comma is a <em>thousands</em> separator. In a file that uses a decimal comma, <code>"1,5"</code> means one and a half, and this line turns it into 15. Which convention applies is a fact about the file; <a href="#t1-lesson-04">Lesson 4</a> sets it at read time (<code>thousands=</code>, <code>decimal=</code>), and <a href="#t1-lesson-06">Lesson 6</a> turns "the number of unexpected failures must be zero" into a check that stops the run.</p>
+      <p class="ar"><strong>ما زال ناقصًا:</strong> حذف الفواصل يفترض أن الفاصلة فاصل <em>آلاف</em>. وفي ملف يستعمل الفاصلة العشرية تعني <code>"1,5"</code> واحدًا ونصفًا، ويحوّلها هذا السطر إلى 15. وأيّ الاصطلاحين ينطبق حقيقة عن الملف؛ ويضبطه <a href="#t1-lesson-04">الدرس 4</a> عند القراءة (<code>thousands=</code> و<code>decimal=</code>)، ويحوّل <a href="#t1-lesson-06">الدرس 6</a> عبارة «عدد الإخفاقات غير المتوقعة يجب أن يكون صفرًا» إلى فحص يوقف التشغيل.</p>
+    </div>
+  </div>
+
+  <p class="en">Step through the same idea one line at a time, with the Series drawn at every step. Watch the <code>bad</code> mask light up on the swallowed positions, then shrink after the cleaning.</p>
+  <p class="ar">تنقّل في الفكرة نفسها سطرًا سطرًا، والسلسلة مرسومة في كل خطوة. راقب القناع <code>bad</code> وهو يضيء المواضع المبتلَعة، ثم يتقلّص بعد التنظيف.</p>
+
+  <div data-trace-id="t1-l3-coerce-series"></div>
+
+  <div class="thread">
+    <h4><span class="en">Thread · Turn a messy text value into a number or a date</span><span class="ar">خيط · حوِّل قيمة نصية فوضوية إلى رقم أو تاريخ</span></h4>
+    <p class="en"><strong>Earlier solution:</strong> in <a href="#t1-lesson-01">Lesson 1</a> a rent was read out of an advert by eye, or with <code>str.split</code>, which breaks as soon as one advert says "1,200 NIS/month" and another "650 USD". <strong>This lesson's solution:</strong> <code>pd.to_numeric(errors="coerce")</code>. <strong>Its gap:</strong> every failure becomes <code>NaN</code>, so the <em>reason</em> is lost, and so is the count unless you ask for it. <strong>What we closed here:</strong> the mask that counts and lists what coercion swallowed, and cleaning a known pattern first. <strong>Still open:</strong> <a href="#t1-lesson-04">Lesson 4</a> fixes known formats at read time (<code>thousands=</code>, <code>decimal=</code>, <code>parse_dates=</code>, Excel serial dates), but an unknown format still becomes NaN; <a href="#t1-lesson-05">Lesson 5</a> flattens nested fields where a missing key also becomes NaN without a warning; and <a href="#t1-lesson-06">Lesson 6</a> counts the NaN before and after parsing and fails loudly if they grew.</p>
+    <p class="ar"><strong>الحل السابق:</strong> في <a href="#t1-lesson-01">الدرس 1</a> قُرئ الإيجار من الإعلان بالعين أو بـ<code>str.split</code>، وهذا ينكسر بمجرد أن يقول إعلان «1,200 NIS/month» ويقول آخر «650 USD». <strong>حل هذا الدرس:</strong> <code>pd.to_numeric(errors="coerce")</code>. <strong>ثغرته:</strong> كل إخفاق يصير <code>NaN</code>، فيضيع <em>السبب</em>، ويضيع العدد أيضًا ما لم تطلبه. <strong>ما أغلقناه هنا:</strong> القناع الذي يعدّ ويسرد ما ابتلعه القسر، وتنظيف النمط المعروف أولًا. <strong>ما زال مفتوحًا:</strong> يصلح <a href="#t1-lesson-04">الدرس 4</a> الصيغ المعروفة عند القراءة (<code>thousands=</code> و<code>decimal=</code> و<code>parse_dates=</code> والتواريخ التسلسلية في إكسل)، لكن الصيغة المجهولة تظل NaN؛ ويسطّح <a href="#t1-lesson-05">الدرس 5</a> الحقول المتشعبة حيث يصير المفتاح المفقود NaN أيضًا دون تحذير؛ ويعدّ <a href="#t1-lesson-06">الدرس 6</a> قيم NaN قبل التحليل وبعده ويفشل بصوت عالٍ إذا زادت.</p>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">After <code>rent = pd.to_numeric(raw, errors="coerce")</code>, which expression counts the values that coercion swallowed?</span><span class="ar">بعد <code>rent = pd.to_numeric(raw, errors="coerce")</code>، أي تعبير يعدّ القيم التي ابتلعها القسر؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>rent.isna().sum()</code></span><span class="ar"><code>rent.isna().sum()</code></span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>(rent.isna() &amp; raw.notna()).sum()</code></span><span class="ar"><code>(rent.isna() &amp; raw.notna()).sum()</code></span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>(raw != rent).sum()</code></span><span class="ar"><code>(raw != rent).sum()</code></span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>len(raw) - rent.count()</code></span><span class="ar"><code>len(raw) - rent.count()</code></span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en"><code>rent.isna().sum()</code> is the tempting one-liner, but it counts every NaN, including the ones that were already missing in <code>raw</code> before any conversion; so does <code>len(raw) - rent.count()</code>. <code>raw != rent</code> compares text with numbers and is true for every row. Only the mask "missing now <em>and</em> present before" isolates what the conversion itself destroyed.</div>
+      <div class="ar"><code>rent.isna().sum()</code> هو السطر الواحد المغري، لكنه يعدّ كل NaN، بما فيها القيم التي كانت مفقودة في <code>raw</code> قبل أي تحويل؛ وكذلك <code>len(raw) - rent.count()</code>. أما <code>raw != rent</code> فتقارن نصًّا بأرقام وتصدق على كل صف. والقناع «مفقود الآن <em>وموجود</em> قبلًا» وحده هو الذي يعزل ما أتلفه التحويل نفسه.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l3-s25"><span class="en">Dates: name the format, count the failures</span><span class="ar">التواريخ: سمِّ الصيغة وعُدّ الإخفاقات</span></h3>
+
+  <p class="en">The same discipline applies to dates, with one extra hazard: when you give no format, pandas <em>guesses</em> it from the first value, and <code>01/03/2026</code> could be 1 March or 3 January. Compare the guess with the format stated explicitly, on six texts that include a blank and an impossible date.</p>
+  <p class="ar">ينطبق الانضباط نفسه على التواريخ، مع خطر إضافي: فإذا لم تعطِ صيغة <em>خمّنتها</em> pandas من القيمة الأولى، وقد تكون <code>01/03/2026</code> هي 1 مارس أو 3 يناير. قارن التخمين بالصيغة المذكورة صراحة، على ستة نصوص فيها فراغ وتاريخ مستحيل.</p>
+
+  <pre class="code bad" data-lang="python"><code>import pandas as pd
+
+raw = pd.Series(["01/03/2026", "15/04/2026", "not recorded", "", "31/02/2026", "20/05/2026"])
+
+guess = pd.to_datetime(raw, errors="coerce")                         # pandas guesses month/day/year
+exact = pd.to_datetime(raw, format="%d/%m/%Y", errors="coerce")      # we say day/month/year
+print(guess.isna().sum(), "NaT when guessing;", exact.isna().sum(), "NaT with the format")
+print(exact.tolist())
+
+failed = exact.isna() &amp; raw.notna()
+print("failed:", failed.sum(), "of", len(raw), raw[failed].tolist())</code></pre>
+<div class="output">5 NaT when guessing; 3 NaT with the format
+[Timestamp('2026-03-01 00:00:00'), Timestamp('2026-04-15 00:00:00'), NaT, NaT, NaT, Timestamp('2026-05-20 00:00:00')]
+failed: 3 of 6 ['not recorded', '', '31/02/2026']</div>
+
+  <p class="en">The guess read <code>01/03/2026</code> as month first (3 January, which is wrong) and then rejected <code>15/04/2026</code> and <code>20/05/2026</code> because there is no month 15 or 20: <strong>5 NaT</strong> against the <strong>3</strong> that are genuinely unreadable (<code>not recorded</code>, the blank, and <code>31/02/2026</code>, a date that does not exist). Without <code>errors="coerce"</code> the same guess would have raised a <code>ValueError</code> at the second value; adding coerce traded that alarm for silence. With <code>format="%d/%m/%Y"</code> the three failures are exactly the three we expected, and the count shows it.</p>
+  <p class="ar">قرأ التخمين <code>01/03/2026</code> بالشهر أولًا (3 يناير، وهذا خطأ) ثم رفض <code>15/04/2026</code> و<code>20/05/2026</code> لأن لا شهر 15 ولا 20: فحصلنا على <strong>5 NaT</strong> مقابل <strong>3</strong> غير قابلة للقراءة فعلًا (<code>not recorded</code> والفراغ و<code>31/02/2026</code> وهو تاريخ غير موجود). ولولا <code>errors="coerce"</code> لرفع التخمين نفسه خطأ <code>ValueError</code> عند القيمة الثانية؛ فمبادلة التحذير بالصمت هي ما فعلته إضافة القسر. ومع <code>format="%d/%m/%Y"</code> تكون الإخفاقات الثلاثة هي الثلاثة التي توقعناها بالضبط، ويثبت العدّ ذلك.</p>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">Treat the parse failure rate as a data-quality metric, not a detail. In the date example the guessing parser produced one <em>wrong</em> date (3 January for 1 March, a wrong season feature) and lost two valid dates; a training pipeline that then runs <code>dropna()</code> keeps one row in six, and the row it keeps is the wrong one. The same happens to a label column: coerce <code>"n/a"</code> in a target to NaN and <code>dropna()</code> removes those rows, quietly changing the class balance the model learns from. Log "parsed 3 of 6, 3 failed, here are the failures" every time; it costs one line and it is the first thing you will look at when the model misbehaves.</p>
+    <p class="ar">عامل نسبة إخفاق التحليل مقياسًا لجودة البيانات لا تفصيلًا. ففي مثال التواريخ أنتج المحلِّل المخمِّن تاريخًا واحدًا <em>خاطئًا</em> (3 يناير بدل 1 مارس، أي ميزة موسم خاطئة) وأضاع تاريخين صالحين؛ وخط تدريب يشغّل بعد ذلك <code>dropna()</code> يُبقي صفًّا من ستة، والصف الذي يبقيه هو الخاطئ. وهذا يحدث لعمود التسمية أيضًا: اقسِر <code>"n/a"</code> في الهدف إلى NaN فيزيل <code>dropna()</code> تلك الصفوف ويغيّر بهدوء توازن الفئات الذي يتعلم منه النموذج. سجّل «حُلِّل 3 من 6، وفشلت 3، وهذه هي الإخفاقات» في كل مرة؛ فهو سطر واحد، وهو أول ما ستنظر فيه حين يسيء النموذج التصرف.</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب أمين</span></h4>
+    <p class="en">Coercion is a tool, not a policy. When a column <em>should</em> be clean (a numeric id, a date from a system you control) the strict <code>astype</code> or <code>to_datetime</code> without coerce is better: it stops the run at the first surprise, which is cheaper than finding the surprise in a chart. Coerce-and-count earns its place when some junk is expected and you want to see it. Either way a convert-and-carry-on line with no count is the one version that is never right.</p>
+    <p class="ar">القسر أداة لا سياسة. فحين <em>يجب</em> أن يكون العمود نظيفًا (معرّف رقمي أو تاريخ من نظام تتحكم فيه) يكون <code>astype</code> الصارم أو <code>to_datetime</code> بلا قسر أفضل: يوقف التشغيل عند أول مفاجأة، وهذا أرخص من اكتشافها في رسم بياني. ويستحق «اقسِر وعُدّ» مكانه حين تتوقع بعض الشوائب وتريد رؤيتها. وفي الحالتين فسطر «حوِّل وامضِ» بلا عدّ هو النسخة الوحيدة التي لا تصح أبدًا.</p>
+  </div>
+
+  <h2 id="t1l3-h7"><span class="en">Concept 7 — Inspect before you trust</span><span class="ar">المفهوم 7 — افحص قبل أن تثق</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">A table you did not build is a table you have not yet read. The professional habit is to ask, in the first minute and before any analysis, what Python thinks each column holds, how many cells are empty and what the table costs. Four calls answer almost everything; a small function turns them into an audit you can run on every new file.</p>
+    <p class="ar">الجدول الذي لم تبنِه جدول لم تقرأه بعد. والعادة المهنية أن تسأل، في الدقيقة الأولى وقبل أي تحليل، عمّا تظنه بايثون في كل عمود، وكم خلية فارغة، وكم يكلّف الجدول. أربعة استدعاءات تجيب عن كل شيء تقريبًا؛ ودالة صغيرة تحوّلها إلى تدقيق تشغّله على كل ملف جديد.</p>
+  </div>
+
+  <h3 id="t1l3-s26"><span class="en">The four-call ritual</span><span class="ar">طقس الاستدعاءات الأربعة</span></h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="en">Call</span><span class="ar">الاستدعاء</span></th>
+          <th><span class="en">It answers</span><span class="ar">يجيب عن</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>df.dtypes</code></td><td><span class="en">which dtype each column has</span><span class="ar">أي نوع لكل عمود</span></td></tr>
+        <tr><td><code>df.info()</code></td><td><span class="en">dtypes, non-null counts and an estimate of memory, in one block</span><span class="ar">الأنواع وعدد القيم غير الفارغة وتقدير الذاكرة، في كتلة واحدة</span></td></tr>
+        <tr><td><code>df.memory_usage(deep=True)</code></td><td><span class="en">bytes per column, counting the text inside object columns</span><span class="ar">البايتات لكل عمود، مع عدّ النص داخل أعمدة object</span></td></tr>
+        <tr><td><code>df.select_dtypes(include=...)</code></td><td><span class="en">the columns of one kind, such as <code>"number"</code> or <code>"object"</code></span><span class="ar">أعمدة من جنس واحد، مثل <code>"number"</code> أو <code>"object"</code></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <pre class="code" data-lang="python"><code>df.info()
+print(df.memory_usage(deep=True).sum(), "bytes")
+print(df.select_dtypes(include="number").columns.tolist())
+print(df.select_dtypes(include="object").columns.tolist())</code></pre>
+<div class="output">&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 60 entries, 0 to 59
+Data columns (total 9 columns):
+ #   Column        Non-Null Count  Dtype
+---  ------        --------------  -----
+ 0   listing_id    60 non-null     int64
+ 1   city          60 non-null     object
+ 2   governorate   60 non-null     object
+ 3   monthly_rent  58 non-null     float64
+ 4   area_m2       56 non-null     float64
+ 5   rooms         59 non-null     float64
+ 6   furnished     60 non-null     object
+ 7   listed_on     60 non-null     object
+ 8   advert        60 non-null     object
+dtypes: float64(3), int64(1), object(5)
+memory usage: 4.3+ KB
+21876 bytes
+['listing_id', 'monthly_rent', 'area_m2', 'rooms']
+['city', 'governorate', 'furnished', 'listed_on', 'advert']</div>
+
+  <p class="en">Reading <code>info()</code>: <code>60 entries</code> is the number of rows, and each <code>Non-Null Count</code> is out of those 60, so <code>monthly_rent 58 non-null</code> means 2 empty cells, with no extra code. The <code>Dtype</code> column repeats what you saw above. And the last line deserves suspicion: <code>4.3+ KB</code> is a <em>lower bound</em>. Without <code>deep=True</code> pandas counts only the pointer to each text cell, not the text, so the true figure printed after it, 21,876 bytes, is five times larger. The <code>+</code> sign is pandas telling you so.</p>
+  <p class="ar">قراءة <code>info()</code>: العبارة <code>60 entries</code> هي عدد الصفوف، وكل <code>Non-Null Count</code> من هذه الـ60، فالسطر <code>monthly_rent 58 non-null</code> يعني خليتين فارغتين دون أي كود إضافي. أما العمود <code>Dtype</code> فيكرر ما رأيته أعلاه. والسطر الأخير يستحق الشك: فـ<code>4.3+ KB</code> <em>حدّ أدنى</em>. فمن دون <code>deep=True</code> لا تعدّ pandas إلا المؤشر إلى كل خلية نصية لا النص نفسه، ولذلك فالرقم الحقيقي المطبوع بعده، 21,876 بايتًا، أكبر بخمسة أضعاف. وعلامة <code>+</code> هي pandas تخبرك بذلك.</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en"><code>info()</code> on a 60-row table shows <code>monthly_rent   58 non-null   float64</code>. What does the line tell you?</span><span class="ar">تعرض <code>info()</code> على جدول من 60 صفًّا السطر <code>monthly_rent   58 non-null   float64</code>. ماذا يخبرك هذا السطر؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">58 rents are valid and 2 are zeros.</span><span class="ar">58 إيجارًا صالحًا واثنان صفران.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">58 cells hold a value and 2 are missing; the column is decimal numbers.</span><span class="ar">58 خلية فيها قيمة وخليتان مفقودتان؛ والعمود أعداد عشرية.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Only 58 of the 60 rents are numbers; the other 2 are text.</span><span class="ar">58 فقط من الإيجارات الستين أرقام، والاثنان الآخران نص.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">The column has 58 distinct values.</span><span class="ar">في العمود 58 قيمة مميزة.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <div class="en">"Non-null" counts cells that are not missing; it says nothing about distinct values (that is <code>nunique()</code>) and nothing about zeros, which are values like any other. The "2 are text" option is the dangerous misreading: a column with text in it would not be <code>float64</code> at all, it would be <code>object</code>. A <code>float64</code> dtype with a non-null count below the row count means NaN, nothing more.</div>
+      <div class="ar">«غير الفارغ» يعدّ الخلايا غير المفقودة؛ ولا يقول شيئًا عن القيم المميزة (وهذه <code>nunique()</code>) ولا عن الأصفار التي هي قيم كأي قيمة. وخيار «الاثنان نص» هو القراءة الخاطئة الخطيرة: فالعمود الذي فيه نص لن يكون <code>float64</code> أصلًا بل <code>object</code>. والنوع <code>float64</code> مع عدد غير فارغ أقل من عدد الصفوف يعني NaN، لا أكثر.</div>
+    </div>
+  </div>
+
+  <h3 id="t1l3-s27"><span class="en">A dtype audit, and the typed table</span><span class="ar">تدقيق الأنواع، والجدول المضبوط</span></h3>
+
+  <p class="en">Wrap the calls in a small function so the same four questions are asked of every table in the same order: dtype, missing count, number of distinct values and bytes.</p>
+  <p class="ar">لُفّ الاستدعاءات في دالة صغيرة لتُطرح الأسئلة الأربعة نفسها على كل جدول وبالترتيب نفسه: النوع، وعدد المفقود، وعدد القيم المميزة، والبايتات.</p>
+
+  <pre class="code" data-lang="python"><code>def dtype_audit(frame):
+    return pd.DataFrame({
+        "dtype": frame.dtypes.astype(str),
+        "missing": frame.isna().sum(),
+        "unique": frame.nunique(),
+        "bytes": frame.memory_usage(deep=True, index=False),
+    })
+
+print(dtype_audit(df))</code></pre>
+<div class="output">                dtype  missing  unique  bytes
+listing_id      int64        0      60    480
+city           object        0       5   3406
+governorate    object        0       5   3433
+monthly_rent  float64        2      39    480
+area_m2       float64        4      55    480
+rooms         float64        1       5    480
+furnished      object        0       2   3079
+listed_on      object        0      41   3540
+advert         object        0       5   6366</div>
+
+  <p class="en">Each row is now a decision. Use the flowchart as the checklist: ask the questions from the top for each column, and the leaf you land on is the dtype.</p>
+  <p class="ar">كل صف الآن قرار. استعمل مخطط التدفق قائمةَ مراجعة: اطرح الأسئلة من الأعلى لكل عمود، والورقة التي تصل إليها هي النوع.</p>
+
+  <figure class="diagram" data-diagram="t1-l3-dtype-choice">
+    <figcaption><span class="en">What dtype should this column be? Read it top to bottom for each column of the audit.</span><span class="ar">ما النوع الذي يجب أن يكون عليه هذا العمود؟ اقرأه من الأعلى إلى الأسفل لكل عمود في التدقيق.</span></figcaption>
+  </figure>
+
+  <ul>
+    <li><span class="en"><code>listing_id</code>: 60 unique values, an identifier you never add up. Not a quantity, so <code>string</code>.</span><span class="ar"><code>listing_id</code>: 60 قيمة فريدة، معرّف لا تجمعه أبدًا. ليس كمية، فهو <code>string</code>.</span></li>
+    <li><span class="en"><code>city</code> and <code>governorate</code>: 5 labels over 60 rows. <code>category</code>.</span><span class="ar"><code>city</code> و<code>governorate</code>: 5 تسميات على 60 صفًّا. <code>category</code>.</span></li>
+    <li><span class="en"><code>monthly_rent</code> and <code>area_m2</code>: decimal quantities with gaps. They stay <code>float64</code>; the gaps are <code>NaN</code>, which a float column holds natively.</span><span class="ar"><code>monthly_rent</code> و<code>area_m2</code>: كميات عشرية فيها فجوات. تبقى <code>float64</code>؛ والفجوات <code>NaN</code> التي يحملها العمود العشري أصلًا.</span></li>
+    <li><span class="en"><code>rooms</code>: whole numbers with a gap. <code>Int64</code>.</span><span class="ar"><code>rooms</code>: أعداد صحيحة فيها فجوة. <code>Int64</code>.</span></li>
+    <li><span class="en"><code>furnished</code>: two words. Map them explicitly to booleans (never <code>astype(bool)</code>), then <code>boolean</code>.</span><span class="ar"><code>furnished</code>: كلمتان. حوّلهما صراحة إلى قيم منطقية (ولا تستعمل <code>astype(bool)</code> أبدًا)، ثم <code>boolean</code>.</span></li>
+    <li><span class="en"><code>listed_on</code>: a date written <code>YYYY-MM-DD</code>. <code>datetime64</code>, with the format stated.</span><span class="ar"><code>listed_on</code>: تاريخ مكتوب <code>YYYY-MM-DD</code>. <code>datetime64</code> مع ذكر الصيغة.</span></li>
+    <li><span class="en"><code>advert</code>: free text. <code>string</code>.</span><span class="ar"><code>advert</code>: نص حر. <code>string</code>.</span></li>
+  </ul>
+
+  <pre class="code good" data-lang="python"><code>def dtype_audit(frame):
+    return pd.DataFrame({
+        "dtype": frame.dtypes.astype(str),
+        "missing": frame.isna().sum(),
+        "unique": frame.nunique(),
+        "bytes": frame.memory_usage(deep=True, index=False),
+    })
+
+typed = df.astype({
+    "listing_id": "string",          # an identifier: a label, not a quantity
+    "city": "category",
+    "governorate": "category",
+    "rooms": "Int64",
+    "advert": "string",
+})
+typed["furnished"] = typed["furnished"].map({"yes": True, "no": False}).astype("boolean")
+typed["listed_on"] = pd.to_datetime(typed["listed_on"], format="%Y-%m-%d")
+
+print(dtype_audit(typed))
+print(df.memory_usage(deep=True).sum(), "-&gt;", typed.memory_usage(deep=True).sum(), "bytes")
+print(typed.select_dtypes(include="number").columns.tolist())</code></pre>
+<div class="output">                       dtype  missing  unique  bytes
+listing_id            string        0      60   3180
+city                category        0       5    517
+governorate         category        0       5    520
+monthly_rent         float64        2      39    480
+area_m2              float64        4      55    480
+rooms                  Int64        1       5    540
+furnished            boolean        0       2    120
+listed_on     datetime64[ns]        0      41    480
+advert                string        0       5   6366
+21876 -&gt; 12815 bytes
+['monthly_rent', 'area_m2', 'rooms']</div>
+
+  <p class="en">Every dtype now says what its column <em>is</em>: <code>select_dtypes(include="number")</code> returns the three genuine quantities and no longer the identifier, the date supports <code>.dt</code>, the two flags and the rooms keep their gaps as <code>&lt;NA&gt;</code>. The table costs 12,815 bytes against 21,876, about 41% less, even though turning the identifier into text made <em>that</em> column bigger (3,180 bytes instead of 480): correctness first, memory second. The thread that began in Concept 1 ends its life in this lesson here: the table was born from <code>read_csv</code> and then <em>typed on purpose</em>. What remains is making that typing happen at read time and checking that it did, which is the job of <a href="#t1-lesson-04">Lesson 4</a> and <a href="#t1-lesson-06">Lesson 6</a>.</p>
+  <p class="ar">كل نوع الآن يقول ما <em>هو</em> عموده: تعيد <code>select_dtypes(include="number")</code> الكميات الثلاث الحقيقية ولم تعد تعيد المعرّف، ويدعم التاريخ <code>.dt</code>، ويحتفظ العلَمان والغرف بفجواتها <code>&lt;NA&gt;</code>. ويكلّف الجدول 12,815 بايتًا مقابل 21,876، أي أقل بنحو 41%، مع أن تحويل المعرّف إلى نص جعل <em>ذلك</em> العمود أكبر (3,180 بايتًا بدل 480): الصحة أولًا والذاكرة ثانيًا. والخيط الذي بدأ في المفهوم 1 يبلغ في هذا الدرس خاتمته هنا: وُلد الجدول من <code>read_csv</code> ثم <em>ضُبطت أنواعه عن قصد</em>. وما يبقى هو أن يحدث هذا الضبط عند القراءة وأن نتحقق من حدوثه، وهذا عمل <a href="#t1-lesson-04">الدرس 4</a> و<a href="#t1-lesson-06">الدرس 6</a>.</p>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en"><strong>The audit is the cheapest data-quality test you own.</strong> Run it on the training table and keep the result; run it again on next month's file. A column that was <code>float64</code> and is now <code>object</code> means a stray text value arrived ("n/a", "1,200 NIS"), and the model will not fail, it will just stop seeing that column. And mind the boundary where pandas hands over to the model library:</p>
+    <p class="ar"><strong>التدقيق أرخص اختبار لجودة البيانات تملكه.</strong> شغّله على جدول التدريب واحتفظ بنتيجته؛ ثم شغّله مرة أخرى على ملف الشهر القادم. فالعمود الذي كان <code>float64</code> وصار <code>object</code> يعني أن قيمة نصية شاردة وصلت («n/a» أو «1,200 NIS»)، ولن يفشل النموذج، بل سيكفّ ببساطة عن رؤية ذلك العمود. وانتبه إلى الحدّ الذي تسلّم عنده pandas إلى مكتبة النموذج:</p>
+    <pre class="code" data-lang="python"><code>print(df.to_numpy().dtype)                                    # mixed columns: one object array
+print(df[["monthly_rent", "area_m2"]].to_numpy().dtype)       # all numeric: float64
+rooms = df["rooms"].astype("Int64")
+print(rooms.to_numpy(dtype="float64", na_value=np.nan)[39:44])</code></pre>
+<div class="output">object
+float64
+[ 5.  3. nan  4.  4.]</div>
+    <p class="en">A mixed table converts to one <code>object</code> array, which is not a feature matrix; select the numeric columns first and you get <code>float64</code>. A nullable column needs you to say what the gap becomes (<code>na_value=np.nan</code>) because NumPy has no <code>pd.NA</code>. Make that decision visibly, in one place, instead of letting a library make it for you.</p>
+    <p class="ar">يتحول الجدول المختلط إلى مصفوفة <code>object</code> واحدة، وهذه ليست مصفوفة خصائص؛ فاختر الأعمدة العددية أولًا تحصل على <code>float64</code>. أما العمود القابل للنقص فيطلب منك أن تقول ماذا تصير الفجوة (<code>na_value=np.nan</code>) لأن NumPy لا تعرف <code>pd.NA</code>. اتخذ هذا القرار بوضوح وفي مكان واحد بدل أن تدع مكتبة تتخذه عنك.</p>
+  </div>
+
+  <div class="note">
+    <h4><span class="en">Honest accounting</span><span class="ar">حساب أمين</span></h4>
+    <p class="en">An audit is a smell test, not a proof. It cannot tell you that a rent of 3,000 is a typo or that "Gaza" and "Gaza City" are the same place; it only shows what Python believes it holds. And it is a habit with a cost: for a one-off look at a small CSV, <code>df.head()</code> and <code>df.info()</code> are enough. Build the audit function when the same shape of file arrives again and again.</p>
+    <p class="ar">التدقيق اختبار شمّ لا برهان. فلا يستطيع أن يخبرك أن إيجارًا بقيمة 3,000 خطأ مطبعي أو أن «غزة» و«مدينة غزة» مكان واحد؛ وهو يُظهر فقط ما تظن بايثون أنها تحمله. وهو عادة لها كلفة: فللنظرة العابرة على ملف CSV صغير تكفي <code>df.head()</code> و<code>df.info()</code>. ابنِ دالة التدقيق حين يصلك الشكل نفسه من الملفات مرة بعد مرة.</p>
+  </div>
+
+  <h2 id="t1l3-h8"><span class="en">Put it together: two exercises</span><span class="ar">اجمع ما تعلمت: تمرينان</span></h2>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 4 — Fix the cast</span><span class="ar">تمرين 4 — أصلح التحويل</span></h4>
+    <p class="en">A column of areas came in as text, with a blank and a unit on one value. The first line crashes. Produce a <code>float64</code> Series, then print two separate numbers: how many cells are blank, and how many <em>non-blank</em> texts failed to convert. After your fix the second number should be 0. Which conversion will you use, and why not <code>fillna(0)</code>?</p>
+    <p class="ar">وصل عمود مساحات نصًّا، فيه فراغ ووحدة على قيمة واحدة. السطر الأول ينهار. أنتج سلسلة <code>float64</code>، ثم اطبع رقمين منفصلين: كم خلية فارغة، وكم نصًّا <em>غير فارغ</em> فشل تحويله. وبعد إصلاحك يجب أن يكون الرقم الثاني 0. أي تحويل ستستعمل، ولماذا لا تستعمل <code>fillna(0)</code>؟</p>
+    <pre class="code bad" data-lang="python"><code>import pandas as pd
+
+area = pd.Series(["119.2", "115.7", "", "126.7 m2", "109.2"], name="area_m2")
+area_num = area.astype(float)        # crashes: ValueError ... ''
+# goal: a float64 Series, then report how many NON-blank texts could not be converted</code></pre>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+      <pre class="code good" data-lang="python"><code>import pandas as pd
+
+area = pd.Series(["119.2", "115.7", "", "126.7 m2", "109.2"], name="area_m2")
+cleaned = area.str.replace(r"\s*m2$", "", regex=True)       # drop the unit first
+area_num = pd.to_numeric(cleaned, errors="coerce")
+has_text = area.str.strip() != ""                           # a blank is missing, not a failure
+swallowed = area_num.isna() &amp; has_text
+print(area_num.tolist())
+print("blank:", area_num.isna().sum(), "| failed conversions:", swallowed.sum())</code></pre>
+<div class="output">[119.2, 115.7, nan, 126.7, 109.2]
+blank: 1 | failed conversions: 0</div>
+      <p class="en">The unit is a known pattern, so it is removed first with a regular expression; then <code>to_numeric(errors="coerce")</code> converts the rest. A blank is <em>expected</em> missing data, so it is counted separately from a real failure: <code>has_text</code> excludes blanks, and the swallowed count is 0. Filling the blank with 0 would invent a flat of zero square metres and drag every rent-per-m&sup2; figure toward infinity.</p>
+      <p class="ar">الوحدة نمط معروف فتُزال أولًا بتعبير نمطي؛ ثم تحوّل <code>to_numeric(errors="coerce")</code> الباقي. والفراغ بيانات مفقودة <em>متوقعة</em>، فيُعدّ منفصلًا عن الإخفاق الحقيقي: يستثني <code>has_text</code> الفراغات، وعدد المبتلَع 0. وملء الفراغ بـ0 يخترع شقة مساحتها صفر متر مربع ويسحب كل رقم للإيجار للمتر المربع نحو اللانهاية.</p>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 5 — Choose the dtypes</span><span class="ar">تمرين 5 — اختر الأنواع</span></h4>
+    <p class="en">Three rows of a school table, in the style of the registry (<code>opened_on</code> and <code>has_internet</code> are made up for this exercise, and one enrolment is blanked), are loaded as text and numbers. Choose a dtype for each of the eight columns using the flowchart, apply it, and print <code>schools.dtypes</code>. Rules: <code>school_id</code> is an identifier; <code>level</code> is ranked Primary, Preparatory, Secondary; <code>enrolment</code> is a count that is sometimes unknown; <code>has_internet</code> is yes, no or blank (unknown). Do not use <code>astype(bool)</code>.</p>
+    <p class="ar">ثلاثة صفوف من جدول مدارس على غرار السجل (العمودان <code>opened_on</code> و<code>has_internet</code> مختلقان لهذا التمرين، وأحد أعداد الطلبة مُفرَغ) حُمّلت أعدادًا ونصوصًا. اختر نوعًا لكل عمود من الأعمدة الثمانية مستعينًا بمخطط التدفق، وطبّقه، واطبع <code>schools.dtypes</code>. القواعد: <code>school_id</code> معرّف؛ و<code>level</code> متدرج: ابتدائية فإعدادية فثانوية؛ و<code>enrolment</code> عدّ مجهول أحيانًا؛ و<code>has_internet</code> نعم أو لا أو فارغ (مجهول). لا تستعمل <code>astype(bool)</code>.</p>
+    <pre class="code" data-lang="python"><code>import pandas as pd
+
+schools = pd.DataFrame({
+    "school_id": ["S-201", "S-202", "S-203"],
+    "name": ["School 1 (Gaza)", "School 2 (Khan Younis)", "School 3 (Rafah)"],
+    "governorate": ["Gaza", "Khan Younis", "Rafah"],
+    "level": ["Preparatory", "Secondary", "Primary"],
+    "enrolment": [455, None, 455],
+    "opened_on": ["1998-09-01", "2004-09-01", "2011-09-01"],
+    "has_internet": ["yes", "no", None],
+    "latitude": [31.5788, 31.5849, 31.3345],
+})
+# choose a dtype for each column and apply it; then print schools.dtypes</code></pre>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">إظهار الحل</span></summary>
+      <pre class="code good" data-lang="python"><code>import pandas as pd
+
+schools = pd.DataFrame({
+    "school_id": ["S-201", "S-202", "S-203"],
+    "name": ["School 1 (Gaza)", "School 2 (Khan Younis)", "School 3 (Rafah)"],
+    "governorate": ["Gaza", "Khan Younis", "Rafah"],
+    "level": ["Preparatory", "Secondary", "Primary"],
+    "enrolment": [455, None, 455],
+    "opened_on": ["1998-09-01", "2004-09-01", "2011-09-01"],
+    "has_internet": ["yes", "no", None],
+    "latitude": [31.5788, 31.5849, 31.3345],
+})
+stage = pd.CategoricalDtype(["Primary", "Preparatory", "Secondary"], ordered=True)
+schools = schools.astype({
+    "school_id": "string",
+    "name": "string",
+    "governorate": "category",
+    "level": stage,
+    "enrolment": "Int64",
+    "latitude": "float64",
+})
+schools["opened_on"] = pd.to_datetime(schools["opened_on"], format="%Y-%m-%d")
+schools["has_internet"] = schools["has_internet"].map({"yes": True, "no": False}).astype("boolean")
+print(schools.dtypes)</code></pre>
+<div class="output">school_id       string[python]
+name            string[python]
+governorate           category
+level                 category
+enrolment                Int64
+opened_on       datetime64[ns]
+has_internet           boolean
+latitude               float64
+dtype: object</div>
+      <p class="en"><code>school_id</code> and <code>name</code> are <code>string</code>; the governorate is a <code>category</code>; <code>level</code> is an ordered categorical so that sorting and <code>&lt;</code> follow school stages; <code>enrolment</code> is <code>Int64</code> because it is a count with a gap; <code>opened_on</code> is parsed with its format; <code>has_internet</code> is mapped to <code>boolean</code>, where the blank stays <code>&lt;NA&gt;</code> instead of becoming False; <code>latitude</code> is a measured decimal, <code>float64</code>. Any dtype choice here that lets a gap or a ranking silently vanish is the wrong one.</p>
+      <p class="ar"><code>school_id</code> و<code>name</code> من النوع <code>string</code>؛ والمحافظة <code>category</code>؛ و<code>level</code> فئوي مرتّب لكي يتبع الترتيب و<code>&lt;</code> المراحل المدرسية؛ و<code>enrolment</code> هو <code>Int64</code> لأنه عدّ فيه فجوة؛ و<code>opened_on</code> يُحلَّل بصيغته؛ و<code>has_internet</code> يُحوَّل إلى <code>boolean</code> فيبقى الفراغ <code>&lt;NA&gt;</code> بدل أن يصير False؛ و<code>latitude</code> عدد عشري مقيس، <code>float64</code>. وأي اختيار هنا يدع فجوة أو ترتيبًا يختفي بصمت هو الاختيار الخاطئ.</p>
+    </details>
+  </div>
+
+  <h2 id="t1l3-h9"><span class="en">Appendix — under the hood</span><span class="ar">الملحق — تحت الغطاء</span></h2>
+
+  <div class="note">
+    <h3 id="t1l3-s28"><span class="en">A. Why int64 has no NaN and float64 does</span><span class="ar">أ. لماذا لا يوجد NaN في int64 ويوجد في float64</span></h3>
+    <p class="en">An <code>int64</code> is 64 bits and every one of the 2<sup>64</sup> patterns is a number, from -9,223,372,036,854,775,808 to 9,223,372,036,854,775,807: there is nothing left over to mean "missing". A <code>float64</code> follows the IEEE 754 standard, in which an exponent field of all ones is reserved for infinity and for "not a number", so there are many patterns that are not numbers and one of them is the NaN pandas uses. You can look at it:</p>
+    <p class="ar">النوع <code>int64</code> من 64 بتًّا وكل نمط من أنماطه الـ2<sup>64</sup> عدد، من -9,223,372,036,854,775,808 إلى 9,223,372,036,854,775,807: فلا يبقى شيء يعني «مفقود». أما <code>float64</code> فيتبع معيار IEEE 754 الذي يُحجز فيه حقل الأس المملوء بالواحدات للانهاية ولـ«ليس رقمًا»، فتوجد أنماط كثيرة ليست أعدادًا وأحدها هو NaN الذي تستعمله pandas. ويمكنك أن تنظر إليه:</p>
+    <pre class="code" data-lang="python"><code>import numpy as np
+
+nan = np.float64("nan")
+print(hex(nan.view(np.uint64)))
+print(np.iinfo(np.int64).min, np.iinfo(np.int64).max)</code></pre>
+<div class="output">0x7ff8000000000000
+-9223372036854775808 9223372036854775807</div>
+    <p class="en">Nullable types sidestep the problem the other way: they keep the integers in an ordinary integer array and a second array of booleans saying which cells are missing, which is why they cost one extra byte per value.</p>
+    <p class="ar">وتتحايل الأنواع القابلة للنقص على المشكلة من الجهة الأخرى: فهي تُبقي الأعداد الصحيحة في مصفوفة صحيحة عادية، ومصفوفة ثانية من القيم المنطقية تقول أي الخلايا مفقودة، ولهذا تكلّف بايتًا إضافيًّا لكل قيمة.</p>
+  </div>
+
+  <div class="note">
+    <h3 id="t1l3-s29"><span class="en">B. The broadcasting rule, step by step</span><span class="ar">ب. قاعدة البثّ، خطوة بخطوة</span></h3>
+    <p class="en">To combine two arrays: (1) write their shapes one above the other, aligned on the <em>right</em>; (2) pad the shorter shape on the left with 1s; (3) for each column of the two shapes the sizes must be equal or one of them must be 1; the result takes the larger size. For <code>(4, 3)</code> and <code>(3,)</code>: the second becomes <code>(1, 3)</code>, the columns give 4 against 1 and 3 against 3, so the result is <code>(4, 3)</code>. For <code>(3, 1)</code> against <code>(4,)</code> (which becomes <code>(1, 4)</code>): 3 against 1 and 1 against 4, so the result is <code>(3, 4)</code>, a table pairing every row with every column. For <code>(3,)</code> against <code>(4,)</code>: 3 against 4, neither equal nor 1, so <code>ValueError</code>.</p>
+    <p class="ar">لدمج مصفوفتين: (1) اكتب شكليهما أحدهما فوق الآخر محاذيَين على <em>اليمين</em>؛ (2) املأ الشكل الأقصر من اليسار بأحاد؛ (3) في كل عمود من الشكلين يجب أن يتساوى الحجمان أو يكون أحدهما 1، وتأخذ النتيجة الحجم الأكبر. فلـ<code>(4, 3)</code> و<code>(3,)</code>: يصير الثاني <code>(1, 3)</code>، وتعطي الأعمدة 4 مقابل 1 و3 مقابل 3، فالنتيجة <code>(4, 3)</code>. ولـ<code>(3, 1)</code> مقابل <code>(4,)</code> (الذي يصير <code>(1, 4)</code>): 3 مقابل 1 و1 مقابل 4، فالنتيجة <code>(3, 4)</code>، جدول يقرن كل صف بكل عمود. ولـ<code>(3,)</code> مقابل <code>(4,)</code>: 3 مقابل 4، لا متساويان ولا أحدهما 1، فتُرفع <code>ValueError</code>.</p>
+    <pre class="code" data-lang="python"><code>import numpy as np
+
+A = np.ones((4, 3))
+b = np.ones(3)
+print((A + b).shape)
+col = np.arange(3).reshape(3, 1)
+row = np.arange(4)
+print((col + row).shape)
+print(col + row)</code></pre>
+<div class="output">(4, 3)
+(3, 4)
+[[0 1 2 3]
+ [1 2 3 4]
+ [2 3 4 5]]</div>
+  </div>
+
+  <div class="note">
+    <h3 id="t1l3-s30"><span class="en">C. The memory arithmetic behind "a quarter"</span><span class="ar">ج. حساب الذاكرة وراء «الربع»</span></h3>
+    <p class="en">One million <code>float64</code> values in an array take 1,000,000 &times; 8 = 8,000,000 bytes. The same values in a Python list take a pointer each (8 bytes, 8,000,056 for the list object with its header) plus one float object each (24 bytes): 8,000,056 + 24,000,000 = 32,000,056 bytes, exactly the figure printed in Concept 2, four times the array. That ratio is a property of the layout, not of the machine, which is why it is the one number from the timing section that you should trust to reproduce.</p>
+    <p class="ar">مليون قيمة <code>float64</code> في مصفوفة تشغل 1,000,000 × 8 = 8,000,000 بايت. والقيم نفسها في قائمة بايثون تشغل مؤشرًا لكل قيمة (8 بايت، أي 8,000,056 لكائن القائمة مع ترويسته) وكائن float لكل قيمة (24 بايت): 8,000,056 + 24,000,000 = 32,000,056 بايتًا، وهو بالضبط الرقم المطبوع في المفهوم 2، أي أربعة أضعاف المصفوفة. وهذه النسبة خاصية في التخطيط لا في الجهاز، ولهذا فهي الرقم الوحيد من قسم الأزمنة الذي يمكنك الوثوق بأنه سيتكرر.</p>
+  </div>
+
+  <div class="card takeaways">
+    <h3 id="t1l3-s31"><span class="en">Key takeaways, and the mistakes cheat-sheet</span><span class="ar">أهم الخلاصات، وورقة الأخطاء الشائعة</span></h3>
+    <ul>
+      <li><span class="en">A list of dictionaries is a fine record store and a poor table: no vector maths, no types, no notion of missing.</span><span class="ar">قائمة القواميس مخزن سجلات جيد وجدول رديء: لا حساب متجهي ولا أنواع ولا مفهوم للمفقود.</span></li>
+      <li><span class="en">A NumPy array has one dtype and a shape; operations run on the whole block, broadcasting stretches size-1 axes, and mixed types upcast silently (to float, to text, to <code>object</code>).</span><span class="ar">لمصفوفة NumPy نوع واحد وشكل؛ وتعمل العمليات على الكتلة كلها، ويمدّ البثّ المحاور ذات الحجم 1، وتُرقّى الأنواع المختلطة بصمت (إلى عشري أو نص أو <code>object</code>).</span></li>
+      <li><span class="en">A Series is an array plus an index; a DataFrame is Series sharing an index, one dtype per column. Select with <code>[]</code>, <code>.loc</code> (labels, inclusive), <code>.iloc</code> (positions, exclusive) and boolean masks.</span><span class="ar">السلسلة مصفوفة مع فهرس؛ والجدول سلاسل تشترك في فهرس، ولكل عمود نوع. انتقِ بـ<code>[]</code> و<code>.loc</code> (تسميات، تشمل النهاية) و<code>.iloc</code> (مواضع، تستثني النهاية) والأقنعة المنطقية.</span></li>
+      <li><span class="en">Choose a dtype for meaning and safety first, memory second: <code>category</code> for repeated labels (ordered if ranked), <code>datetime64</code> for dates, <code>boolean</code> for flags, <code>Int64</code> for counts with gaps.</span><span class="ar">اختر النوع من أجل المعنى والسلامة أولًا ثم الذاكرة: <code>category</code> للتسميات المتكررة (مرتّبة إن كانت متدرجة)، و<code>datetime64</code> للتواريخ، و<code>boolean</code> للأعلام، و<code>Int64</code> للعدّ الذي فيه فجوات.</span></li>
+      <li><span class="en">Four spellings of missing: <code>None</code>, <code>NaN</code>, <code>pd.NA</code>, <code>NaT</code>. Ask with <code>.isna()</code>, never with <code>== nan</code>. One NaN turns an integer column into <code>float64</code>; pandas aggregations skip it and NumPy ones do not.</span><span class="ar">أربع تهجئات للمفقود: <code>None</code> و<code>NaN</code> و<code>pd.NA</code> و<code>NaT</code>. اسأل بـ<code>.isna()</code> لا بـ<code>== nan</code>. وNaN واحدة تحوّل عمودًا صحيحًا إلى <code>float64</code>؛ وتتخطاها الدوال التجميعية في pandas ولا تتخطاها دوال NumPy.</span></li>
+      <li><span class="en"><code>astype</code> is strict about the impossible, not the lossy; <code>to_numeric(errors="coerce")</code> is forgiving, so always count what it swallowed with <code>(out.isna() &amp; raw.notna()).sum()</code> and list the offenders.</span><span class="ar"><code>astype</code> صارم فيما هو مستحيل لا فيما هو مُتلِف؛ و<code>to_numeric(errors="coerce")</code> متسامح، فعُدّ دائمًا ما ابتلعه بـ<code>(out.isna() &amp; raw.notna()).sum()</code> واسرد المخالفات.</span></li>
+      <li><span class="en">Inspect first: <code>dtypes</code>, <code>info()</code>, <code>memory_usage(deep=True)</code>, <code>select_dtypes</code>, and an audit you can rerun on next month's file.</span><span class="ar">افحص أولًا: <code>dtypes</code> و<code>info()</code> و<code>memory_usage(deep=True)</code> و<code>select_dtypes</code>، وتدقيقًا تستطيع إعادته على ملف الشهر القادم.</span></li>
+    </ul>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th><span class="en">The mistake</span><span class="ar">الخطأ</span></th>
+            <th><span class="en">What happens, quietly</span><span class="ar">ماذا يحدث بصمت</span></th>
+            <th><span class="en">The fix</span><span class="ar">العلاج</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="en">sort or max on text numbers</span><span class="ar">ترتيب أو max على أرقام نصية</span></td><td><code>'1000' &lt; '415'</code></td><td><span class="en">convert first</span><span class="ar">حوّل أولًا</span></td></tr>
+          <tr><td><code>float(x or 0)</code></td><td><span class="en">an unknown rent becomes a zero rent</span><span class="ar">الإيجار المجهول يصير إيجارًا صفريًّا</span></td><td><span class="en">NaN, then count</span><span class="ar">NaN ثم عدّ</span></td></tr>
+          <tr><td><code>array.sum()</code> <span class="en">with NaN</span><span class="ar">مع NaN</span></td><td><code>nan</code></td><td><code>np.nansum</code> <span class="en">or pandas</span><span class="ar">أو pandas</span></td></tr>
+          <tr><td><code>(3,)</code> <span class="en">against</span><span class="ar">مع</span> <code>(3, 1)</code></td><td><span class="en">a 3&times;3 table, no error</span><span class="ar">جدول 3×3 دون خطأ</span></td><td><span class="en">check <code>.shape</code></span><span class="ar">افحص <code>.shape</code></span></td></tr>
+          <tr><td><code>df[mask]["c"] = v</code></td><td><span class="en">writes into a copy</span><span class="ar">يكتب في نسخة</span></td><td><code>df.loc[mask, "c"] = v</code></td></tr>
+          <tr><td><code>.loc[0]</code> <span class="en">on a filtered frame</span><span class="ar">على جدول مرشَّح</span></td><td><span class="en"><code>KeyError</code> or the wrong row</span><span class="ar"><code>KeyError</code> أو صف خاطئ</span></td><td><code>.iloc[0]</code></td></tr>
+          <tr><td><code>astype(bool)</code> <span class="en">on text</span><span class="ar">على نص</span></td><td><span class="en">every value True</span><span class="ar">كل القيم True</span></td><td><code>.map({"yes": True, "no": False})</code></td></tr>
+          <tr><td><code>astype(str)</code> <span class="en">on NaN</span><span class="ar">على NaN</span></td><td><span class="en">the text <code>"nan"</code></span><span class="ar">النص <code>"nan"</code></span></td><td><code>astype("string")</code></td></tr>
+          <tr><td><span class="en">integers plus one gap</span><span class="ar">أعداد صحيحة مع فجوة</span></td><td><span class="en">the column becomes float</span><span class="ar">يصير العمود عشريًّا</span></td><td><code>Int64</code> <span class="en">at read time</span><span class="ar">عند القراءة</span></td></tr>
+          <tr><td><code>to_numeric(..., "coerce")</code> <span class="en">uncounted</span><span class="ar">دون عدّ</span></td><td><span class="en">good values vanish</span><span class="ar">قيم جيدة تختفي</span></td><td><code>(out.isna() &amp; raw.notna()).sum()</code></td></tr>
+          <tr><td><code>to_datetime</code> <span class="en">with no format</span><span class="ar">بلا صيغة</span></td><td><span class="en">day and month swapped</span><span class="ar">تبادل اليوم والشهر</span></td><td><code>format="%d/%m/%Y"</code></td></tr>
+          <tr><td><code>fillna(0)</code></td><td><span class="en">invented zeros bias the mean</span><span class="ar">أصفار مختلَقة تنحاز بالمتوسط</span></td><td><span class="en">keep NaN and report the count</span><span class="ar">أبقِ NaN واذكر العدد</span></td></tr>
+          <tr><td><code>select_dtypes("number")</code> <span class="en">as features</span><span class="ar">خصائصَ</span></td><td><span class="en">drops text dates and flags, keeps ids</span><span class="ar">يُسقط التواريخ والأعلام النصية ويُبقي المعرّفات</span></td><td><span class="en">audit, then cast on purpose</span><span class="ar">دقّق ثم حوّل عن قصد</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout ahead">
+    <h4><span class="en">What comes next</span><span class="ar">ما التالي</span></h4>
+    <p class="en">Check what stuck with <a href="#t1-test-03">Test 3</a>. Then go on to <a href="#t1-lesson-04">Lesson 4</a>, where the typing you did by hand here moves into the read call itself (<code>sep</code>, <code>encoding</code>, <code>dtype</code>, <code>parse_dates</code>, <code>na_values</code>, <code>thousands</code>) and Excel's habit of storing dates as serial numbers shows up. <a href="#t1-lesson-05">Lesson 5</a> and <a href="#t1-lesson-06">Lesson 6</a> finish the threads of parsing and validation that this lesson opened.</p>
+    <p class="ar">تأكّد ممّا رسخ بـ<a href="#t1-test-03">الاختبار 3</a>. ثم تابع إلى <a href="#t1-lesson-04">الدرس 4</a> حيث ينتقل الضبط الذي أجريته يدويًّا هنا إلى استدعاء القراءة نفسه (<code>sep</code> و<code>encoding</code> و<code>dtype</code> و<code>parse_dates</code> و<code>na_values</code> و<code>thousands</code>) وتظهر عادة إكسل في تخزين التواريخ أرقامًا تسلسلية. ويكمل <a href="#t1-lesson-05">الدرس 5</a> و<a href="#t1-lesson-06">الدرس 6</a> خيطَي التحليل والتحقق اللذين فتحهما هذا الدرس.</p>
+  </div>
+
+</section>

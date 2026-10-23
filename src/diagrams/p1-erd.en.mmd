@@ -1,0 +1,27 @@
+%% alt: Entity relationship diagram of the cafeteria. A customer places many orders. An order contains many order lines. A menu item appears in many order lines. The order line table links orders to menu items and stores the quantity.
+erDiagram
+  CUSTOMER ||--o{ ORDER : places
+  ORDER ||--|{ ORDER_LINE : contains
+  MENU_ITEM ||--o{ ORDER_LINE : "appears in"
+  CUSTOMER {
+    int customer_id PK
+    string name
+    string faculty
+  }
+  ORDER {
+    int order_id PK
+    int customer_id FK
+    date order_date
+    string payment
+  }
+  ORDER_LINE {
+    int order_id FK
+    int item_id FK
+    int quantity
+  }
+  MENU_ITEM {
+    int item_id PK
+    string name
+    string category
+    float price
+  }

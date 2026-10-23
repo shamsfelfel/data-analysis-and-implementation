@@ -1,0 +1,37 @@
+{
+  "id": "t1-l3-vector-vs-loop",
+  "title": {
+    "en": "A loop and a vectorised line, side by side",
+    "ar": "حلقة وسطر متجهي، جنبًا إلى جنب"
+  },
+  "lede": {
+    "en": "The same four rent-per-m2 values computed once with a Python loop and once with one NumPy expression, then filtered with a boolean mask.",
+    "ar": "قيم الإيجار للمتر المربع الأربع نفسها تُحسب مرة بحلقة بايثون ومرة بتعبير NumPy واحد، ثم تُرشَّح بقناع منطقي."
+  },
+  "code": "import numpy as np\nrent = np.array([415.0, 445.0, 590.0, 315.0])\narea = np.array([119.2, 115.7, 126.7, 109.2])\nslow = []\nfor i in range(len(rent)):\n    slow.append(float(rent[i] / area[i]))\nfast = rent / area\nmask = rent > 400\nprint(np.round(fast, 2))\nprint(rent[mask])\n",
+  "notes": {
+    "2": {
+      "en": "One array, one dtype (float64), one block of memory.",
+      "ar": "مصفوفة واحدة ونوع واحد (float64) وكتلة ذاكرة واحدة."
+    },
+    "5": {
+      "en": "The loop visits one position at a time; Python runs this line once per listing.",
+      "ar": "تزور الحلقة موضعًا واحدًا في كل مرة؛ وتنفّذ بايثون هذا السطر مرة لكل إعلان."
+    },
+    "7": {
+      "en": "One expression divides all four pairs at once. The loop had to build the same list line by line.",
+      "ar": "تعبير واحد يقسم الأزواج الأربعة دفعة واحدة. أما الحلقة فقد بنت القائمة نفسها سطرًا بسطر."
+    },
+    "8": {
+      "en": "A boolean mask: one True or False per listing. 315 fails the test.",
+      "ar": "قناع منطقي: قيمة True أو False لكل إعلان. القيمة 315 لا تجتاز الشرط."
+    },
+    "10": {
+      "en": "The mask keeps the three rents above 400.",
+      "ar": "يُبقي القناع الإيجارات الثلاثة التي تزيد على 400."
+    }
+  },
+  "watch": ["rent", "area", "slow", "fast", "mask"],
+  "viz": { "rent": "array", "area": "array", "fast": "array", "mask": "array" },
+  "max_steps": 60
+}

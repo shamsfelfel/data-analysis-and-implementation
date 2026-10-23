@@ -1,0 +1,27 @@
+%% alt: مخطط الكيانات والعلاقات للكافتيريا. العميل يُجري طلبات كثيرة. الطلب يحتوي على بنود كثيرة. الصنف يظهر في بنود طلبات كثيرة. جدول بنود الطلب يربط الطلبات بالأصناف ويحفظ الكمية.
+erDiagram
+  CUSTOMER ||--o{ ORDER : "يُجري"
+  ORDER ||--|{ ORDER_LINE : "يحتوي"
+  MENU_ITEM ||--o{ ORDER_LINE : "يظهر في"
+  CUSTOMER["عميل"] {
+    int customer_id PK
+    string name
+    string faculty
+  }
+  ORDER["طلب"] {
+    int order_id PK
+    int customer_id FK
+    date order_date
+    string payment
+  }
+  ORDER_LINE["بند الطلب"] {
+    int order_id FK
+    int item_id FK
+    int quantity
+  }
+  MENU_ITEM["صنف"] {
+    int item_id PK
+    string name
+    string category
+    float price
+  }

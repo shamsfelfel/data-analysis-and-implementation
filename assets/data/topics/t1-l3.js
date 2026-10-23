@@ -1,0 +1,26 @@
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["t1-list-of-dicts-limits"]  = { href: "t1l3-s3",  en: "limits of a list of dictionaries", ar: "حدود قائمة القواميس" };
+  T["t1-ndarray-basics"]        = { href: "t1l3-s4",  en: "ndarray: shape, ndim, dtype", ar: "المصفوفة ndarray: الشكل والأبعاد والنوع" };
+  T["t1-vectorisation-masks"]   = { href: "t1l3-s5",  en: "vectorised maths and boolean masks", ar: "الحساب المتجهي والأقنعة المنطقية" };
+  T["t1-broadcasting"]          = { href: "t1l3-s6",  en: "broadcasting", ar: "البثّ (broadcasting)" };
+  T["t1-numpy-upcasting"]       = { href: "t1l3-s8",  en: "NumPy upcasting", ar: "الترقية الضمنية في NumPy" };
+  T["t1-series-alignment"]      = { href: "t1l3-s9",  en: "Series and index alignment", ar: "السلسلة ومحاذاة الفهرس" };
+  T["t1-loc-iloc-select"]       = { href: "t1l3-s10", en: "selecting with [], .loc, .iloc", ar: "الانتقاء بـ[] و.loc و.iloc" };
+  T["t1-filter-new-column"]     = { href: "t1l3-s11", en: "filtering and adding a column", ar: "الترشيح وإضافة عمود" };
+  T["t1-total-rent-evolution"]  = { href: "t1l3-s12", en: "total rent: loop, array, Series", ar: "إجمالي الإيجار: حلقة ومصفوفة وسلسلة" };
+  T["t1-dtype-table"]           = { href: "t1l3-s14", en: "the pandas dtypes in detail", ar: "أنواع pandas بالتفصيل" };
+  T["t1-datetime-dtype"]        = { href: "t1l3-s15", en: "datetime64 and dates", ar: "datetime64 والتواريخ" };
+  T["t1-category-ordered"]      = { href: "t1l3-s16", en: "category and ordered categories", ar: "النوع category والفئات المرتّبة" };
+  T["t1-dtype-memory"]          = { href: "t1l3-s17", en: "what a dtype costs in memory", ar: "كلفة النوع في الذاكرة" };
+  T["t1-missing-spellings"]     = { href: "t1l3-s18", en: "None, NaN, pd.NA, NaT", ar: "None وNaN وpd.NA وNaT" };
+  T["t1-int-float-nan"]         = { href: "t1l3-s19", en: "why one NaN makes integers float", ar: "لماذا تجعل NaN واحدة الأعداد عشرية" };
+  T["t1-nan-aggregations"]      = { href: "t1l3-s20", en: "aggregations and NaN", ar: "الدوال التجميعية وNaN" };
+  T["t1-nullable-dtypes"]       = { href: "t1l3-s21", en: "nullable dtypes (Int64, boolean)", ar: "الأنواع القابلة للنقص (Int64 وboolean)" };
+  T["t1-casting-tools"]         = { href: "t1l3-s22", en: "astype, to_numeric, to_datetime", ar: "astype وto_numeric وto_datetime" };
+  T["t1-silent-casts"]          = { href: "t1l3-s23", en: "casts that never complain", ar: "التحويلات التي لا تشتكي" };
+  T["t1-coerce-and-count"]      = { href: "t1l3-s24", en: "coerce, then count what it swallowed", ar: "القسر ثم عدّ ما ابتلعه" };
+  T["t1-dates-format"]          = { href: "t1l3-s25", en: "dates: name the format", ar: "التواريخ: سمِّ الصيغة" };
+  T["t1-inspect-dtypes"]        = { href: "t1l3-s26", en: "dtypes, info, memory_usage, select_dtypes", ar: "dtypes وinfo وmemory_usage وselect_dtypes" };
+  T["t1-typed-table"]           = { href: "t1l3-s27", en: "a dtype audit and the typed table", ar: "تدقيق الأنواع والجدول المضبوط" };
+})(window.DATopics);

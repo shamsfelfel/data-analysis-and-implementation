@@ -1,0 +1,23 @@
+%% alt: Sequence diagram. Your script asks the school registry API for a page of schools. While the API answers 429 Too Many Requests the script waits and asks again, at most three times. On 200 OK the JSON text becomes Python dicts and then a pandas DataFrame; on any other status the script raises an error and keeps no partial data.
+sequenceDiagram
+  autonumber
+  participant S as Your script
+  participant A as School API
+  participant J as Python dicts
+  participant P as pandas
+  S->>+A: GET /schools?page=1
+  loop while 429, at most 3 tries
+    A-->>S: 429 Too Many Requests
+    Note over S: sleep a few seconds
+    S->>A: GET /schools?page=1 (again)
+  end
+  alt status 200 OK
+    A-->>-S: JSON text
+    S->>J: json.loads(text)
+    J-->>S: list of dicts
+    S->>P: pd.DataFrame(records)
+    P-->>S: one row per school
+  else any other status
+    A-->>S: error body
+    Note over S: raise an error, keep no partial data
+  end

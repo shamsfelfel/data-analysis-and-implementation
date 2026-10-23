@@ -328,7 +328,13 @@ with io.open(os.path.join(ROOT, "docs", "datasets.md"), "w", encoding="utf-8", n
             "| `downloads/t1/schools.json` | the whole registry as one nested document |\n"
             "| `downloads/p1/cafeteria_orders.csv` | one month of cafeteria order lines (messy on purpose) |\n"
             "| `downloads/p1/cafeteria_orders.xlsx` | the same as an Excel workbook: Table `tblOrders`, sheet `Menu` with Table `tblMenu` |\n"
-            "| `downloads/p1/cafeteria_menu.csv` | the menu: item, category, list_price |\n")
+            "| `downloads/p1/cafeteria_menu.csv` | the menu: item, category, list_price |\n"
+            "\n### Files written by lesson authors (kept by hand, not generated)\n\n"
+            "| File | What it is |\n|---|---|\n"
+            "| `downloads/t1/adverts_sample.txt` | 8 hand-written rental adverts, one in Arabic (T1 L1) |\n"
+            "| `downloads/t1/school_conditions_demo.csv` | a 13-school sheet with invented damage_level / classroom_temp_c / repair_weeks, labelled as invented in the lesson (T1 L2) |\n"
+            "| `downloads/t1/school_damage_assessment.csv` | the 9-row raw damage-assessment CSV of the original Arabic chapter, verbatim (T1 L6) |\n"
+            "| `downloads/p1/requirements.txt`, `check_env.py`, `cafeteria_answer.py` | environment and answer scripts of Practical Chapter 1 |\n")
 import sys
 sys.stdout.reconfigure(encoding="utf-8")
 print("\n".join(facts))

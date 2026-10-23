@@ -1,0 +1,482 @@
+{
+ "id": "p1-l1-lifecycle-run",
+ "title": {
+  "en": "One project, stage by stage - with a loop back",
+  "ar": "مشروع واحد، طورًا بطور — مع رجوع إلى الخلف"
+ },
+ "lede": {
+  "en": "Step through the cafeteria project. The left pane is the plan; the right shows the stage, the current question, the artifact that exists once the line is done, the number of rows in the working table and how many times we looped back. Watch step 4: the data cannot answer the first question, so the project returns to Ask.",
+  "ar": "تابع مشروع الكافتيريا خطوة خطوة. اللوحة اليسرى هي الخطة؛ واليمنى تعرض الطور والسؤال الحالي والناتج الذي يوجد بعد انتهاء السطر وعدد صفوف الجدول وعدد مرات الرجوع إلى الخلف. انتبه إلى الخطوة 4: البيانات لا تستطيع الإجابة عن السؤال الأول فيعود المشروع إلى طور السؤال."
+ },
+ "manual": true,
+ "lang": "text",
+ "code": "ASK          turn \"what sells?\" into a question card\nACQUIRE      get the file, keep a frozen copy, start the dictionary\nACQUIRE      check: can these columns answer the question?\nASK          no cost column, so profit is impossible: refine the question\nACQUIRE      same file, dictionary updated with \"no cost column\"\nCLEAN        apply the written rules, log every row removed\nEXPLORE      check counts and totals against the log\nANALYSE      revenue per item, rank, keep the top three\nCOMMUNICATE  one-page brief: answer, rules, caveats\nACT          manager decides the October stock\nMONITOR      next month: new file, same steps",
+ "steps": [
+  {
+   "line": 1,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 0
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items made the most profit in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "question card v1"
+    },
+    "rows": {
+     "t": "none"
+    },
+    "loops": {
+     "t": "num",
+     "v": "0"
+    }
+   },
+   "out": "[ask]      question card v1 saved",
+   "note": {
+    "en": "The manager said \"what sells?\". After a short conversation the analyst writes a first question card. \"Profit\" is the analyst's reading of \"sells\" - a guess that has not met the data yet.",
+    "ar": "قال المدير «ما الذي يُباع؟». وبعد حوار قصير يكتب المحلل أول بطاقة سؤال. «الربح» هو فهم المحلل لكلمة «يُباع» — تخمين لم يلتقِ بالبيانات بعد."
+   }
+  },
+  {
+   "line": 2,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 1
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items made the most profit in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "raw file (frozen copy) + dictionary v1"
+    },
+    "rows": {
+     "t": "num",
+     "v": "771"
+    },
+    "loops": {
+     "t": "num",
+     "v": "0"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines",
+   "note": {
+    "en": "The file is copied somewhere nobody edits it, and the dictionary starts: one entry per column. 771 lines arrive.",
+    "ar": "يُنسخ الملف إلى مكان لا يعدّله فيه أحد، ويبدأ قاموس البيانات: مدخل لكل عمود. تصل 771 سطرًا."
+   }
+  },
+  {
+   "line": 3,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 1
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items made the most profit in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "raw file (frozen copy) + dictionary v1"
+    },
+    "rows": {
+     "t": "num",
+     "v": "771"
+    },
+    "loops": {
+     "t": "num",
+     "v": "0"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found",
+   "note": {
+    "en": "Read the dictionary against the card. Profit is price minus cost, but the columns are order_id, order_time, item, category, qty, unit_price, payment, customer_type. There is no cost. The data cannot answer this question.",
+    "ar": "اقرأ القاموس مقابل البطاقة. الربح هو السعر ناقص التكلفة، لكن الأعمدة هي order_id وorder_time وitem وcategory وqty وunit_price وpayment وcustomer_type. لا توجد تكلفة. البيانات لا تستطيع الإجابة عن هذا السؤال."
+   }
+  },
+  {
+   "line": 4,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 0
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "question card v2"
+    },
+    "rows": {
+     "t": "num",
+     "v": "771"
+    },
+    "loops": {
+     "t": "num",
+     "v": "1"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found\n[ask]      loop back: card v2 (revenue, not profit)",
+   "note": {
+    "en": "The loop-back. The analyst returns to the manager: either find item costs, or ask for revenue. The manager agrees to revenue for now. One loop costs a conversation; discovering this after building a dashboard would cost far more.",
+    "ar": "الرجوع إلى الخلف. يعود المحلل إلى المدير: إمّا إيجاد تكلفة الأصناف أو طلب الإيراد. يوافق المدير على الإيراد الآن. دورة واحدة كلّفت حوارًا؛ أمّا اكتشاف ذلك بعد بناء لوحة معلومات فكان سيكلّف أكثر بكثير."
+   }
+  },
+  {
+   "line": 5,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 1
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "dictionary v2 (limits written down)"
+    },
+    "rows": {
+     "t": "num",
+     "v": "771"
+    },
+    "loops": {
+     "t": "num",
+     "v": "1"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found\n[ask]      loop back: card v2 (revenue, not profit)\n[acquire]  dictionary v2: no cost column (known limit)",
+   "note": {
+    "en": "Same file, better documentation: the dictionary now says out loud what the data cannot do.",
+    "ar": "الملف نفسه بتوثيق أفضل: القاموس يقول الآن صراحةً ما لا تستطيعه البيانات."
+   }
+  },
+  {
+   "line": 6,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 2
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "clean table + cleaning log"
+    },
+    "rows": {
+     "t": "num",
+     "v": "748"
+    },
+    "loops": {
+     "t": "num",
+     "v": "1"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found\n[ask]      loop back: card v2 (revenue, not profit)\n[acquire]  dictionary v2: no cost column (known limit)\n[clean]    771 -> 748 lines, every removal logged",
+   "note": {
+    "en": "Written rules turn 771 lines into 748: 16 repeated lines, 5 refunds, 1 price typo and 1 unreadable price are set aside, each in the log (you will do this in Lesson 3).",
+    "ar": "قواعد مكتوبة تحوّل 771 سطرًا إلى 748: 16 سطرًا مكررًا و5 مرتجعات وخطأ سعر واحد وسعر غير مقروء، كلٌّ منها يُسجَّل في السجل (ستفعل ذلك في الدرس 3)."
+   }
+  },
+  {
+   "line": 7,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 3
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "check list: counts and total agree with the log"
+    },
+    "rows": {
+     "t": "num",
+     "v": "748"
+    },
+    "loops": {
+     "t": "num",
+     "v": "1"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found\n[ask]      loop back: card v2 (revenue, not profit)\n[acquire]  dictionary v2: no cost column (known limit)\n[clean]    771 -> 748 lines, every removal logged\n[explore]  771 - 16 - 5 - 1 - 1 = 748 ok; total revenue 8062.00",
+   "note": {
+    "en": "Before trusting anything, make the numbers agree with each other: the line counts add up and the total revenue is 8062.00.",
+    "ar": "قبل أن تثق بأي شيء اجعل الأرقام تتفق مع بعضها: أعداد الأسطر تتطابق ومجموع الإيراد 8062.00."
+   }
+  },
+  {
+   "line": 8,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 4
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "table: revenue per item, top three"
+    },
+    "rows": {
+     "t": "num",
+     "v": "748"
+    },
+    "loops": {
+     "t": "num",
+     "v": "1"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found\n[ask]      loop back: card v2 (revenue, not profit)\n[acquire]  dictionary v2: no cost column (known limit)\n[clean]    771 -> 748 lines, every removal logged\n[explore]  771 - 16 - 5 - 1 - 1 = 748 ok; total revenue 8062.00\n[analyse]  Shawarma Wrap 1368.00 | Chicken Rice 1020.00 | Falafel Sandwich 917.00",
+   "note": {
+    "en": "Only now does the analysis itself happen: revenue per item, sorted, top three kept. It is a short step after a long preparation.",
+    "ar": "الآن فقط يحدث التحليل نفسه: إيراد كل صنف، ثم ترتيب، ثم الإبقاء على أعلى ثلاثة. خطوة قصيرة بعد تحضير طويل."
+   }
+  },
+  {
+   "line": 9,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 5
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "one-page brief"
+    },
+    "rows": {
+     "t": "num",
+     "v": "748"
+    },
+    "loops": {
+     "t": "num",
+     "v": "1"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found\n[ask]      loop back: card v2 (revenue, not profit)\n[acquire]  dictionary v2: no cost column (known limit)\n[clean]    771 -> 748 lines, every removal logged\n[explore]  771 - 16 - 5 - 1 - 1 = 748 ok; total revenue 8062.00\n[analyse]  Shawarma Wrap 1368.00 | Chicken Rice 1020.00 | Falafel Sandwich 917.00\n[tell]     one-page brief written",
+   "note": {
+    "en": "The answer travels with its rules and caveats on one page the manager can read in a minute.",
+    "ar": "يسافر الجواب مع قواعده وتحفظاته على صفحة واحدة يقرؤها المدير في دقيقة."
+   }
+  },
+  {
+   "line": 10,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 6
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "decision: October stock plan"
+    },
+    "rows": {
+     "t": "num",
+     "v": "748"
+    },
+    "loops": {
+     "t": "num",
+     "v": "1"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found\n[ask]      loop back: card v2 (revenue, not profit)\n[acquire]  dictionary v2: no cost column (known limit)\n[clean]    771 -> 748 lines, every removal logged\n[explore]  771 - 16 - 5 - 1 - 1 = 748 ok; total revenue 8062.00\n[analyse]  Shawarma Wrap 1368.00 | Chicken Rice 1020.00 | Falafel Sandwich 917.00\n[tell]     one-page brief written\n[act]      October stock decided by the manager",
+   "note": {
+    "en": "The analysis only matters when a person acts on it. The manager decides what to stock first in October.",
+    "ar": "لا قيمة للتحليل إلا حين يتصرف إنسان بناءً عليه. يقرر المدير ما يخزّنه أولًا في تشرين الأول."
+   }
+  },
+  {
+   "line": 11,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 6
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "monthly check on the same three numbers"
+    },
+    "rows": {
+     "t": "num",
+     "v": "748"
+    },
+    "loops": {
+     "t": "num",
+     "v": "1"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found\n[ask]      loop back: card v2 (revenue, not profit)\n[acquire]  dictionary v2: no cost column (known limit)\n[clean]    771 -> 748 lines, every removal logged\n[explore]  771 - 16 - 5 - 1 - 1 = 748 ok; total revenue 8062.00\n[analyse]  Shawarma Wrap 1368.00 | Chicken Rice 1020.00 | Falafel Sandwich 917.00\n[tell]     one-page brief written\n[act]      October stock decided by the manager\n[monitor]  track the three items every month",
+   "note": {
+    "en": "Monitoring: keep an eye on the same numbers. If the top three change, the decision may need to change.",
+    "ar": "المتابعة: راقب الأرقام نفسها. إذا تغيّرت الأصناف الثلاثة الأولى فقد يلزم تغيير القرار."
+   }
+  },
+  {
+   "line": 11,
+   "vars": {
+    "stage": {
+     "t": "flow",
+     "nodes": [
+      "Ask",
+      "Acquire",
+      "Clean",
+      "Explore",
+      "Analyse",
+      "Communicate",
+      "Act & Monitor"
+     ],
+     "active": 0
+    },
+    "question": {
+     "t": "str",
+     "v": "Which 3 items earned the most revenue in Sept 2026?"
+    },
+    "artifact": {
+     "t": "str",
+     "v": "same card, new file"
+    },
+    "rows": {
+     "t": "none"
+    },
+    "loops": {
+     "t": "num",
+     "v": "2"
+    }
+   },
+   "out": "[ask]      question card v1 saved\n[acquire]  cafeteria_orders.csv frozen, 771 lines\n[acquire]  check: profit needs a cost column -> none found\n[ask]      loop back: card v2 (revenue, not profit)\n[acquire]  dictionary v2: no cost column (known limit)\n[clean]    771 -> 748 lines, every removal logged\n[explore]  771 - 16 - 5 - 1 - 1 = 748 ok; total revenue 8062.00\n[analyse]  Shawarma Wrap 1368.00 | Chicken Rice 1020.00 | Falafel Sandwich 917.00\n[tell]     one-page brief written\n[act]      October stock decided by the manager\n[monitor]  track the three items every month\n[ask]      next month: same card, new file",
+   "note": {
+    "en": "The loop starts again: a new file, or a new question from what the numbers showed. Analysis is a loop, not a line.",
+    "ar": "تبدأ الدورة من جديد: ملف جديد، أو سؤال جديد نشأ مما أظهرته الأرقام. التحليل حلقة وليس خطًّا مستقيمًا."
+   }
+  }
+ ]
+}

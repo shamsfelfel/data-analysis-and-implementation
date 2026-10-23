@@ -1,0 +1,48 @@
+{
+  "id": "t1-l3-coerce-series",
+  "title": {
+    "en": "to_numeric on a Series: what coercion swallows",
+    "ar": "to_numeric على سلسلة: ما الذي يبتلعه القسر"
+  },
+  "lede": {
+    "en": "Five rents typed as text. Watch coerce turn two of them into NaN, count the casualties, and then rescue the one that was a perfectly good number.",
+    "ar": "خمسة إيجارات مكتوبة كنص. راقب كيف يحوّل القسر اثنين منها إلى NaN، وعدّ الضحايا، ثم أنقذ القيمة التي كانت رقمًا سليمًا."
+  },
+  "code": "import pandas as pd\nraw = pd.Series([\"415\", \"445\", \"n/a\", \"1,200\", \"590\"], name=\"rent\")\nrent = pd.to_numeric(raw, errors=\"coerce\")\nbad = rent.isna() & raw.notna()\nprint(\"swallowed:\", int(bad.sum()), raw[bad].tolist())\nclean = raw.str.replace(\",\", \"\", regex=False)\nrent = pd.to_numeric(clean, errors=\"coerce\")\nbad = rent.isna() & raw.notna()\nprint(\"swallowed:\", int(bad.sum()), raw[bad].tolist())\nprint(rent.mean())\n",
+  "notes": {
+    "2": {
+      "en": "A Series of five texts. Its dtype is object: pandas sees strings, not numbers.",
+      "ar": "سلسلة من خمسة نصوص. نوعها object: ترى pandas سلاسل نصية لا أرقامًا."
+    },
+    "3": {
+      "en": "Coerce converts what it can and puts NaN where it cannot. No error, no message. The dtype is now float64.",
+      "ar": "يحوّل القسر ما يستطيع ويضع NaN حيث يعجز. لا خطأ ولا رسالة. والنوع الآن float64."
+    },
+    "4": {
+      "en": "A mask that is True where a value existed in the text but is missing in the number: exactly the values coercion swallowed.",
+      "ar": "قناع يكون True حيث كانت هناك قيمة في النص وصارت مفقودة في الرقم: أي القيم التي ابتلعها القسر بالضبط."
+    },
+    "5": {
+      "en": "Two swallowed: 'n/a' (a real missing marker) and '1,200' (a real number that only has a thousands separator).",
+      "ar": "ابتُلعت قيمتان: 'n/a' (علامة نقص حقيقية) و'1,200' (رقم حقيقي فيه فاصل آلاف فقط)."
+    },
+    "6": {
+      "en": "Strip the separator first, on the raw text.",
+      "ar": "أزل الفاصل أولًا من النص الخام."
+    },
+    "7": {
+      "en": "Coerce again, this time on the cleaned text. 1,200 becomes 1200.0.",
+      "ar": "قسر مرة أخرى، لكن على النص المنظَّف. تصبح 1,200 هي 1200.0."
+    },
+    "9": {
+      "en": "Only the genuine missing marker is left. The count went from 2 to 1 because the cleaning rescued a real value.",
+      "ar": "لم يبقَ إلا علامة النقص الحقيقية. نزل العدد من 2 إلى 1 لأن التنظيف أنقذ قيمة حقيقية."
+    },
+    "10": {
+      "en": "The mean skips the NaN: (415 + 445 + 1200 + 590) / 4.",
+      "ar": "يتجاهل المتوسط قيمة NaN: (415 + 445 + 1200 + 590) / 4."
+    }
+  },
+  "watch": ["raw", "rent", "bad", "clean"],
+  "max_steps": 40
+}

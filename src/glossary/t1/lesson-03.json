@@ -1,0 +1,142 @@
+[
+  {
+    "id": "ndarray",
+    "term": {"en": "ndarray", "ar": "المصفوفة ndarray"},
+    "def": {
+      "en": "NumPy's n-dimensional array: a fixed-size grid of values that all share one dtype and are stored in one block of memory. The four rents [415.0, 445.0, 590.0, 315.0] form an ndarray of shape (4,) and dtype float64.",
+      "ar": "مصفوفة NumPy متعددة الأبعاد: شبكة ثابتة الحجم من القيم التي تشترك كلها في نوع واحد وتُخزَّن في كتلة ذاكرة واحدة. فالإيجارات الأربعة [415.0, 445.0, 590.0, 315.0] تكوّن ndarray شكلها (4,) ونوعها float64."
+    },
+    "cat": {"en": "NumPy", "ar": "NumPy"},
+    "see": ["dtype", "vectorisation", "broadcasting"]
+  },
+  {
+    "id": "dtype",
+    "term": {"en": "dtype", "ar": "نوع البيانات (dtype)"},
+    "def": {
+      "en": "The type shared by every value in an array, Series or column: int64, float64, bool, object, datetime64[ns], category, Int64 and so on. It decides which operations are allowed, how many bytes each value takes and how a missing value is stored; in the listings, rooms is float64 while city is object.",
+      "ar": "النوع الذي تشترك فيه كل قيمة في مصفوفة أو سلسلة أو عمود: int64 وfloat64 وbool وobject وdatetime64[ns] وcategory وInt64 وغيرها. يحدد العمليات المسموحة وعدد البايتات لكل قيمة وكيف تُخزَّن القيمة المفقودة؛ ففي الإعلانات يكون rooms من النوع float64 بينما city من النوع object."
+    },
+    "cat": {"en": "Types", "ar": "الأنواع"},
+    "see": ["ndarray", "category-dtype", "nullable-dtype", "type-casting"]
+  },
+  {
+    "id": "vectorisation",
+    "term": {"en": "Vectorisation", "ar": "العمل المتجهي (vectorisation)"},
+    "def": {
+      "en": "Writing one operation on a whole array or column and letting compiled code run the loop. rent / area divides all listings at once; a Python for loop doing the same touches one object at a time and is tens of times slower.",
+      "ar": "كتابة عملية واحدة على مصفوفة أو عمود كامل وترك كود مترجَم ينفّذ الحلقة. فـ rent / area تقسم كل الإعلانات دفعة واحدة؛ أما حلقة for في بايثون تفعل الشيء نفسه فتلمس كائنًا واحدًا في كل مرة وتكون أبطأ بعشرات المرات."
+    },
+    "cat": {"en": "NumPy", "ar": "NumPy"},
+    "see": ["ndarray", "boolean-mask", "broadcasting"]
+  },
+  {
+    "id": "broadcasting",
+    "term": {"en": "Broadcasting", "ar": "البثّ (broadcasting)"},
+    "def": {
+      "en": "The rule NumPy uses to combine arrays of different shapes by stretching any axis of size 1 (or a missing axis). Subtracting the row of column means, shape (3,), from a table of shape (4, 3) works for this reason.",
+      "ar": "القاعدة التي تستعملها NumPy لدمج مصفوفات مختلفة الأشكال بمدّ أي محور حجمه 1 (أو محور غائب). وطرح صفّ متوسطات الأعمدة، شكله (3,)، من جدول شكله (4, 3) يعمل بسبب هذه القاعدة."
+    },
+    "cat": {"en": "NumPy", "ar": "NumPy"},
+    "see": ["vectorisation", "ndarray"]
+  },
+  {
+    "id": "boolean-mask",
+    "term": {"en": "Boolean mask", "ar": "القناع المنطقي (boolean mask)"},
+    "def": {
+      "en": "An array or Series of True and False, one per row, used to select rows, count or average. df[\"monthly_rent\"] > 400 is a mask; mask.sum() counts the True values.",
+      "ar": "مصفوفة أو سلسلة من True وFalse، قيمة لكل صف، تُستعمل لانتقاء الصفوف أو للعدّ أو لأخذ متوسط. فـ df[\"monthly_rent\"] > 400 قناع؛ و mask.sum() تعدّ قيم True."
+    },
+    "cat": {"en": "pandas", "ar": "pandas"},
+    "see": ["vectorisation", "series"]
+  },
+  {
+    "id": "series",
+    "term": {"en": "Series", "ar": "السلسلة (Series)"},
+    "def": {
+      "en": "A pandas one-dimensional array with one dtype and an index that labels each value. A single column of the listings table, such as the rents labelled by listing id, is a Series.",
+      "ar": "مصفوفة أحادية البعد في pandas بنوع واحد وفهرس يسمّي كل قيمة. وعمود واحد من جدول الإعلانات، كالإيجارات المسمّاة بأرقام الإعلانات، هو Series."
+    },
+    "cat": {"en": "pandas", "ar": "pandas"},
+    "see": ["dataframe", "index", "dtype"]
+  },
+  {
+    "id": "dataframe",
+    "term": {"en": "DataFrame", "ar": "الجدول (DataFrame)"},
+    "def": {
+      "en": "A pandas table: a dictionary of Series that share one index, so every column has its own dtype. The 60 rental listings load as a DataFrame with 60 rows and 9 columns.",
+      "ar": "جدول في pandas: قاموس من السلاسل تشترك في فهرس واحد، فلكل عمود نوعه الخاص. وتُحمَّل إعلانات التأجير الستون كجدول DataFrame بستين صفًّا وتسعة أعمدة."
+    },
+    "cat": {"en": "pandas", "ar": "pandas"},
+    "see": ["series", "index", "dtype"]
+  },
+  {
+    "id": "index",
+    "term": {"en": "Index", "ar": "الفهرس (index)"},
+    "def": {
+      "en": "The labels attached to the rows of a Series or DataFrame. Labels travel with their rows when you filter, and arithmetic between two Series lines values up by label, not by position; after df[df.city == \"Rafah\"] the labels are 7, 14, 16, ... not 0, 1, 2.",
+      "ar": "التسميات الملحقة بصفوف السلسلة أو الجدول. تنتقل التسميات مع صفوفها عند الترشيح، ويصفّ الحساب بين سلسلتين القيم بالتسمية لا بالموضع؛ وبعد df[df.city == \"Rafah\"] تكون التسميات 7 و14 و16 ... لا 0 و1 و2."
+    },
+    "cat": {"en": "pandas", "ar": "pandas"},
+    "see": ["series", "dataframe"]
+  },
+  {
+    "id": "nan",
+    "term": {"en": "NaN", "ar": "NaN (ليس رقمًا)"},
+    "def": {
+      "en": "The floating-point \"not a number\" used as the missing marker in float64 columns. It is contagious (nan + 1 is nan) and not equal even to itself, so test for it with isna(), never with == nan; one NaN is why rooms loads as float64.",
+      "ar": "القيمة العشرية «ليس رقمًا» المستعملة علامةَ نقص في أعمدة float64. وهي معدية (nan + 1 تساوي nan) ولا تساوي حتى نفسها، فاختبرها بـ isna() لا بـ == nan؛ ووجود NaN واحدة هو سبب تحميل rooms من النوع float64."
+    },
+    "cat": {"en": "Missing data", "ar": "البيانات المفقودة"},
+    "see": ["pd-na", "nullable-dtype"]
+  },
+  {
+    "id": "pd-na",
+    "term": {"en": "pd.NA", "ar": "pd.NA"},
+    "def": {
+      "en": "pandas' own missing-value marker for the nullable dtypes (Int64, boolean, string). Comparisons with it are themselves missing, and using it in an if raises an error, so an unknown can never silently pick a branch.",
+      "ar": "علامة النقص الخاصة بـ pandas للأنواع القابلة للنقص (Int64 وboolean وstring). والمقارنات معها مفقودة هي نفسها، واستعمالها في if يرفع خطأً، فلا يستطيع المجهول أن يختار فرعًا بصمت."
+    },
+    "cat": {"en": "Missing data", "ar": "البيانات المفقودة"},
+    "see": ["nan", "nullable-dtype"]
+  },
+  {
+    "id": "nullable-dtype",
+    "term": {"en": "Nullable dtype", "ar": "النوع القابل للنقص (nullable dtype)"},
+    "def": {
+      "en": "A pandas dtype with a capital first letter (Int64, Float64, boolean, string) that stores a separate mask of missing cells, so an integer column can hold gaps and stay integer. rooms as Int64 shows 4, 3, <NA>, not 4.0, 3.0, NaN.",
+      "ar": "نوع في pandas يبدأ بحرف كبير (Int64 وFloat64 وboolean وstring) يخزّن قناعًا منفصلًا بالخلايا المفقودة، فيمكن لعمود صحيح أن يحمل فجوات ويبقى صحيحًا. فالعمود rooms من النوع Int64 يظهر 4 و3 و<NA> لا 4.0 و3.0 وNaN."
+    },
+    "cat": {"en": "Missing data", "ar": "البيانات المفقودة"},
+    "see": ["pd-na", "nan", "dtype"]
+  },
+  {
+    "id": "category-dtype",
+    "term": {"en": "category dtype", "ar": "نوع الفئات (category)"},
+    "def": {
+      "en": "A dtype that stores each distinct label once plus a small integer code per row; with ordered=True the labels also have a rank. It suits a few repeated labels, such as governorate or school stage (Primary < Preparatory < Secondary), and costs more than text when nearly every value is different.",
+      "ar": "نوع يخزّن كل تسمية مميزة مرة واحدة مع رمز صحيح صغير لكل صف؛ ومع ordered=True تصير للتسميات رتبة أيضًا. يناسب التسميات القليلة المتكررة كالمحافظة أو المرحلة المدرسية (ابتدائية < إعدادية < ثانوية)، ويكلّف أكثر من النص حين تكاد كل قيمة تختلف."
+    },
+    "cat": {"en": "Types", "ar": "الأنواع"},
+    "see": ["dtype"]
+  },
+  {
+    "id": "type-casting",
+    "term": {"en": "Type casting", "ar": "تحويل النوع (type casting)"},
+    "def": {
+      "en": "Converting values from one dtype to another, for example with astype, to_numeric or to_datetime. A strict cast raises on a bad value, but some lossy casts succeed silently: astype(int) cuts 2.9 to 2, and astype(bool) turns the text \"no\" into True.",
+      "ar": "تحويل القيم من نوع إلى آخر، مثلًا بـ astype أو to_numeric أو to_datetime. التحويل الصارم يرفع خطأً عند قيمة سيئة، لكن بعض التحويلات المُتلِفة تنجح بصمت: فـ astype(int) تقطع 2.9 إلى 2، و astype(bool) تحوّل النص \"no\" إلى True."
+    },
+    "cat": {"en": "Casting", "ar": "التحويل"},
+    "see": ["coercion", "dtype"]
+  },
+  {
+    "id": "coercion",
+    "term": {"en": "Coercion", "ar": "القسر (coercion)"},
+    "def": {
+      "en": "A casting policy in which a value that cannot be converted becomes a missing value instead of an error, as in pd.to_numeric(raw, errors=\"coerce\"). It never stops the run, so count what it swallowed with (out.isna() & raw.notna()).sum().",
+      "ar": "سياسة تحويل تصير فيها القيمة التي يتعذّر تحويلها قيمة مفقودة بدل أن تسبب خطأً، كما في pd.to_numeric(raw, errors=\"coerce\"). وهي لا توقف التشغيل أبدًا، فعُدّ ما ابتلعته بـ (out.isna() & raw.notna()).sum()."
+    },
+    "cat": {"en": "Casting", "ar": "التحويل"},
+    "see": ["type-casting", "nan"]
+  }
+]

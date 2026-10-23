@@ -1,0 +1,44 @@
+{
+  "id": "t1-l2-id-mean",
+  "title": {
+    "en": "The mean of city codes versus the mode",
+    "ar": "متوسط رموز المدن مقابل المنوال"
+  },
+  "lede": {
+    "en": "Eight listings carry a city code: 1 = Gaza, 2 = Khan Younis, 3 = Rafah. The codes are numbers, so the loop happily adds them up. Watch the total grow, then see which answer names a real city and which one does not.",
+    "ar": "لثمانية إعلانات رمز مدينة: 1 = غزة، 2 = خان يونس، 3 = رفح. الرموز أرقام، فتجمعها الحلقة بلا اعتراض. راقب المجموع وهو ينمو، ثم انظر أي الجوابين يسمّي مدينة حقيقية وأيهما لا يفعل."
+  },
+  "code": "city_codes = [3, 1, 2, 3, 3, 1, 2, 3]   # 1 = Gaza, 2 = Khan Younis, 3 = Rafah\n\ntotal = 0\nfor code in city_codes:\n    total = total + code\n\nmean_code = total / len(city_codes)\nprint(\"mean of the codes:\", mean_code)\n\nmode_code = max(set(city_codes), key=city_codes.count)\nprint(\"most common code:\", mode_code)\n",
+  "watch": [
+    "city_codes",
+    "total",
+    "mean_code",
+    "mode_code"
+  ],
+  "viz": {
+    "city_codes": "array"
+  },
+  "max_steps": 80,
+  "notes": {
+    "1": {
+      "en": "Eight codes. They look like numbers, but each one is only the name of a city.",
+      "ar": "ثمانية رموز. تبدو أرقامًا، لكن كل واحد منها ليس إلا اسم مدينة."
+    },
+    "5": {
+      "en": "Adding 3 (Rafah) and 1 (Gaza) is allowed by Python. It means nothing: no city is 'Rafah plus Gaza'.",
+      "ar": "تسمح بايثون بجمع 3 (رفح) و1 (غزة). لكنه بلا معنى: لا توجد مدينة اسمها «رفح زائد غزة»."
+    },
+    "7": {
+      "en": "18 divided by 8 is 2.25. There is no city 2.25, and the nearest code, 2, is Khan Younis, a city that is not even the most common.",
+      "ar": "18 مقسومة على 8 تساوي 2.25. لا توجد مدينة 2.25، وأقرب رمز، 2، هو خان يونس، وهي ليست حتى الأكثر تكرارًا."
+    },
+    "10": {
+      "en": "The mode only counts how often each code appears and returns one of them: 3, which really is a city (Rafah). Counting is the operation a name allows.",
+      "ar": "المنوال يعدّ فقط كم مرة يظهر كل رمز ويعيد واحدًا منها: 3، وهو فعلًا مدينة (رفح). العدّ هو العملية التي يسمح بها الاسم."
+    },
+    "end": {
+      "en": "The mean (2.25) answered a question nobody asked; the mode (3) answered 'which city is most common?'.",
+      "ar": "المتوسط (2.25) أجاب عن سؤال لم يطرحه أحد؛ والمنوال (3) أجاب عن «أي مدينة هي الأكثر تكرارًا؟»."
+    }
+  }
+}

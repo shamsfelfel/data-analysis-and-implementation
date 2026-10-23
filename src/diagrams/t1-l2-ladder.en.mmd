@@ -1,0 +1,9 @@
+%% alt: The four levels as a ladder, each one keeping everything below it. Nominal: same or different, so count and mode. Ordinal adds order, so median, minimum, maximum and rank. Interval adds equal gaps, so mean, standard deviation and differences. Ratio adds a true zero, so ratios and totals.
+flowchart TD
+  N["Nominal<br/>same or different<br/>count, mode"]
+  O["Ordinal<br/>adds order<br/>median, min, max, rank"]
+  I["Interval<br/>adds equal gaps<br/>mean, spread, differences"]
+  R["Ratio<br/>adds a true zero<br/>ratios, totals"]
+  N -- "+ order" --> O
+  O -- "+ equal gaps" --> I
+  I -- "+ true zero" --> R

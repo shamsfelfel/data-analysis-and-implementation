@@ -1,0 +1,43 @@
+{
+  "id": "t1-l2-value-counts",
+  "title": {
+    "en": "value_counts is a dictionary being filled",
+    "ar": "value_counts قاموس يُملأ"
+  },
+  "lede": {
+    "en": "The first ten listings of the rental file, counted by hand. Counting is the one operation every level allows, and it is nothing more than a dictionary whose values grow by one.",
+    "ar": "أول عشرة إعلانات من ملف التأجير، تُعدّ يدويًّا. العدّ هو العملية الوحيدة التي تسمح بها كل المستويات، وهو لا يزيد على قاموس تكبر قيمه واحدًا واحدًا."
+  },
+  "code": "import pandas as pd\n\ngovernorates = [\"Khan Younis\", \"Gaza\", \"Gaza\", \"Khan Younis\", \"Khan Younis\",\n                \"Deir al-Balah\", \"Gaza\", \"Rafah\", \"North Gaza\", \"North Gaza\"]\n\ncounts = {}\nfor g in governorates:\n    counts[g] = counts.get(g, 0) + 1\n\nprint(counts)\nprint(pd.Series(governorates).value_counts().to_dict())\n",
+  "watch": [
+    "governorates",
+    "counts"
+  ],
+  "viz": {
+    "governorates": "array",
+    "counts": "dict"
+  },
+  "max_steps": 80,
+  "notes": {
+    "6": {
+      "en": "An empty dictionary: governorate name on the left, how many times we have seen it on the right.",
+      "ar": "قاموس فارغ: اسم المحافظة في الجهة اليسرى، وعدد المرات التي رأيناها فيها في اليمنى."
+    },
+    "8": {
+      "en": "counts.get(g, 0) is 0 the first time a name appears and the running count afterwards. Add one and store it back.",
+      "ar": "تعطي counts.get(g, 0) القيمة 0 أول مرة يظهر فيها الاسم، ثم العدّاد الجاري بعد ذلك. أضف واحدًا وأعده إلى القاموس."
+    },
+    "10": {
+      "en": "Ten listings, five names. Notice that nothing here adds or compares the names themselves: only the counts change.",
+      "ar": "عشرة إعلانات وخمسة أسماء. لاحظ أن شيئًا هنا لا يجمع الأسماء ولا يقارنها: العدّادات وحدها تتغيّر."
+    },
+    "11": {
+      "en": "pandas does the same job in one call and sorts the result by count. The numbers match the dictionary.",
+      "ar": "يؤدي pandas العمل نفسه باستدعاء واحد ويرتّب النتيجة بحسب العدد. والأرقام تطابق القاموس."
+    },
+    "end": {
+      "en": "Counts and the mode (the largest count) need only 'same or different'. That is exactly what a nominal column offers.",
+      "ar": "العدّ والمنوال (أكبر عدّاد) لا يحتاجان إلا إلى «متطابق أم مختلف». وهذا بالضبط ما يقدّمه العمود الاسمي."
+    }
+  }
+}

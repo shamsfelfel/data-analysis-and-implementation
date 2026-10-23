@@ -1,0 +1,15 @@
+%% alt: Data comes in three shapes. Structured data has fixed columns (CSV, Excel, SQL), semi-structured data has flexible fields (JSON from an API, XML), and unstructured data has no fields (reviews, photos, audio). Each is turned into a numeric table before a model can use it.
+flowchart TD
+  Q{"Do all records have<br/>the same fields?"}
+  Q -- "yes, fixed columns" --> S["Structured<br/>CSV file, Excel sheet, SQL table"]
+  Q -- "mostly, some vary" --> M["Semi-structured<br/>JSON from an API, XML"]
+  Q -- "no fields at all" --> U["Unstructured<br/>reviews, photos, audio"]
+  S --> P1["`pd.read_csv()`<br/>straight into a DataFrame"]
+  M --> P2["`json.loads()` then flatten<br/>into a DataFrame"]
+  U --> P3["extract features first<br/>text to tokens<br/>image to pixels"]
+  P1 --> T
+  P2 --> T
+  P3 --> T
+  subgraph ML["What a model needs"]
+    T["a numeric table<br/>one row per example"]
+  end

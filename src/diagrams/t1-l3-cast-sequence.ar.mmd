@@ -1,0 +1,24 @@
+%% alt: مخطط تسلسلي لطريقتين لتحويل عمود إيجار نصي إلى أرقام. مع astype(float) تحوّل pandas كل قيمة، فإن نجحت كلها حصلت على سلسلة float64، لكن قيمة واحدة سيئة مثل n/a ترفع ValueError ولا يُحتفظ بشيء. ومع to_numeric وerrors coerce تصبح كل قيمة تفشل NaN دون أي خطأ، وعليك أنت أن تعدّ قيم NaN التي لم تتوقعها.
+sequenceDiagram
+  autonumber
+  participant Y as كودك
+  participant P as pandas
+  participant S as العمود النصي
+  Y->>+P: `df["rent"].astype(float)`
+  P->>S: حوّل كل قيمة
+  alt نجح تحويل كل القيم
+    S-->>P: أرقام
+    P-->>Y: سلسلة float64
+  else فشلت قيمة، مثل n/a
+    S-->>P: لا يمكن تحويلها
+    P-->>-Y: ValueError ولا يُحتفظ بشيء
+  end
+  Y->>+P: `pd.to_numeric(rent, errors="coerce")`
+  P->>S: حوّل كل قيمة
+  loop لكل قيمة تفشل
+    S-->>P: لا يمكن تحويلها
+    P->>P: خزّن NaN بدلًا منها
+  end
+  P-->>-Y: سلسلة float64 فيها NaN، بلا خطأ
+  Note over Y,P: قيم NaN غير المتوقعة صارت غير مرئية
+  Y->>Y: عدّها: `(out.isna() & raw.notna()).sum()`

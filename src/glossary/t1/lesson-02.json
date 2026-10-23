@@ -1,0 +1,152 @@
+[
+  {
+    "id": "categorical",
+    "term": {"en": "Categorical", "ar": "فئوي"},
+    "def": {
+      "en": "A column whose values are names of groups and answer \"which one?\". governorate and furnished are categorical, and so is listing_id even though pandas stores it as an integer.",
+      "ar": "عمود قيمه أسماء مجموعات وتجيب عن «أيّ واحد؟». العمودان governorate وfurnished فئويان، وكذلك listing_id مع أن pandas يخزّنه عددًا صحيحًا."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["numerical", "nominal"]
+  },
+  {
+    "id": "numerical",
+    "term": {"en": "Numerical", "ar": "عددي"},
+    "def": {
+      "en": "A column whose values are quantities that answer \"how much?\" or \"how many?\", so that sums and differences can mean something. monthly_rent, area_m2 and rooms are numerical.",
+      "ar": "عمود قيمه مقادير تجيب عن «كم؟» أو «كم عددًا؟»، فيمكن أن يكون للمجاميع والفروق معنى. الأعمدة monthly_rent وarea_m2 وrooms عددية."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["categorical", "discrete", "continuous"]
+  },
+  {
+    "id": "level-of-measurement",
+    "term": {"en": "Level of measurement", "ar": "مستوى القياس"},
+    "def": {
+      "en": "How much real-world structure the values of a column keep: names only (nominal), plus order (ordinal), plus equal gaps (interval), plus a true zero (ratio). The level decides which summaries and charts are honest for the column.",
+      "ar": "مقدار البنية الواقعية التي تحتفظ بها قيم العمود: أسماء فقط (اسمي)، وزيادةً الترتيب (ترتيبي)، وزيادةً المسافات المتساوية (فتري)، وزيادةً الصفر الحقيقي (نسبي). ويحدّد المستوى أي الملخصات والرسوم صادقة مع العمود."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["nominal", "ordinal", "interval", "ratio"]
+  },
+  {
+    "id": "nominal",
+    "term": {"en": "Nominal", "ar": "اسمي"},
+    "def": {
+      "en": "The lowest level: values are names that can be told apart but have no order, like governorate. Counts, shares and the mode are allowed; order, differences and averages are not.",
+      "ar": "أدنى المستويات: قيمه أسماء يمكن التمييز بينها ولا ترتيب لها، مثل governorate. يُسمح بالعدّ والنِّسَب والمنوال، ويُمنع الترتيب والفروق والمتوسطات."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["ordinal", "mode", "one-hot-encoding"]
+  },
+  {
+    "id": "ordinal",
+    "term": {"en": "Ordinal", "ar": "ترتيبي"},
+    "def": {
+      "en": "A level with names plus a trustworthy order but unknown gaps, like the school level (Primary < Preparatory < Secondary) or damage_level. The median is allowed; the mean is not.",
+      "ar": "مستوى فيه أسماء وترتيب موثوق دون مسافات معلومة، مثل مرحلة المدرسة (ابتدائي < إعدادي < ثانوي) أو damage_level. يُسمح بالوسيط ويُمنع المتوسط."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["nominal", "interval", "median", "likert-scale"]
+  },
+  {
+    "id": "interval",
+    "term": {"en": "Interval", "ar": "فتري"},
+    "def": {
+      "en": "A level with order and equal gaps but an arbitrary zero, like classroom temperature in degrees Celsius or a calendar date. Differences and means are allowed; ratios are not.",
+      "ar": "مستوى فيه ترتيب ومسافات متساوية لكن بصفر اعتباطي، مثل درجة حرارة الصف بالسلسيوس أو التاريخ التقويمي. تُسمح الفروق والمتوسطات وتُمنع النِّسَب."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["ordinal", "ratio", "true-zero", "mean"]
+  },
+  {
+    "id": "ratio",
+    "term": {"en": "Ratio", "ar": "نسبي"},
+    "def": {
+      "en": "The highest level: order, equal gaps and a true zero, like monthly_rent or students. Every operation is allowed, including \"1.5 times\" and totals.",
+      "ar": "أعلى المستويات: ترتيب ومسافات متساوية وصفر حقيقي، مثل monthly_rent أو students. كل العمليات مباحة، بما فيها «مرة ونصف» والمجاميع."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["interval", "true-zero"]
+  },
+  {
+    "id": "true-zero",
+    "term": {"en": "True zero", "ar": "الصفر الحقيقي"},
+    "def": {
+      "en": "A zero that means \"none of it\" and stays zero in every unit: 0 NIS is 0 USD. 0 degrees Celsius is not a true zero, because it is 32 degrees Fahrenheit. A zero in a form export may also hide \"not recorded\".",
+      "ar": "صفر يعني «لا شيء منه» ويبقى صفرًا في كل وحدة: 0 شيكل هو 0 دولار. أما 0 درجة سلسيوس فليست صفرًا حقيقيًّا لأنها 32 فهرنهايت. وقد يخفي الصفر في تصدير استمارة معنى «لم يُسجَّل»."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["ratio", "interval"]
+  },
+  {
+    "id": "discrete",
+    "term": {"en": "Discrete", "ar": "منفصل"},
+    "def": {
+      "en": "A numerical column whose values are counted and have gaps between neighbours, such as rooms (1, 2, 3, ...). Nobody rents 2.5 rooms, although the mean of rooms may be 3.2.",
+      "ar": "عمود عددي قيمه معدودة وبين جاراتها فجوات، مثل rooms (1 و2 و3 ...). لا أحد يستأجر 2.5 غرفة، وإن كان متوسط rooms قد يبلغ 3.2."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["continuous", "numerical"]
+  },
+  {
+    "id": "continuous",
+    "term": {"en": "Continuous", "ar": "متصل"},
+    "def": {
+      "en": "A numerical column whose values are measured and could take any value in a range, limited only by the precision of the instrument, such as area_m2.",
+      "ar": "عمود عددي قيمه مقيسة ويمكن أن تأخذ أي قيمة في مدى، ولا يحدّها إلا دقة الأداة، مثل area_m2."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["discrete", "numerical"]
+  },
+  {
+    "id": "mode",
+    "term": {"en": "Mode", "ar": "المنوال"},
+    "def": {
+      "en": "The most frequent value of a column, and the only centre a nominal column offers. Ties are possible: three governorates share the top count in the school sheet, so the mode is a list.",
+      "ar": "القيمة الأكثر تكرارًا في العمود، وهو المركز الوحيد الذي يتيحه العمود الاسمي. والتعادل ممكن: ثلاث محافظات تتقاسم أعلى عدّ في ورقة المدارس، فالمنوال قائمة."
+    },
+    "cat": {"en": "Statistics", "ar": "الإحصاء"},
+    "see": ["median", "mean", "nominal"]
+  },
+  {
+    "id": "median",
+    "term": {"en": "Median", "ar": "الوسيط"},
+    "def": {
+      "en": "The middle value once the values are sorted. It uses only the order, so it is legal for ordinal columns and survives any recoding that keeps the order. With an even count the middle falls between two values.",
+      "ar": "القيمة الوسطى بعد ترتيب القيم. لا يستعمل إلا الترتيب، فهو جائز للأعمدة الترتيبية ويصمد أمام أي إعادة ترميز تحفظ الترتيب. وإذا كان العدد زوجيًّا وقع الوسط بين قيمتين."
+    },
+    "cat": {"en": "Statistics", "ar": "الإحصاء"},
+    "see": ["mode", "mean", "ordinal"]
+  },
+  {
+    "id": "mean",
+    "term": {"en": "Mean", "ar": "المتوسط الحسابي"},
+    "def": {
+      "en": "The sum of the values divided by their count. It needs equal gaps, so it is legal for interval and ratio columns; the mean of listing_id or of ordinal codes is arithmetic without meaning.",
+      "ar": "مجموع القيم مقسومًا على عددها. يحتاج إلى مسافات متساوية، فهو جائز للأعمدة الفترية والنسبية؛ أما متوسط listing_id أو متوسط الرموز الترتيبية فحساب بلا معنى."
+    },
+    "cat": {"en": "Statistics", "ar": "الإحصاء"},
+    "see": ["median", "mode", "interval"]
+  },
+  {
+    "id": "likert-scale",
+    "term": {"en": "Likert scale", "ar": "مقياس ليكرت"},
+    "def": {
+      "en": "A set of ordered answers such as \"very dissatisfied\" to \"very satisfied\", usually coded 1 to 5. One item is ordinal; a sum of several items is often treated as interval, which is contested. Report the distribution, the median and the top and bottom shares.",
+      "ar": "مجموعة إجابات مرتّبة مثل «غير راضٍ إطلاقًا» إلى «راضٍ جدًّا»، تُرمَّز عادةً من 1 إلى 5. البند الواحد ترتيبي، ومجموع عدة بنود يُعامل غالبًا فتريًّا وهو أمر خلافي. اعرض التوزيع والوسيط ونسبتي الطرفين."
+    },
+    "cat": {"en": "Meaning", "ar": "المعنى"},
+    "see": ["ordinal", "median"]
+  },
+  {
+    "id": "one-hot-encoding",
+    "term": {"en": "One-hot encoding", "ar": "الترميز الأحادي"},
+    "def": {
+      "en": "Replacing a nominal column by one 0/1 column per category, exactly one of which is 1 in each row, so that a model sees no invented order or distance. pd.get_dummies does it; Theory chapter 2 treats it in full.",
+      "ar": "استبدال عمود اسمي بعمود 0/1 لكل فئة، يكون واحد منها فقط 1 في كل صف، فلا يرى النموذج ترتيبًا أو مسافة مختلقة. ينفّذه pd.get_dummies، ويعالجه الفصل النظري 2 بتفصيل."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["nominal"]
+  }
+]

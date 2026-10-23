@@ -1,0 +1,14 @@
+%% alt: Decision flowchart for choosing a dtype. If the column is a quantity: whole numbers that are never missing are int64, whole numbers that may be missing are Int64, anything with decimals is float64. If it is a date or time: datetime64. If it has only two values: bool, or boolean when it can be missing. If it has a few repeated labels: category, ordered when the labels are ranked. Otherwise free text or identifiers: string.
+flowchart TD
+  Q{"A quantity?"}
+  Q -- yes --> W{"Whole<br/>numbers?"}
+  W -- "no gaps" --> I["`int64`"]
+  W -- "gaps" --> NI["`Int64`"]
+  W -- "decimals" --> F["`float64`"]
+  Q -- no --> T{"A date<br/>or time?"}
+  T -- yes --> DT["`datetime64`"]
+  T -- no --> B{"Only two<br/>values?"}
+  B -- yes --> BO["`bool` /<br/>`boolean`"]
+  B -- no --> C{"Few labels<br/>that repeat?"}
+  C -- "yes" --> CA["`category`<br/>(`ordered` if ranked)"]
+  C -- "no" --> S["`string`"]

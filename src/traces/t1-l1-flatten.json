@@ -1,0 +1,53 @@
+{
+  "id": "t1-l1-flatten",
+  "title": {
+    "en": "Flattening nested JSON into table rows",
+    "ar": "تسطيح JSON متداخل إلى صفوف جدول"
+  },
+  "lede": {
+    "en": "Two rental listings arrive as JSON text. The first has a nested landlord object, the second has none. Watch flatten() call itself on the nested object, and watch the missing keys become NaN when the rows meet in a DataFrame.",
+    "ar": "يصل إعلانان للتأجير كنص JSON. في الأول كائن متداخل للمالك، وليس في الثاني. شاهد الدالة flatten() تستدعي نفسها على الكائن المتداخل، وشاهد المفاتيح الغائبة تصبح NaN حين تلتقي الصفوف في DataFrame."
+  },
+  "code": "import json\nimport pandas as pd\n\ntext = ('[{\"id\": 1, \"city\": \"Gaza\", \"rent\": 590, '\n        '\"landlord\": {\"name\": \"Abu Ahmad\", \"verified\": true}}, '\n        '{\"id\": 2, \"city\": \"Rafah\", \"rent\": 285}]')\nrecords = json.loads(text)\n\n\ndef flatten(d, prefix=\"\"):\n    flat = {}\n    for key, value in d.items():\n        name = prefix + key\n        if isinstance(value, dict):\n            flat.update(flatten(value, name + \"_\"))\n        else:\n            flat[name] = value\n    return flat\n\n\nrows = []\nfor rec in records:\n    rows.append(flatten(rec))\n\ntable = pd.DataFrame(rows)\nprint(table)\n",
+  "watch": [
+    "records",
+    "rows",
+    "table"
+  ],
+  "viz": {
+    "records": "tree",
+    "rows": "table",
+    "table": "table"
+  },
+  "max_steps": 140,
+  "notes": {
+    "7": {
+      "en": "json.loads turns the text into a list of two dicts. The first dict holds another dict under the key \"landlord\".",
+      "ar": "تحوّل json.loads النص إلى قائمة من قاموسين. في القاموس الأول قاموس آخر تحت المفتاح \"landlord\"."
+    },
+    "12": {
+      "en": "Visit every key of the record. For each one decide: is the value simple, or is it another dict?",
+      "ar": "مرّ على كل مفتاح في السجل. وقرّر لكل مفتاح: هل القيمة بسيطة أم هي قاموس آخر؟"
+    },
+    "15": {
+      "en": "A nested dict: call flatten again on it, with the longer prefix \"landlord_\". The result is merged into this flat dict.",
+      "ar": "قاموس متداخل: استدعِ flatten مرة أخرى عليه بالبادئة الأطول \"landlord_\"، ثم تُدمج النتيجة في القاموس المسطح."
+    },
+    "17": {
+      "en": "A simple value: store it under its (prefixed) name. One key, one value, no nesting.",
+      "ar": "قيمة بسيطة: خزّنها تحت اسمها (مع البادئة). مفتاح واحد وقيمة واحدة بلا تداخل."
+    },
+    "23": {
+      "en": "Each record becomes one flat dict. The second record has no landlord, so its dict will simply have no landlord_* keys.",
+      "ar": "يصبح كل سجل قاموسًا مسطحًا واحدًا. ليس للسجل الثاني مالك، فلن تكون في قاموسه مفاتيح landlord_* أصلًا."
+    },
+    "25": {
+      "en": "pandas takes the union of all keys as columns. Where a row lacks a key, the cell becomes NaN: missing is now explicit, not absent.",
+      "ar": "يأخذ pandas اتحاد كل المفاتيح أعمدةً. وحيث يفتقد صف مفتاحًا تصبح الخلية NaN: صار الغياب صريحًا لا مجرد اختفاء."
+    },
+    "end": {
+      "en": "A table: one row per listing, one column per key. The schema was discovered while reading, which is exactly schema-on-read.",
+      "ar": "جدول: صف لكل إعلان وعمود لكل مفتاح. اكتُشف المخطط أثناء القراءة، وهذا هو المخطط عند القراءة تمامًا."
+    }
+  }
+}

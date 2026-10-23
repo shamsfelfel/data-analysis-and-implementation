@@ -1,0 +1,11 @@
+%% alt: Flowchart of the work each shape needs before a model. Structured data needs only a check of types and missing values. Semi-structured data must be parsed, flattened and validated. Unstructured data needs features extracted or an embedding computed, and often labels from people. All three end as a numeric table with one row per example, which is the only thing a model reads.
+flowchart TD
+  S["Structured<br/>table, CSV, Excel"] -->|least work| S1["check types<br/>and blanks"]
+  M["Semi-structured<br/>JSON, XML"] -->|some work| M1["parse and flatten"]
+  M1 --> M2["validate keys<br/>and types"]
+  U["Unstructured<br/>text, images, audio"] -->|most work| U1["extract features<br/>or embed"]
+  U1 --> U2["add labels<br/>if the task needs them"]
+  S1 --> T
+  M2 --> T
+  U2 --> T
+  T["numeric table<br/>one row per example"] --> ML["model"]

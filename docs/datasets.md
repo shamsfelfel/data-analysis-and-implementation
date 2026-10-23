@@ -30,3 +30,12 @@ invent a different number for the same data. Re-run the script, never hand-edit 
 | `downloads/p1/cafeteria_orders.csv` | one month of cafeteria order lines (messy on purpose) |
 | `downloads/p1/cafeteria_orders.xlsx` | the same as an Excel workbook: Table `tblOrders`, sheet `Menu` with Table `tblMenu` |
 | `downloads/p1/cafeteria_menu.csv` | the menu: item, category, list_price |
+
+### Files written by lesson authors (kept by hand, not generated)
+
+| File | What it is |
+|---|---|
+| `downloads/t1/adverts_sample.txt` | 8 hand-written rental adverts, one in Arabic (T1 L1) |
+| `downloads/t1/school_conditions_demo.csv` | a 13-school sheet with invented damage_level / classroom_temp_c / repair_weeks, labelled as invented in the lesson (T1 L2) |
+| `downloads/t1/school_damage_assessment.csv` | the 9-row raw damage-assessment CSV of the original Arabic chapter, verbatim (T1 L6) |
+| `downloads/p1/requirements.txt`, `check_env.py`, `cafeteria_answer.py` | environment and answer scripts of Practical Chapter 1 |

@@ -1,0 +1,28 @@
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["p1-data-analysis"]          = { href: "p1l1-s1",  en: "what data analysis is: question, data, decision", ar: "ما هو تحليل البيانات: سؤال وبيانات وقرار" };
+  T["p1-four-kinds"]             = { href: "p1l1-s2",  en: "descriptive, diagnostic, predictive, prescriptive questions", ar: "الأسئلة الوصفية والتشخيصية والتنبؤية والتوجيهية" };
+  T["p1-analysis-neighbours"]    = { href: "p1l1-s3",  en: "analysis vs BI, statistics, data science, ML", ar: "التحليل مقابل ذكاء الأعمال والإحصاء وعلم البيانات والتعلّم الآلي" };
+  T["p1-measure-changes-answer"] = { href: "p1l1-s4",  en: "the measure changes the answer (lines, units, money)", ar: "المقياس يغيّر الجواب (أسطر ووحدات ومال)" };
+  T["p1-question-card"]          = { href: "p1l1-s5",  en: "the question card: five parts", ar: "بطاقة السؤال: خمسة أجزاء" };
+  T["p1-question-refinement"]    = { href: "p1l1-s6",  en: "refining \"what sells?\" version by version", ar: "تحسين «ما الذي يُباع؟» نسخة بعد نسخة" };
+  T["p1-so-what-test"]           = { href: "p1l1-s7",  en: "the \"so what\" test", ar: "اختبار «وماذا بعد؟»" };
+  T["p1-skipped-stages"]         = { href: "p1l1-s9",  en: "what skipping a stage costs (raw vs clean total)", ar: "كلفة تخطّي طور (المجموع الخام مقابل المنظَّف)" };
+  T["p1-lifecycle-stages"]       = { href: "p1l1-s10", en: "the seven lifecycle stages and their artifacts", ar: "أطوار دورة الحياة السبعة ونواتجها" };
+  T["p1-loop-back"]              = { href: "p1l1-s12", en: "the lifecycle is a loop (loop-backs, time shares)", ar: "دورة الحياة حلقة (حالات الرجوع وتوزيع الوقت)" };
+  T["p1-crisp-dm"]               = { href: "p1l1-s13", en: "CRISP-DM mapped to our stages", ar: "مقابلة CRISP-DM بأطوارنا" };
+  T["p1-analysis-plan"]          = { href: "p1l1-s14", en: "writing the analysis plan: artifacts and owners", ar: "كتابة خطة التحليل: النواتج والمالكون" };
+  T["p1-provenance"]             = { href: "p1l1-s15", en: "provenance, permission and the source note", ar: "الأصل والإذن وملاحظة المصدر" };
+  T["p1-first-look"]             = { href: "p1l1-s16", en: "a first look at the raw lines", ar: "نظرة أولى إلى الأسطر الخام" };
+  T["p1-raw-vs-parsed"]          = { href: "p1l1-s17", en: "looking without letting the tool guess (n/a becomes NaN)", ar: "النظر دون أن تخمّن الأداة (n/a تصبح NaN)" };
+  T["p1-data-dictionary"]        = { href: "p1l1-s18", en: "the data dictionary: meaning, unit, level, allowed values", ar: "قاموس البيانات: المعنى والوحدة والمستوى والقيم المسموحة" };
+  T["p1-reproducibility"]        = { href: "p1l1-s19", en: "reproducibility and the decision log", ar: "قابلية إعادة الإنتاج وسجل القرارات" };
+  T["p1-data-minimisation"]      = { href: "p1l1-s20", en: "collect only what the question needs (privacy)", ar: "اجمع فقط ما يحتاجه السؤال (الخصوصية)" };
+  T["p1-who-is-counted"]         = { href: "p1l1-s21", en: "who is not in the file; sales are not demand", ar: "من ليس في الملف؛ المبيعات ليست الطلب" };
+  T["p1-ai-lifecycle"]           = { href: "p1l1-s23", en: "what an AI project adds: target, split, metric, deploy, monitor", ar: "ما يضيفه مشروع الذكاء الاصطناعي: هدف وتقسيم ومقياس ونشر ومراقبة" };
+  T["p1-framing-target"]         = { href: "p1l1-s24", en: "framing decides the target variable", ar: "الصياغة تحدد المتغير الهدف" };
+  T["p1-leakage-clock"]          = { href: "p1l1-s25", en: "leakage and time-ordered splits", ar: "التسرّب والتقسيم المرتّب زمنيًّا" };
+  T["p1-drift-monitoring"]       = { href: "p1l1-s26", en: "deployment, monitoring, drift and the cost of a late fix", ar: "النشر والمراقبة والانجراف وكلفة الإصلاح المتأخر" };
+  T["p1-project-sketch"]         = { href: "p1l1-s27", en: "the chapter project: question, rules, same rules in three tools", ar: "مشروع الفصل: السؤال والقواعد ونفس القواعد في ثلاث أدوات" };
+  T["p1-one-page-brief"]         = { href: "p1l1-s28", en: "the deliverable: a one-page brief", ar: "المُخرَج: موجز من صفحة واحدة" };
+})(window.DATopics);

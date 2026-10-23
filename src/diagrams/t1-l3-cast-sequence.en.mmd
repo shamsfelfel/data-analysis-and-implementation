@@ -1,0 +1,24 @@
+%% alt: Sequence diagram of two ways to turn a text rent column into numbers. With astype(float) pandas converts every value; if all convert you get a float64 Series, but one bad value such as n/a raises a ValueError and nothing is kept. With to_numeric and errors coerce, each value that fails becomes NaN, no error is raised, and you must count the NaN you did not expect.
+sequenceDiagram
+  autonumber
+  participant Y as Your code
+  participant P as pandas
+  participant S as Text column
+  Y->>+P: `df["rent"].astype(float)`
+  P->>S: convert every value
+  alt every value converts
+    S-->>P: numbers
+    P-->>Y: a float64 Series
+  else one value fails, like n/a
+    S-->>P: cannot convert
+    P-->>-Y: ValueError, nothing is kept
+  end
+  Y->>+P: `pd.to_numeric(rent, errors="coerce")`
+  P->>S: convert each value
+  loop for each value that fails
+    S-->>P: cannot convert
+    P->>P: store NaN instead
+  end
+  P-->>-Y: float64 Series with NaN, no error
+  Note over Y,P: the NaN you did not expect are now invisible
+  Y->>Y: count them: `(out.isna() & raw.notna()).sum()`

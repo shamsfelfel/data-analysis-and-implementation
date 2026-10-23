@@ -1,0 +1,22 @@
+%% alt: Sequence diagram of a conversation between the cafeteria manager and the analyst. The manager asks what sells. The analyst asks whether by count or by money, which period, and what decision the answer will support. The analyst writes the answers on a question card and shows it to the manager. If the manager agrees the card is signed off; otherwise a second card is added for the extra question.
+sequenceDiagram
+  autonumber
+  participant M as Manager
+  participant A as Analyst
+  participant C as Question card
+  M->>A: What sells?
+  A->>M: By count or by money?
+  M-->>A: By money, I think
+  A->>M: Which period?
+  M-->>A: September
+  A->>M: What will you decide with it?
+  M-->>A: What to stock for October
+  A->>C: Write question, scope, decision
+  A->>M: Is this what you mean?
+  alt manager agrees
+    M-->>A: Yes, go ahead
+    Note over A,C: Card is signed off
+  else one more question
+    M-->>A: Also, when are we busy?
+    A->>C: Start a second card
+  end

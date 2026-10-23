@@ -148,9 +148,12 @@ def walk():
         if not os.path.isdir(base):
             continue
         for dirpath, dirnames, filenames in os.walk(base):
-            dirnames[:] = [x for x in dirnames if not x.startswith(".")]
+            dirnames[:] = [x for x in dirnames if not x.startswith(".") and x != "__pycache__"]
             for f in sorted(filenames):
-                if f in SKIP_NAMES or f.endswith(SKIP_SUFFIX) or f.startswith("."):
+                # Source and docs files are skipped everywhere except downloads/, whose
+                # .py and .txt files are things a lesson tells the student to fetch.
+                skip_type = f.endswith(SKIP_SUFFIX) and d != "downloads"
+                if f in SKIP_NAMES or skip_type or f.endswith(".pyc") or f.startswith("."):
                     continue
                 full = os.path.join(dirpath, f)
                 rel = os.path.relpath(full, ROOT).replace(os.sep, "/")

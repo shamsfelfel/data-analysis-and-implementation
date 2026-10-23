@@ -1,0 +1,152 @@
+[
+  {
+    "id": "data-analysis",
+    "term": {"en": "Data analysis", "ar": "تحليل البيانات"},
+    "def": {
+      "en": "The process of turning recorded facts into an answer a person can act on. It always has three ingredients: a question, data, and a decision. Example: turning 771 order lines into \"stock Shawarma Wrap and Chicken Rice first for October\".",
+      "ar": "عملية تحويل الوقائع المسجَّلة إلى جواب يستطيع إنسان أن يتصرف بناءً عليه، وله دائمًا ثلاثة مكوّنات: سؤال وبيانات وقرار. مثال: تحويل 771 سطر طلب إلى «خزّن الشاورما وأرز الدجاج أولًا لشهر تشرين الأول»."
+    },
+    "cat": {"en": "Process", "ar": "العملية"},
+    "see": ["analytics-kinds", "lifecycle"]
+  },
+  {
+    "id": "analytics-kinds",
+    "term": {"en": "Descriptive / diagnostic / predictive / prescriptive analytics", "ar": "التحليلات الوصفية والتشخيصية والتنبؤية والتوجيهية"},
+    "def": {
+      "en": "The four kinds of question analysis answers, each building on the one before: descriptive (what happened? total revenue in September), diagnostic (why? why Sunday is busier than Monday), predictive (what will happen? orders in the 12:00 hour next Sunday) and prescriptive (what should we do? how many wraps to prepare).",
+      "ar": "أنواع الأسئلة الأربعة التي يجيب عنها التحليل، يبني كل منها على ما قبله: الوصفي (ماذا حدث؟ إجمالي إيراد أيلول)، والتشخيصي (لماذا؟ لماذا الأحد أكثر ازدحامًا من الاثنين)، والتنبؤي (ماذا سيحدث؟ طلبات الساعة 12:00 يوم الأحد القادم)، والتوجيهي (ماذا نفعل؟ كم ساندويتش شاورما نحضّر)."
+    },
+    "cat": {"en": "Question", "ar": "السؤال"},
+    "see": ["data-analysis", "kpi"]
+  },
+  {
+    "id": "stakeholder",
+    "term": {"en": "Stakeholder", "ar": "صاحب المصلحة"},
+    "def": {
+      "en": "Anyone who asks for an analysis, supplies its data, or is affected by what it recommends. In the cafeteria: the manager, the cashiers, the students who buy.",
+      "ar": "كل من يطلب التحليل أو يوفّر بياناته أو يتأثر بما يوصي به. في الكافتيريا: المدير والصرّافون والطلاب الذين يشترون."
+    },
+    "cat": {"en": "Question", "ar": "السؤال"},
+    "see": ["deliverable"]
+  },
+  {
+    "id": "kpi",
+    "term": {"en": "KPI (key performance indicator)", "ar": "مؤشر الأداء الرئيسي (KPI)"},
+    "def": {
+      "en": "A number that stands for how well something is going and is tracked over time, such as revenue per open day or orders in the busiest hour.",
+      "ar": "رقم يعبّر عن مدى جودة سير أمر ما ويُتابَع عبر الزمن، مثل الإيراد لكل يوم عمل أو عدد الطلبات في أكثر ساعة ازدحامًا."
+    },
+    "cat": {"en": "Question", "ar": "السؤال"},
+    "see": ["hypothesis"]
+  },
+  {
+    "id": "hypothesis",
+    "term": {"en": "Hypothesis", "ar": "الفرضية"},
+    "def": {
+      "en": "A testable guess written before looking at the data, for example \"Sundays are busiest because they are the first working day\". The data can then support or contradict it.",
+      "ar": "تخمين قابل للاختبار يُكتب قبل النظر في البيانات، مثل «الأحد الأكثر ازدحامًا لأنه أول يوم عمل». وتستطيع البيانات بعدها أن تدعمه أو تناقضه."
+    },
+    "cat": {"en": "Question", "ar": "السؤال"},
+    "see": ["kpi"]
+  },
+  {
+    "id": "lifecycle",
+    "term": {"en": "Lifecycle (of an analysis)", "ar": "دورة الحياة (للتحليل)"},
+    "def": {
+      "en": "The sequence of stages a piece of analysis passes through: Ask, Acquire, Clean, Explore, Analyse/Model, Communicate, Act & Monitor, and then back round again. Each stage is defined by the artifact it leaves behind.",
+      "ar": "تسلسل الأطوار التي يمر بها التحليل: السؤال والحصول والتنظيف والاستكشاف والتحليل/النمذجة والتواصل والتنفيذ والمتابعة، ثم العودة من جديد. ويُعرَّف كل طور بالناتج الذي يتركه خلفه."
+    },
+    "cat": {"en": "Process", "ar": "العملية"},
+    "see": ["crisp-dm", "deliverable"]
+  },
+  {
+    "id": "crisp-dm",
+    "term": {"en": "CRISP-DM", "ar": "CRISP-DM"},
+    "def": {
+      "en": "Cross-Industry Standard Process for Data Mining: a process model with six phases (business understanding, data understanding, data preparation, modeling, evaluation, deployment) drawn as a circle with arrows back and forth. It matches our lifecycle stage for stage.",
+      "ar": "العملية القياسية عبر الصناعات لتنقيب البيانات: نموذج عملية من ست مراحل (فهم العمل، فهم البيانات، إعداد البيانات، النمذجة، التقييم، النشر) مرسوم كدائرة بأسهم تذهب وتجيء. يطابق دورة حياتنا طورًا بطور."
+    },
+    "cat": {"en": "Process", "ar": "العملية"},
+    "see": ["lifecycle"]
+  },
+  {
+    "id": "deliverable",
+    "term": {"en": "Deliverable", "ar": "المُخرَج"},
+    "def": {
+      "en": "What the stakeholder actually receives, as opposed to the work behind it: a one-page brief, a dashboard, a model. In this chapter it is a one-page brief the manager can read in a minute.",
+      "ar": "ما يتسلمه صاحب المصلحة فعلًا، بخلاف العمل الذي وراءه: موجز من صفحة، أو لوحة معلومات، أو نموذج. وهو في هذا الفصل موجز من صفحة واحدة يقرؤه المدير في دقيقة."
+    },
+    "cat": {"en": "Process", "ar": "العملية"},
+    "see": ["lifecycle", "stakeholder"]
+  },
+  {
+    "id": "provenance",
+    "term": {"en": "Provenance", "ar": "أصل البيانات ومصدرها"},
+    "def": {
+      "en": "The recorded history of a dataset: who produced it, how, when, with which filters, and what has been done to it since. Without it you cannot defend a number built on the data.",
+      "ar": "التاريخ المسجَّل لمجموعة بيانات: من أنتجها، وكيف، ومتى، وبأي مرشحات، وما الذي جرى عليها بعد ذلك. وبدونه لا تستطيع الدفاع عن رقم مبني على البيانات."
+    },
+    "cat": {"en": "Documentation", "ar": "التوثيق"},
+    "see": ["data-dictionary", "reproducibility"]
+  },
+  {
+    "id": "data-dictionary",
+    "term": {"en": "Data dictionary", "ar": "قاموس البيانات"},
+    "def": {
+      "en": "A table with one entry per column that states its meaning, unit, level of measurement, allowed values and known problems. For example: qty is a ratio-level count of units, 1 to 3 on 766 lines and -1 on 5 refund lines.",
+      "ar": "جدول بمدخل لكل عمود يذكر معناه ووحدته ومستوى قياسه وقيمه المسموحة ومشكلاته المعروفة. مثال: qty عدّ من المستوى النسبي لوحدات، قيمته 1 إلى 3 في 766 سطرًا و-1 في 5 أسطر مرتجعات."
+    },
+    "cat": {"en": "Documentation", "ar": "التوثيق"},
+    "see": ["provenance"]
+  },
+  {
+    "id": "reproducibility",
+    "term": {"en": "Reproducibility", "ar": "قابلية إعادة الإنتاج"},
+    "def": {
+      "en": "The property that someone else, or you a month later, can start from the raw data and the written steps and reach the same numbers. Its habits: keep the raw file untouched, log every decision with its effect on the row count, make the steps re-runnable, record the tool versions.",
+      "ar": "خاصية أن يستطيع شخص آخر، أو أنت بعد شهر، أن يبدأ من البيانات الخام والخطوات المكتوبة فيصل إلى الأرقام نفسها. وعاداتها: إبقاء الملف الخام دون مساس، وتسجيل كل قرار مع أثره في عدد الصفوف، وجعل الخطوات قابلة لإعادة التشغيل، وتسجيل إصدارات الأدوات."
+    },
+    "cat": {"en": "Documentation", "ar": "التوثيق"},
+    "see": ["provenance", "data-dictionary"]
+  },
+  {
+    "id": "feature-label",
+    "term": {"en": "Feature and label (target)", "ar": "الخاصية والوسم (الهدف)"},
+    "def": {
+      "en": "In a prediction task, the label (or target) is the column the model must predict, such as the orders in the 12:00 hour of the next open day. The features are the columns it is allowed to use, such as the weekday and the 12:00 orders on earlier days.",
+      "ar": "في مهمة تنبؤ، الوسم (أو الهدف) هو العمود الذي يجب أن يتنبأ به النموذج، مثل طلبات الساعة 12:00 في يوم العمل القادم. والخصائص هي الأعمدة المسموح له باستعمالها، مثل يوم الأسبوع وطلبات الساعة 12:00 في الأيام السابقة."
+    },
+    "cat": {"en": "AI projects", "ar": "مشاريع الذكاء الاصطناعي"},
+    "see": ["data-split", "leakage"]
+  },
+  {
+    "id": "data-split",
+    "term": {"en": "Train / validation / test split", "ar": "تقسيم التدريب والتحقق والاختبار"},
+    "def": {
+      "en": "Dividing the rows into a training set the model learns from, a validation set used to choose between versions, and a test set kept untouched until the end for one honest score. For time-ordered data the split is by date: earlier days train, later days test.",
+      "ar": "تقسيم الصفوف إلى مجموعة تدريب يتعلم منها النموذج، ومجموعة تحقق تُستعمل للمفاضلة بين النسخ، ومجموعة اختبار تبقى دون مساس حتى النهاية لدرجة صادقة واحدة. وفي البيانات المرتبة زمنيًّا يكون التقسيم بالتاريخ: الأيام الأقدم للتدريب والأحدث للاختبار."
+    },
+    "cat": {"en": "AI projects", "ar": "مشاريع الذكاء الاصطناعي"},
+    "see": ["feature-label", "leakage"]
+  },
+  {
+    "id": "leakage",
+    "term": {"en": "Leakage", "ar": "التسرّب"},
+    "def": {
+      "en": "Information in a model's inputs that would not be available at the moment the prediction is really needed, so test scores look better than real use. Example: using the day's total orders to predict that day's noon orders.",
+      "ar": "معلومات في مدخلات النموذج لن تكون متاحة في اللحظة التي تلزم فيها التوقعات فعلًا، فتبدو درجات الاختبار أفضل من الاستعمال الحقيقي. مثال: استعمال مجموع طلبات اليوم للتنبؤ بطلبات ظهيرة اليوم نفسه."
+    },
+    "cat": {"en": "AI projects", "ar": "مشاريع الذكاء الاصطناعي"},
+    "see": ["data-split", "feature-label"]
+  },
+  {
+    "id": "drift",
+    "term": {"en": "Drift", "ar": "الانجراف"},
+    "def": {
+      "en": "The world changing so that the patterns a deployed model learned no longer hold, for example a new menu or new opening hours. It is noticed by monitoring: comparing predictions with what actually happened.",
+      "ar": "تغيّر العالم بحيث لا تعود الأنماط التي تعلّمها النموذج المنشور صالحة، مثل قائمة جديدة أو ساعات عمل جديدة. ويُلاحَظ بالمراقبة: مقارنة التوقعات بما حدث فعلًا."
+    },
+    "cat": {"en": "AI projects", "ar": "مشاريع الذكاء الاصطناعي"},
+    "see": ["lifecycle", "data-split"]
+  }
+]

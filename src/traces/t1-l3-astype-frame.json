@@ -1,0 +1,37 @@
+{
+  "id": "t1-l3-astype-frame",
+  "title": {
+    "en": "A DataFrame changes dtype after astype",
+    "ar": "جدول DataFrame يغيّر أنواعه بعد astype"
+  },
+  "lede": {
+    "en": "Three listings, three columns. Watch the dtypes row under the table: rooms goes from float64 to Int64 and city from object to category, while the values you see barely change.",
+    "ar": "ثلاثة إعلانات وثلاثة أعمدة. راقب صف الأنواع تحت الجدول: يتحول rooms من float64 إلى Int64 وcity من object إلى category، بينما لا تكاد القيم الظاهرة تتغير."
+  },
+  "code": "import pandas as pd\ndf = pd.DataFrame({\n    \"listing_id\": [1001, 1002, 1003],\n    \"city\": [\"Khan Younis\", \"Gaza\", \"Gaza\"],\n    \"rooms\": [4.0, 3.0, None],\n})\nprint(df.dtypes)\ndf[\"rooms\"] = df[\"rooms\"].astype(\"Int64\")\ndf[\"city\"] = df[\"city\"].astype(\"category\")\nprint(df.dtypes)\n",
+  "notes": {
+    "2": {
+      "en": "Building the table: ints stay int64, text is object, and the None in rooms forces the whole column to float64.",
+      "ar": "بناء الجدول: الأعداد الصحيحة تبقى int64، والنص object، وقيمة None في rooms تجبر العمود كله على float64."
+    },
+    "7": {
+      "en": "Before: listing_id int64, city object, rooms float64 (4.0, 3.0, NaN).",
+      "ar": "قبل: listing_id من النوع int64، وcity من النوع object، وrooms من النوع float64 (4.0 و3.0 وNaN)."
+    },
+    "8": {
+      "en": "astype('Int64') keeps the whole numbers and turns NaN into <NA>. The column is now nullable.",
+      "ar": "يحافظ astype('Int64') على الأعداد الصحيحة ويحوّل NaN إلى <NA>. صار العمود قابلًا للنقص."
+    },
+    "9": {
+      "en": "astype('category') stores each distinct city once and a small code per row.",
+      "ar": "يخزّن astype('category') كل مدينة مميزة مرة واحدة ورمزًا صغيرًا لكل صف."
+    },
+    "10": {
+      "en": "After: rooms Int64, city category. Same rows, different promises.",
+      "ar": "بعد: rooms من النوع Int64 وcity من النوع category. الصفوف نفسها، لكن الوعود مختلفة."
+    }
+  },
+  "watch": ["df"],
+  "viz": { "df": "table" },
+  "max_steps": 40
+}

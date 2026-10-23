@@ -1,0 +1,10 @@
+%% alt: A family of containers. A Python list or dict can hold anything. Packing same-type values gives a NumPy array: one dtype, a shape, vector maths. Adding labels gives a pandas Series. Several Series that share an index make a DataFrame, with one dtype per column. to_numpy() goes back down to an array.
+flowchart TD
+  L["list / dict<br/>any objects, any mix<br/>no vector maths"]
+  A["ndarray<br/>one dtype, one shape<br/>vector maths"]
+  S["Series<br/>an array + an index<br/>one labelled column"]
+  D["DataFrame<br/>Series sharing an index<br/>one dtype per column"]
+  L -->|"pack same-type values"| A
+  A -->|"add labels (index)"| S
+  S -->|"many columns"| D
+  D -.->|"`to_numpy()`"| A
