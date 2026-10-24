@@ -19,7 +19,7 @@
    ============================================================ */
 'use strict';
 
-var CACHE = 'da-20261023-5';
+var CACHE = 'da-20261024-2';
 
 /* Paths are relative to this file, which sits at the site root, so
    they resolve the same whether the course is served from a domain
@@ -40,10 +40,15 @@ var PRECACHE = [
   "assets/data/questions/p1-test-02.js",
   "assets/data/questions/p1-test-03.js",
   "assets/data/questions/p1-test-04.js",
+  "assets/data/questions/t1-exam-a.js",
+  "assets/data/questions/t1-exam-b.js",
+  "assets/data/questions/t1-exam-c.js",
   "assets/data/questions/t1-test-01.js",
   "assets/data/questions/t1-test-02.js",
   "assets/data/questions/t1-test-03.js",
   "assets/data/questions/t1-test-04.js",
+  "assets/data/questions/t1-test-05.js",
+  "assets/data/questions/t1-test-06.js",
   "assets/data/topics/p1-l1.js",
   "assets/data/topics/p1-l2.js",
   "assets/data/topics/p1-l3.js",
@@ -54,6 +59,7 @@ var PRECACHE = [
   "assets/data/topics/t1-l3.js",
   "assets/data/topics/t1-l4.js",
   "assets/data/topics/t1-l5.js",
+  "assets/data/topics/t1-l6.js",
   "assets/data/topics/t1-test-03-extra.js",
   "assets/data/traces/p1-l1-csv-peek.js",
   "assets/data/traces/p1-l1-lifecycle-run.js",

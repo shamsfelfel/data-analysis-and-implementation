@@ -47,6 +47,28 @@ window.DAGlossary["t1"] = [
   ]
  },
  {
+  "id": "assertion",
+  "term": {
+   "en": "Assertion",
+   "ar": "التأكيد (Assertion)"
+  },
+  "def": {
+   "en": "A Python statement, assert condition, \"message\", that does nothing when the condition is true and raises AssertionError when it is false. It stops at the first failure and is removed when Python runs with -O, so it suits your own invariants more than the guarding of an external file.",
+   "ar": "عبارة بايثون من الشكل assert condition, \"message\" لا تفعل شيئًا حين يكون الشرط صحيحًا وترفع AssertionError حين يكون خاطئًا. تتوقف عند أول إخفاق وتُحذف حين يعمل بايثون بالراية -O، فهي أنسب لثوابت برنامجك منها لحراسة ملف خارجي."
+  },
+  "cat": {
+   "en": "Validation",
+   "ar": "التحقّق"
+  },
+  "see": [
+   "validation",
+   "expected-schema"
+  ],
+  "used": [
+   "t1l6-s5"
+  ]
+ },
+ {
   "id": "boolean-mask",
   "term": {
    "en": "Boolean mask",
@@ -109,7 +131,8 @@ window.DAGlossary["t1"] = [
    "mojibake"
   ],
   "used": [
-   "t1l4-s9"
+   "t1l4-s9",
+   "t1l6-s20"
   ]
  },
  {
@@ -174,7 +197,54 @@ window.DAGlossary["t1"] = [
    "nan"
   ],
   "used": [
-   "t1l3-s22"
+   "t1l3-s22",
+   "t1l6-s1"
+  ]
+ },
+ {
+  "id": "completeness",
+  "term": {
+   "en": "Completeness",
+   "ar": "الاكتمال (Completeness)"
+  },
+  "def": {
+   "en": "The quality dimension that asks whether everything that should be present is present. In the rental update, 4 of 61 areas are blank (6.6%), which is above a 5% tolerance; in the capstone, 3 of 9 enrolments are zeros that probably mean not counted.",
+   "ar": "بعد الجودة الذي يسأل هل كل ما يجب أن يكون موجودًا موجود. ففي تحديث الإيجارات 4 مساحات من 61 فارغة (6.6%) وهذا فوق تسامح 5%؛ وفي المشروع الختامي 3 من 9 أعداد طلبة أصفار تعني على الأرجح «لم تُحصَ»."
+  },
+  "cat": {
+   "en": "Data quality",
+   "ar": "جودة البيانات"
+  },
+  "see": [
+   "data-quality",
+   "nan",
+   "pd-na"
+  ],
+  "used": [
+   "t1l6-s9"
+  ]
+ },
+ {
+  "id": "consistency",
+  "term": {
+   "en": "Consistency",
+   "ar": "الاتساق (Consistency)"
+  },
+  "def": {
+   "en": "The quality dimension that asks whether the same thing looks the same everywhere and whether related fields agree. Gaza, gaza and Gaza with a trailing space are one city in three spellings; two date formats in one column, or a city whose governorate changes between rows, are inconsistent.",
+   "ar": "بعد الجودة الذي يسأل هل يبدو الشيء نفسه متماثلًا في كل مكان وهل تتفق الحقول المترابطة. Gaza وgaza وGaza بمسافة زائدة مدينة واحدة بثلاث تهجئات؛ وصيغتا تاريخ في عمود واحد، أو مدينة تتغير محافظتها بين الصفوف، أمثلة على عدم الاتساق."
+  },
+  "cat": {
+   "en": "Data quality",
+   "ar": "جودة البيانات"
+  },
+  "see": [
+   "data-quality",
+   "validity",
+   "uniqueness"
+  ],
+  "used": [
+   "t1l6-s9"
   ]
  },
  {
@@ -243,6 +313,54 @@ window.DAGlossary["t1"] = [
   ],
   "used": [
    "t1l1-s15"
+  ]
+ },
+ {
+  "id": "data-lineage",
+  "term": {
+   "en": "Data lineage",
+   "ar": "نسب البيانات (Data lineage)"
+  },
+  "def": {
+   "en": "The record of where a table came from and what was done to it: which file, fetched or exported when, loaded by which code. A dated file name and a short fingerprint of the file (the first characters of a SHA-256 hash) are the cheapest lineage; they let you answer why this week's chart differs from last week's.",
+   "ar": "سجل مصدر الجدول وما جرى له: أي ملف، جُلب أو صُدّر متى، وحُمّل بأي كود. واسم الملف المؤرَّخ وبصمة قصيرة للملف (أول محارف تجزئة SHA-256) هما أرخص نسب؛ فهما يتيحان لك أن تجيب لماذا يختلف رسم هذا الأسبوع عن رسم الأسبوع الماضي."
+  },
+  "cat": {
+   "en": "Data quality",
+   "ar": "جودة البيانات"
+  },
+  "see": [
+   "round-trip",
+   "schema-drift",
+   "data-quality"
+  ],
+  "used": [
+   "t1l6-s12"
+  ]
+ },
+ {
+  "id": "data-quality",
+  "term": {
+   "en": "Data quality",
+   "ar": "جودة البيانات (Data quality)"
+  },
+  "def": {
+   "en": "How fit a table is for the use you have in mind, not whether it is perfect. It is described along five dimensions: completeness, uniqueness, validity, consistency and timeliness (is it recent enough for the decision). Whether a value matches the real world, accuracy, needs a second source and cannot be checked from the file alone.",
+   "ar": "مدى صلاحية الجدول للاستعمال الذي تنويه، لا هل هو كامل. ويوصف على خمسة أبعاد: الاكتمال والتفرّد والصلاحية والاتساق والحداثة (هل هو حديث بما يكفي للقرار). أما مطابقة القيمة للعالم الحقيقي، أي الدقة، فتحتاج مصدرًا ثانيًا ولا يمكن فحصها من الملف وحده."
+  },
+  "cat": {
+   "en": "Data quality",
+   "ar": "جودة البيانات"
+  },
+  "see": [
+   "completeness",
+   "uniqueness",
+   "validity",
+   "consistency",
+   "validation"
+  ],
+  "used": [
+   "t1l6-s9"
   ]
  },
  {
@@ -446,6 +564,30 @@ window.DAGlossary["t1"] = [
   ]
  },
  {
+  "id": "expected-schema",
+  "term": {
+   "en": "Expected schema",
+   "ar": "المخطط المتوقَّع (Expected schema)"
+  },
+  "def": {
+   "en": "A description, written as plain data such as a dictionary, of the table you are willing to accept: which columns, which dtype each has, and the rules its values must obey (range, allowed set, uniqueness, tolerated share of missing). The same dictionary can drive read_csv and validate(), so reading and checking cannot drift apart.",
+   "ar": "وصف مكتوب بيانات عادية مثل قاموس للجدول الذي تقبله: أي الأعمدة، وأي نوع لكل منها، وما القواعد التي يجب أن تطيعها قيمه (المدى والمجموعة المسموحة والتفرّد ونسبة النقص المقبولة). ويستطيع القاموس نفسه أن يقود read_csv وvalidate()، فلا ينفصل القراءة والفحص."
+  },
+  "cat": {
+   "en": "Validation",
+   "ar": "التحقّق"
+  },
+  "see": [
+   "schema",
+   "validation",
+   "schema-drift",
+   "dtype"
+  ],
+  "used": [
+   "t1l6-s6"
+  ]
+ },
+ {
   "id": "feature-extraction",
   "term": {
    "en": "Feature extraction",
@@ -576,7 +718,8 @@ window.DAGlossary["t1"] = [
    "mean"
   ],
   "used": [
-   "t1l2-s7"
+   "t1l2-s7",
+   "t1l6-s17"
   ]
  },
  {
@@ -717,7 +860,8 @@ window.DAGlossary["t1"] = [
   "used": [
    "t1l2-s6",
    "t1l2-s9",
-   "t1l2-s21"
+   "t1l2-s21",
+   "t1l6-s19"
   ]
  },
  {
@@ -762,7 +906,8 @@ window.DAGlossary["t1"] = [
    "nominal"
   ],
   "used": [
-   "t1l2-s5"
+   "t1l2-s5",
+   "t1l6-s19"
   ]
  },
  {
@@ -805,7 +950,8 @@ window.DAGlossary["t1"] = [
    "dtype-inference"
   ],
   "used": [
-   "t1l4-s14"
+   "t1l4-s14",
+   "t1l6-s20"
   ]
  },
  {
@@ -873,7 +1019,8 @@ window.DAGlossary["t1"] = [
    "one-hot-encoding"
   ],
   "used": [
-   "t1l2-s5"
+   "t1l2-s5",
+   "t1l6-s17"
   ]
  },
  {
@@ -919,7 +1066,8 @@ window.DAGlossary["t1"] = [
    "dtype"
   ],
   "used": [
-   "t1l3-s21"
+   "t1l3-s21",
+   "t1l6-s18"
   ]
  },
  {
@@ -987,7 +1135,8 @@ window.DAGlossary["t1"] = [
    "likert-scale"
   ],
   "used": [
-   "t1l2-s6"
+   "t1l2-s6",
+   "t1l6-s17"
   ]
  },
  {
@@ -1010,6 +1159,29 @@ window.DAGlossary["t1"] = [
   ],
   "used": [
    "t1l5-h5"
+  ]
+ },
+ {
+  "id": "parquet",
+  "term": {
+   "en": "Parquet",
+   "ar": "باركيه (Parquet)"
+  },
+  "def": {
+   "en": "A binary file format that stores a table column by column and keeps each column's dtype inside the file, so ordered categories, nullable integers and dates survive a save and reload. It is a next step beyond CSV: pandas needs the pyarrow package, the file cannot be read in a text editor, and for a table of 60 rows it is not smaller than the CSV.",
+   "ar": "صيغة ملفات ثنائية تخزّن الجدول عمودًا عمودًا وتحفظ نوع كل عمود داخل الملف، فتنجو الفئات المرتّبة والأعداد الصحيحة القابلة للفراغ والتواريخ من الحفظ وإعادة التحميل. وهي خطوة تالية بعد CSV: يحتاج pandas حزمة pyarrow، ولا يُقرأ الملف في محرر نصوص، وليس أصغر من CSV في جدول من 60 صفًّا."
+  },
+  "cat": {
+   "en": "Formats",
+   "ar": "الصيغ"
+  },
+  "see": [
+   "csv",
+   "round-trip",
+   "dtype"
+  ],
+  "used": [
+   "t1l6-s13"
   ]
  },
  {
@@ -1119,7 +1291,8 @@ window.DAGlossary["t1"] = [
    "true-zero"
   ],
   "used": [
-   "t1l2-s8"
+   "t1l2-s8",
+   "t1l6-s17"
   ]
  },
  {
@@ -1207,7 +1380,30 @@ window.DAGlossary["t1"] = [
    "encoding"
   ],
   "used": [
-   "t1l4-s24"
+   "t1l4-s24",
+   "t1l6-s15"
+  ]
+ },
+ {
+  "id": "sanity-check",
+  "term": {
+   "en": "Sanity check",
+   "ar": "فحص المعقولية (Sanity check)"
+  },
+  "def": {
+   "en": "A quick test whose only job is to confirm that a result is not absurd: that the minimum area is not zero, that enrolments of boys and girls add up to the total, that the newest listing is not from last year. It cannot prove the data is right; it can only catch the data being obviously wrong.",
+   "ar": "اختبار سريع مهمته الوحيدة التأكد من أن النتيجة ليست سخيفة: أن الحد الأدنى للمساحة ليس صفرًا، وأن أعداد البنين والبنات تجمع إلى الإجمالي، وأن أحدث إعلان ليس من العام الماضي. لا يستطيع أن يثبت صحة البيانات؛ يستطيع فقط أن يلتقط كونها خاطئة بوضوح."
+  },
+  "cat": {
+   "en": "Validation",
+   "ar": "التحقّق"
+  },
+  "see": [
+   "validation",
+   "validity"
+  ],
+  "used": [
+   "t1l6-s2"
   ]
  },
  {
@@ -1230,7 +1426,31 @@ window.DAGlossary["t1"] = [
    "metadata"
   ],
   "used": [
-   "t1l1-s2"
+   "t1l1-s2",
+   "t1l6-s6"
+  ]
+ },
+ {
+  "id": "schema-drift",
+  "term": {
+   "en": "Schema drift",
+   "ar": "انجراف المخطط (Schema drift)"
+  },
+  "def": {
+   "en": "A source quietly stops matching the shape your code expects: a column is renamed from monthly_rent to rent_nis, a type changes, a unit switches from square metres to square feet. Nothing crashes at load time; the model or the report is simply wrong, unless a schema check notices.",
+   "ar": "يتوقف مصدر بهدوء عن مطابقة الشكل الذي يتوقعه كودك: يُعاد تسمية عمود من monthly_rent إلى rent_nis، أو يتغير نوع، أو تنتقل وحدة من المتر المربع إلى القدم المربعة. لا ينهار شيء عند التحميل؛ ويصبح النموذج أو التقرير خاطئًا ببساطة ما لم يلحظ فحص المخطط ذلك."
+  },
+  "cat": {
+   "en": "Validation",
+   "ar": "التحقّق"
+  },
+  "see": [
+   "expected-schema",
+   "validation",
+   "data-lineage"
+  ],
+  "used": [
+   "t1l6-s8"
   ]
  },
  {
@@ -1487,6 +1707,28 @@ window.DAGlossary["t1"] = [
   ]
  },
  {
+  "id": "uniqueness",
+  "term": {
+   "en": "Uniqueness",
+   "ar": "التفرّد (Uniqueness)"
+  },
+  "def": {
+   "en": "The quality dimension that asks whether each real-world thing is recorded once. A repeated listing line makes 61 rows but 60 distinct ids and inflates every count; a duplicate that sits on both sides of a train/test split flatters a model's score.",
+   "ar": "بعد الجودة الذي يسأل هل كل شيء في العالم الحقيقي مسجّل مرة واحدة. سطر إعلان مكرّر يعطي 61 صفًّا لكن 60 معرّفًا مختلفًا ويضخّم كل عدّ؛ والمكرّر الذي يقع على جانبي تقسيم التدريب والاختبار يضخّم نتيجة النموذج."
+  },
+  "cat": {
+   "en": "Data quality",
+   "ar": "جودة البيانات"
+  },
+  "see": [
+   "data-quality",
+   "validity"
+  ],
+  "used": [
+   "t1l6-s9"
+  ]
+ },
+ {
   "id": "unstructured",
   "term": {
    "en": "Unstructured data",
@@ -1508,6 +1750,53 @@ window.DAGlossary["t1"] = [
   "used": [
    "t1l1-s3",
    "t1l1-s11"
+  ]
+ },
+ {
+  "id": "validation",
+  "term": {
+   "en": "Validation",
+   "ar": "التحقّق (Validation)"
+  },
+  "def": {
+   "en": "Checking, before any analysis, that a loaded table matches what you expect: the right columns, dtypes, ranges, categories, no unexpected repeats or holes. In the update file, validation finds a repeated id, a zero area and a mis-spelled city that loaded without a single error.",
+   "ar": "الفحص، قبل أي تحليل، بأن الجدول المحمَّل يطابق ما تتوقعه: الأعمدة والأنواع والمدى والفئات الصحيحة، ولا تكرار أو ثقوب غير متوقعة. وفي ملف التحديث يجد التحقّق معرّفًا مكرّرًا ومساحة صفرية ومدينة مكتوبة خطأً تحمّلت جميعها دون أي رسالة خطأ."
+  },
+  "cat": {
+   "en": "Validation",
+   "ar": "التحقّق"
+  },
+  "see": [
+   "assertion",
+   "expected-schema",
+   "sanity-check",
+   "data-quality"
+  ],
+  "used": [
+   "t1l6-s2"
+  ]
+ },
+ {
+  "id": "validity",
+  "term": {
+   "en": "Validity",
+   "ar": "الصلاحية (Validity)"
+  },
+  "def": {
+   "en": "The quality dimension that asks whether each value obeys the rules of its kind: its type, its plausible range, its allowed set, its format. An area of 0 square metres, a negative rent or a damage level that is not one of the three agreed words is invalid.",
+   "ar": "بعد الجودة الذي يسأل هل تطيع كل قيمة قواعد نوعها: نوعها ومداها المعقول ومجموعتها المسموحة وصيغتها. مساحة 0 متر مربع أو إيجار سالب أو مستوى ضرر ليس إحدى الكلمات الثلاث المتفق عليها كلها قيم غير صالحة."
+  },
+  "cat": {
+   "en": "Data quality",
+   "ar": "جودة البيانات"
+  },
+  "see": [
+   "data-quality",
+   "consistency",
+   "sanity-check"
+  ],
+  "used": [
+   "t1l6-s9"
   ]
  },
  {

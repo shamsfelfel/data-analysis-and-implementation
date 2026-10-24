@@ -480,6 +480,48 @@ window.DAAnchors = {
 "t1l5-s7": "lessons/t1-lesson-05.html",
 "t1l5-s8": "lessons/t1-lesson-05.html",
 "t1l5-s9": "lessons/t1-lesson-05.html",
+"t1l6-e1": "lessons/t1-lesson-06.html",
+"t1l6-e2": "lessons/t1-lesson-06.html",
+"t1l6-e3": "lessons/t1-lesson-06.html",
+"t1l6-h1": "lessons/t1-lesson-06.html",
+"t1l6-h2": "lessons/t1-lesson-06.html",
+"t1l6-h3": "lessons/t1-lesson-06.html",
+"t1l6-h4": "lessons/t1-lesson-06.html",
+"t1l6-h5": "lessons/t1-lesson-06.html",
+"t1l6-h6": "lessons/t1-lesson-06.html",
+"t1l6-h7": "lessons/t1-lesson-06.html",
+"t1l6-h8": "lessons/t1-lesson-06.html",
+"t1l6-s1": "lessons/t1-lesson-06.html",
+"t1l6-s10": "lessons/t1-lesson-06.html",
+"t1l6-s11": "lessons/t1-lesson-06.html",
+"t1l6-s12": "lessons/t1-lesson-06.html",
+"t1l6-s13": "lessons/t1-lesson-06.html",
+"t1l6-s14": "lessons/t1-lesson-06.html",
+"t1l6-s15": "lessons/t1-lesson-06.html",
+"t1l6-s16": "lessons/t1-lesson-06.html",
+"t1l6-s17": "lessons/t1-lesson-06.html",
+"t1l6-s18": "lessons/t1-lesson-06.html",
+"t1l6-s19": "lessons/t1-lesson-06.html",
+"t1l6-s2": "lessons/t1-lesson-06.html",
+"t1l6-s20": "lessons/t1-lesson-06.html",
+"t1l6-s21": "lessons/t1-lesson-06.html",
+"t1l6-s22": "lessons/t1-lesson-06.html",
+"t1l6-s23": "lessons/t1-lesson-06.html",
+"t1l6-s24": "lessons/t1-lesson-06.html",
+"t1l6-s25": "lessons/t1-lesson-06.html",
+"t1l6-s26": "lessons/t1-lesson-06.html",
+"t1l6-s27": "lessons/t1-lesson-06.html",
+"t1l6-s28": "lessons/t1-lesson-06.html",
+"t1l6-s29": "lessons/t1-lesson-06.html",
+"t1l6-s3": "lessons/t1-lesson-06.html",
+"t1l6-s30": "lessons/t1-lesson-06.html",
+"t1l6-s31": "lessons/t1-lesson-06.html",
+"t1l6-s4": "lessons/t1-lesson-06.html",
+"t1l6-s5": "lessons/t1-lesson-06.html",
+"t1l6-s6": "lessons/t1-lesson-06.html",
+"t1l6-s7": "lessons/t1-lesson-06.html",
+"t1l6-s8": "lessons/t1-lesson-06.html",
+"t1l6-s9": "lessons/t1-lesson-06.html",
 "t1lab-h1": "labs/t1-lab.html",
 "t1lab-h10": "labs/t1-lab.html",
 "t1lab-h11": "labs/t1-lab.html",
@@ -2108,6 +2150,162 @@ window.DAHeadings = {
 "t1l5-s9": {
 "ar": "ثلاث طرق لبناء الجدول",
 "en": "Three ways to build the table"
+},
+"t1l6-h1": {
+"ar": "المفهوم 1 — الطقس: عشرة أسطر تكشف ما لا تراه عيناك",
+"en": "Concept 1 — The ritual: ten lines that find what your eyes cannot"
+},
+"t1l6-h2": {
+"ar": "المفهوم 2 — من الطقس إلى الكود: التأكيدات والمخطط ودالة التحقّق",
+"en": "Concept 2 — From ritual to code: assertions, a schema and a validator"
+},
+"t1l6-h3": {
+"ar": "المفهوم 3 — خمس كلمات لجودة البيانات",
+"en": "Concept 3 — Five words for data quality"
+},
+"t1l6-h4": {
+"ar": "المفهوم 4 — اختيار الصيغة",
+"en": "Concept 4 — Choosing the format"
+},
+"t1l6-h5": {
+"ar": "المفهوم 5 — المشروع الختامي: تقييم أضرار المدارس في غزة",
+"en": "Concept 5 — The capstone: assessing school damage in Gaza"
+},
+"t1l6-h6": {
+"ar": "المفهوم 6 — نجمع الأجزاء: load_listings(path)",
+"en": "Concept 6 — Putting it together: load_listings(path)"
+},
+"t1l6-h7": {
+"ar": "ما الذي يأتي بعد ذلك، ومراجعة ذاتية",
+"en": "What comes next, and a self-review"
+},
+"t1l6-h8": {
+"ar": "تمارين",
+"en": "Exercises"
+},
+"t1l6-s1": {
+"ar": "ملف تحمّل دون أي خطأ",
+"en": "A file that loaded without a single error"
+},
+"t1l6-s10": {
+"ar": "من الكلمات إلى الأرقام",
+"en": "From words to numbers"
+},
+"t1l6-s11": {
+"ar": "اتساق لا تراه",
+"en": "Consistency you cannot see"
+},
+"t1l6-s12": {
+"ar": "من أين جاء هذا الجدول؟ نسب البيانات",
+"en": "Where did this table come from? Data lineage"
+},
+"t1l6-s13": {
+"ar": "جدول قرار",
+"en": "A decision table"
+},
+"t1l6-s14": {
+"ar": "شجرة القرار",
+"en": "The decision tree"
+},
+"t1l6-s15": {
+"ar": "قِس الذهاب والإياب",
+"en": "Measure the round trip"
+},
+"t1l6-s16": {
+"ar": "التكليف والملف الخام",
+"en": "The brief and the raw file"
+},
+"t1l6-s17": {
+"ar": "الخطوة 1 — صنّف الأعمدة الثمانية مرتين",
+"en": "Step 1 — classify the eight columns twice"
+},
+"t1l6-s18": {
+"ar": "الخطوة 2 — اختر أنواع pandas",
+"en": "Step 2 — choose the pandas dtypes"
+},
+"t1l6-s19": {
+"ar": "الخطوة 3 — اقتنص المصائد الثلاث",
+"en": "Step 3 — spot the three traps"
+},
+"t1l6-s2": {
+"ar": "الطقس سطرًا سطرًا",
+"en": "The ritual, line by line"
+},
+"t1l6-s20": {
+"ar": "الخطوة 4 — اكتب read_csv الدقيقة",
+"en": "Step 4 — write the exact read_csv"
+},
+"t1l6-s21": {
+"ar": "الخطوة 5 — نفّذ الطقس واكتب ثلاث ملاحظات",
+"en": "Step 5 — run the ritual and write three findings"
+},
+"t1l6-s22": {
+"ar": "الحركة الختامية — حوّل بأمان، وأصلح، وقِس من جديد",
+"en": "The finishing move — convert safely, repair, measure again"
+},
+"t1l6-s23": {
+"ar": "تحقّق من الجدول المصلَح",
+"en": "Validate the repaired table"
+},
+"t1l6-s24": {
+"ar": "الصورة النهائية للخيط",
+"en": "The thread's final form"
+},
+"t1l6-s25": {
+"ar": "ثلاث نسخ من المحمِّل",
+"en": "Three versions of the loader"
+},
+"t1l6-s26": {
+"ar": "فارغ أم فاشل؟ قراءة التقرير",
+"en": "Blank or failed? Reading the report"
+},
+"t1l6-s27": {
+"ar": "الانضباط نفسه لواجهة API",
+"en": "The same discipline for an API"
+},
+"t1l6-s28": {
+"ar": "إلى أين يقود هذا",
+"en": "Where this goes"
+},
+"t1l6-s29": {
+"ar": "قائمة مراجعة ذاتية",
+"en": "A self-review checklist"
+},
+"t1l6-s3": {
+"ar": "شغّله واقرأه",
+"en": "Run it and read it"
+},
+"t1l6-s30": {
+"ar": "أهم الخلاصات",
+"en": "Key takeaways"
+},
+"t1l6-s31": {
+"ar": "ملحق — الحساب وراء أرقام هذه الصفحة",
+"en": "Appendix — the arithmetic behind the numbers on this page"
+},
+"t1l6-s4": {
+"ar": "ما لا يراه الطقس",
+"en": "What the ritual cannot see"
+},
+"t1l6-s5": {
+"ar": "التأكيد يتوقف عند أول إخفاق",
+"en": "An assertion stops at the first failure"
+},
+"t1l6-s6": {
+"ar": "المخطط المتوقَّع مكتوبًا بيانات",
+"en": "The expected schema, written as data"
+},
+"t1l6-s7": {
+"ar": "validate(): قائمة بالمشكلات ثم قرار",
+"en": "validate(): a list of problems, then a decision"
+},
+"t1l6-s8": {
+"ar": "شاهدها تعمل، ثم شاهدها تلتقط الانجراف",
+"en": "Watch it work, then watch it catch drift"
+},
+"t1l6-s9": {
+"ar": "الأبعاد الخمسة",
+"en": "The five dimensions"
 },
 "t1lab-h1": {
 "ar": "تسطيح JSON متداخل إلى صفوف جدول",
