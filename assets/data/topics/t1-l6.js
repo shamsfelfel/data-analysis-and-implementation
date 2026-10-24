@@ -1,0 +1,28 @@
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["t1-silent-load"] = { href: "t1l6-s1", en: "a file that loads without an error but is wrong", ar: "ملف يتحمّل دون خطأ لكنه خاطئ" };
+  T["t1-validation-ritual"] = { href: "t1l6-s2", en: "the ten-line validation ritual", ar: "طقس التحقّق ذو الأسطر العشرة" };
+  T["t1-ritual-limits"] = { href: "t1l6-s4", en: "what the ritual cannot see", ar: "ما لا يراه طقس التحقّق" };
+  T["t1-assert-first-failure"] = { href: "t1l6-s5", en: "assertions stop at the first failure", ar: "التأكيدات تتوقف عند أول إخفاق" };
+  T["t1-expected-schema"] = { href: "t1l6-s6", en: "the expected schema as data", ar: "المخطط المتوقَّع بوصفه بيانات" };
+  T["t1-validate-function"] = { href: "t1l6-s7", en: "validate(): problems list, severity and decision", ar: "validate(): قائمة المشكلات والخطورة والقرار" };
+  T["t1-schema-drift"] = { href: "t1l6-s8", en: "schema drift and garbage in, garbage out", ar: "انجراف المخطط ومدخلات فاسدة تعطي نتائج فاسدة" };
+  T["t1-quality-dimensions"] = { href: "t1l6-s9", en: "five dimensions of data quality", ar: "أبعاد جودة البيانات الخمسة" };
+  T["t1-quality-report"] = { href: "t1l6-s10", en: "turning dimensions into a quality report", ar: "تحويل الأبعاد إلى تقرير جودة" };
+  T["t1-invisible-inconsistency"] = { href: "t1l6-s11", en: "inconsistency you cannot see", ar: "اتساق لا تراه العين" };
+  T["t1-data-lineage"] = { href: "t1l6-s12", en: "data lineage and fingerprints", ar: "نسب البيانات والبصمات" };
+  T["t1-format-decision-table"] = { href: "t1l6-s13", en: "CSV, Excel, JSON, API, database, Parquet: strengths and costs", ar: "CSV وExcel وJSON وAPI وقاعدة البيانات وParquet: القوة والكلفة" };
+  T["t1-format-decision-tree"] = { href: "t1l6-s14", en: "choosing a format: the decision tree", ar: "اختيار الصيغة: شجرة القرار" };
+  T["t1-format-roundtrip"] = { href: "t1l6-s15", en: "which dtypes survive a round trip", ar: "أي الأنواع تنجو من الذهاب والعودة" };
+  T["t1-capstone-classify"] = { href: "t1l6-s17", en: "capstone: classify columns by level and kind", ar: "المشروع الختامي: تصنيف الأعمدة بالمستوى والنوع" };
+  T["t1-capstone-dtypes"] = { href: "t1l6-s18", en: "capstone: choosing the dtypes", ar: "المشروع الختامي: اختيار الأنواع" };
+  T["t1-capstone-traps"] = { href: "t1l6-s19", en: "capstone: identifier, false zero, mean of an ordinal", ar: "المشروع الختامي: المعرّف والصفر الكاذب ووسط الترتيبي" };
+  T["t1-capstone-read-csv"] = { href: "t1l6-s20", en: "capstone: the exact read_csv, three versions", ar: "المشروع الختامي: read_csv الدقيقة في ثلاث نسخ" };
+  T["t1-capstone-findings"] = { href: "t1l6-s21", en: "capstone: ritual and three quality findings", ar: "المشروع الختامي: الطقس وثلاث ملاحظات جودة" };
+  T["t1-capstone-repair"] = { href: "t1l6-s22", en: "capstone: safe conversion and re-measuring", ar: "المشروع الختامي: التحويل الآمن وإعادة القياس" };
+  T["t1-capstone-validate"] = { href: "t1l6-s23", en: "capstone: validating the repaired table", ar: "المشروع الختامي: التحقّق من الجدول المصلَح" };
+  T["t1-loader-thread"] = { href: "t1l6-s24", en: "the loading thread: from guessed read to validated loader", ar: "خيط التحميل: من قراءة مخمَّنة إلى محمِّل متحقَّق منه" };
+  T["t1-loader-versions"] = { href: "t1l6-s25", en: "load_listings(): script, function, schema-driven loader", ar: "load_listings(): سكربت ودالة ومحمِّل يقوده المخطط" };
+  T["t1-blank-vs-failed"] = { href: "t1l6-s26", en: "blank versus could-not-parse, and the report", ar: "فارغ أم فشل في التحويل، والتقرير" };
+  T["t1-api-validation"] = { href: "t1l6-s27", en: "validating an API reply and keeping a snapshot", ar: "التحقّق من ردّ API والاحتفاظ بلقطة" };
+})(window.DATopics);

@@ -18,7 +18,7 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 | T1 L3 | `csv` module → `list[dict]` | still all strings; no vectorised arithmetic; nothing checks the data |
 | T1 L3–L4 | `pd.read_csv(path)` | silently guesses dtypes: one stray `"1,200"` or `"TBD"` turns a number column into `object` (text) — note `"n/a"`, `"NA"`, `"NaN"`, `"null"` and empty cells are read as missing by default; dates stay strings |
 | T1 L4 | `read_csv(sep=, encoding=, dtype=, parse_dates=, na_values=)` | correct for this file, but the knowledge lives in one call nobody validates |
-| T1 L6 | `load_listings()` — a function that loads **and validates** (shape, dtypes, ranges, missing, duplicates) | covers one file; changes in the source schema are still found only when it fails |
+| T1 L6 | `load_listings(path)` — reads everything as text, types each column from a schema dict, counts blank and failed cells, validates, returns (typed DataFrame, report) | one file layout only; a source change shows only when it fails the schema; Excel, Power Query and Power BI have their own silent defaults (P1) |
 | P1 L3/L6 | the same load in a notebook / Power Query / Excel Table | three tools, three different silent defaults (see T-QUESTION) |
 | T2, P2 (planned) | cleaning pipeline; `pd.read_*` with a schema | — |
 
@@ -41,15 +41,16 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 | T1 L3 | `pd.to_numeric(errors="coerce")` | turns every failure into `NaN` — the *reason* is lost, and so is the count unless you ask |
 | T1 L4 | `thousands=`, `decimal=`, `parse_dates=` at read time; Excel serial dates → `pd.to_datetime(unit="D", origin="1899-12-30")` | fixes known formats; unknown formats still become `NaN` |
 | T1 L5 | `pd.json_normalize` for nested fields | missing nested keys become `NaN` without warning |
-| T1 L6 | validation counts the `NaN`s *before* and *after* parsing and fails loudly if they grew | — |
+| T1 L6 | blank cells are counted before parsing and missing cells after, so the difference is the per-column parse failures (with an example), and any failure makes the decision STOP | unknown formats are reported, not fixed (T2) |
+| T1 L6 | (T-MEANING recap) the measurement level is written as data beside the schema, and a helper refuses a mean for nominal or ordinal columns | the level is still a human judgement |
 
 ## T-FETCH — Get data from another system
 
 | Where | Solution | Gap |
 |---|---|---|
 | T1 L5 | `requests.get(url).json()` | assumes 200 OK, one page, no limit |
-| T1 L5 | check `status_code`, `raise_for_status()`, follow `next`, sleep on 429 | still no retry/back-off policy, no timeout |
-| T1 L6 | wrap in a function with `timeout=`, bounded retries, and a validated result | no caching: every run hits the server again |
+| T1 L5 | check `status_code`, `raise_for_status()`, follow `next`, wait on 429 with bounded tries, retry 429/5xx/timeout with back-off, wrapped in `fetch_all()` with a `timeout=` and a count/id check | checks the transport, not the content: nothing validates the fields the server sent; no snapshot, no cache |
+| T1 L6 | field-level validation with the same `validate()` as the file loaders, plus a dated snapshot of the pages | no expiry or refresh policy for the snapshot |
 
 ## P-QUESTION — Answer a business question from a table
 
