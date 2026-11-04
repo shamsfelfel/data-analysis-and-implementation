@@ -62,6 +62,39 @@ test.describe('service worker', () => {
     expect(state.scriptURL).toContain('/sw.js');
   });
 
+  test("clears its own old caches and leaves a sibling course's alone", async ({ page }) => {
+    // The courses are published to one GitHub Pages origin, each under its own
+    // project path, and Cache Storage is scoped to the origin rather than the
+    // path. A worker that deleted every cache that was not its own would throw
+    // away the sibling courses' offline copies. Plant one cache of each kind
+    // and make the worker install and activate from scratch.
+    await open(page, 'index.html');
+    await serviceWorkerReady(page);
+
+    await page.evaluate(async () => {
+      await caches.open('da-19700101-1'); // an older build of this course
+      await caches.open('oop-19700101-1'); // another course on the same origin
+    });
+
+    await page.evaluate(async () => {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg) await reg.unregister();
+    });
+    await page.reload();
+    await serviceWorkerReady(page);
+
+    const keys = async () => page.evaluate(() => caches.keys());
+    await expect
+      .poll(async () => (await keys()).includes('da-19700101-1'),
+            { message: 'this course kept one of its own stale caches' })
+      .toBe(false);
+
+    const after = await keys();
+    expect(after, "a sibling course's cache was deleted").toContain('oop-19700101-1');
+    expect(after.some((k) => /^da-\d{8}-\d+$/.test(k)),
+           'this course precached nothing under its own prefix').toBe(true);
+  });
+
   test('precaches every file the site is made of', async ({ request }) => {
     const listed = precacheList();
 

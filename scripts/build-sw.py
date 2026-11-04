@@ -15,7 +15,11 @@ Run it after build.py, whenever a file is added or removed:
     python3 scripts/build-sw.py
 
 The cache name carries the date and a counter, so writing a new worker
-invalidates every old cache and installed readers pick up the change.
+invalidates this course's old caches and installed readers pick up the
+change. It invalidates only this course's: the courses share one GitHub
+Pages origin and Cache Storage is scoped to the origin and not to the path,
+so a worker that deleted every cache it did not recognise would take the
+sibling courses offline.
 """
 import datetime
 import io
@@ -24,6 +28,10 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Every cache this course creates is named with this prefix, and activate
+# deletes nothing without it. See the module docstring.
+PREFIX = "da-"
 
 # Directories whose entire contents ship, and the loose files at the root.
 DIRS = ["assets", "chapters", "lessons", "tests", "exams", "labs", "glossary", "icons", "downloads"]
@@ -48,8 +56,12 @@ TEMPLATE = u'''/* ============================================================
    Assets are cache-first -- they are versioned by this file's
    cache name, so there is nothing to revalidate.
 
-   CACHE changes on every build. The activate handler deletes every
-   other cache, which is what makes a stale chapter impossible.
+   CACHE changes on every build, and its name starts with the course's
+   own prefix "%(prefix)s". The activate handler deletes this course's
+   other caches, which is what makes a stale chapter impossible -- and
+   deletes only this course's: the sibling courses are served from
+   other paths of this same origin, and Cache Storage is shared across
+   the whole of an origin.
    ============================================================ */
 'use strict';
 
@@ -76,11 +88,17 @@ self.addEventListener('install', function (event) {
   );
 });
 
+var PREFIX = '%(prefix)s';
+
 self.addEventListener('activate', function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
       return Promise.all(keys.map(function (k) {
-        return k === CACHE ? null : caches['delete'](k);
+        /* Only this course's own caches: a sibling course served from
+           another path of the same origin owns the rest, and deleting
+           them would take it offline. */
+        if (k === CACHE) return null;
+        return k.indexOf(PREFIX) === 0 ? caches['delete'](k) : null;
       }));
     }).then(function () { return self.clients.claim(); })
   );
@@ -167,10 +185,10 @@ def next_cache_name(today):
     n = 1
     if os.path.exists(path):
         current = io.open(path, encoding="utf-8").read()
-        m = re.search(r"var CACHE = 'da-(\d{8})-(\d+)'", current)
+        m = re.search(r"var CACHE = '%s(\d{8})-(\d+)'" % re.escape(PREFIX), current)
         if m and m.group(1) == today:
             n = int(m.group(2)) + 1
-    return "da-%s-%d" % (today, n)
+    return "%s%s-%d" % (PREFIX, today, n)
 
 
 def main():
@@ -202,7 +220,8 @@ def main():
         print("sw.js precaches all %d files" % len(files))
         return 0
 
-    text = TEMPLATE % {"cache": next_cache_name(today), "assets": assets}
+    text = TEMPLATE % {"cache": next_cache_name(today), "assets": assets,
+                       "prefix": PREFIX}
     io.open(path, "w", encoding="utf-8", newline="\n").write(text)
     print("wrote sw.js -- %d files precached" % (len(files) + 1))
     return 0

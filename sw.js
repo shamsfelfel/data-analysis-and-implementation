@@ -14,12 +14,16 @@
    Assets are cache-first -- they are versioned by this file's
    cache name, so there is nothing to revalidate.
 
-   CACHE changes on every build. The activate handler deletes every
-   other cache, which is what makes a stale chapter impossible.
+   CACHE changes on every build, and its name starts with the course's
+   own prefix "da-". The activate handler deletes this course's
+   other caches, which is what makes a stale chapter impossible -- and
+   deletes only this course's: the sibling courses are served from
+   other paths of this same origin, and Cache Storage is shared across
+   the whole of an origin.
    ============================================================ */
 'use strict';
 
-var CACHE = 'da-20261024-2';
+var CACHE = 'da-20261104-1';
 
 /* Paths are relative to this file, which sits at the site root, so
    they resolve the same whether the course is served from a domain
@@ -223,11 +227,17 @@ self.addEventListener('install', function (event) {
   );
 });
 
+var PREFIX = 'da-';
+
 self.addEventListener('activate', function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
       return Promise.all(keys.map(function (k) {
-        return k === CACHE ? null : caches['delete'](k);
+        /* Only this course's own caches: a sibling course served from
+           another path of the same origin owns the rest, and deleting
+           them would take it offline. */
+        if (k === CACHE) return null;
+        return k.indexOf(PREFIX) === 0 ? caches['delete'](k) : null;
       }));
     }).then(function () { return self.clients.claim(); })
   );
