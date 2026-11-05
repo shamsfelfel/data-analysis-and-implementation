@@ -201,6 +201,30 @@ footer.site {
   font-size: 13px;
 }
 
+/* ---------- the author's byline ---------- */
+
+/* A flex row, so the portrait leads the name in English and follows it in
+   Arabic without a second rule. 34px from a 200x200 source: never upscaled. */
+footer.site .byline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+footer.site .byline-face {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+}
+
 /* ---------- reading progress + back to top ---------- */
 .backtop {
   position: fixed; inset-inline-end: 14px; bottom: 16px;

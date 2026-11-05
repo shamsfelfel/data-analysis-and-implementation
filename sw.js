@@ -23,7 +23,7 @@
    ============================================================ */
 'use strict';
 
-var CACHE = 'da-20261104-1';
+var CACHE = 'da-20261105-1';
 
 /* Paths are relative to this file, which sits at the site root, so
    they resolve the same whether the course is served from a domain
@@ -139,6 +139,7 @@ var PRECACHE = [
   "assets/diagrams/t1-l6-validation-pipeline.html",
   "assets/diagrams/t1-scales-mindmap.html",
   "assets/diagrams/t1-three-shapes.html",
+  "assets/img/shams.jpg",
   "assets/js/anchors.js",
   "assets/js/app.js",
   "assets/js/assess.js",
