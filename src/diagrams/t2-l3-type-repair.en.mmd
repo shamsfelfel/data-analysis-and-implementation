@@ -1,0 +1,19 @@
+%% alt: Sequence diagram of a type repair, showing the four participants that have to agree: the analyst, the raw text column, pandas, and the decision log. The analyst first asks the column what it holds and is told that it is an object column with nine distinct values, of which seven are digits, nineteen cells say G and nine cells are blank. The analyst asks pandas to convert it with to_numeric and no arguments, and pandas refuses with a ValueError naming the string G at position thirty-six. The analyst then asks for errors equals coerce, and pandas returns a float column with twenty-eight missing values, nine of which were blank and nineteen of which were ground floors: the conversion succeeded and the information that a ground floor is a floor was destroyed without a word. The analyst stops, makes a domain decision that ground means zero, and writes that decision in the log with its reason. Only then does the analyst ask pandas to replace G with zero and convert, requesting the nullable Int64 type so that nine genuinely unknown floors stay missing instead of turning the whole column into floats. Pandas returns four hundred and ninety-four typed values and nine missing ones. Finally the analyst asks the log to confirm what happened, and the log replies that nineteen cells changed under a named rule and nine cells remain unknown, so the next reader can see the decision rather than guess it.
+sequenceDiagram
+  actor A as Analyst
+  participant C as floor column
+  participant P as pandas
+  participant L as Decision log
+  A->>C: what do you hold?
+  C-->>A: object, 7 digits + 19 'G' + 9 blank
+  A->>P: to_numeric(floor)
+  P-->>A: ValueError: cannot parse "G"
+  A->>P: to_numeric(errors="coerce")
+  P-->>A: float64, 28 missing
+  Note over A,P: 19 ground floors destroyed, no warning
+  A->>L: decision: ground means floor 0
+  L-->>A: rule recorded with its reason
+  A->>P: replace G with 0, astype("Int64")
+  P-->>A: Int64, 494 values, 9 missing
+  A->>L: what changed?
+  L-->>A: 19 cells by rule, 9 still unknown

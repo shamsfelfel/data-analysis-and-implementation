@@ -1,0 +1,109 @@
+[
+  { "id": "exact-duplicate",
+    "term": {"en": "Exact duplicate", "ar": "التكرار الحرفي (exact duplicate)"},
+    "def": {
+      "en": "A row every one of whose values equals the corresponding value of an earlier row, which is the only kind drop_duplicates() can find. listings_raw.csv holds 14 of them, so drop_duplicates() leaves 489 rows - still nine more than the 480 real flats.",
+      "ar": "صفٌّ تساوي كل قيمة من قيمه القيمةَ المقابلة في صف سابق، وهو النوع الوحيد الذي تستطيع drop_duplicates() أن تجده. ويحمل listings_raw.csv أربعة عشر منه، فتُبقي drop_duplicates() ‏489 صفًّا - وهي أكثر بتسعة من الشقق الحقيقية الـ480."
+    },
+    "cat": {"en": "Structure", "ar": "البنية"},
+    "see": ["repost", "business-key"] },
+
+  { "id": "repost",
+    "term": {"en": "Repost", "ar": "إعادة النشر (repost)"},
+    "def": {
+      "en": "The same real thing recorded twice with at least one column different, so no row comparison can find it. Nine flats in this file were advertised again weeks later with a new listed_on and the advert retyped, which is why 489 rows describe only 480 flats.",
+      "ar": "الشيء الحقيقي نفسه مسجَّلًا مرتين وفيه عمود واحد مختلف على الأقل، فلا تجده مقارنةُ صفوف. وتسع شقق في هذا الملف أُعلن عنها مرة أخرى بعد أسابيع بـ listed_on جديد وإعلان أُعيد كتابته، ولهذا تصف 489 صفًّا ‏480 شقة فقط."
+    },
+    "cat": {"en": "Structure", "ar": "البنية"},
+    "see": ["exact-duplicate", "business-key"] },
+
+  { "id": "business-key",
+    "term": {"en": "Business key", "ar": "المفتاح التجاري (business key)"},
+    "def": {
+      "en": "The smallest set of columns that, by the rules of the thing a table describes, cannot repeat. Here it is listing_id alone, which the rental site issues once per flat; some tables - a payment ledger, for instance - have none at all, and for those drop_duplicates() is not a legal operation.",
+      "ar": "أصغر مجموعة أعمدة لا يمكن أن تتكرر بحكم قواعد الشيء الذي يصفه الجدول. وهو هنا listing_id وحده، ويُصدره موقع التأجير مرة لكل شقة؛ وبعض الجداول - مثل دفتر دفعات - لا مفتاح لها أصلًا، ولتلك لا تكون drop_duplicates() عمليةً مشروعة."
+    },
+    "cat": {"en": "Structure", "ar": "البنية"},
+    "see": ["exact-duplicate", "repost"] },
+
+  { "id": "normalisation",
+    "term": {"en": "Normalisation", "ar": "التطبيع (normalisation)"},
+    "def": {
+      "en": "The part of a text repair a rule can do: a function applied to each value, with no knowledge of the domain, that removes differences you have decided do not matter. strip, lower and collapsing runs of spaces take the city column from 26 spellings to 11 and the advert column from 47 to 14.",
+      "ar": "الجزء من إصلاح النص الذي تستطيع القاعدة أن تؤديه: دالة تُطبَّق على كل قيمة بلا معرفة بالميدان، تحذف فروقًا قرّرتَ أنها لا تهمّ. فالتشذيب والتصغير وضغط سلاسل المسافات تأخذ عمود المدينة من 26 تهجئة إلى 11 وعمود الإعلان من 47 إلى 14."
+    },
+    "cat": {"en": "Text", "ar": "النصوص"},
+    "see": ["canonical-form", "text-flag"] },
+
+  { "id": "canonical-form",
+    "term": {"en": "Canonical form", "ar": "الصورة المعيارية (canonical form)"},
+    "def": {
+      "en": "The one spelling of a value that every later step, join and chart will use, chosen by a decision rather than derived by a rule. 'Khan Yunis' and 'Khan Younis' are one city only because a CITY_MAP says so; no string function can know it, and .str.title() reaches 11 spellings while renaming 40 already-correct rows.",
+      "ar": "تهجئة القيمة الواحدة التي ستستعملها كل خطوة ودمج ورسم لاحق، وتُختار بقرار لا تُستنبط بقاعدة. فـ'Khan Yunis' و'Khan Younis' مدينة واحدة لأن CITY_MAP تقول ذلك فقط؛ ولا تستطيع دالة نصوص أن تعرفه، وتبلغ .str.title() إحدى عشرة تهجئة وهي تعيد تسمية أربعين صفًّا كان صحيحًا."
+    },
+    "cat": {"en": "Text", "ar": "النصوص"},
+    "see": ["normalisation", "exact-duplicate"] },
+
+  { "id": "truthiness",
+    "term": {"en": "Truthiness", "ar": "الصدقية (truthiness)"},
+    "def": {
+      "en": "Python's rule for converting any object to a boolean: a string is False if it is empty and True otherwise, so the rule is about length and not about meaning. raw['furnished'].astype(bool) therefore marks all 503 flats furnished, including the 334 that say no, with the dtype you asked for and no warning.",
+      "ar": "قاعدة بايثون في تحويل أي كائن إلى قيمة منطقية: فالسلسلة النصية False إن كانت فارغة وTrue فيما سوى ذلك، فالقاعدة عن الطول لا عن المعنى. ولهذا تعلّم raw['furnished'].astype(bool) الشقق الـ503 كلها مفروشة، ومنها الـ334 التي تقول لا، بالنوع الذي طلبته وبلا تحذير."
+    },
+    "cat": {"en": "Types", "ar": "الأنواع"},
+    "see": ["nullable-dtype", "coercion"] },
+
+  { "id": "nullable-dtype",
+    "term": {"en": "Nullable dtype", "ar": "النوع القابل للفراغ (nullable dtype)"},
+    "def": {
+      "en": "A pandas dtype written with a capital letter - Int64, boolean, string - that holds its own values plus a genuine <NA>, so a count or a yes/no answer can be absent without changing kind. floor as Int64 keeps nine unknown floors and prints 2 rather than 2.0; furnished as boolean can say 'unanswered' where bool cannot.",
+      "ar": "نوعٌ في pandas يُكتب بحرف كبير - Int64 وboolean وstring - يحمل قيمه مع <NA> حقيقية، فيستطيع العدُّ أو جواب نعم/لا أن يغيب دون تغيير الجنس. فعمود floor بنوع Int64 يحفظ تسعة طوابق مجهولة ويطبع 2 لا 2.0؛ وfurnished بنوع boolean يستطيع أن يقول «بلا جواب» وهذا ما لا يستطيعه bool."
+    },
+    "cat": {"en": "Types", "ar": "الأنواع"},
+    "see": ["coercion", "truthiness", "mixed-type-column"] },
+
+  { "id": "coercion",
+    "term": {"en": "Coercion", "ar": "الإكراه (coercion)"},
+    "def": {
+      "en": "The errors='coerce' policy of turning every conversion failure into a missing value. It silences an error at the price of merging two kinds of ignorance: on floor it turns 9 blank cells and 19 recorded ground floors into 28 indistinguishable NaNs, and on listed_on it loses 23 dates without a word.",
+      "ar": "سياسة errors='coerce' في تحويل كل عطل في التحويل إلى قيمة مفقودة. وهي تُسكت خطأً بثمن دمج نوعين من الجهل: فعلى floor تحوّل تسع خلايا فارغة وتسعة عشر طابقًا أرضيًّا مسجَّلًا إلى ثماني وعشرين NaN لا تتميّز، وعلى listed_on تفقد ثلاثة وعشرين تاريخًا بلا كلمة."
+    },
+    "cat": {"en": "Types", "ar": "الأنواع"},
+    "see": ["nullable-dtype", "mixed-type-column", "date-ambiguity"] },
+
+  { "id": "mixed-type-column",
+    "term": {"en": "Mixed-type column", "ar": "العمود المختلط الأنواع (mixed-type column)"},
+    "def": {
+      "en": "A column whose values are not all of the same kind, because the form that produced them accepted both. floor holds the digits 0 to 6 for 475 flats, the letter G for nineteen and nothing for nine, so pandas falls back to the object dtype - which guarantees nothing and permits no comparison, sort or mean.",
+      "ar": "عمودٌ ليست قيمه كلها من نوع واحد، لأن الاستمارة التي أنتجتها قبلت الاثنين. فـ floor يحمل الأرقام من 0 إلى 6 لـ475 شقة، والحرف G لتسع عشرة، ولا شيء لتسع، فترتدّ pandas إلى النوع object - وهو لا يضمن شيئًا ولا يسمح بمقارنة ولا ترتيب ولا متوسط."
+    },
+    "cat": {"en": "Types", "ar": "الأنواع"},
+    "see": ["coercion", "nullable-dtype", "ordered-category"] },
+
+  { "id": "ordered-category",
+    "term": {"en": "Ordered category", "ar": "الفئة المرتَّبة (ordered category)"},
+    "def": {
+      "en": "A categorical dtype that carries the order of its levels, so comparison operators mean what you want. condition as CategoricalDtype(['poor','fair','good','excellent'], ordered=True) makes level > 'fair' legal and correct for 267 rows, where the same comparison on a string would be a lexicographic lie ('poor' > 'fair' is True).",
+      "ar": "نوعٌ فئوي يحمل ترتيب مستوياته، فتعني عوامل المقارنة ما تريد. فعمود condition بنوع CategoricalDtype(['poor','fair','good','excellent'], ordered=True) يجعل level > 'fair' مشروعةً وصحيحةً لـ267 صفًّا، في حين كانت المقارنة نفسها على نصٍّ كذبةً معجمية (فـ'poor' > 'fair' هي True)."
+    },
+    "cat": {"en": "Types", "ar": "الأنواع"},
+    "see": ["mixed-type-column", "canonical-form"] },
+
+  { "id": "date-ambiguity",
+    "term": {"en": "Format ambiguity", "ar": "غموض الصيغة (format ambiguity)"},
+    "def": {
+      "en": "A value whose written form is consistent with two different real values, so no parser can choose between them. Eleven of the 23 DD/MM/YYYY dates in listed_on read both ways and ten of those land in a different month; 03/04/2026 is the third of April or the fourth of March, and only the source can say which.",
+      "ar": "قيمةٌ تتّسق صورتها المكتوبة مع قيمتين حقيقيتين مختلفتين، فلا يستطيع محلّل أن يختار بينهما. فأحد عشر من تواريخ DD/MM/YYYY الثلاثة والعشرين في listed_on تُقرأ على الوجهين وعشرة منها تحلّ في شهر مختلف؛ و03/04/2026 هي الثالث من نيسان أو الرابع من آذار، ولا يقول أيّهما إلا المصدر."
+    },
+    "cat": {"en": "Text", "ar": "النصوص"},
+    "see": ["coercion", "canonical-form"] },
+
+  { "id": "text-flag",
+    "term": {"en": "Text flag", "ar": "علم النص (text flag)"},
+    "def": {
+      "en": "A boolean column recording whether a piece of text mentions one specific thing, chosen by you and therefore explainable. Six flags over the normalised advert column - generator, solar, university, water tank, balcony, repost - replace a 47-column one-hot fingerprint, and the repost flag finds exactly the nine flats the identifier-based dedupe found.",
+      "ar": "عمودٌ منطقي يسجّل هل يذكر النص شيئًا محدّدًا واحدًا، تختاره أنت فيكون قابلًا للشرح. وستة أعلام على عمود الإعلان المُطبَّع - مولّد وشمسي وجامعة وخزان ماء وشرفة وإعادة نشر - تستبدل بصمةً أحادية من 47 عمودًا، ويجد علم إعادة النشر الشقق التسع نفسها التي وجدها حذف المكرّر بالمعرّف."
+    },
+    "cat": {"en": "Text", "ar": "النصوص"},
+    "see": ["normalisation", "repost"] }
+]

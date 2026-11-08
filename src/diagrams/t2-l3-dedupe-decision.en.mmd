@@ -1,0 +1,18 @@
+%% alt: Decision tree for two rows that look alike. Start by asking whether every column is equal. If it is, the pair is an exact duplicate: drop_duplicates sees it, fourteen rows of the file are of this kind, and removing them is a repair. If not every column is equal, ask whether the business key is equal, which here is listing_id. If the key differs, the two rows are two different flats and deleting either one is data loss, not cleaning: in this file a careless key of city plus rooms plus rent keeps four hundred and thirteen rows and destroys sixty-seven real flats. If the key is equal but other columns are not, the pair is a repost: the same flat advertised again with a later date and the advert retyped. Nine rows of the file are of this kind and drop_duplicates cannot see any of them. Then one judgement remains, which is which copy survives, and it is a decision about the question rather than about the data. Keep the latest if you want the current state of the market, keep the earliest if you want the date the flat first came up, and keep both if a repost is itself the thing you are counting. In every branch, log the count and the rule, because a row count alone cannot tell the three branches apart.
+flowchart TD
+  S["Two rows look alike"] --> Q1{"Is every column equal?"}
+  Q1 -- "yes" --> E["Exact duplicate<br/>14 rows here"]
+  E --> ED["drop_duplicates()<br/>a repair"]
+  Q1 -- "no" --> Q2{"Is listing_id equal?"}
+  Q2 -- "no" --> D["Two different flats<br/>67 lost to a careless key"]
+  D --> DD["Keep both<br/>deleting one is data loss"]
+  Q2 -- "yes" --> P["A repost<br/>9 rows here"]
+  P --> Q3{"Which copy do you need?"}
+  Q3 -- "the market now" --> K1["sort by date<br/>keep='last'"]
+  Q3 -- "first listed" --> K2["sort by date<br/>keep='first'"]
+  Q3 -- "counting reposts" --> K3["keep both<br/>add a repost flag"]
+  ED --> LG[["log the rule<br/>and the count"]]
+  DD --> LG
+  K1 --> LG
+  K2 --> LG
+  K3 --> LG

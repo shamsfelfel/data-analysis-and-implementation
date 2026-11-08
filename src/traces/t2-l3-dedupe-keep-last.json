@@ -1,0 +1,56 @@
+{
+  "id": "t2-l3-dedupe-keep-last",
+  "title": {
+    "en": "keep=\"last\" keeps the last ROW, not the latest date",
+    "ar": "keep=\"last\" يُبقي الصف الأخير، لا التاريخ الأحدث"
+  },
+  "lede": {
+    "en": "Six rows describing three flats: one flat typed in twice byte for byte, and two flats reposted on a later date. drop_duplicates() removes the byte-for-byte pair and cannot see the two reposts. Then watch the difference between keep=\"last\" on the file as it arrived — which keeps the OLDER advert for both reposted flats — and keep=\"last\" after sorting on the parsed date, which keeps the one you meant.",
+    "ar": "ستة صفوف تصف ثلاث شقق: شقة مُدخَلة مرتين حرفًا بحرف، وشقتان أُعيد نشرهما بتاريخ لاحق. تحذف drop_duplicates() الزوج المتطابق حرفيًّا ولا ترى إعادتَي النشر. ثم راقب الفرق بين keep=\"last\" على الملف كما وصل — وهو يُبقي الإعلان الأقدم للشقتين المُعاد نشرهما — وبين keep=\"last\" بعد الترتيب على التاريخ المُحلَّل، وهو يُبقي ما قصدته."
+  },
+  "files": {
+    "flats.csv": "listing_id,rent,listed_on\n5285,225,2026-05-01\n5349,355,2026-04-28\n5349,355,2026-04-03\n5285,225,2026-03-31\n5076,130,2026-02-17\n5076,130,2026-02-17\n"
+  },
+  "code": "import pandas as pd\nraw = pd.read_csv(\"flats.csv\")\nonce = raw.drop_duplicates()\nby_order = once.drop_duplicates(\"listing_id\", keep=\"last\")\nonce = once.assign(listed=pd.to_datetime(once[\"listed_on\"]))\nby_date = once.sort_values(\"listed\").drop_duplicates(\"listing_id\", keep=\"last\")\nprint(\"rows:\", len(raw), \"-> exact:\", len(once), \"-> flats:\", len(by_date))\nprint(\"file order keeps:\", by_order[\"listed_on\"].tolist())\nprint(\"date order keeps:\", by_date[\"listed_on\"].tolist())\n",
+  "notes": {
+    "2": {
+      "en": "Six rows, three listing_id values. Rows 5 and 6 are identical in every column; the two 5349 rows and the two 5285 rows differ in listed_on, so no two of them are identical.",
+      "ar": "ستة صفوف وثلاث قيم listing_id. الصفان 5 و6 متطابقان في كل عمود؛ وصفّا 5349 وصفّا 5285 يختلفان في listed_on، فليس بينها صفان متطابقان."
+    },
+    "3": {
+      "en": "drop_duplicates() compares WHOLE rows. It finds exactly one repeat — the second 5076 — and leaves five rows. The two reposted flats survive twice each, because one column differs, and drop_duplicates() has no way to know that column is a date.",
+      "ar": "تقارن drop_duplicates() الصفوف كاملةً. فتجد تكرارًا واحدًا بالضبط — هو 5076 الثاني — وتُبقي خمسة صفوف. وتنجو الشقتان المُعاد نشرهما مرتين لكلٍّ، لأن عمودًا واحدًا يختلف، ولا سبيل لـ drop_duplicates() أن تعرف أن ذلك العمود تاريخ."
+    },
+    "4": {
+      "en": "Here is the trap. keep=\"last\" means the last occurrence IN THE CURRENT ROW ORDER. In this file the older copy of 5349 is typed below the newer one, and the older copy of 5285 is below too — so this line keeps 2026-04-03 and 2026-03-31, the two adverts you wanted to discard.",
+      "ar": "هذا هو الفخ. يعني keep=\"last\" آخر ظهور في ترتيب الصفوف الحالي. وفي هذا الملف كُتبت النسخة الأقدم من 5349 تحت الأحدث، وكذلك النسخة الأقدم من 5285 — فيُبقي هذا السطر 2026-04-03 و2026-03-31، وهما الإعلانان اللذان أردت التخلّص منهما."
+    },
+    "5": {
+      "en": "The repair starts with a real date column. Sorting the STRINGS would be a second trap: '13/05/2026' sorts before every '2026-...' string, so a slash-formatted repost would always lose. Parse first, then sort.",
+      "ar": "يبدأ الإصلاح بعمود تاريخ حقيقي. وترتيب النصوص فخٌّ ثانٍ: فـ'13/05/2026' يتقدّم في الترتيب على كل نص '...2026-'، فتخسر دائمًا إعادةُ نشرٍ مكتوبةٌ بالشرطة المائلة. فحلِّل أولًا ثم رتِّب."
+    },
+    "6": {
+      "en": "Now keep=\"last\" means what you wanted, because the row order IS the date order. One row per flat, and for each flat the latest advert.",
+      "ar": "الآن يعني keep=\"last\" ما أردته، لأن ترتيب الصفوف هو ترتيب التواريخ. فصف واحد لكل شقة، ولكل شقة أحدث إعلان."
+    },
+    "7": {
+      "en": "Six rows describe three flats: one exact repeat removed, two reposts collapsed. In the chapter's file the same three numbers are 503, 489 and 480.",
+      "ar": "ستة صفوف تصف ثلاث شقق: تكرار حرفي واحد مُزال، وإعادتا نشر مدموجتان. وفي ملف الفصل تكون الأرقام الثلاثة نفسها 503 و489 و480."
+    },
+    "8": {
+      "en": "File order kept 2026-04-03 and 2026-03-31 — both wrong, both silently. The frame has the right SHAPE and the wrong CONTENT, which is why a row count is never proof that a dedupe did what you meant.",
+      "ar": "أبقى ترتيب الملف 2026-04-03 و2026-03-31 — وكلاهما خطأ، وكلاهما بصمت. فللجدول الشكل الصحيح والمحتوى الخاطئ، ولهذا لا يكون عدد الصفوف دليلًا قط على أن حذف المكرّر فعل ما قصدته."
+    },
+    "9": {
+      "en": "Date order kept 2026-04-28 and 2026-05-01: the latest advert of each flat. Same row count, different table — exactly the Lesson 1 lesson about order, now about sort order.",
+      "ar": "وأبقى ترتيب التاريخ 2026-04-28 و2026-05-01: أحدث إعلان لكل شقة. العدد نفسه وجدول آخر — وهو بالضبط درس الدرس 1 عن الترتيب، لكنه الآن عن ترتيب الفرز."
+    },
+    "end": {
+      "en": "Two defensible-looking dedupes, two different tables, one row count. Write down which copy you keep and why, because the shape of the result cannot tell you.",
+      "ar": "حذفان للمكرّر يبدو كلٌّ منهما قابلًا للدفاع، وجدولان مختلفان، وعدد صفوف واحد. فاكتب أي نسخة تُبقي ولماذا، لأن شكل النتيجة لا يستطيع أن يخبرك."
+    }
+  },
+  "watch": ["raw", "once", "by_order", "by_date"],
+  "viz": {"raw": "table", "once": "table", "by_order": "table", "by_date": "table"},
+  "max_steps": 40
+}

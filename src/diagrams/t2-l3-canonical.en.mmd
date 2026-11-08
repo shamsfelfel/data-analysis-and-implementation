@@ -1,0 +1,14 @@
+%% alt: Flowchart of a canonicalisation step. A raw text column holding twenty-six spellings of five cities enters three normalising operations in turn: strip the outer whitespace, lower the case, and collapse every run of spaces into one. Twenty-six spellings become eleven, which is as far as a rule can go, because Khan Yunis and Khan Younis and Jabalya and Jabalia differ by more than whitespace and case. The eleven normalised values are then looked up in an explicit city map with eleven keys. A value found in the map becomes one of the five canonical names and is counted as changed; a value not in the map becomes a missing value with no error and no warning, which is the silent failure of this lesson. The repair is to collect those unmatched normalised values with value_counts and return them beside the column, so the step hands back a frame and a log row carrying the spelling count before, the spelling count after, and the unmatched values by name. The same map is then applied to next month's file without being rebuilt, where Beit Lahia appears in the unmatched report instead of vanishing.
+flowchart TD
+  R["Raw column<br/>26 spellings, 5 cities"] --> N1["str.strip()<br/>26 -> 20"]
+  N1 --> N2["str.lower()<br/>20 -> 11"]
+  N2 --> N3["collapse runs of spaces<br/>11 -> 11"]
+  N3 --> W["A rule stops here<br/>Khan Yunis vs Khan Younis"]
+  W --> M{"in CITY_MAP?"}
+  M -- "yes" --> C["canonical name<br/>one of 5"]
+  M -- "no" --> X["NaN<br/>no error, no warning"]
+  X --> U["value_counts() of<br/>the unmatched values"]
+  C --> L[["(frame, log_row)<br/>before, after, unmatched"]]
+  U --> L
+  L --> F["Next month: apply<br/>the same map"]
+  F --> G["beit lahia = 2<br/>reported, not lost"]

@@ -1,0 +1,60 @@
+{
+  "id": "t2-l3-two-date-formats",
+  "title": {
+    "en": "One column, two date formats: three parsers and three different answers",
+    "ar": "عمود واحد وصيغتا تاريخ: ثلاثة محلّلات وثلاثة أجوبة مختلفة"
+  },
+  "lede": {
+    "en": "Five dates: three written YYYY-MM-DD and two written DD/MM/YYYY. errors=\"coerce\" throws the odd ones away without a word. format=\"mixed\" keeps every row and reads 12/04/2026 as the fourth of December. Only parsing each format on purpose, combining, and checking that nothing is left unparsed gives an answer you can defend — and the giveaway is the date range.",
+    "ar": "خمسة تواريخ: ثلاثة مكتوبة YYYY-MM-DD واثنان مكتوبان DD/MM/YYYY. ترمي errors=\"coerce\" الشاذّة دون كلمة. وتُبقي format=\"mixed\" كل صف وتقرأ 12/04/2026 بأنه الرابع من كانون الأول. ووحده تحليل كل صيغة بقصد، ثم الدمج، ثم التحقّق من أن شيئًا لم يبقَ غير محلَّل، يعطي جوابًا تستطيع الدفاع عنه — والدليل الفاضح هو مدى التواريخ."
+  },
+  "files": {
+    "dates.csv": "listed_on\n2026-04-03\n06/03/2026\n2026-05-15\n12/04/2026\n18/05/2026\n"
+  },
+  "code": "import pandas as pd\nraw = pd.read_csv(\"dates.csv\")\nloose = pd.to_datetime(raw[\"listed_on\"], errors=\"coerce\")\nmixed = pd.to_datetime(raw[\"listed_on\"], format=\"mixed\")\niso = pd.to_datetime(raw[\"listed_on\"], format=\"%Y-%m-%d\", errors=\"coerce\")\ndmy = pd.to_datetime(raw[\"listed_on\"], format=\"%d/%m/%Y\", errors=\"coerce\")\nsafe = iso.fillna(dmy)\nprint(\"loose NaT:\", int(loose.isna().sum()), \"| mixed range:\", mixed.min().date(), mixed.max().date())\nprint(\"safe  NaT:\", int(safe.isna().sum()), \"| safe  range:\", safe.min().date(), safe.max().date())\nprint(safe.dt.strftime(\"%Y-%m-%d\").tolist())\n",
+  "notes": {
+    "2": {
+      "en": "Five text values. read_csv does not parse dates unless you ask, so the column is plain text — which is lucky, because it means nothing has been guessed yet.",
+      "ar": "خمس قيم نصية. ولا تحلّل read_csv التواريخ إلا إذا طلبتَ، فالعمود نصٌّ صِرف — وهذا من حسن الحظ، لأنه يعني أن شيئًا لم يُخمَّن بعد."
+    },
+    "3": {
+      "en": "pandas looks at the first value, infers %Y-%m-%d, and then meets 06/03/2026. Without errors=\"coerce\" this line raises a ValueError. WITH it, the two slash dates become NaT and the program runs on — three rows parsed, two rows silently gone.",
+      "ar": "تنظر pandas في القيمة الأولى فتستنبط %Y-%m-%d، ثم تلقى 06/03/2026. وبدون errors=\"coerce\" يرفع هذا السطر ValueError. ومعها يصير التاريخان المائلان NaT ويمضي البرنامج — ثلاثة صفوف محلَّلة وصفّان ضائعان بصمت."
+    },
+    "4": {
+      "en": "format=\"mixed\" infers a format for EACH value separately, so nothing is lost. But with no dayfirst= it reads a slash date month-first: 06/03/2026 becomes 3 June and 12/04/2026 becomes 4 December. Every row is filled and two of five are wrong.",
+      "ar": "تستنبط format=\"mixed\" صيغةً لكل قيمة على حِدة، فلا يضيع شيء. لكنها بغير dayfirst= تقرأ التاريخ المائل بالشهر أولًا: فيصير 06/03/2026 الثالث من حزيران ويصير 12/04/2026 الرابع من كانون الأول. فتُعبَّأ كل الصفوف ويخطئ اثنان من خمسة."
+    },
+    "5": {
+      "en": "The honest recipe, first half: say the format out loud. Every value that is not ISO becomes NaT on purpose, and you keep the right to count them.",
+      "ar": "الوصفة الأمينة، نصفها الأول: اذكر الصيغة صريحةً. فتصير كل قيمة ليست ISO قيمةَ NaT بقصد، ويبقى لك حق عدّها."
+    },
+    "6": {
+      "en": "Second half: the other format, also named, also coerced. Three NaT here and two NaT there — and the two sets do not overlap, which is the property the next line relies on.",
+      "ar": "النصف الثاني: الصيغة الأخرى، مذكورةً أيضًا ومُجبَرةً أيضًا. ثلاث NaT هنا واثنتان هناك — والمجموعتان لا تتقاطعان، وهذه هي الخاصية التي يعتمد عليها السطر التالي."
+    },
+    "7": {
+      "en": "fillna combines them: wherever the ISO parse failed, take the DD/MM parse. Five of five parsed. If a value had matched both formats, this line would silently prefer the ISO reading — so assert the overlap is empty before you trust it.",
+      "ar": "تدمجهما fillna: فحيث فشل تحليل ISO خُذ تحليل DD/MM. فتُحلَّل خمسة من خمسة. ولو طابقت قيمةٌ الصيغتين لفضّل هذا السطر قراءة ISO بصمت — فتأكّد أن التقاطع خالٍ قبل أن تثق به."
+    },
+    "8": {
+      "en": "The two diagnostics worth printing every time: how many rows the loose parse lost, and what range the mixed parse produced. 2026-04-03 to 2026-12-04 from a file collected in spring is the symptom of a day/month swap.",
+      "ar": "الفحصان الجديران بالطباعة في كل مرة: كم صفًّا فقَده التحليل المتسامح، وأي مدى أنتجه التحليل المختلط. فمدى من 2026-04-03 إلى 2026-12-04 في ملف جُمع في الربيع عَرَضٌ لانقلاب اليوم والشهر."
+    },
+    "9": {
+      "en": "The safe parse keeps all five rows inside 6 March to 18 May — a range the collection period explains. In the chapter's file the same check reads 0 NaT and 2026-02-01 to 2026-06-19.",
+      "ar": "يُبقي التحليل الآمن الصفوف الخمسة كلها بين 6 آذار و18 أيار — وهو مدى تفسّره فترة الجمع. وفي ملف الفصل يقرأ الفحص نفسه صفر NaT ومن 2026-02-01 إلى 2026-06-19."
+    },
+    "10": {
+      "en": "Look at the first value: 2026-04-03. Had it been written 03/04/2026 instead, no parser on earth could tell you whether the landlord meant 3 April or 4 March. That is not a pandas limitation; the information is simply not in the file.",
+      "ar": "انظر في القيمة الأولى: 2026-04-03. فلو كُتبت 03/04/2026 لما استطاع محلّل في الدنيا أن يخبرك هل قصد المالك 3 نيسان أم 4 آذار. وهذا ليس قصورًا في pandas؛ فالمعلومة ببساطة ليست في الملف."
+    },
+    "end": {
+      "en": "Three parsers, three different tables, and only one of them refuses to guess. Name every format you accept, coerce the rest, combine, and assert that nothing is left: then a new format next month is an assertion failure rather than a silent hole.",
+      "ar": "ثلاثة محلّلات وثلاثة جداول مختلفة، وواحد منها فقط يرفض التخمين. فسمِّ كل صيغة تقبلها، وأجبِر الباقي، وادمج، وتأكّد أن شيئًا لم يبقَ: فتصير صيغةٌ جديدة الشهر القادم فشلَ تأكيدٍ لا ثقبًا صامتًا."
+    }
+  },
+  "watch": ["raw", "loose", "mixed", "iso", "dmy", "safe"],
+  "viz": {"raw": "table"},
+  "max_steps": 40
+}

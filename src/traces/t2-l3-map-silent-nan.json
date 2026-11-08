@@ -1,0 +1,60 @@
+{
+  "id": "t2-l3-map-silent-nan",
+  "title": {
+    "en": "The silent NaN: what .map() does with a spelling your dictionary forgot",
+    "ar": "القيمة المفقودة الصامتة: ماذا تفعل .map() بتهجئة نسيها قاموسك"
+  },
+  "lede": {
+    "en": "Six city cells, five of them covered by a three-key map. The sixth is 'Khan Yunis', which the map does not have. Watch the moment the mapping runs: no error, no warning, and one value quietly becomes NaN. Then watch value_counts() report five rows out of six and say nothing about the missing one — and finally watch the one extra line that turns the silence into a count.",
+    "ar": "ست خلايا مدينة، خمس منها تغطّيها خريطة بثلاثة مفاتيح. والسادسة 'Khan Yunis' وليست في الخريطة. راقب لحظة تنفيذ الربط: لا خطأ ولا تحذير، وقيمة واحدة تصير NaN بهدوء. ثم راقب value_counts() تُبلّغ عن خمسة صفوف من ستة ولا تقول شيئًا عن الناقص — وأخيرًا راقب السطر الإضافي الواحد الذي يحوّل الصمت إلى عدّ."
+  },
+  "files": {
+    "cities.csv": "city\n Gaza\nGAZA\nrafah\nKhan Yunis\nkhan younis\nRafah\n"
+  },
+  "code": "import pandas as pd\nraw = pd.read_csv(\"cities.csv\")\nCITY_MAP = {\"gaza\": \"Gaza\", \"rafah\": \"Rafah\", \"khan younis\": \"Khan Younis\"}\nnorm = raw[\"city\"].str.strip().str.lower()\nclean = norm.map(CITY_MAP)\nprint(clean.tolist())\nprint(clean.value_counts().to_string())\nprint(\"rows:\", len(clean), \"| named:\", int(clean.notna().sum()))\nunmatched = norm[clean.isna()].value_counts()\nprint(unmatched.to_string())\n",
+  "notes": {
+    "2": {
+      "en": "Six rows of one text column. Three of them differ from a neighbour only by case or by a leading space; one, 'Khan Yunis', is a different word.",
+      "ar": "ستة صفوف من عمود نصي واحد. ثلاثة منها لا تختلف عن جارها إلا في حالة الأحرف أو في مسافة سابقة؛ وواحد منها، وهو 'Khan Yunis'، كلمة أخرى."
+    },
+    "3": {
+      "en": "The map has three keys, all written in the normalised form: lower case, no stray spaces. It does NOT have 'khan yunis'.",
+      "ar": "للخريطة ثلاثة مفاتيح، كلها مكتوبة بالصورة المعيارية: حروف صغيرة ولا مسافات زائدة. وليس فيها 'khan yunis'."
+    },
+    "4": {
+      "en": "FIT nothing, APPLY only: strip and lower are pure functions of each cell. Six spellings become four: 'gaza', 'rafah', 'khan yunis', 'khan younis'.",
+      "ar": "لا ضبط (fit) بل تطبيق (apply) فقط: فالتشذيب والتصغير دالتان خالصتان في كل خلية. فتصير التهجئات الست أربعًا: 'gaza' و'rafah' و'khan yunis' و'khan younis'."
+    },
+    "5": {
+      "en": "THIS is the silent failure. .map() looks every value up in the dictionary; a value that is not a key becomes NaN. No exception, no warning, no message. The column now has one hole that was not there a moment ago.",
+      "ar": "هذا هو العطل الصامت. تبحث .map() عن كل قيمة في القاموس؛ وأي قيمة ليست مفتاحًا تصير NaN. لا استثناء ولا تحذير ولا رسالة. فصار في العمود ثقب واحد لم يكن موجودًا قبل لحظة."
+    },
+    "6": {
+      "en": "The list shows it plainly: nan sits in position 3. In a 503-row file printed as a head of five, you would never see it.",
+      "ar": "تُظهرها القائمة صريحةً: nan في الموضع 3. ولكن في ملف من 503 صفوف تطبع منه خمسة أسطر، لن تراها قط."
+    },
+    "7": {
+      "en": "And here is the trap that hides it: value_counts() drops missing values by default. Five rows are counted, the sixth is simply absent from the report, and nothing says the total is not six.",
+      "ar": "وهذا هو الفخ الذي يخفيها: تُسقط value_counts() القيم المفقودة افتراضيًّا. فتُعَدّ خمسة صفوف، ويغيب السادس عن التقرير ببساطة، ولا شيء يقول إن المجموع ليس ستة."
+    },
+    "8": {
+      "en": "The two numbers that catch it: the column has 6 rows and 5 of them carry a name. Compare those two in every mapping step you ever write.",
+      "ar": "الرقمان اللذان يكشفانها: في العمود 6 صفوف، و5 منها تحمل اسمًا. قارن هذين الرقمين في كل خطوة ربط تكتبها."
+    },
+    "9": {
+      "en": "The fix is one line and it is pure arithmetic on the mask: the normalised values whose mapped result is missing. Keep the counts, not just the fact.",
+      "ar": "العلاج سطر واحد وهو حساب خالص على القناع: القيم المعيارية التي جاء ناتج ربطها مفقودًا. واحفظ الأعداد لا الواقعة وحدها."
+    },
+    "10": {
+      "en": "'khan yunis' appeared once and is now named. In the real file this report reads 'khan yunis=14, jabaliya=4' — eighteen rows you would otherwise have lost without a word.",
+      "ar": "ظهرت 'khan yunis' مرة واحدة وصارت الآن مسمَّاة. وفي الملف الحقيقي يقرأ هذا التقرير 'khan yunis=14, jabaliya=4' — أي ثمانية عشر صفًّا كنت ستفقدها دون كلمة."
+    },
+    "end": {
+      "en": "A mapping step is only as honest as its unmatched report. Return the counts beside the column, in Lesson 1's (frame, log_row) shape, and a spelling nobody anticipated becomes a line in the log instead of a hole in the data.",
+      "ar": "خطوة الربط أمينة بقدر أمانة تقريرها عن غير المطابق. فأعِد الأعداد بجانب العمود، بشكل (frame, log_row) من الدرس 1، فتصير التهجئة التي لم يتوقّعها أحد سطرًا في السجل لا ثقبًا في البيانات."
+    }
+  },
+  "watch": ["raw", "CITY_MAP", "norm", "clean", "unmatched"],
+  "viz": {"raw": "table", "CITY_MAP": "dict"},
+  "max_steps": 40
+}
