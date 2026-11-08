@@ -1,0 +1,61 @@
+{
+  "id": "t2-l1-fit-apply",
+  "title": {
+    "en": "Fit once, apply anywhere: a learned median meets next month's file",
+    "ar": "اضبط مرة، وطبّق في أي مكان: وسيط مُتعلَّم يلاقي ملف الشهر القادم"
+  },
+  "lede": {
+    "en": "fit() looks at the training rows and returns two parameters: a median rent and the list of cities it has seen. apply_fitted() then uses those parameters on a file fit() never read — including a city that is not on the list. Follow the call stack: the parameters travel, the training data does not.",
+    "ar": "تنظر fit() في صفوف التدريب وتعيد وسيطين: وسيط الإيجار وقائمة المدن التي رأتها. ثم تستعمل apply_fitted() هذين الوسيطين على ملف لم تقرأه fit() قط — وفيه مدينة ليست في القائمة. تابع مكدّس النداء: الوسائط هي التي تسافر، لا بيانات التدريب."
+  },
+  "files": {
+    "train.csv": "id,city,rent\n1,Gaza,300\n2,Rafah,120\n3,Jabalia,\n4,Gaza,260\n5,Rafah,140\n",
+    "new.csv": "id,city,rent\n9,Gaza,280\n10,Beit Lahia,\n11,Rafah,150\n"
+  },
+  "code": "import pandas as pd\n\ndef fit(df):\n    return {\"rent_median\": float(df[\"rent\"].median()),\n            \"cities\": sorted(df[\"city\"].unique())}\n\ndef apply_fitted(df, f):\n    out = df.copy()\n    out[\"rent\"] = out[\"rent\"].fillna(f[\"rent_median\"])\n    out[\"known_city\"] = out[\"city\"].isin(f[\"cities\"])\n    return out\n\ntrain = pd.read_csv(\"train.csv\")\nfitted = fit(train)\nprint(fitted[\"rent_median\"], fitted[\"cities\"])\nnew = pd.read_csv(\"new.csv\")\nscored = apply_fitted(new, fitted)\nprint(scored.to_string(index=False))\n",
+  "notes": {
+    "13": {
+      "en": "Five training listings. One has no rent, so the median will be taken over the four rents that exist.",
+      "ar": "خمسة إعلانات تدريب. أحدها بلا إيجار، فسيُحسب الوسيط على الإيجارات الأربعة الموجودة."
+    },
+    "14": {
+      "en": "fit() is called. Watch the call stack: from here on, everything the pipeline will ever know about the training rows has to fit inside the dictionary this function returns.",
+      "ar": "تُستدعى fit(). راقب مكدّس النداء: من الآن فصاعدًا، كل ما سيعرفه خط التحويل عن صفوف التدريب يجب أن يتّسع داخل القاموس الذي تعيده هذه الدالة."
+    },
+    "4": {
+      "en": "Two parameters leave in one dictionary. The median of 120, 140, 260, 300 is the average of the middle two, 200.0; and the category list — these three spellings are the whole of what this pipeline will accept as a city.",
+      "ar": "يخرج وسيطان في قاموس واحد. وسيط 120 و140 و260 و300 هو متوسط القيمتين الوسطيتين أي 200.0؛ وقائمة الفئات — وهذه التهجئات الثلاث هي كل ما سيقبله خط التحويل مدينةً."
+    },
+    "16": {
+      "en": "A different file, three rows, never seen by fit(). No parameter is learned from it — that is the whole point.",
+      "ar": "ملف آخر، ثلاثة صفوف، لم ترها fit() قط. ولا يُتعلَّم منه أي وسيط — وهذا هو المقصود كله."
+    },
+    "17": {
+      "en": "apply_fitted() is called with the new rows and the frozen parameters.",
+      "ar": "تُستدعى apply_fitted() بالصفوف الجديدة والوسائط المجمَّدة."
+    },
+    "8": {
+      "en": ".copy() first: the caller's frame must come back unchanged, whatever happens next.",
+      "ar": "‏.copy() أولًا: يجب أن يعود جدول المستدعي كما كان، أيًّا كان ما يحدث بعد ذلك."
+    },
+    "9": {
+      "en": "The blank rent of listing 10 is filled with 200.0 — a number learned from five rows in a different file, in a different month.",
+      "ar": "يُعبَّأ إيجار الإعلان 10 الفارغ بـ200.0 — رقم تُعلِّم من خمسة صفوف في ملف آخر وشهر آخر."
+    },
+    "10": {
+      "en": "Here is the value of keeping the category list: 'Beit Lahia' is not on it, so the row is flagged rather than silently encoded as nothing.",
+      "ar": "هنا تظهر قيمة الاحتفاظ بقائمة الفئات: «Beit Lahia» ليست فيها، فيُعلَّم الصف بدل أن يُرمَّز بصمت كأنه لا شيء."
+    },
+    "18": {
+      "en": "Three rows out for three rows in, one filled rent and one unknown city named. The training file was never opened again.",
+      "ar": "ثلاثة صفوف خارجة مقابل ثلاثة داخلة، وإيجار واحد مُعبَّأ ومدينة واحدة مجهولة مُسمَّاة. ولم يُفتح ملف التدريب مرة أخرى."
+    },
+    "end": {
+      "en": "This is the shape every transformation in this chapter takes: a fit that returns parameters, and an apply that takes them. Swap the file and the parameters stay; swap the month and the columns still line up.",
+      "ar": "هذا هو الشكل الذي يتخذه كل تحويل في هذا الفصل: ضبط يعيد وسائط، وتطبيق يأخذها. بدِّل الملف فتبقى الوسائط؛ وبدِّل الشهر فتبقى الأعمدة متطابقة."
+    }
+  },
+  "watch": ["train", "fitted", "new", "scored"],
+  "viz": {"train": "table", "new": "table", "scored": "table"},
+  "max_steps": 60
+}

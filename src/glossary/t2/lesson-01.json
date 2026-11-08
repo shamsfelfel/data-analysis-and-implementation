@@ -1,0 +1,127 @@
+[
+  { "id": "transformation",
+    "term": {"en": "Transformation", "ar": "التحويل (transformation)"},
+    "def": {
+      "en": "An operation that takes a table and returns a table in which one row still means the same kind of thing. Filling a blank rent, rewriting 'GAZA' as 'Gaza' and dropping the 14 repeated listings are all transformations: afterwards one row is still one advert for one flat, even though the row count fell from 503 to 489.",
+      "ar": "عملية تأخذ جدولًا وتعيد جدولًا يبقى فيه الصف الواحد يعني الشيء نفسه من حيث النوع. فتعبئة إيجار فارغ، وإعادة كتابة 'GAZA' لتصير 'Gaza'، وحذف الإعلانات المكرّرة الأربعة عشر كلها تحويلات: فبعدها يبقى الصف الواحد إعلانًا واحدًا لشقة واحدة، وإن هبط عدد الصفوف من 503 إلى 489."
+    },
+    "cat": {"en": "Transformation", "ar": "التحويل"},
+    "see": ["aggregation", "pipeline", "model-ready"] },
+
+  { "id": "aggregation",
+    "term": {"en": "Aggregation", "ar": "التجميع (aggregation)"},
+    "def": {
+      "en": "An operation that changes what one row means, by summarising many rows into one. groupby('governorate')['monthly_rent'].median() turns 503 listings into 5 values whose rows are governorates, not flats, so no further listing-level step can follow it.",
+      "ar": "عملية تغيّر معنى الصف الواحد، بتلخيص صفوف كثيرة في صف. فـ groupby('governorate')['monthly_rent'].median() تحوّل 503 إعلانات إلى خمس قيم صفوفها محافظات لا شقق، فلا تستطيع خطوة أخرى على مستوى الإعلان أن تتبعها."
+    },
+    "cat": {"en": "Transformation", "ar": "التحويل"},
+    "see": ["transformation"] },
+
+  { "id": "model-ready",
+    "term": {"en": "Model-ready", "ar": "جاهز للنموذج (model-ready)"},
+    "def": {
+      "en": "A table is model-ready for a question when it has one row per thing you predict, every cell a value its column allows, no unexplained holes, every column a number the model can read, and the same columns next month. listings_raw.csv fails all five: 503 rows describe 480 flats, and get_dummies produces 266 columns for 503 rows.",
+      "ar": "الجدول جاهز للنموذج لسؤال ما إذا كان فيه صفٌّ واحد لكل شيء تتنبأ به، وكل خلية قيمةً يسمح بها عمودها، ولا ثقوب غير مفسَّرة، وكل عمود رقمًا يستطيع النموذج قراءته، والأعمدة نفسها الشهر القادم. ويخالف listings_raw.csv الخمسة كلها: فـ503 صفوف تصف 480 شقة، وتنتج get_dummies ‏266 عمودًا لـ503 صفوف."
+    },
+    "cat": {"en": "Transformation", "ar": "التحويل"},
+    "see": ["transformation", "pipeline"] },
+
+  { "id": "pipeline",
+    "term": {"en": "Pipeline", "ar": "خط التحويل (pipeline)"},
+    "def": {
+      "en": "An ordered list of transformations applied to one table, each receiving the output of the one before it. The order is part of the definition: imputing the deposit before removing the duplicates gives a different table from the reverse, differing on 120 of 489 rows. The canonical order is structure, values, missing, outliers, encode and scale.",
+      "ar": "قائمة مرتَّبة من التحويلات تُطبَّق على جدول واحد، تتسلّم كلٌّ منها مخرج التي قبلها. والترتيب جزء من التعريف: فتعويض التأمين قبل إزالة التكرارات يعطي جدولًا يختلف عن عكسه في 120 صفًّا من 489. والترتيب القياسي: البنية ثم القيم ثم المفقود ثم الشواذ ثم الترميز وتوحيد المقاييس."
+    },
+    "cat": {"en": "Pipeline", "ar": "خط التحويل"},
+    "see": ["transformation", "decision-log", "method-chaining"] },
+
+  { "id": "fit",
+    "term": {"en": "Fit", "ar": "الضبط (fit)"},
+    "def": {
+      "en": "To compute, from data, the parameters a step needs in order to run: a median (200.0), a mean and a standard deviation, a minimum and a maximum, or a list of categories. Fitting reads many rows and produces a few values, and it is the half of a step that can leak.",
+      "ar": "أن تحسب من البيانات الوسائط التي تحتاجها الخطوة لتعمل: وسيطًا (‏200.0)، أو متوسطًا وانحرافًا معياريًّا، أو حدًّا أدنى وأعلى، أو قائمة فئات. والضبط يقرأ صفوفًا كثيرة وينتج قيمًا قليلة، وهو نصف الخطوة الذي يمكن أن يتسرّب."
+    },
+    "cat": {"en": "Fit and apply", "ar": "الضبط والتطبيق"},
+    "see": ["apply", "leakage", "train-test-split"] },
+
+  { "id": "apply",
+    "term": {"en": "Apply", "ar": "التطبيق (apply)"},
+    "def": {
+      "en": "To use already-learned parameters on a table, one row at a time, without reading any other row. Applying March's fitted median of 200.0 to the 85 June listings fills two blank rents and learns nothing, which is what makes the two months comparable.",
+      "ar": "أن تستعمل وسائط مُتعلَّمة سلفًا على جدول، صفًّا صفًّا، دون قراءة أي صف آخر. فتطبيق وسيط آذار المضبوط 200.0 على إعلانات حزيران الخمسة والثمانين يعبّئ إيجارين فارغين ولا يتعلّم شيئًا، وهذا ما يجعل الشهرين قابلَين للمقارنة."
+    },
+    "cat": {"en": "Fit and apply", "ar": "الضبط والتطبيق"},
+    "see": ["fit", "leakage"] },
+
+  { "id": "leakage",
+    "term": {"en": "Leakage", "ar": "التسرّب (leakage)"},
+    "def": {
+      "en": "Information reaching a step from rows it was supposed to know nothing about, usually by fitting a parameter on the whole file after holding rows back. It can leave no trace at all: the leaky and honest medians of monthly_rent are both 200.0, while the means are 416.3 and 211.9 and the maxima 99999 and 580.",
+      "ar": "وصول معلومات إلى خطوة من صفوف كان مفروضًا ألّا تعرف عنها شيئًا، وذلك عادةً بضبط وسيط على الملف كله بعد حجز صفوف. وقد لا يترك أثرًا قط: فالوسيطان المتسرِّب والأمين لعمود monthly_rent كلاهما 200.0، في حين أن المتوسطين 416.3 و211.9 والحدَّين الأعلى 99999 و580."
+    },
+    "cat": {"en": "Fit and apply", "ar": "الضبط والتطبيق"},
+    "see": ["fit", "train-test-split", "baseline"] },
+
+  { "id": "train-test-split",
+    "term": {"en": "Train/test split", "ar": "تقسيم التدريب والاختبار (train/test split)"},
+    "def": {
+      "en": "Dividing the rows into a training set, from which every parameter may be learned, and a held-out set, which nothing may learn from and which exists only to be measured on. raw.sample(frac=0.75, random_state=3) gives 377 training and 126 held-out rows; the seed matters, because without it the split changes every run.",
+      "ar": "قسمة الصفوف إلى مجموعة تدريب يُسمح بتعلُّم كل وسيط منها، ومجموعة محجوزة لا يُسمح لشيء بالتعلُّم منها ووجودها لأجل أن يُقاس عليها. فـ raw.sample(frac=0.75, random_state=3) تعطي 377 صفًّا للتدريب و126 محجوزة؛ والبذرة مهمة، لأن التقسيم بدونها يتغير في كل تشغيل."
+    },
+    "cat": {"en": "Measurement", "ar": "القياس"},
+    "see": ["leakage", "baseline", "mae"] },
+
+  { "id": "baseline",
+    "term": {"en": "Baseline", "ar": "الخط القاعدي (baseline)"},
+    "def": {
+      "en": "The simplest prediction anyone could make, used as a reference so that an improvement has something to improve on. Here it is a constant: every listing asks the training median of 200.0, which has one parameter and therefore cannot overfit.",
+      "ar": "أبسط تنبؤ يستطيعه أحد، يُستعمل مرجعًا حتى يكون للتحسّن شيءٌ يتحسّن عليه. وهو هنا ثابت: كل إعلان يطلب وسيط التدريب 200.0، وله وسيط واحد فلا يستطيع الإفراط في المواءمة."
+    },
+    "cat": {"en": "Measurement", "ar": "القياس"},
+    "see": ["mae", "train-test-split"] },
+
+  { "id": "mae",
+    "term": {"en": "Mean absolute error (MAE)", "ar": "متوسط الخطأ المطلق (mean absolute error, MAE)"},
+    "def": {
+      "en": "The average, over the rows being scored, of how far a prediction is from the true value, ignoring the direction of the miss. It is in the units of the thing predicted: the constant baseline is wrong by 60.17 shekels a month on the held-out listings, about 29% of a typical rent.",
+      "ar": "المتوسط، على الصفوف المقيَّمة، لمقدار بُعد التنبؤ عن القيمة الحقيقية مع إهمال اتجاه الخطأ. وهو بوحدة الشيء المتنبَّأ به: فالخط القاعدي الثابت يُخطئ بـ60.17 شيكلًا في الشهر على الإعلانات المحجوزة، أي نحو 29% من إيجار معتاد."
+    },
+    "cat": {"en": "Measurement", "ar": "القياس"},
+    "see": ["baseline", "train-test-split"] },
+
+  { "id": "view",
+    "term": {"en": "View", "ar": "الإطلالة (view)"},
+    "def": {
+      "en": "A DataFrame or Series that shares its memory with another one, so writing into it changes the original too. Whether raw[raw['governorate'] == 'Gaza'] returns a view or a copy depends on the dtypes, the memory layout and the pandas version, and there is no supported way to ask.",
+      "ar": "جدول أو سلسلة تشترك في ذاكرتها مع أخرى، فالكتابة فيها تغيّر الأصل أيضًا. وكون raw[raw['governorate'] == 'Gaza'] تعيد إطلالة أو نسخة يتوقف على الأنواع وتخطيط الذاكرة وإصدار pandas، ولا سبيل مدعومًا للسؤال."
+    },
+    "cat": {"en": "Safety", "ar": "السلامة"},
+    "see": ["copy", "method-chaining"] },
+
+  { "id": "copy",
+    "term": {"en": "Copy", "ar": "النسخة (copy)"},
+    "def": {
+      "en": "A DataFrame that owns its own memory, so writing into it leaves the original untouched. work = raw gives one table a second name; work = raw.copy() gives two tables, which is why raw still reports 503 rows and 19 blank rents after a pipeline has run.",
+      "ar": "جدول يملك ذاكرته، فالكتابة فيه تترك الأصل بلا مساس. فـ work = raw تعطي جدولًا واحدًا اسمًا ثانيًا؛ و work = raw.copy() تعطي جدولين، ولهذا يبقى raw يُبلّغ عن 503 صفوف و19 إيجارًا فارغًا بعد انتهاء خط التحويل."
+    },
+    "cat": {"en": "Safety", "ar": "السلامة"},
+    "see": ["view", "method-chaining"] },
+
+  { "id": "method-chaining",
+    "term": {"en": "Method chaining", "ar": "تسلسل التوابع (method chaining)"},
+    "def": {
+      "en": "Writing a pipeline as one expression in which each call returns a new frame and the next call receives it, so no intermediate name exists to be mutated by accident. assign with a lambda sees the frame as it is at that point in the chain; past about eight links, a named function per step plus .pipe reads better.",
+      "ar": "كتابة خط التحويل تعبيرًا واحدًا يعيد فيه كل نداء جدولًا جديدًا ويتسلّمه النداء التالي، فلا يوجد اسم وسيط يمكن تعديله سهوًا. وترى assign مع lambda الجدولَ كما هو في تلك النقطة من السلسلة؛ وبعد نحو ثماني حلقات تكون دالة مسمّاة لكل خطوة مع .pipe أحسنَ قراءةً."
+    },
+    "cat": {"en": "Safety", "ar": "السلامة"},
+    "see": ["copy", "pipeline"] },
+
+  { "id": "decision-log",
+    "term": {"en": "Decision log", "ar": "سجل القرارات (decision log)"},
+    "def": {
+      "en": "The record of which rules were applied to a dataset, in what order, with what effect. When each step returns (frame, log_row) the log is emitted by the code it describes, so it cannot go stale: 14 rows dropped, 1 rent voided, then 20 cells filled - 19 blanks plus the cell the previous step had just emptied.",
+      "ar": "تسجيل أي القواعد طُبّقت على مجموعة بيانات وبأي ترتيب وبأي أثر. وحين تعيد كل خطوة (frame, log_row) يكون السجل صادرًا من الكود الذي يصفه فلا يبلى: ‏14 صفًّا محذوفًا، وإيجارًا واحدًا مُفرَغًا، ثم 20 خلية معبَّأة - تسعة عشر فراغًا زائدَ الخلية التي أفرغتها الخطوة السابقة."
+    },
+    "cat": {"en": "Pipeline", "ar": "خط التحويل"},
+    "see": ["pipeline", "transformation"] }
+]

@@ -1,0 +1,48 @@
+{
+  "id": "t2-l1-view-vs-copy",
+  "title": {
+    "en": "The write that goes nowhere: a slice, a copy, and .loc",
+    "ar": "كتابةٌ لا تصل: قطعة ونسخة و.loc"
+  },
+  "lede": {
+    "en": "Filter the Gaza listings, set their rent to zero, and print the table: nothing changed. pandas printed a warning on the error stream and carried on. Step through it, then watch the two forms that really do write — .copy() plus .loc — and see that the raw table stays raw.",
+    "ar": "رشّح إعلانات غزة واجعل إيجارها صفرًا ثم اطبع الجدول: لم يتغير شيء. طبعت pandas تحذيرًا على مجرى الأخطاء ثم تابعت. اخطُ عبر البرنامج، ثم راقب الصورتين التي تكتب فعلًا — ‏.copy() مع .loc — وانظر كيف يبقى الجدول الخام خامًا."
+  },
+  "files": {
+    "rents.csv": "id,city,rent\n1,Gaza,300\n2,Rafah,120\n2,Rafah,120\n3,Jabalia,\n4,Gaza,260\n5,Rafah,140\n"
+  },
+  "code": "import pandas as pd\nraw = pd.read_csv(\"rents.csv\")\ngaza = raw[raw[\"city\"] == \"Gaza\"]\ngaza[\"rent\"] = 0.0\nprint(\"raw rents:\", raw[\"rent\"].tolist())\nwork = raw.copy()\nwork.loc[work[\"city\"] == \"Gaza\", \"rent\"] = 0.0\nprint(\"raw rents:\", raw[\"rent\"].tolist())\nprint(\"work rents:\", work[\"rent\"].tolist())\n",
+  "notes": {
+    "3": {
+      "en": "A boolean mask selects two rows. pandas may return a view onto raw or a fresh copy of those rows, and it does not tell you which — that is the whole trap.",
+      "ar": "ينتقي قناع منطقي صفّين. وقد تُعيد pandas إطلالة (view) على raw أو نسخة جديدة من هذين الصفين، ولا تخبرك بأيهما — وهذا هو الفخ كله."
+    },
+    "4": {
+      "en": "The assignment lands on the slice. pandas writes SettingWithCopyWarning to the error stream, which is not program output, so a script that only reads stdout sees nothing at all.",
+      "ar": "يقع الإسناد على القطعة. وتكتب pandas التحذير SettingWithCopyWarning على مجرى الأخطاء، وهو ليس مخرج البرنامج، فالسكربت الذي يقرأ المخرج القياسي وحده لا يرى شيئًا."
+    },
+    "5": {
+      "en": "raw is untouched: 300 and 260 are still there. The rent you set to zero exists only in gaza, and most code throws gaza away on the next line.",
+      "ar": "لم يُمسَّ raw: ما زالت 300 و260 موجودتين. والإيجار الذي جعلته صفرًا موجود في gaza وحدها، ومعظم الكود يرمي gaza في السطر التالي."
+    },
+    "6": {
+      "en": ".copy() asks for an independent table in so many words. Now there is no ambiguity about who owns the memory.",
+      "ar": "تطلب .copy() جدولًا مستقلًّا بالعبارة الصريحة. والآن لا لبس في ملكية الذاكرة."
+    },
+    "7": {
+      "en": "One .loc call, both axes at once: rows by mask, column by name. This is an assignment pandas can always resolve, so it never warns and never silently misses.",
+      "ar": "استدعاء .loc واحد يحدّد المحورين معًا: الصفوف بقناع والعمود بالاسم. وهذا إسناد تستطيع pandas حلّه دائمًا، فلا تحذّر ولا تُخطئ بصمت."
+    },
+    "9": {
+      "en": "raw still reads 300, 120, 120, NaN, 260, 140 while work reads 0, 120, 120, NaN, 0, 140. Two tables, one of them still the evidence.",
+      "ar": "ما زال raw يقرأ 300 و120 و120 وNaN و260 و140، بينما يقرأ work صفرًا و120 و120 وNaN وصفرًا و140. جدولان، أحدهما ما زال هو الدليل."
+    },
+    "end": {
+      "en": "The rule that follows: copy once at the top of the pipeline, write with .loc or return a new frame, and never let a transformation reach back into the file you were given.",
+      "ar": "القاعدة التي تتبع ذلك: انسخ مرة واحدة في رأس خط التحويل، واكتب بـ.loc أو أعِد جدولًا جديدًا، ولا تدع تحويلًا يمتدّ إلى الملف الذي أُعطيته."
+    }
+  },
+  "watch": ["raw", "gaza", "work"],
+  "viz": {"raw": "table", "gaza": "table", "work": "table"},
+  "max_steps": 40
+}

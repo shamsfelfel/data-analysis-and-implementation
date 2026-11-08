@@ -20,7 +20,8 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 | T1 L4 | `read_csv(sep=, encoding=, dtype=, parse_dates=, na_values=)` | correct for this file, but the knowledge lives in one call nobody validates |
 | T1 L6 | `load_listings(path)` — reads everything as text, types each column from a schema dict, counts blank and failed cells, validates, returns (typed DataFrame, report) | one file layout only; a source change shows only when it fails the schema; Excel, Power Query and Power BI have their own silent defaults (P1) |
 | P1 L3/L6 | the same load in a notebook / Power Query / Excel Table | three tools, three different silent defaults: `n/a` → `NaN` in pandas (the column loads `float64`), text in Excel (only `ISNUMBER` finds it), an Error in Power Query (survives until Replace Errors); item text compares case-sensitively in pandas and Power Query but not in Excel's criteria, so a TRIM-only `item_clean` leaves 19 spellings and still reports the right total |
-| T2, P2 (planned) | cleaning pipeline; `pd.read_*` with a schema | — |
+| T2 L1 | the validated loader's output becomes the *input*: a canonical order for the repair, a fit/apply split, an untouched raw table, a per-step log and a held-out measurement | the frame repairs nothing yet, it still only reports — it sees the 19 `G` floors a schema cannot type, but it cannot see that 26 spellings are 5 cities, that 14 rows are one flat typed twice, or that a rent of 99999 is a phone number: those are facts about *values*, and a schema describes *types* |
+| T2 L2–L5, P2 (planned) | the repairs themselves; `pd.read_*` with a schema | — |
 
 ## T-MEANING — What may I do with this column?
 
@@ -89,3 +90,4 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 | P1 L4 | Excel: named Table and formulas | manual clicks leave no trail |
 | P1 L5 | Power Query applied steps | tied to Power BI |
 | P1 L6 | one script/notebook that rebuilds the answer from the raw file | the golden answer must be re-reviewed and dated per period; Excel and Power BI still cannot be re-run from Python |
+| T2 L1 | every step returns `(frame, log_row)` and a four-line `run()` prints the decision log as a DataFrame — the log is produced by the code it describes, so it cannot go stale the way P1 L1's prose log can; the fitted parameters are applied to next month's file without refitting | the log records what happened, not whether the answer is right, and `fitted` is a dict in memory rather than an artefact stored beside its output (T2 L6) |

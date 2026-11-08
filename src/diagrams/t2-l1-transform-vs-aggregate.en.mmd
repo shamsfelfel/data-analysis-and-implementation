@@ -1,0 +1,9 @@
+%% alt: Flowchart contrasting a transformation with an aggregation. A table of 503 listings, one row per listing, goes two ways. Down the transformation branch, filling a blank rent or encoding a city returns a table whose rows are still listings, so 503 rows in gives 503 rows out and the listing_id still identifies a row; the result can be fed to the next step or to a model. Down the aggregation branch, grouping by city and taking the mean rent returns a table whose rows are cities, so 503 rows in gives 5 rows out and the listing_id is gone; the result is a report or a chart, and the individual listing cannot be recovered from it.
+flowchart TD
+  T["503 listings<br/>one row = one flat"] --> Q{"Does one row still<br/>mean one flat?"}
+  Q -- "yes: transformation" --> X1["fill a blank rent<br/>encode a city<br/>scale an area"]
+  X1 --> X2["503 rows out<br/>listing_id still identifies a row"]
+  X2 --> X3["feed the next step<br/>or the model"]
+  Q -- "no: aggregation" --> Y1["group by city<br/>mean rent"]
+  Y1 --> Y2["5 rows out<br/>one row = one city<br/>listing_id gone"]
+  Y2 --> Y3["a report or a chart<br/>no way back to a flat"]

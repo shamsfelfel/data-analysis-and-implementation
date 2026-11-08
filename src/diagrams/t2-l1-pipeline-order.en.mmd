@@ -1,0 +1,14 @@
+%% alt: Flowchart of the canonical transformation order. The raw file is loaded and typed, then copied so the raw table is never written to. Five stages follow in order: structure (duplicates, reposts, the unit of a row), values (text, booleans, dates, impossible numbers), missing (count, name the mechanism, drop or impute or flag), outliers (a rule and a threshold, flag before dropping), and encode and scale (categories to numbers, numbers to one range). Every stage returns a frame and a log row, and the fitted parameters of the missing, outlier and encoding stages are stored so the same pipeline can be applied to next month's file without being fitted again.
+flowchart TD
+  R["Raw file<br/>never written to"] --> L["Load and type<br/>schema, validate"]
+  L --> C["copy()<br/>work on a copy"]
+  C --> S1["1 Structure<br/>duplicates, reposts<br/>what is one row?"]
+  S1 --> S2["2 Values<br/>text, booleans, dates<br/>impossible numbers"]
+  S2 --> S3["3 Missing<br/>count, name the mechanism<br/>drop, impute or flag"]
+  S3 --> S4["4 Outliers<br/>choose a rule<br/>flag before dropping"]
+  S4 --> S5["5 Encode and scale<br/>categories to numbers<br/>numbers to one range"]
+  S5 --> M["Model-ready table<br/>+ decision log"]
+  S3 -.-> P[["fitted parameters<br/>medians, lists, min and max"]]
+  S4 -.-> P
+  S5 -.-> P
+  P -.-> N["Next month's file<br/>apply, never refit"]

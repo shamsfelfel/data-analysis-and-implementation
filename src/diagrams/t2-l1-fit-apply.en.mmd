@@ -1,0 +1,24 @@
+%% alt: Sequence diagram of fitting on the training file and applying to next month's file. The analyst splits the raw listings into training rows and held-out rows, then asks fit to learn parameters from the training rows only: a median rent, a city list, a minimum and a maximum. Fit returns a parameter dictionary. The analyst applies those parameters to the held-out rows and measures the error, then applies the same frozen parameters to next month's file, which contains an unknown city. Apply flags the unknown city instead of inventing a column, and the training rows are never read again.
+sequenceDiagram
+  autonumber
+  participant A as Analyst
+  participant R as listings_raw.csv
+  participant F as fit
+  participant P as fitted
+  participant Y as apply
+  participant N as listings_new.csv
+  A->>R: read 503 rows
+  A->>A: split: 377 train, 126 held out
+  A->>+F: fit(train)
+  Note over F: training rows only<br/>held-out rows unseen
+  F->>P: median, city list, min, max
+  F-->>-A: fitted
+  A->>+Y: apply(held out, fitted)
+  Y->>P: read parameters
+  Y-->>-A: scored rows, log
+  A->>A: measure the error once
+  A->>+Y: apply(next month, fitted)
+  N-->>Y: 85 new rows
+  Y->>P: the same parameters
+  Note over Y: unknown city<br/>flagged, not invented
+  Y-->>-A: same columns, new rows

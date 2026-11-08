@@ -49,7 +49,18 @@
   <h1><span class="en">Execution Lab &mdash; watch the code run</span><span class="ar">مختبر التنفيذ &mdash; شاهد الكود يُنفَّذ</span></h1>
   <p class="lede en">Step through the programs of this chapter one line at a time. The highlighted line is about to run; beside it you see what exists <em>right now</em> &mdash; variables, lists, tables, trees and the call stack &mdash; with what just changed flagged, and a note on what is happening. Use <strong>Next</strong> and <strong>Back</strong>, press <strong>Run</strong>, drag the slider, or click a line to jump to it.</p>
   <p class="lede ar">تنقّل في برامج هذا الفصل سطرًا سطرًا. السطر المظلَّل على وشك أن يُنفَّذ؛ وبجانبه ترى ما هو موجود <em>الآن</em> &mdash; المتغيرات والقوائم والجداول والأشجار ومكدّس الاستدعاءات &mdash; مع تمييز ما تغيّر للتو وملاحظة عمّا يجري. استخدم <strong>التالي</strong> و<strong>السابق</strong>، أو اضغط <strong>تشغيل</strong>، أو اسحب المنزلق، أو انقر سطرًا للانتقال إليه.</p>
-  <p class="en">No traces yet.</p><p class="ar">لا توجد تتبّعات بعد.</p>
+  <h2 id="t2lab-h1"><span class="en">Fit once, apply anywhere: a learned median meets next month's file</span><span class="ar">اضبط مرة، وطبّق في أي مكان: وسيط مُتعلَّم يلاقي ملف الشهر القادم</span></h2>
+  <p class="en">fit() looks at the training rows and returns two parameters: a median rent and the list of cities it has seen. apply_fitted() then uses those parameters on a file fit() never read — including a city that is not on the list. Follow the call stack: the parameters travel, the training data does not.</p>
+  <p class="ar">تنظر fit() في صفوف التدريب وتعيد وسيطين: وسيط الإيجار وقائمة المدن التي رأتها. ثم تستعمل apply_fitted() هذين الوسيطين على ملف لم تقرأه fit() قط — وفيه مدينة ليست في القائمة. تابع مكدّس النداء: الوسائط هي التي تسافر، لا بيانات التدريب.</p>
+  <div data-trace-id="t2-l1-fit-apply"></div>
+  <h2 id="t2lab-h2"><span class="en">Two orders, two tables: impute then dedupe, or dedupe then impute</span><span class="ar">ترتيبان، جدولان: عوِّض ثم احذف المكرّر، أو احذف المكرّر ثم عوِّض</span></h2>
+  <p class="en">Six listings, one of them typed in twice and one with no rent. The same two steps in the two possible orders learn two different medians, so the blank rent is filled with 140 in one table and 200 in the other. Watch the parameter being learned, and watch which rows it was learned from.</p>
+  <p class="ar">ستة إعلانات، أحدها مُدخَل مرتين وواحد بلا إيجار. الخطوتان نفسهما بالترتيبين الممكنين تتعلّمان وسيطين مختلفين، فيُعبَّأ الإيجار الفارغ بـ140 في جدول وبـ200 في الآخر. راقب الوسيط وهو يُتعلَّم، وراقب من أي صفوف تعلَّمه.</p>
+  <div data-trace-id="t2-l1-order-matters"></div>
+  <h2 id="t2lab-h3"><span class="en">The write that goes nowhere: a slice, a copy, and .loc</span><span class="ar">كتابةٌ لا تصل: قطعة ونسخة و.loc</span></h2>
+  <p class="en">Filter the Gaza listings, set their rent to zero, and print the table: nothing changed. pandas printed a warning on the error stream and carried on. Step through it, then watch the two forms that really do write — .copy() plus .loc — and see that the raw table stays raw.</p>
+  <p class="ar">رشّح إعلانات غزة واجعل إيجارها صفرًا ثم اطبع الجدول: لم يتغير شيء. طبعت pandas تحذيرًا على مجرى الأخطاء ثم تابعت. اخطُ عبر البرنامج، ثم راقب الصورتين التي تكتب فعلًا — ‏.copy() مع .loc — وانظر كيف يبقى الجدول الخام خامًا.</p>
+  <div data-trace-id="t2-l1-view-vs-copy"></div>
 
 </section>
 <nav class="pager"></nav>
@@ -71,6 +82,9 @@
 <script src="../assets/js/anchors.js"></script>
 <script src="../assets/js/chrome.js"></script>
 <script src="../assets/js/code.js"></script>
+<script src="../assets/data/traces/t2-l1-fit-apply.js"></script>
+<script src="../assets/data/traces/t2-l1-order-matters.js"></script>
+<script src="../assets/data/traces/t2-l1-view-vs-copy.js"></script>
 <script src="../assets/js/trace.js"></script>
 <script src="../assets/js/app.js"></script>
 </body>

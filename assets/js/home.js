@@ -103,22 +103,45 @@
 
   /* The chapters still to be written, listed from the same registry
      the finished ones come from so the two can never drift apart. One
-     list per track: <ol id="roadmap-theory"> and <ol id="roadmap-practical">. */
+     list per track: <ol id="roadmap-theory"> and <ol id="roadmap-practical">.
+
+     Two kinds of chapter belong here, and the difference matters. A chapter
+     in `planned` has a number and a title and nothing else. A chapter that is
+     already in `chapters` with ready:false has its pages registered -- they
+     build, they deploy, its author reads them in a browser -- but the course
+     does not offer it yet. Listing only `planned` once left a hole in the road
+     where a chapter was being written: the track jumped from 1 to 3. So the
+     road is both, by number, and a chapter leaves it by becoming ready, which
+     is the same moment it joins the grid above. Nothing to remember by hand. */
+  function roadAhead(trackId) {
+    var out = [];
+    var planned = (window.COURSE.planned || []);
+    var chapters = (window.COURSE.chapters || []);
+    var i;
+    for (i = 0; i < chapters.length; i++) {
+      if (chapters[i].track === trackId && !chapters[i].ready) out.push(chapters[i]);
+    }
+    for (i = 0; i < planned.length; i++) {
+      if (planned[i].track === trackId) out.push(planned[i]);
+    }
+    out.sort(function (a, b) { return a.num - b.num; });
+    return out;
+  }
+
   function fillRoadmap() {
     if (!window.COURSE) return;
-    var planned = window.COURSE.planned || [];
     var hosts = document.querySelectorAll("[data-roadmap]");
     for (var h = 0; h < hosts.length; h++) {
       var host = hosts[h];
       var trackId = host.getAttribute("data-roadmap");
+      var ahead = roadAhead(trackId);
       host.innerHTML = "";
-      for (var i = 0; i < planned.length; i++) {
-        if (planned[i].track !== trackId) continue;
+      for (var i = 0; i < ahead.length; i++) {
         var li = el("li");
-        li.appendChild(el("span", "n", String(planned[i].num)));
+        li.appendChild(el("span", "n", String(ahead[i].num)));
         var name = el("span", "t");
-        name.appendChild(el("span", "en", planned[i].title.en));
-        name.appendChild(el("span", "ar", planned[i].title.ar));
+        name.appendChild(el("span", "en", ahead[i].title.en));
+        name.appendChild(el("span", "ar", ahead[i].title.ar));
         li.appendChild(name);
         var tag = el("span", "soon");
         tag.setAttribute("data-ui", "soon");

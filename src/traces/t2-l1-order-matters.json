@@ -1,0 +1,52 @@
+{
+  "id": "t2-l1-order-matters",
+  "title": {
+    "en": "Two orders, two tables: impute then dedupe, or dedupe then impute",
+    "ar": "ترتيبان، جدولان: عوِّض ثم احذف المكرّر، أو احذف المكرّر ثم عوِّض"
+  },
+  "lede": {
+    "en": "Six listings, one of them typed in twice and one with no rent. The same two steps in the two possible orders learn two different medians, so the blank rent is filled with 140 in one table and 200 in the other. Watch the parameter being learned, and watch which rows it was learned from.",
+    "ar": "ستة إعلانات، أحدها مُدخَل مرتين وواحد بلا إيجار. الخطوتان نفسهما بالترتيبين الممكنين تتعلّمان وسيطين مختلفين، فيُعبَّأ الإيجار الفارغ بـ140 في جدول وبـ200 في الآخر. راقب الوسيط وهو يُتعلَّم، وراقب من أي صفوف تعلَّمه."
+  },
+  "files": {
+    "rents.csv": "id,city,rent\n1,Gaza,300\n2,Rafah,120\n2,Rafah,120\n3,Jabalia,\n4,Gaza,260\n5,Rafah,140\n"
+  },
+  "code": "import pandas as pd\nraw = pd.read_csv(\"rents.csv\")\nmed_all = raw[\"rent\"].median()\na = raw.copy()\na[\"rent\"] = a[\"rent\"].fillna(med_all)\na = a.drop_duplicates()\nb = raw.drop_duplicates().copy()\nmed_b = b[\"rent\"].median()\nb[\"rent\"] = b[\"rent\"].fillna(med_b)\nprint(\"impute, then dedupe:\", med_all, len(a), a[\"rent\"].tolist())\nprint(\"dedupe, then impute:\", med_b, len(b), b[\"rent\"].tolist())\n",
+  "notes": {
+    "2": {
+      "en": "Six rows load. Listing 2 is there twice, byte for byte, and listing 3 has no rent, so the rent column is float64 with one NaN.",
+      "ar": "تُحمَّل ستة صفوف. الإعلان 2 موجود مرتين حرفًا بحرف، والإعلان 3 بلا إيجار، فعمود الإيجار من النوع float64 وفيه NaN واحدة."
+    },
+    "3": {
+      "en": "The median is FITTED here, on all six rows. The five rents it sees are 300, 120, 120, 260, 140 — the 120 twice — so the middle value is 140.",
+      "ar": "يُضبَط الوسيط (fit) هنا على الصفوف الستة كلها. والإيجارات الخمسة التي يراها هي 300 و120 و120 و260 و140 — و120 مرتين — فتكون القيمة الوسطى 140."
+    },
+    "5": {
+      "en": "APPLY: the blank rent of listing 3 becomes 140. The duplicate row has already voted on the parameter that filled it.",
+      "ar": "التطبيق (apply): يصير إيجار الإعلان 3 الفارغ 140. وقد صوّت الصف المكرّر على الوسيط الذي عبّأه."
+    },
+    "6": {
+      "en": "Only now does the duplicate go. Dropping it cannot undo its effect on med_all — the number is already in the table.",
+      "ar": "الآن فقط يُحذف المكرّر. وحذفه لا يُلغي أثره في med_all — فالرقم صار في الجدول بالفعل."
+    },
+    "7": {
+      "en": "The other order starts again from raw: structure first. Five rows now, and .copy() keeps raw out of harm's way.",
+      "ar": "الترتيب الآخر يبدأ من raw من جديد: البنية أولًا. خمسة صفوف الآن، و.copy() تُبعد raw عن الأذى."
+    },
+    "8": {
+      "en": "The same fit on the deduplicated table: the rents are 300, 120, 260, 140, so the median is the average of 140 and 260 — 200.0. One repeated row moved the parameter by 60.",
+      "ar": "الضبط نفسه على الجدول منزوع التكرار: الإيجارات 300 و120 و260 و140، فالوسيط متوسط 140 و260 أي 200.0. صفٌّ مكرّر واحد حرّك الوسيط بمقدار 60."
+    },
+    "10": {
+      "en": "Both tables have five rows and look equally clean. The blank cell is 140 in one and 200 in the other, and nothing in either table says which order produced it.",
+      "ar": "للجدولين خمسة صفوف ويبدوان نظيفين سواءً بسواء. والخلية الفارغة 140 في أحدهما و200 في الآخر، ولا شيء في أيٍّ منهما يقول أي ترتيب أنتجه."
+    },
+    "end": {
+      "en": "Two defensible-looking pipelines, two different tables. This is why the order of a pipeline is part of its definition, not a detail of how you typed it.",
+      "ar": "خطّا تحويل يبدو كلٌّ منهما قابلًا للدفاع، وجدولان مختلفان. ولهذا يكون ترتيب خط التحويل جزءًا من تعريفه، لا تفصيلًا في طريقة كتابتك له."
+    }
+  },
+  "watch": ["raw", "med_all", "a", "b", "med_b"],
+  "viz": {"raw": "table", "a": "table", "b": "table"},
+  "max_steps": 60
+}

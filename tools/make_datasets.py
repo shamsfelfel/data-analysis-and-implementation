@@ -604,6 +604,9 @@ fact("T2 city spellings: %d distinct strings in the raw column for %d real citie
      % (t2raw["city"].nunique(), city_clean.nunique(), city_key.nunique()))
 fact("T2 furnished is written %d ways: %s"
      % (t2raw["furnished"].nunique(), ", ".join(repr(v) for v in sorted(t2raw["furnished"].unique()))))
+fact("T2 floor is a mixed-type column: %d rows hold 'G' for ground and %d are blank, so it loads as text and "
+     "to_numeric(errors='coerce') turns every 'G' into NaN - losing the fact that a ground floor IS a floor"
+     % (int((t2raw["floor"] == "G").sum()), int((t2raw["floor"] == "").sum())))
 fact("T2 missing (blank cells): " + ", ".join(
     "%s=%d" % (c, int((t2raw[c] == "").sum())) for c in T2_COLS if int((t2raw[c] == "").sum())))
 _miss = t2num["monthly_rent"].isna()
@@ -674,11 +677,15 @@ fact("T2 the merge trap: city_reference.csv holds the 5 cities under their canon
      % (int(_raw_match.sum()), len(t2raw), 100.0 * _raw_match.mean(), int(city_clean.notna().sum())))
 
 t2new = pd.read_csv(os.path.join(T2, "listings_new.csv"), dtype=str, keep_default_na=False)
+_new_cities = sorted(set(t2new["city"]) - set(city_clean.dropna()))
+_new_agencies = sorted(set(t2new["agency"]) - set(t2raw["agency"]))
+_new_cond = sorted(set(t2new["condition"].str.strip().str.lower()) - set(COND_ORDER) - {""})
 fact("T2 listings_new.csv: %d rows for June 2026, already canonically spelled, and carrying what the training "
-     "data never saw - city 'Beit Lahia' (2 rows), agencies 'Burhan Realty' and 'Sumud Housing' (1 row each) "
-     "and condition 'very good' (1 row); %d blank area_m2, %d blank monthly_rent, %d blank condition. "
-     "get_dummies() on this file alone produces different columns than on listings_raw.csv"
-     % (len(t2new), int((t2new["area_m2"] == "").sum()), int((t2new["monthly_rent"] == "").sum()),
+     "data never saw - city: %s; agencies: %s; condition: %s. Plus %d blank area_m2, %d blank monthly_rent, "
+     "%d blank condition. get_dummies() on this file alone produces different columns than on "
+     "listings_raw.csv, which is the whole point"
+     % (len(t2new), ", ".join(_new_cities), ", ".join(_new_agencies), ", ".join(_new_cond),
+        int((t2new["area_m2"] == "").sum()), int((t2new["monthly_rent"] == "").sum()),
         int((t2new["condition"] == "").sum())))
 
 t2hist = pd.read_csv(os.path.join(T2, "rent_history_wide.csv"))

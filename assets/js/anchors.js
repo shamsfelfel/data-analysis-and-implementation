@@ -607,6 +607,53 @@ window.DAAnchors = {
 "t2idx-h1": "chapters/t2.html",
 "t2idx-h2": "chapters/t2.html",
 "t2idx-s1": "chapters/t2.html",
+"t2l1-e1": "lessons/t2-lesson-01.html",
+"t2l1-e2": "lessons/t2-lesson-01.html",
+"t2l1-e3": "lessons/t2-lesson-01.html",
+"t2l1-e4": "lessons/t2-lesson-01.html",
+"t2l1-h1": "lessons/t2-lesson-01.html",
+"t2l1-h2": "lessons/t2-lesson-01.html",
+"t2l1-h3": "lessons/t2-lesson-01.html",
+"t2l1-h4": "lessons/t2-lesson-01.html",
+"t2l1-h5": "lessons/t2-lesson-01.html",
+"t2l1-h6": "lessons/t2-lesson-01.html",
+"t2l1-h7": "lessons/t2-lesson-01.html",
+"t2l1-h8": "lessons/t2-lesson-01.html",
+"t2l1-s1": "lessons/t2-lesson-01.html",
+"t2l1-s10": "lessons/t2-lesson-01.html",
+"t2l1-s11": "lessons/t2-lesson-01.html",
+"t2l1-s12": "lessons/t2-lesson-01.html",
+"t2l1-s13": "lessons/t2-lesson-01.html",
+"t2l1-s14": "lessons/t2-lesson-01.html",
+"t2l1-s15": "lessons/t2-lesson-01.html",
+"t2l1-s16": "lessons/t2-lesson-01.html",
+"t2l1-s17": "lessons/t2-lesson-01.html",
+"t2l1-s18": "lessons/t2-lesson-01.html",
+"t2l1-s19": "lessons/t2-lesson-01.html",
+"t2l1-s2": "lessons/t2-lesson-01.html",
+"t2l1-s20": "lessons/t2-lesson-01.html",
+"t2l1-s21": "lessons/t2-lesson-01.html",
+"t2l1-s22": "lessons/t2-lesson-01.html",
+"t2l1-s23": "lessons/t2-lesson-01.html",
+"t2l1-s24": "lessons/t2-lesson-01.html",
+"t2l1-s25": "lessons/t2-lesson-01.html",
+"t2l1-s26": "lessons/t2-lesson-01.html",
+"t2l1-s27": "lessons/t2-lesson-01.html",
+"t2l1-s28": "lessons/t2-lesson-01.html",
+"t2l1-s29": "lessons/t2-lesson-01.html",
+"t2l1-s3": "lessons/t2-lesson-01.html",
+"t2l1-s30": "lessons/t2-lesson-01.html",
+"t2l1-s31": "lessons/t2-lesson-01.html",
+"t2l1-s32": "lessons/t2-lesson-01.html",
+"t2l1-s4": "lessons/t2-lesson-01.html",
+"t2l1-s5": "lessons/t2-lesson-01.html",
+"t2l1-s6": "lessons/t2-lesson-01.html",
+"t2l1-s7": "lessons/t2-lesson-01.html",
+"t2l1-s8": "lessons/t2-lesson-01.html",
+"t2l1-s9": "lessons/t2-lesson-01.html",
+"t2lab-h1": "labs/t2-lab.html",
+"t2lab-h2": "labs/t2-lab.html",
+"t2lab-h3": "labs/t2-lab.html",
 "track-practical": "index.html",
 "track-theory": "index.html"
 };
@@ -2626,6 +2673,178 @@ window.DAHeadings = {
 "t2idx-s1": {
 "ar": "الفصل في سطر واحد",
 "en": "The chapter in one line"
+},
+"t2l1-h1": {
+"ar": "المفهوم 1 — ما هو التحويل، وما ليس تحويلًا",
+"en": "Concept 1 — What a transformation is, and what it is not"
+},
+"t2l1-h2": {
+"ar": "المفهوم 2 — ترتيب العمليات",
+"en": "Concept 2 — The order of operations"
+},
+"t2l1-h3": {
+"ar": "المفهوم 3 — الضبط والتطبيق",
+"en": "Concept 3 — Fit and apply"
+},
+"t2l1-h4": {
+"ar": "المفهوم 4 — لا تعدّل الجدول الخام أبدًا",
+"en": "Concept 4 — Never mutate the raw table"
+},
+"t2l1-h5": {
+"ar": "المفهوم 5 — خطوة تُبلّغ",
+"en": "Concept 5 — A step that reports"
+},
+"t2l1-h6": {
+"ar": "المفهوم 6 — كيف تعرف أن التحويل أفاد",
+"en": "Concept 6 — How you know a transformation helped"
+},
+"t2l1-h7": {
+"ar": "تمارين",
+"en": "Exercises"
+},
+"t2l1-h8": {
+"ar": "الملحق — الحساب وراء أرقام هذه الصفحة",
+"en": "Appendix — the arithmetic behind the numbers on this page"
+},
+"t2l1-s1": {
+"ar": "الملف يُحمَّل بلا عيب، ومع تقرير",
+"en": "The file loads perfectly, with a report"
+},
+"t2l1-s10": {
+"ar": "ما تتعلّمه الخطوة، وما تطبّقه فقط",
+"en": "What a step learns, and what it only applies"
+},
+"t2l1-s11": {
+"ar": "حجز صفوف",
+"en": "Holding rows back"
+},
+"t2l1-s12": {
+"ar": "التسرّب: الوسيط رأى الجواب بالفعل",
+"en": "Leakage: the parameter has already seen the answer"
+},
+"t2l1-s13": {
+"ar": "ثلاثة وسائط، وثلاثة تسرّبات مختلفة",
+"en": "Three parameters, three different leaks"
+},
+"t2l1-s14": {
+"ar": "من fillna واحدة إلى قاموس وسائط مضبوطة",
+"en": "From one fillna to a fitted dictionary"
+},
+"t2l1-s15": {
+"ar": "قائمة الفئات، والمدينة التي لم ترها قط",
+"en": "The category list, and the city you have never seen"
+},
+"t2l1-s16": {
+"ar": "الكتابة التي لا تصل",
+"en": "The write that goes nowhere"
+},
+"t2l1-s17": {
+"ar": "إطلالة أم نسخة؟ pandas لن تخبرك",
+"en": "View or copy? pandas will not tell you"
+},
+"t2l1-s18": {
+"ar": "تسلسل التوابع بـassign وpipe",
+"en": "Method chaining with assign and pipe"
+},
+"t2l1-s19": {
+"ar": "ماذا يشتري لك inplace=True",
+"en": "What inplace=True buys you"
+},
+"t2l1-s2": {
+"ar": "والجدول ما زال غير قابل للاستعمال",
+"en": "And the table is still unusable"
+},
+"t2l1-s20": {
+"ar": "الخطوة التي تطبع ليست خطوة تُبلّغ",
+"en": "A step that prints is not a step that reports"
+},
+"t2l1-s21": {
+"ar": "الشكل القابل للنمو: (frame, log_row)",
+"en": "The shape that grows: (frame, log_row)"
+},
+"t2l1-s22": {
+"ar": "السجل هو سجل القرارات",
+"en": "The log is the decision log"
+},
+"t2l1-s23": {
+"ar": "الخطوات الثلاث نفسها على ملف الشهر القادم",
+"en": "The same three steps on next month's file"
+},
+"t2l1-s24": {
+"ar": "مسطرة لا نموذج",
+"en": "A yardstick, not a model"
+},
+"t2l1-s25": {
+"ar": "متوسط الخطأ المطلق، في جملة واحدة",
+"en": "Mean absolute error, in one sentence"
+},
+"t2l1-s26": {
+"ar": "المسطرة نفسها كانت مكسورة",
+"en": "The ruler itself was broken"
+},
+"t2l1-s27": {
+"ar": "أفضل على صفوف التدريب وأسوأ على المحجوزة",
+"en": "Better on the training rows, worse held out"
+},
+"t2l1-s28": {
+"ar": "ما لا تستطيع هذه المسطرة أن تخبرك به",
+"en": "What this ruler cannot tell you"
+},
+"t2l1-s29": {
+"ar": "أ. لماذا نجا الوسيط من التكرارات ولم ينجُ المتوسط",
+"en": "A. Why the median survived the duplicates and the mean did not"
+},
+"t2l1-s3": {
+"ar": "ثلاثة أفعال: تحميل وتحويل وتجميع",
+"en": "Three verbs: load, transform, aggregate"
+},
+"t2l1-s30": {
+"ar": "ب. لماذا يُسقط خطأ إدخال واحد توحيد المقياس بالحدَّين",
+"en": "B. Why one typo collapses min–max scaling"
+},
+"t2l1-s31": {
+"ar": "ج. الـ25% التي تسرّبت، معدودةً بدقّة",
+"en": "C. The 25% that leaked, counted exactly"
+},
+"t2l1-s32": {
+"ar": "أهم الخلاصات، وورقة الأخطاء الشائعة",
+"en": "Key takeaways, and the mistakes cheat-sheet"
+},
+"t2l1-s4": {
+"ar": "التجميع يغيّر معنى الصف",
+"en": "An aggregation changes what a row is"
+},
+"t2l1-s5": {
+"ar": "ماذا تعني «الجاهزية للنموذج» بدقة",
+"en": "What “model-ready” means, precisely"
+},
+"t2l1-s6": {
+"ar": "خطوتان، ترتيبان، جدولان",
+"en": "Two steps, two orders, two tables"
+},
+"t2l1-s7": {
+"ar": "لماذا يصوّت الصف المكرّر مرتين — ولماذا يغفر الوسيط ذلك أحيانًا",
+"en": "Why the repeated row votes twice — and why the median sometimes forgives it"
+},
+"t2l1-s8": {
+"ar": "الترتيب القياسي، مرحلةً مرحلة",
+"en": "The canonical order, stage by stage"
+},
+"t2l1-s9": {
+"ar": "كتابة الترتيب بحيث يقرأه مراجع",
+"en": "Writing the order down so a reviewer can read it"
+},
+"t2lab-h1": {
+"ar": "اضبط مرة، وطبّق في أي مكان: وسيط مُتعلَّم يلاقي ملف الشهر القادم",
+"en": "Fit once, apply anywhere: a learned median meets next month's file"
+},
+"t2lab-h2": {
+"ar": "ترتيبان، جدولان: عوِّض ثم احذف المكرّر، أو احذف المكرّر ثم عوِّض",
+"en": "Two orders, two tables: impute then dedupe, or dedupe then impute"
+},
+"t2lab-h3": {
+"ar": "كتابةٌ لا تصل: قطعة ونسخة و.loc",
+"en": "The write that goes nowhere: a slice, a copy, and .loc"
 },
 "track-practical": {
 "ar": "العملي — مختبر تحليل البيانات وتصويرها",
