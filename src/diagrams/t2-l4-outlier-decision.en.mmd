@@ -1,0 +1,17 @@
+%% alt: Decision tree for a numeric value that a rule has flagged as extreme. Start with the flagged value and ask the only question that matters first: is this value possible at all for this column? If it is impossible, ask next whether the digits themselves are wrong or whether only the unit is wrong. Wrong digits make it a value error, like the rent of 99999 on listing 5062, which is a phone number typed into the rent box, and the action is to void the cell to missing and let Lesson 2's rules handle the hole, applied to every row of the file including the held-out rows, because voiding an impossible value learns nothing from the data. A wrong unit is a different repair with a different action: the five areas recorded in dunum on listings 5015, 5099, 5167, 5290 and 5403 read 0.0379 to 0.0878 instead of 37.9 to 87.8 square metres, and the action is to multiply by a thousand behind a provenance flag, which recovers five real rows instead of deleting them. If the value is possible, ask whether anything outside the column confirms it. If the source or the domain confirms it, the value is rare but real, like the 580 shekel flat in Gaza City, and the actions are to keep it, or to flag it, or to drop it from the training rows only, never from the rows you are judged on. If nothing confirms it, you do not know which kind it is, and the honest action is to flag it, report it, and ask the source, because a rule cannot tell a rare value from a wrong one. Every branch ends in the same obligation: write the decision and its count in the log.
+flowchart TD
+  F["A rule flagged<br/>this value"] --> Q1{"Is the value<br/>possible at all?"}
+  Q1 -- "no" --> Q2{"Digits wrong,<br/>or only the unit?"}
+  Q2 -- "digits" --> V["Value error<br/>rent 99999 = a phone"]
+  V --> VA["Void the cell<br/>repair every row"]
+  Q2 -- "unit" --> U["Unit error<br/>5 areas in dunum"]
+  U --> UA["Convert the unit<br/>flag the provenance"]
+  Q1 -- "yes" --> Q3{"Does the source<br/>confirm it?"}
+  Q3 -- "yes" --> R["Rare but real<br/>580 in Gaza City"]
+  R --> RA["Keep, or flag,<br/>or drop in training only"]
+  Q3 -- "unknown" --> N["Kind unknown"]
+  N --> NA["Flag, report,<br/>ask the source"]
+  VA --> L[["Log the rule,<br/>the count, the reason"]]
+  UA --> L
+  RA --> L
+  NA --> L

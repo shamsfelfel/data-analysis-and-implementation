@@ -1,0 +1,75 @@
+{
+  "id": "t2-l4-iqr-vs-z",
+  "title": {
+    "en": "One typo, two rules: why the IQR fence sees two extremes and |z| > 3 sees one",
+    "ar": "خطأ إدخال واحد وقاعدتان: لماذا يرى سياج الربيعات قيمتين متطرفتين ويرى |z| > 3 واحدة"
+  },
+  "lede": {
+    "en": "Eleven rents in sorted order: nine ordinary ones, a genuinely expensive flat at 580, and a phone number typed into the rent box. Watch the two rules being built side by side. The quartiles read positions in the sorted column, so the 99999 contributes nothing but its rank. The mean and the standard deviation read every value, so the 99999 moves both of them — and the rule that divides by the standard deviation ends up measuring the typo against a ruler the typo made.",
+    "ar": "أحد عشر إيجارًا مرتَّبة: تسعة عادية، وشقة غالية حقًّا بـ580، ورقم هاتف كُتب في خانة الإيجار. راقب القاعدتين تُبنيان جنبًا إلى جنب. فالربيعات تقرأ مواضع في العمود المرتَّب، فلا تساهم 99999 إلا برتبتها. أما المتوسط والانحراف المعياري فيقرآن كل قيمة، فتحرّكهما 99999 كليهما — وتنتهي القاعدة التي تقسم على الانحراف المعياري إلى قياس خطأ الإدخال بمسطرة صنعها خطأ الإدخال نفسه."
+  },
+  "code": "import pandas as pd\n\nrent = pd.Series([120, 150, 160, 175, 200, 210, 230, 255, 300, 580, 99999],\n                 name=\"monthly_rent\")\n\nq1 = rent.quantile(0.25)\nq3 = rent.quantile(0.75)\niqr = q3 - q1\nlow = q1 - 1.5 * iqr\nhigh = q3 + 1.5 * iqr\nby_fence = (rent < low) | (rent > high)\n\nmu = rent.mean()\nsd = rent.std()\nz = (rent - mu) / sd\nby_z = z.abs() > 3\n\nprint(\"fence [%.1f, %.1f] flags %d: %s\" % (low, high, by_fence.sum(), rent[by_fence].tolist()))\nprint(\"mean %.1f  sd %.1f\" % (mu, sd))\nprint(\"|z| > 3 flags %d: %s\" % (by_z.sum(), rent[by_z].tolist()))\n",
+  "notes": {
+    "3": {
+      "en": "Eleven rents, already sorted so that the two rules are easy to follow. Nine are ordinary, 580 is a real flat in Gaza City, and 99999 is a phone number somebody typed into the rent box.",
+      "ar": "أحد عشر إيجارًا، مرتَّبة سلفًا ليسهل تتبّع القاعدتين. تسعة منها عادية، و580 شقة حقيقية في مدينة غزة، و99999 رقم هاتف كتبه أحدهم في خانة الإيجار."
+    },
+    "6": {
+      "en": "The first quartile: the value a quarter of the way up the sorted column. With eleven values that is position 3.5, so pandas interpolates between 160 and 175 and returns 167.5. Notice what it did NOT read: the size of the largest value.",
+      "ar": "الربيع الأول: القيمة التي يقع تحتها رُبع العمود المرتَّب. ومع إحدى عشرة قيمة يكون ذلك الموضع 3.5، فتستوفي pandas بين 160 و175 وتعيد 167.5. ولاحظ ما لم تقرأه: حجم أكبر قيمة."
+    },
+    "7": {
+      "en": "The third quartile, 277.5, read the same way from position 8.5 — between 255 and 300. Still nothing about the 99999 beyond the fact that it is the largest.",
+      "ar": "الربيع الثالث 277.5، مقروءًا بالطريقة نفسها من الموضع 8.5 — بين 255 و300. ولا شيء بعد عن 99999 غير أنها الأكبر."
+    },
+    "8": {
+      "en": "The inter-quartile range: the width of the middle half of the data, 110 shekels. This is the yardstick the fence will be measured in, and it is immune to the typo by construction.",
+      "ar": "المدى الربيعي: عرض النصف الأوسط من البيانات، أي 110 شواكل. وهذه هي المسطرة التي سيُقاس بها السياج، وهي بحكم بنائها منيعة على خطأ الإدخال."
+    },
+    "10": {
+      "en": "Both fences are now fixed: [2.5, 442.5]. The upper one is one and a half inter-quartile ranges above Q3. Predict before the next line runs: how many of the eleven rents fall outside?",
+      "ar": "تثبّت السياجان الآن: ‏[2.5, 442.5]. والأعلى يعلو Q3 بمقدار مدًى ربيعي ونصف. تنبّأ قبل تنفيذ السطر التالي: كم من الإيجارات الأحد عشر يقع خارجهما؟"
+    },
+    "11": {
+      "en": "Two: 580 and 99999. The fence does not distinguish them — a genuinely expensive flat and a phone number are the same kind of event to this rule. That is the honest limit of the fence, not a bug in it.",
+      "ar": "اثنان: ‏580 و99999. ولا يفرّق السياج بينهما — فالشقة الغالية حقًّا ورقم الهاتف حدثان من نوع واحد عند هذه القاعدة. وهذا حدّ السياج الأمين لا عطب فيه."
+    },
+    "13": {
+      "en": "Here the second rule starts to go wrong. The mean of these eleven rents is 9307.2 — a number no flat in the column is anywhere near, because one cell out of eleven contributes 99999 to the sum.",
+      "ar": "هنا تبدأ القاعدة الثانية في الاعتلال. فمتوسط هذه الإيجارات الأحد عشر 9307.2 — رقمٌ لا تقاربه أي شقة في العمود، لأن خلية واحدة من إحدى عشرة تساهم بـ99999 في المجموع."
+    },
+    "14": {
+      "en": "And the standard deviation is 30079.3. The whole real market here spans 120 to 580, a width of 460, so the yardstick is sixty-five times wider than the data it is supposed to measure.",
+      "ar": "والانحراف المعياري 30079.3. والسوق الحقيقية هنا كلها بين 120 و580، أي عرض 460، فالمسطرة أعرض من البيانات التي يُفترض أن تقيسها بخمسة وستين ضعفًا."
+    },
+    "15": {
+      "en": "Divide by that and every ordinary rent gets a z of about -0.30, while the 99999 gets 3.0151. The typo inflated the denominator so much that it barely clears its own threshold.",
+      "ar": "اقسم على ذلك فتحصل كل إيجار عادي على z نحو -0.30، وتحصل 99999 على 3.0151. فقد ضخّم خطأ الإدخال المقام حتى إنه كاد لا يتجاوز حدَّه هو نفسه."
+    },
+    "16": {
+      "en": "One flag, not two. The 580 has a z of -0.2901 — indistinguishable from an ordinary rent — so the z-rule reports the market as perfectly well behaved apart from the single worst cell. Delete that cell and rerun, and the rule suddenly finds several.",
+      "ar": "علمٌ واحد لا اثنان. فللقيمة 580 درجة z تساوي -0.2901 — لا تتميّز عن إيجار عادي — فتُبلّغ قاعدة z عن سوق منتظمة تمامًا إلا خليةً واحدة هي الأسوأ. فإذا حذفتَ تلك الخلية وأعدتَ التشغيل وجدت القاعدة عدةً منها فجأةً."
+    },
+    "end": {
+      "en": "Two rules, one column, two different answers — and neither of them is wrong arithmetic. The fence is computed from ranks, so one impossible cell cannot distort it; the z-score is computed from the mean and the standard deviation, so one impossible cell distorts everything, including the threshold it is compared against. Repair the value errors first (stage 2), then choose a rule for what is left.",
+      "ar": "قاعدتان وعمود واحد وجوابان مختلفان — ولا واحدة منهما خاطئة حسابيًّا. فالسياج محسوب من الرُّتب، فلا تستطيع خلية مستحيلة واحدة أن تشوّهه؛ والدرجة المعيارية محسوبة من المتوسط والانحراف المعياري، فتشوّه خلية مستحيلة واحدة كل شيء، ومنه الحدُّ الذي تُقارن به. فأصلح أخطاء القيم أولًا (المرحلة 2)، ثم اختر قاعدة لما بقي."
+    }
+  },
+  "watch": [
+    "rent",
+    "q1",
+    "q3",
+    "iqr",
+    "low",
+    "high",
+    "by_fence",
+    "mu",
+    "sd",
+    "z",
+    "by_z"
+  ],
+  "viz": {
+    "rent": "bars"
+  },
+  "max_steps": 40
+}

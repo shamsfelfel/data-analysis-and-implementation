@@ -1,0 +1,45 @@
+{
+  "id": "t2-l4-log1p",
+  "title": {
+    "en": "log1p and expm1: what the transform does to the skew, and what it does to a mean",
+    "ar": "‏log1p وexpm1: ماذا يفعل التحويل بالالتواء، وماذا يفعل بالمتوسط"
+  },
+  "lede": {
+    "en": "Eleven rents with a long right tail. np.log1p compresses the tail and the skew falls from 0.8844 to -0.1132. Then the catch: the median survives the round trip exactly, because a logarithm preserves order, while the mean does not — expm1 of the mean of the logs is 230.93 against a true mean of 270.00. Watch which of the two summaries you are allowed to transform back.",
+    "ar": "أحد عشر إيجارًا بذيل أيمن طويل. تضغط np.log1p الذيل فيهبط الالتواء من 0.8844 إلى -0.1132. ثم المأخذ: ينجو الوسيط من الرحلة ذهابًا وعودةً بالضبط، لأن اللوغاريتم يحفظ الترتيب، ولا ينجو المتوسط — فـexpm1 لمتوسط اللوغاريتمات 230.93 مقابل متوسط حقيقي 270.00. راقب أيَّ التلخيصين يحقّ لك أن تعيده."
+  },
+  "code": "import numpy as np\nimport pandas as pd\n\nrent = pd.Series([80, 120, 150, 175, 200, 230, 255, 300, 400, 480, 580],\n                 name=\"monthly_rent\")\nlogged = np.log1p(rent)\n\nprint(\"skew   %.4f -> %.4f\" % (rent.skew(), logged.skew()))\nprint(\"median %.1f -> %.1f\" % (rent.median(), np.expm1(logged.median())))\nprint(\"mean   %.4f -> %.4f\" % (rent.mean(), np.expm1(logged.mean())))\nprint(\"round trip exact:\", bool((np.expm1(logged).round(6) == rent).all()))\n",
+  "notes": {
+    "4": {
+      "en": "Eleven rents from the low end of this chapter's market to its top: 80 to 580. Eight of them are under 310 and three are above, which is what a right tail looks like when you can still count it on your fingers.",
+      "ar": "أحد عشر إيجارًا من أسفل سوق هذا الفصل إلى أعلاها: من 80 إلى 580. ثمانية منها تحت 310 وثلاثة فوقها، وهكذا يبدو الذيل الأيمن حين تستطيع عدّه على أصابعك."
+    },
+    "6": {
+      "en": "np.log1p(x) is log(1 + x), applied cell by cell. Nothing is fitted and nothing is learned from the column, so this step cannot leak: the same value always maps to the same log. Look at the spacing — the gap 480 to 580 becomes 6.1759 to 6.3648, while 80 to 120 becomes 4.3944 to 4.7958. The transform shrinks distances at the top and keeps them at the bottom.",
+      "ar": "‏np.log1p(x) هي log(1 + x) مطبَّقةً خليةً خليةً. ولا شيء يُضبط ولا شيء يُتعلَّم من العمود، فلا يمكن لهذه الخطوة أن تسرّب: فالقيمة نفسها تُحوَّل دائمًا إلى اللوغاريتم نفسه. وانظر إلى التباعد — فالفجوة من 480 إلى 580 تصير من 6.1759 إلى 6.3648، في حين تصير من 80 إلى 120 من 4.3944 إلى 4.7958. فالتحويل يُقلّص المسافات في الأعلى ويُبقيها في الأسفل."
+    },
+    "8": {
+      "en": "0.8844 to -0.1132. A positive skew means a tail to the right; a value near zero means the two sides of the middle now weigh about the same. The transform did not delete anything and did not decide anything — every rent is still there, in the same order.",
+      "ar": "من 0.8844 إلى -0.1132. فالالتواء الموجب يعني ذيلًا إلى اليمين؛ والقيمة القريبة من الصفر تعني أن جانبي الوسط صارا متقاربي الوزن. ولم يحذف التحويل شيئًا ولم يقرّر شيئًا — فكل إيجار ما زال موجودًا وبالترتيب نفسه."
+    },
+    "9": {
+      "en": "The median survives exactly: 230.0 goes to 5.4424 and comes back 230.0. That is not luck. A logarithm is strictly increasing, so it cannot change which value sits in the middle, and expm1 undoes it exactly. Any prediction built on a median is therefore unaffected by this transform.",
+      "ar": "ينجو الوسيط بالضبط: ‏230.0 تصير 5.4424 وتعود 230.0. وهذا ليس حظًّا. فاللوغاريتم متزايد تمامًا، فلا يستطيع أن يغيّر أي قيمة تقع في الوسط، وتُلغيه expm1 بالضبط. فكل تنبؤ مبني على وسيط لا يتأثر بهذا التحويل إذن."
+    },
+    "10": {
+      "en": "THE TRAP. The true mean is 270.0. The mean of the logs, transformed back, is 230.93 - about 14% lower. Averaging is not order-preserving, so there is no reason for the two to agree, and the smaller number is not a better estimate of anything. If you must report a mean in shekels, average the shekels.",
+      "ar": "الفخّ. المتوسط الحقيقي 270.0. ومتوسط اللوغاريتمات، معادًا إلى الأصل، 230.93 — أي أدنى بنحو 14%. فأخذ المتوسط لا يحفظ الترتيب، فلا سبب لأن يتوافق الرقمان، والرقم الأصغر ليس تقديرًا أفضل لشيء. فإن كان عليك أن تُبلّغ عن متوسط بالشواكل فخُذ متوسط الشواكل."
+    },
+    "11": {
+      "en": "And the round trip on the values themselves is exact to six decimals, which is the point of log1p rather than log: log1p(0) is 0, so a rent of zero survives instead of becoming minus infinity. The transform is reversible; only your summaries are not.",
+      "ar": "والرحلة ذهابًا وعودةً على القيم نفسها دقيقة إلى ستة أرقام عشرية، وهذا هو المقصود من log1p بدل log: فـlog1p(0) تساوي 0، فينجو إيجار صفري بدل أن يصير سالب ما لا نهاية. فالتحويل قابل للعكس؛ وتلخيصاتك وحدها ليست كذلك."
+    },
+    "end": {
+      "en": "A log transform is the one outlier action that deletes nothing and invents nothing: it is pure apply, it is reversible, and it keeps the ordering. What it costs is interpretability. A coefficient on log1p(rent) is a statement about percentages, not shekels, and a mean taken in log space cannot be carried back to shekels at all. Reach for it to tame a tail a linear model cannot handle - and remember that a tree model does not need it.",
+      "ar": "التحويل اللوغاريتمي هو عمل الشواذ الوحيد الذي لا يحذف شيئًا ولا يختلق شيئًا: فهو تطبيق صِرف، وقابل للعكس، ويحفظ الترتيب. وثمنه قابلية التفسير. فالمعامل على log1p(rent) ادّعاءٌ عن النسب المئوية لا عن الشواكل، والمتوسط المأخوذ في فضاء اللوغاريتم لا يمكن إعادته إلى الشواكل أصلًا. فامدد يدك إليه لتُذلّل ذيلًا لا يحتمله نموذج خطي — وتذكّر أن نموذج الأشجار لا يحتاجه."
+    }
+  },
+  "watch": ["rent", "logged"],
+  "viz": {"rent": "bars", "logged": "bars"},
+  "max_steps": 40
+}

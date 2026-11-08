@@ -1,0 +1,16 @@
+%% alt: A left-to-right flowchart that builds the inter-quartile fence on the rent column of this chapter's file, one step at a time, so that every number on the picture is traceable. The chain starts from the four hundred and eighty-four rents that actually carry a value. Sorting them gives the three quartiles that matter: the first quartile Q1 is one hundred and fifty-three point seven five, which is the rent a quarter of the way up the sorted column, the median is two hundred, and the third quartile Q3 is two hundred and fifty-five. From Q1 and Q3 the inter-quartile range is computed as Q3 minus Q1, which is one hundred and one point two five shekels, and that width is the whole yardstick: it describes the middle half of the market and it is computed from ranks, so no single cell can stretch it. The convention then multiplies the inter-quartile range by one and a half and steps that far out from each quartile. The lower fence is Q1 minus one and a half inter-quartile ranges, which comes to one point eight seven five shekels, and the upper fence is Q3 plus one and a half inter-quartile ranges, which comes to four hundred and six point eight seven five shekels. Applying the two fences to the column flags twelve values, every one of them above the upper fence and none below the lower one. Those twelve split into one impossible value, which is the rent of ninety-nine thousand nine hundred and ninety-nine on listing 5062, and eleven genuinely expensive flats from four hundred and fifteen to five hundred and eighty shekels. Two side notes hang off the picture. The lower fence of one point eight seven five is below every possible rent, so the fence can never flag a value from the bottom of this column, which is why the daily rate of twenty-five shekels on listing 5208 passes it unnoticed. And the multiplier one and a half is a convention rather than a theorem: on a perfectly bell-shaped column it would flag about seven values in a thousand, and on a right-skewed money column like this one it flags the whole top tail.
+flowchart LR
+  A["484 rents<br/>with a value"] --> B["sort them"]
+  B --> Q1["Q1 = 153.75<br/>a quarter of the way up"]
+  B --> M["median = 200.0"]
+  B --> Q3["Q3 = 255.00<br/>three quarters up"]
+  Q1 --> I["IQR = Q3 - Q1<br/>= 101.25"]
+  Q3 --> I
+  I --> LF["lower fence<br/>Q1 - 1.5 x IQR = 1.875"]
+  I --> UF["upper fence<br/>Q3 + 1.5 x IQR = 406.875"]
+  LF --> OUT["12 values outside<br/>0 low, 12 high"]
+  UF --> OUT
+  OUT --> K1["1 impossible<br/>99999 on 5062"]
+  OUT --> K2["11 expensive flats<br/>415 to 580"]
+  LF -.-> N1["below every rent<br/>so 25 passes unseen"]
+  I -.-> N2["1.5 is a convention<br/>7 in 1000 if bell-shaped"]

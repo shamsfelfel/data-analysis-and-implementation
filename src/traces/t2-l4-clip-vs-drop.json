@@ -1,0 +1,60 @@
+{
+  "id": "t2-l4-clip-vs-drop",
+  "title": {
+    "en": "Drop or cap: the same extreme value, two actions, two different columns",
+    "ar": "حذف أم تحديد سقف: القيمة المتطرفة نفسها، عملان، وعمودان مختلفان"
+  },
+  "lede": {
+    "en": "Ten rents, one of them 580. One action deletes the row; the other pulls the value down to the fence and keeps the row. Watch the row count, the median, the mean and the standard deviation after each. Dropping loses a flat and moves the middle; capping keeps every flat and changes a value that was true. Neither is free, and the choice is not arithmetic.",
+    "ar": "عشرة إيجارات، أحدها 580. يحذف أحد العملين الصف؛ ويجرّ الآخر القيمة إلى السياج ويُبقي الصف. راقب عدد الصفوف والوسيط والمتوسط والانحراف المعياري بعد كلٍّ منهما. فالحذف يُفقد شقةً ويحرّك الوسط؛ وتحديد السقف يُبقي كل شقة ويغيّر قيمةً كانت صحيحة. ولا واحد منهما بلا ثمن، والاختيار ليس حسابًا."
+  },
+  "code": "import pandas as pd\n\nrent = pd.Series([120, 150, 160, 175, 200, 210, 230, 255, 300, 580],\n                 name=\"monthly_rent\")\nhigh = 406.875                      # the fence fitted on the real file\n\ndropped = rent[rent <= high]\ncapped = rent.clip(upper=high)\n\nfor label, s in [(\"keep\", rent), (\"drop\", dropped), (\"cap\", capped)]:\n    print(\"%-4s n=%2d median=%6.1f mean=%8.3f std=%7.3f\"\n          % (label, s.count(), s.median(), s.mean(), s.std()))\n",
+  "notes": {
+    "3": {
+      "en": "Ten rents. Nine sit between 120 and 300; the tenth, 580, is the most expensive genuine flat in this chapter's file — a real three-room flat in Gaza City, not a typo.",
+      "ar": "عشرة إيجارات. تسعة منها بين 120 و300؛ والعاشر 580 وهو أغلى شقة حقيقية في ملف هذا الفصل — شقة حقيقية من ثلاث غرف في مدينة غزة لا خطأ إدخال."
+    },
+    "5": {
+      "en": "The threshold is a parameter, not a literal you invent here: 406.875 is Q3 + 1.5 x IQR computed on the 484 rents of the real file. Carrying it as a number is what makes this step repeatable next month.",
+      "ar": "الحدّ وسيطٌ لا قيمة تخترعها هنا: فـ406.875 هي Q3 + 1.5 × IQR محسوبةً على الإيجارات الـ484 في الملف الحقيقي. وحملُه رقمًا هو ما يجعل هذه الخطوة قابلة للتكرار الشهر القادم."
+    },
+    "7": {
+      "en": "Dropping: a boolean mask keeps the nine rents at or below the fence. The 580 is gone, and with it the whole row would be gone in a DataFrame — its city, its area, its condition, everything.",
+      "ar": "الحذف: يُبقي قناعٌ منطقي الإيجارات التسعة التي عند السياج أو تحته. فتختفي 580، ومعها كان سيختفي الصف كله في جدول — مدينتُه ومساحته وحالته وكل شيء."
+    },
+    "8": {
+      "en": "Capping: clip replaces any value above the fence with the fence itself. The count is still ten. The 580 has become 406.875 — a number no landlord ever asked for, now sitting in the column as if someone had.",
+      "ar": "تحديد السقف: تستبدل clip كلَّ قيمة فوق السياج بالسياج نفسه. فيبقى العدد عشرة. وقد صارت 580 تساوي 406.875 — رقمٌ لم يطلبه مالكٌ قط، وهو الآن في العمود كأن أحدًا طلبه."
+    },
+    "11#1": {
+      "en": "The baseline: ten rents, median 205.0 (the average of 200 and 210), mean 238.0, standard deviation 131.3. The mean sits above the median, which is the signature of a right tail.",
+      "ar": "الخط القاعدي: عشرة إيجارات، الوسيط 205.0 (متوسط 200 و210)، والمتوسط 238.0، والانحراف المعياري 131.3. والمتوسط فوق الوسيط، وهذه بصمة الذيل الأيمن."
+    },
+    "11#2": {
+      "en": "After dropping: nine rents, and the median has moved to 200.0 because the middle of nine values is a single value, not an average of two. The mean falls from 238.0 to 200.0 and the standard deviation more than halves. You removed one row and every summary changed.",
+      "ar": "بعد الحذف: تسعة إيجارات، وانتقل الوسيط إلى 200.0 لأن وسط تسع قيم قيمةٌ واحدة لا متوسط قيمتين. وهبط المتوسط من 238.0 إلى 200.0 وانخفض الانحراف المعياري إلى أقل من النصف. حذفتَ صفًّا واحدًا فتغيّر كل تلخيص."
+    },
+    "11#3": {
+      "en": "After capping: ten rents again, and the median is back to 205.0 — unchanged, because the middle two values were never touched. The mean lands at 220.7, between the other two, and the standard deviation at 84.1. Capping buys you the row count and the median; it pays with one value that is now false.",
+      "ar": "بعد تحديد السقف: عشرة إيجارات مرة أخرى، وعاد الوسيط إلى 205.0 — بلا تغيير، لأن القيمتين الوسطيتين لم تُمسّا قط. ويحلّ المتوسط عند 220.7 بين الاثنين الآخرين، والانحراف المعياري عند 84.1. فتحديد السقف يشتري لك عدد الصفوف والوسيط؛ ويدفع قيمةً صارت الآن كاذبة."
+    },
+    "end": {
+      "en": "Three columns, three different stories about the same market. The question that decides between them is never statistical: is the 580 a wrong value, or a rare one? If it is wrong, repair it — anywhere in the file. If it is rare and real, dropping it is a modelling choice that may be applied to the training rows only, and capping it is a claim that no flat in Gaza City costs more than 406.875 shekels, which is false.",
+      "ar": "ثلاثة أعمدة وثلاث روايات مختلفة عن السوق نفسها. والسؤال الذي يحسم بينها ليس إحصائيًّا قط: هل 580 قيمة خاطئة أم قيمة نادرة؟ فإن كانت خاطئة فأصلحها — في أي مكان في الملف. وإن كانت نادرة وحقيقية فحذفها خيار نمذجة يجوز تطبيقه على صفوف التدريب وحدها، وتحديدُ سقفها ادّعاءٌ بأن لا شقة في مدينة غزة تكلّف أكثر من 406.875 شيكلًا، وهو ادّعاء كاذب."
+    }
+  },
+  "watch": [
+    "rent",
+    "high",
+    "dropped",
+    "capped",
+    "label",
+    "s"
+  ],
+  "viz": {
+    "rent": "bars",
+    "dropped": "bars",
+    "capped": "bars"
+  },
+  "max_steps": 40
+}

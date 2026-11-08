@@ -1,0 +1,109 @@
+[
+  { "id": "outlier",
+    "term": {"en": "Outlier", "ar": "القيمة الشاذة (outlier)"},
+    "def": {
+      "en": "A value far from the rest of its column. The word names a position, not a defect: the rent of 99999 and the genuine 580-shekel flat in Gaza City are both outliers of monthly_rent, and they need opposite actions, so the word is a prompt to investigate rather than a licence to delete.",
+      "ar": "قيمة بعيدة عن بقية عمودها. والكلمة تسمّي موضعًا لا عيبًا: فالإيجار 99999 وشقةُ الخمس مئة والثمانين شيكلًا الحقيقية في مدينة غزة كلتاهما قيمة شاذة في monthly_rent، وتحتاجان عملين متعاكسين، فالكلمة دعوةٌ إلى التحقّق لا إذنٌ بالحذف."
+    },
+    "cat": {"en": "Outliers", "ar": "القيم الشاذة"},
+    "see": ["value-error", "unit-error", "fence"] },
+
+  { "id": "value-error",
+    "term": {"en": "Value error", "ar": "خطأ القيمة (value error)"},
+    "def": {
+      "en": "A cell holding something the column cannot mean at all, so it is a fact about the recording rather than about the flat. monthly_rent 99999 on listing 5062 is a phone number typed into the rent box; the repair is to void the cell everywhere in the file, because voiding an impossible value learns nothing from the data.",
+      "ar": "خلية تحمل شيئًا لا يمكن أن يعنيه العمود أصلًا، فهي واقعة عن التسجيل لا عن الشقة. فـmonthly_rent بقيمة 99999 في الإعلان 5062 رقم هاتف كُتب في خانة الإيجار؛ والإصلاح أن تُفرَّغ الخلية في كل مكان في الملف، لأن إفراغ قيمة مستحيلة لا يتعلّم شيئًا من البيانات."
+    },
+    "cat": {"en": "Outliers", "ar": "القيم الشاذة"},
+    "see": ["outlier", "unit-error"] },
+
+  { "id": "unit-error",
+    "term": {"en": "Unit error", "ar": "خطأ الوحدة (unit error)"},
+    "def": {
+      "en": "A value recorded correctly in the wrong unit, so the digits are right and the scale is not. Five areas in this file were written in dunum and read 0.0379 to 0.0878 instead of 37.9 to 87.8 square metres; multiplying by 1000 behind a provenance flag recovers five real rows that every outlier rule would otherwise have deleted.",
+      "ar": "قيمة مسجَّلة تسجيلًا صحيحًا بوحدة خاطئة، فالأرقام صحيحة والمقياس ليس كذلك. فخمس مساحات في هذا الملف كُتبت بالدونم فتُقرأ من 0.0379 إلى 0.0878 بدل 37.9 إلى 87.8 مترًا مربعًا؛ وضربُها في 1000 وراء علم مَنشأ يستعيد خمسة صفوف حقيقية كانت كل قاعدة شواذ ستحذفها."
+    },
+    "cat": {"en": "Outliers", "ar": "القيم الشاذة"},
+    "see": ["value-error", "outlier"] },
+
+  { "id": "quartile",
+    "term": {"en": "Quartile", "ar": "الربيع (quartile)"},
+    "def": {
+      "en": "One of the three values that cut a sorted column into four equal-sized parts. Q1 is the value a quarter of the way up (153.75 for the 484 rents here), Q2 is the median (200.0) and Q3 is three quarters of the way up (255.0). A quartile reads a position, so a single impossible cell changes it only by its rank.",
+      "ar": "واحد من ثلاث قيم تقطع عمودًا مرتَّبًا إلى أربعة أجزاء متساوية الحجم. فـQ1 القيمة عند رُبع الطريق (‏153.75 للإيجارات الـ484 هنا)، وQ2 الوسيط (‏200.0)، وQ3 عند ثلاثة أرباع الطريق (‏255.0). والربيع يقرأ موضعًا، فلا تغيّره خليةٌ مستحيلة واحدة إلا برتبتها."
+    },
+    "cat": {"en": "Spread", "ar": "التشتّت"},
+    "see": ["iqr", "fence"] },
+
+  { "id": "iqr",
+    "term": {"en": "Inter-quartile range (IQR)", "ar": "المدى الربيعي (inter-quartile range, IQR)"},
+    "def": {
+      "en": "Q3 minus Q1: the width of the middle half of the data. On monthly_rent it is 255.0 - 153.75 = 101.25 shekels. Because it is built from two ranks, it describes the spread of the ordinary values and ignores how extreme the extremes are, which is exactly what the standard deviation cannot do.",
+      "ar": "‏Q3 ناقص Q1: عرض النصف الأوسط من البيانات. وفي monthly_rent هو 255.0 − 153.75 = 101.25 شيكلًا. ولأنه مبني من رتبتين فهو يصف تشتّت القيم العادية ويُهمل مقدار تطرّف المتطرفات، وهذا بالضبط ما لا يستطيعه الانحراف المعياري."
+    },
+    "cat": {"en": "Spread", "ar": "التشتّت"},
+    "see": ["quartile", "fence", "robust-statistic"] },
+
+  { "id": "fence",
+    "term": {"en": "Fence", "ar": "السياج (fence)"},
+    "def": {
+      "en": "A threshold placed k inter-quartile ranges beyond a quartile, conventionally with k = 1.5: the fences of monthly_rent are Q1 - 1.5 x IQR = 1.875 and Q3 + 1.5 x IQR = 406.875, and twelve values fall outside, all of them high. The fence is a fitted parameter, not a constant: refitted on the 363 training rents it moves to 397.5.",
+      "ar": "حدٌّ يوضع على بُعد k من المدى الربيعي خارج ربيعٍ ما، والعُرف أن k = 1.5: فسياجا monthly_rent هما Q1 − 1.5 × IQR = 1.875 وQ3 + 1.5 × IQR = 406.875، وتقع اثنتا عشرة قيمة خارجهما كلها مرتفعة. والسياج وسيطٌ مضبوط لا ثابت: فإذا أُعيد ضبطه على إيجارات التدريب الـ363 انتقل إلى 397.5."
+    },
+    "cat": {"en": "Outliers", "ar": "القيم الشاذة"},
+    "see": ["iqr", "quartile", "z-score"] },
+
+  { "id": "z-score",
+    "term": {"en": "z-score", "ar": "الدرجة المعيارية (z-score)"},
+    "def": {
+      "en": "How many standard deviations a value sits from the mean: (x - mean) / std. The usual rule flags |z| > 3, and it fails on this column because both the mean (416.3) and the standard deviation (4536.6) are computed from the 99999 it is meant to catch, so it flags 1 of the 12 values the fence flags. Remove that one cell and it flags 6.",
+      "ar": "كم انحرافًا معياريًّا تبعد القيمة عن المتوسط: ‏(x − mean) / std. والقاعدة المعتادة تعلّم |z| > 3، وهي تفشل في هذا العمود لأن المتوسط (‏416.3) والانحراف المعياري (‏4536.6) محسوبان كلاهما من القيمة 99999 التي يُفترض أن تُلقَط، فتعلّم واحدة من القيم الاثنتي عشرة التي يعلّمها السياج. وإذا حذفت تلك الخلية وحدها علّمت ستًّا."
+    },
+    "cat": {"en": "Outliers", "ar": "القيم الشاذة"},
+    "see": ["mad", "robust-statistic", "fence"] },
+
+  { "id": "mad",
+    "term": {"en": "Median absolute deviation (MAD)", "ar": "الانحراف المطلق الوسيطي (median absolute deviation, MAD)"},
+    "def": {
+      "en": "The median of the absolute distances from the median. For monthly_rent the median is 200.0 and the MAD is 50.0, whatever the 99999 does, because moving one value cannot move a median of 484 distances. Scaling it by 0.6745 puts it on the same footing as a standard deviation, which gives the robust z-score.",
+      "ar": "وسيط المسافات المطلقة عن الوسيط. ففي monthly_rent الوسيط 200.0 والانحراف المطلق الوسيطي 50.0، مهما فعلت 99999، لأن تحريك قيمة واحدة لا يستطيع تحريك وسيط 484 مسافة. وقياسُه بالمعامل 0.6745 يضعه على قدم الانحراف المعياري، فتخرج الدرجة المعيارية الحصينة."
+    },
+    "cat": {"en": "Spread", "ar": "التشتّت"},
+    "see": ["z-score", "robust-statistic"] },
+
+  { "id": "robust-statistic",
+    "term": {"en": "Robust statistic", "ar": "الإحصاء الحصين (robust statistic)"},
+    "def": {
+      "en": "A summary a few arbitrary values cannot move far. The median and the IQR of monthly_rent are 200.0 and 101.25 with the 99999 in place and 200.0 and 102.5 without it; the mean and the standard deviation go from 416.3 and 4536.6 to 210.1 and 81.5. Robust does not mean correct - a robust rule still flagged the typo and the real 580 alike.",
+      "ar": "تلخيصٌ لا تستطيع قيمٌ قليلة عشوائية أن تحرّكه بعيدًا. فوسيط monthly_rent ومداه الربيعي 200.0 و101.25 مع وجود 99999 و200.0 و102.5 بدونها؛ أما المتوسط والانحراف المعياري فينتقلان من 416.3 و4536.6 إلى 210.1 و81.5. والحصانة لا تعني الصواب — فالقاعدة الحصينة علّمت خطأ الإدخال والـ580 الحقيقية سواءً بسواء."
+    },
+    "cat": {"en": "Spread", "ar": "التشتّت"},
+    "see": ["mad", "iqr", "z-score"] },
+
+  { "id": "clipping",
+    "term": {"en": "Clipping (winsorising)", "ar": "القصّ والوِنْزَرة (clipping, winsorising)"},
+    "def": {
+      "en": "Replacing every value beyond a threshold with the threshold itself, so the row survives and the number changes: Series.clip(lower, upper) in pandas. Winsorising is the same move with percentile thresholds - clipping monthly_rent at p01 and p99 (74.1 and 466.8) touches 10 rows and moves the mean from 210.14 to 209.83 while the median does not move at all.",
+      "ar": "استبدال كل قيمة خارج حدٍّ بالحدّ نفسه، فينجو الصف ويتغيّر الرقم: ‏Series.clip(lower, upper) في pandas. والوِنْزَرة هي العمل نفسه بحدود مئينية — فقصّ monthly_rent عند p01 وp99 (‏74.1 و466.8) يمسّ عشرة صفوف وينقل المتوسط من 210.14 إلى 209.83 ولا يحرّك الوسيط أصلًا."
+    },
+    "cat": {"en": "Outliers", "ar": "القيم الشاذة"},
+    "see": ["fence", "outlier"] },
+
+  { "id": "skew",
+    "term": {"en": "Skew", "ar": "الالتواء (skew)"},
+    "def": {
+      "en": "A number saying which side of the middle carries the long tail: positive means a tail to the right, zero means the two sides balance. monthly_rent has a skew of 21.99 with the 99999 in it, 1.01 once that cell is voided, and -0.47 after np.log1p - three readings of one column, and only the middle one is about the market.",
+      "ar": "رقمٌ يقول أي جانبي الوسط يحمل الذيل الطويل: فالموجب يعني ذيلًا إلى اليمين، والصفر يعني توازن الجانبين. ولـmonthly_rent التواءٌ يساوي 21.99 مع وجود 99999 فيه، و1.01 بعد إفراغ تلك الخلية، و−0.47 بعد np.log1p — ثلاث قراءات لعمود واحد، وواحدةٌ وسطى منها فقط هي عن السوق."
+    },
+    "cat": {"en": "Distribution", "ar": "التوزيع"},
+    "see": ["log-transform", "outlier"] },
+
+  { "id": "log-transform",
+    "term": {"en": "Log transform", "ar": "التحويل اللوغاريتمي (log transform)"},
+    "def": {
+      "en": "Replacing a value by its logarithm to compress a long right tail; np.log1p computes log(1 + x) so that a zero survives instead of becoming minus infinity. It deletes nothing, invents nothing and preserves order, so a median prediction is unchanged - but expm1 of a mean of logs is 195.16 where the true mean is 210.14, so a mean may not be carried back.",
+      "ar": "استبدال القيمة بلوغاريتمها لضغط ذيل أيمن طويل؛ وتحسب np.log1p المقدار log(1 + x) حتى ينجو الصفر بدل أن يصير سالب ما لا نهاية. ولا تحذف شيئًا ولا تختلق شيئًا وتحفظ الترتيب، فلا يتغيّر تنبؤ الوسيط — لكن expm1 لمتوسط اللوغاريتمات 195.16 والمتوسط الحقيقي 210.14، فلا يجوز إعادة متوسط."
+    },
+    "cat": {"en": "Distribution", "ar": "التوزيع"},
+    "see": ["skew", "clipping"] }
+]

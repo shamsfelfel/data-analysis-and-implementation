@@ -1,0 +1,20 @@
+%% alt: A flowchart of the four actions you may take on a flagged numeric value, with the price each one charges, measured on the rent column of this chapter's file against the held-out baseline error of Lesson 1. The chart starts from a flagged value and branches four ways. Remove deletes the row: eleven rows go, the median moves from two hundred to one hundred and ninety-five, and the trap is that deleting the flagged rows from the held-out set as well makes the error read fifty-five point four seven instead of the honest sixty, because you deleted the very rows you were about to be judged on. Cap, also called clipping or winsorising, pulls the value to the threshold: every row survives and the median does not move, but the column now contains a number no landlord asked for, so an eleven-row claim that nothing in Gaza City costs more than four hundred and six point eight seven five shekels is written into the data. Transform applies a logarithm, with log1p rather than log so that a zero survives: nothing is deleted and nothing is invented, the skew falls from one point zero one to minus zero point four seven, and the price is interpretability, because a coefficient is now about percentages and the mean cannot be carried back to shekels. Flag and keep adds a boolean column and deletes nothing: it is the only action that is reversible, it is always safe to report, and its price is that it decides nothing by itself and must never be used as a feature when the flag was computed from the target you are predicting. All four branches converge on the same two obligations, which are to record the rule, the threshold and the count in the log, and to measure the result on rows the rule has never seen. The chart ends with the rule that decides between them: a wrong value may be repaired anywhere in the file, including the rows you are judged on, because repairing it learns nothing from the data, while removing a rare but real row is a modelling choice that may touch the training rows only.
+flowchart TD
+  F["a flagged value"] --> R["Remove<br/>drop the row"]
+  F --> C["Cap<br/>clip to the threshold"]
+  F --> T["Transform<br/>np.log1p"]
+  F --> G["Flag and keep<br/>a boolean column"]
+  R --> RC["11 rows gone<br/>median 200 to 195"]
+  RC --> RT["trap: dropping held-out rows<br/>reads 55.47 not 60.00"]
+  C --> CC["every row survives<br/>median unmoved"]
+  CC --> CT["cost: 11 values<br/>now false"]
+  T --> TC["skew 1.01 to -0.47<br/>nothing deleted"]
+  TC --> TT["cost: shekels become<br/>percentages"]
+  G --> GC["nothing changed<br/>fully reversible"]
+  GC --> GT["cost: decides nothing<br/>never a feature of the target"]
+  RT --> L[["log the rule,<br/>the threshold, the count"]]
+  CT --> L
+  TT --> L
+  GT --> L
+  L --> M["measure held out"]
+  M --> Z["repair a wrong value anywhere<br/>remove a rare one in training only"]
