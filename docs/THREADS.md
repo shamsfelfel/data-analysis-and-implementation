@@ -31,7 +31,9 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 | T1 L2 | measurement levels: nominal / ordinal / interval / ratio decide the legal summary and chart; naive baseline `df.select_dtypes("number")` picks `listing_id` | a level is a human judgement; pandas selects by storage, not by meaning |
 | T1 L2 | `FAMILY`/`LEVEL`/`ORDER` dicts plus `summary_for(series, level, order)` | the level is code stored beside the data: nothing checks it against the data or dtype, and a value missing from `order` silently becomes `NaN` — L3 closes this by putting the level into the dtype |
 | T1 L3 | encode the level in the dtype (`category`, ordered `CategoricalDtype`, `Int64`, `datetime64`) | dtype ≠ level (a city code stored as `int64` is still nominal) |
-| T2–T4 (planned) | encoding, scaling, binning, EDA summaries chosen by level | — |
+| T2 L2 | the level now also decides the legal *fill*: ordinal `condition` may only take the mode, ratio `area_m2` takes a group median, and the target `monthly_rent` may not be filled at all, whatever its level | the mode is a poor answer for 36 unknown ordinal cells — it moves `good` from 37.4% to 44.5% of the column; an explicit `unknown` level needs an encoder (T2 L5) |
+| T2 L3 | the level goes into the dtype for real: `condition` becomes an ordered `CategoricalDtype` so `level > "fair"` is legal (267 rows), `floor` becomes `Int64`, `furnished` becomes a nullable `boolean` | inserting a new level — June's `very good` — renumbers the codes, so an ordered category is a schema a later step has to be told about |
+| T2 L5, T3–T4 (planned) | encoding, scaling, binning, EDA summaries chosen by level | — |
 
 ## T-PARSE — Turn a messy text value into a number or a date
 
@@ -44,6 +46,7 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 | T1 L5 | `pd.json_normalize` for nested fields | missing nested keys become `NaN` without warning |
 | T1 L6 | blank cells are counted before parsing and missing cells after, so the difference is the per-column parse failures (with an example), and any failure makes the decision STOP | unknown formats are reported, not fixed (T2) |
 | T1 L6 | (T-MEANING recap) the measurement level is written as data beside the schema, and a helper refuses a mean for nominal or ordinal columns | the level is still a human judgement |
+| T2 L3 | the failures T1 L6 could only report are fixed by named rules: `FLOOR_WORDS` turns the 19 `G` floors into 0 behind a provenance flag, and `FORMATS` + `parse_dates()` reads 480 ISO and 23 `DD/MM` dates behind two assertions (no value matches two formats, none matches zero) | an *ambiguous* value is still unfixable from the file: 11 of the 23 slash dates read both ways and 10 of them land in a different month, so `03/04/2026` can only be settled by the source |
 
 ## T-FETCH — Get data from another system
 
@@ -76,7 +79,9 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 | P1 L5 | Power Query steps (Remove Duplicates, Replace Values, Filter Rows) | repeatable and recorded, but a step in the wrong order changes the answer |
 | P1 L3 | `drop_duplicates()`, boolean masks, `str.strip().str.title()` | still hand-picked thresholds (what is an outlier price?) — see T2 |
 | P1 L6 | R1–R5 written once outside all three tools, each with a reason and a removal count; `clean()` returns the log (16/5/2) so a tool can be audited against it | thresholds are still eyeballed (price ≤ 50), and R4's Title Case renames 76 correct "Water 500ml" lines (75 survive, carrying 256.00, unmatched against the raw menu) — T2/P3 |
-| T2 (planned) | systematic cleaning: IQR / z-score, type and string cleaning | — |
+| T2 L2 | removal decided by *mechanism*, not by habit: drop only the rows whose target is missing (19, not the 174 that `dropna()` takes — it deletes 155 labelled rows and 100% of two agencies). Otherwise keep the row, fill from a parameter fitted on the training rows, and flag the hole; the choice is recorded per column in a `(frame, log_row)` log carrying mechanism, decision and count, and applied unchanged to next month's file | the row count is still not the count of real flats (14 repeats + 9 reposts, T2 L3), and the `rent > 5000` limit it leans on is still eyeballed (T2 L4) |
+| T2 L3 | the two halves separated at last: a *rule* (strip + lower + collapse) removes formatting, an explicit `CITY_MAP` + `.map()` resolves the decisions, and `canonicalise()` returns `(series, unmatched_counts)` so an unanticipated spelling is a counted line in the log instead of a silent `NaN` — 26 spellings to 5 with 0 unmatched, against P1 L6's `.str.title()`, which reaches only 11 and changes 169 rows, 40 of them from correct to incorrect | the maps are literals in the source rather than fitted parameters stored beside their output (T2 L6), and a correctly-spelled *unseen* category (`beit lahia`, `very good` in June) is reported but not handled (T2 L5) |
+| T2 L4 (planned) | systematic cleaning: IQR / z-score thresholds for the numeric columns | — |
 
 ## P-REPRO — Run it again next month and get the same answer
 

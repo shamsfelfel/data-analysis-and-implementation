@@ -588,8 +588,11 @@ CANON = {"gaza": "Gaza", "khan younis": "Khan Younis", "khan yunis": "Khan Youni
 city_key = t2raw["city"].str.strip().str.lower().str.replace(r"\s+", " ", regex=True)
 city_clean = city_key.map(CANON)
 
-fact("T2 listings_raw.csv: %d rows, columns %s; listed 2026-02-01..2026-05-31"
-     % (len(t2raw), ", ".join(T2_COLS)))
+_t2d = pd.to_datetime(t2raw["listed_on"], format="mixed", dayfirst=True)
+fact("T2 listings_raw.csv: %d rows, columns %s; listed %s..%s - the window is four months but the last date "
+     "runs past it, because one repost (listing_id %d) carries a later listed_on than the batch it repeats"
+     % (len(t2raw), ", ".join(T2_COLS), _t2d.min().date(), _t2d.max().date(),
+        int(t2raw.loc[_t2d.idxmax(), "listing_id"])))
 _dup_all = int(t2raw.duplicated().sum())
 _dup_id = int(t2raw.duplicated(subset=["listing_id"]).sum())
 fact("T2 duplicates come in two kinds: %d rows are byte-for-byte repeats (df.duplicated().sum()) and %d more "
@@ -612,9 +615,19 @@ fact("T2 missing (blank cells): " + ", ".join(
 _miss = t2num["monthly_rent"].isna()
 _cond_key = t2raw["condition"].str.strip().str.lower()
 _fkey = t2raw["furnished"].str.strip().str.lower().isin(["yes", "y", "1", "true"])
+_dep = t2num[t2num["deposit"].notna() & t2num["monthly_rent"].notna() & (t2num["monthly_rent"] <= 5000)]
+fact("T2 the agency predicts WHETHER the deposit is blank, not WHAT it would have been - keep those two claims "
+     "apart. Within-agency spread is %.1f (median across agencies) against %.1f over the whole file, so grouping "
+     "by agency removes about %.0f%% of the spread; and the deposit correlates %.4f with the rent against %.4f "
+     "with its own agency's mean. A per-agency median is therefore NOT a better fill than a global one - "
+     "measure it, do not assume it"
+     % (_dep.groupby("agency")["deposit"].std().median(), _dep["deposit"].std(),
+        100 * (1 - _dep.groupby("agency")["deposit"].std().median() / _dep["deposit"].std()),
+        _dep["deposit"].corr(_dep["monthly_rent"]),
+        _dep["deposit"].corr(_dep.groupby("agency")["deposit"].transform("mean"))))
 fact("T2 missingness is NOT one mechanism, which is the whole point of the column. area_m2 blanks are spread "
      "at random (MCAR). deposit is blank for every row of Noor Estates and Diwan Rentals plus a few others: "
-     "it depends on `agency`, a column you can see (MAR), so a per-agency rule beats a global one. "
+     "it depends on `agency`, a column you can see (MAR), which identifies the mechanism. "
      "monthly_rent is blank where the rent is high - the site prints 'price on request' for premium flats "
      "(MNAR): mean rooms %.2f vs %.2f, mean area %.1f vs %.1f m2, %.0f%% excellent vs %.0f%%, %.0f%% furnished "
      "vs %.0f%%. Those are hints, not proof - MNAR cannot be proved from the file, only learned from the "
@@ -712,7 +725,7 @@ with io.open(os.path.join(ROOT, "docs", "datasets.md"), "w", encoding="utf-8", n
             "| `downloads/p1/cafeteria_orders.csv` | one month of cafeteria order lines (messy on purpose) |\n"
             "| `downloads/p1/cafeteria_orders.xlsx` | the same as an Excel workbook: Table `tblOrders`, sheet `Menu` with Table `tblMenu` |\n"
             "| `downloads/p1/cafeteria_menu.csv` | the menu: item, category, list_price |\n"
-            "| `downloads/t2/listings_raw.csv` | 503 rental listings scraped over four months and never cleaned: duplicates, reposts, 27 city spellings, three missing-data mechanisms, two value typos, five areas in dunum |\n"
+            "| `downloads/t2/listings_raw.csv` | %d rental listings scraped over four months and never cleaned: %d exact duplicates, 9 reposts, %d city spellings, three missing-data mechanisms, two value typos, five areas in dunum |\n" % (len(t2raw), _dup_all, t2raw["city"].nunique()) +
             "| `downloads/t2/city_reference.csv` | one row per city: governorate, population, coastal, km to Gaza City - joins on the *cleaned* city name |\n"
             "| `downloads/t2/listings_new.csv` | next month's batch, with a city, two agencies and a condition level the training data never saw |\n"
             "| `downloads/t2/rent_history_wide.csv` | 40 listings x 4 quarter columns: wide data to melt |\n"
