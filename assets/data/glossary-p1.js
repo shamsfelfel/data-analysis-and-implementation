@@ -162,6 +162,28 @@ window.DAGlossary["p1"] = [
   ]
  },
  {
+  "id": "cleaning-rule",
+  "term": {
+   "en": "Cleaning rule",
+   "ar": "قاعدة تنظيف"
+  },
+  "def": {
+   "en": "One named, written condition for removing or repairing rows, with the reason for it and the number of lines it touches. R1 to R5 are the five rules of this chapter; a rule names a condition, so \"drop the line priced 120.0\" is a list of exceptions and not a rule, because it cannot run next month.",
+   "ar": "شرطٌ واحد مسمّى مكتوب لحذف صفوف أو إصلاحها، مع سببه وعدد الأسطر التي يلمسها. والقواعد R1 إلى R5 هي قواعد هذا الفصل الخمس؛ والقاعدة تسمّي شرطًا، فجملة «احذف السطر الذي سعره 120.0» قائمة استثناءات لا قاعدة، لأنها لا تعمل الشهر القادم."
+  },
+  "cat": {
+   "en": "Cleaning",
+   "ar": "التنظيف"
+  },
+  "see": [
+   "rule-log",
+   "invariant"
+  ],
+  "used": [
+   "p1l6-s5"
+  ]
+ },
+ {
   "id": "command-mode",
   "term": {
    "en": "Command mode",
@@ -202,6 +224,29 @@ window.DAGlossary["p1"] = [
   ],
   "used": [
    "p1l4-s10"
+  ]
+ },
+ {
+  "id": "control-total",
+  "term": {
+   "en": "Control total",
+   "ar": "الإجمالي الضابط"
+  },
+  "def": {
+   "en": "A single number recomputed by an independent route to check a whole table at once. Revenue of 8,062.00 is this chapter's control total: the Excel PivotTable, the Power BI measure and the pandas sum must all produce it, and the two halves of September (3,820.50 + 4,241.50) must add up to it.",
+   "ar": "رقم واحد يُعاد حسابه بطريق مستقل لفحص جدول كامل دفعة واحدة. والإيراد 8,062.00 هو الإجمالي الضابط في هذا الفصل: فعلى الجدول المحوري في Excel ومقياس Power BI ومجموع pandas أن تنتجه كلها، وعلى نصفي سبتمبر (3,820.50 + 4,241.50) أن يجمعاه."
+  },
+  "cat": {
+   "en": "Reconciliation",
+   "ar": "المطابقة"
+  },
+  "see": [
+   "reconciliation",
+   "tolerance"
+  ],
+  "used": [
+   "p1l6-s10",
+   "p1l6-h9"
   ]
  },
  {
@@ -359,6 +404,28 @@ window.DAGlossary["p1"] = [
   ]
  },
  {
+  "id": "distinct-count",
+  "term": {
+   "en": "Distinct count",
+   "ar": "العدّ المميّز"
+  },
+  "def": {
+   "en": "Counting the different values of a key instead of counting rows. Counting rows per hour makes 13:00 busiest (155 lines); counting distinct order_id values makes 12:00 busiest (119 orders). It is nunique() in pandas, DISTINCTCOUNT in DAX, and a Distinct Count value field or the order_first helper column in Excel.",
+   "ar": "عدّ القيم المختلفة لمفتاح بدل عدّ الصفوف. فعدّ الصفوف لكل ساعة يجعل 13:00 الأكثر ازدحامًا (155 سطرًا)؛ وعدّ قيم order_id المميّزة يجعل 12:00 الأكثر ازدحامًا (119 طلبًا). وهو nunique() في pandas وDISTINCTCOUNT في DAX، وفي Excel حقل قيم بـ Distinct Count أو العمود المساعد order_first."
+  },
+  "cat": {
+   "en": "Reconciliation",
+   "ar": "المطابقة"
+  },
+  "see": [
+   "grain",
+   "pivottable"
+  ],
+  "used": [
+   "p1l6-s9"
+  ]
+ },
+ {
   "id": "drift",
   "term": {
    "en": "Drift",
@@ -495,6 +562,51 @@ window.DAGlossary["p1"] = [
   ]
  },
  {
+  "id": "golden-answer",
+  "term": {
+   "en": "Golden answer",
+   "ar": "الإجابة المرجعية"
+  },
+  "def": {
+   "en": "A result that a person reviewed once and wrote into the program, so that every later run asserts itself against it and exits non-zero if it has drifted. In cafeteria_answer.py the GOLDEN dictionary holds 748 lines, 8,062.00, the top three and the three busiest hours; a golden answer belongs to one period and must be re-reviewed and dated for the next.",
+   "ar": "نتيجةٌ راجعها شخص مرة واحدة وكُتبت في البرنامج، فيؤكّد كل تشغيل لاحق نفسه في مقابلها ويخرج برمز غير صفري إن انحرف. وفي cafeteria_answer.py يحمل القاموس GOLDEN القيم 748 سطرًا و8,062.00 والأصناف الثلاثة الأولى والساعات الثلاث الأكثر ازدحامًا؛ والإجابة المرجعية تنتمي إلى فترة واحدة ويجب أن تُراجَع وتُؤرَّخ من جديد للفترة التالية."
+  },
+  "cat": {
+   "en": "Reproducibility",
+   "ar": "قابلية إعادة الإنتاج"
+  },
+  "see": [
+   "tolerance",
+   "invariant",
+   "perturbation-test"
+  ],
+  "used": [
+   "p1l6-s22"
+  ]
+ },
+ {
+  "id": "grain",
+  "term": {
+   "en": "Grain",
+   "ar": "الحبيبة"
+  },
+  "def": {
+   "en": "What one row of a table stands for. In cafeteria_orders.csv the grain is an order line, so 771 rows are 771 lines and only 616 orders; getting the grain wrong is why the same file gives four different right answers to \"how many?\".",
+   "ar": "ما يمثّله الصف الواحد في الجدول. في الملف cafeteria_orders.csv الحبيبة سطر طلب، فالصفوف 771 هي 771 سطرًا و616 طلبًا فقط؛ وخطأ الحبيبة هو سبب إعطاء الملف نفسه أربع إجابات صحيحة مختلفة عن سؤال «كم؟»."
+  },
+  "cat": {
+   "en": "Reconciliation",
+   "ar": "المطابقة"
+  },
+  "see": [
+   "distinct-count",
+   "reconciliation"
+  ],
+  "used": [
+   "p1l6-s3"
+  ]
+ },
+ {
   "id": "helper-column",
   "term": {
    "en": "Helper column",
@@ -607,6 +719,29 @@ window.DAGlossary["p1"] = [
   "see": [
    "python",
    "virtual-environment"
+  ]
+ },
+ {
+  "id": "invariant",
+  "term": {
+   "en": "Invariant",
+   "ar": "الثابت"
+  },
+  "def": {
+   "en": "A part of the analysis that must be identical from one run to the next, so that a change in it is itself the thing to review. The rules R1 to R5, the two measures, the grain and the tolerance are this chapter's invariants; the golden answer is not, because it belongs to a period.",
+   "ar": "جزء من التحليل يجب أن يكون متطابقًا من تشغيل إلى تشغيل، فيكون تغيّره نفسه هو ما يُراجَع. والقواعد R1 إلى R5 والمقياسان والحبيبة والتسامح هي ثوابت هذا الفصل؛ أما الإجابة المرجعية فليست ثابتًا لأنها تنتمي إلى فترة."
+  },
+  "cat": {
+   "en": "Reproducibility",
+   "ar": "قابلية إعادة الإنتاج"
+  },
+  "see": [
+   "cleaning-rule",
+   "golden-answer",
+   "reproducibility"
+  ],
+  "used": [
+   "p1l6-s24"
   ]
  },
  {
@@ -912,6 +1047,29 @@ window.DAGlossary["p1"] = [
   ]
  },
  {
+  "id": "perturbation-test",
+  "term": {
+   "en": "Perturbation test",
+   "ar": "اختبار التشويش"
+  },
+  "def": {
+   "en": "Deliberately breaking one thing to prove that a check can see it. Switching R1 off makes the reconciliation report 764 lines, 8,237.00 and \"R1 removed 0 not 16\"; a check you have never seen fail is a check you do not know works.",
+   "ar": "كسرُ شيء واحد متعمِّدًا لإثبات أن الفحص يستطيع رؤيته. فإطفاء R1 يجعل المطابقة تُبلغ عن 764 سطرًا و8,237.00 و«حذفت R1 صفرًا لا ستة عشر»؛ والفحص الذي لم ترَه يفشل قطُّ فحصٌ لا تعرف أنه يعمل."
+  },
+  "cat": {
+   "en": "Reproducibility",
+   "ar": "قابلية إعادة الإنتاج"
+  },
+  "see": [
+   "rule-log",
+   "golden-answer"
+  ],
+  "used": [
+   "p1l6-s14",
+   "p1l6-s23"
+  ]
+ },
+ {
   "id": "pip",
   "term": {
    "en": "pip",
@@ -1096,6 +1254,29 @@ window.DAGlossary["p1"] = [
   ]
  },
  {
+  "id": "reconciliation",
+  "term": {
+   "en": "Reconciliation",
+   "ar": "المطابقة"
+  },
+  "def": {
+   "en": "Computing the same answer by two or more independent routes and checking that every number agrees before anyone acts on it. Here it is a table with one row per tool, one column per number and one column per rule: pandas, Excel and Power BI must all return 748 lines, 8,062.00 and 12:00.",
+   "ar": "حساب الإجابة نفسها بطريقين مستقلين أو أكثر والتحقق من اتفاق كل رقم قبل أن يعمل أحد بمقتضاه. وهي هنا جدول فيه صف لكل أداة وعمود لكل رقم وعمود لكل قاعدة: فعلى pandas وExcel وPower BI أن تُرجع كلها 748 سطرًا و8,062.00 والساعة 12:00."
+  },
+  "cat": {
+   "en": "Reconciliation",
+   "ar": "المطابقة"
+  },
+  "see": [
+   "control-total",
+   "tolerance",
+   "rule-log"
+  ],
+  "used": [
+   "p1l6-s10"
+  ]
+ },
+ {
   "id": "pbi-relationship",
   "term": {
    "en": "Relationship",
@@ -1187,6 +1368,29 @@ window.DAGlossary["p1"] = [
    "hidden-state",
    "nbconvert",
    "reproducibility"
+  ]
+ },
+ {
+  "id": "rule-log",
+  "term": {
+   "en": "Rule log",
+   "ar": "سجل القواعد"
+  },
+  "def": {
+   "en": "The count of lines each cleaning rule removed, returned beside the result rather than printed and forgotten. On the cafeteria file clean() returns {'R1': 16, 'R2': 5, 'R3': 2}; a tool that reports 0 for R1 has not applied that rule, which turns \"Excel is wrong\" into a named missing step.",
+   "ar": "عدد الأسطر التي حذفتها كل قاعدة تنظيف، مُرجَعًا بجانب النتيجة لا مطبوعًا ومنسيًّا. وعلى ملف الكافتيريا تُرجع clean() القيمة {'R1': 16, 'R2': 5, 'R3': 2}؛ والأداة التي تُبلغ عن صفر في R1 لم تطبّق تلك القاعدة، فتتحول جملة «Excel خاطئ» إلى خطوة ناقصة مسمّاة."
+  },
+  "cat": {
+   "en": "Cleaning",
+   "ar": "التنظيف"
+  },
+  "see": [
+   "cleaning-rule",
+   "reconciliation",
+   "perturbation-test"
+  ],
+  "used": [
+   "p1l6-s5"
   ]
  },
  {
@@ -1341,6 +1545,28 @@ window.DAGlossary["p1"] = [
   "used": [
    "p1l2-s21",
    "p1l4-s3"
+  ]
+ },
+ {
+  "id": "tolerance",
+  "term": {
+   "en": "Tolerance",
+   "ar": "التسامح"
+  },
+  "def": {
+   "en": "The largest difference two routes may show and still count as agreeing. Money is compared with math.isclose(abs_tol=0.005), half a piastre, because Excel displays 13.19 where pandas holds 13.194762684124386; counts are compared exactly, since 748 and 749 lines mean a missing rule.",
+   "ar": "أكبر فرق يجوز أن يظهر بين طريقين ويُحسبا متفقين. ويُقارن المال بـ math.isclose(abs_tol=0.005)، أي نصف قرش، لأن Excel يعرض 13.19 حيث يحمل pandas القيمة 13.194762684124386؛ أما الأعداد فتُقارن مقارنةً تامة، لأن 748 و749 سطرًا تعني قاعدة ناقصة."
+  },
+  "cat": {
+   "en": "Reconciliation",
+   "ar": "المطابقة"
+  },
+  "see": [
+   "reconciliation",
+   "golden-answer"
+  ],
+  "used": [
+   "p1l6-s11"
   ]
  },
  {

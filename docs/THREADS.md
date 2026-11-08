@@ -19,7 +19,7 @@ coherent as chapters are written. "Gap" = what the solution on that row still ge
 | T1 L3–L4 | `pd.read_csv(path)` | silently guesses dtypes: one stray `"1,200"` or `"TBD"` turns a number column into `object` (text) — note `"n/a"`, `"NA"`, `"NaN"`, `"null"` and empty cells are read as missing by default; dates stay strings |
 | T1 L4 | `read_csv(sep=, encoding=, dtype=, parse_dates=, na_values=)` | correct for this file, but the knowledge lives in one call nobody validates |
 | T1 L6 | `load_listings(path)` — reads everything as text, types each column from a schema dict, counts blank and failed cells, validates, returns (typed DataFrame, report) | one file layout only; a source change shows only when it fails the schema; Excel, Power Query and Power BI have their own silent defaults (P1) |
-| P1 L3/L6 | the same load in a notebook / Power Query / Excel Table | three tools, three different silent defaults (see T-QUESTION) |
+| P1 L3/L6 | the same load in a notebook / Power Query / Excel Table | three tools, three different silent defaults: `n/a` → `NaN` in pandas (the column loads `float64`), text in Excel (only `ISNUMBER` finds it), an Error in Power Query (survives until Replace Errors); item text compares case-sensitively in pandas and Power Query but not in Excel's criteria, so a TRIM-only `item_clean` leaves 19 spellings and still reports the right total |
 | T2, P2 (planned) | cleaning pipeline; `pd.read_*` with a schema | — |
 
 ## T-MEANING — What may I do with this column?
@@ -63,7 +63,7 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 | P1 L4 | Excel: Table + `SUMIFS` + PivotTable (count ORDERS not lines: an `order_first` helper; raw line counts make 13:00 look busiest, 155 vs 149, but distinct orders after cleaning give 12:00, 119 vs 117) | the dirty rows are in the table; deleting them by hand is not repeatable; formulas live in cells |
 | P1 L5 | Power BI: Get Data → Power Query steps → visual | steps are repeatable, but the model hides assumptions (summarisation, auto date hierarchy) |
 | P1 L3 | pandas in a notebook | repeatable and diff-able, but only if the notebook runs top to bottom |
-| P1 L6 | the three results lined up: they agree only after **the same cleaning rules** are applied in all three | — |
+| P1 L6 | the three results lined up: they agree only after **the same cleaning rules** are applied in all three | the Excel and Power BI rows of the reconciliation are still typed in by a human |
 | P2, P3, P8, P9 (planned) | faster, more robust versions per tool | — |
 
 ## P-CLEAN — Remove the rows that should not be counted
@@ -74,6 +74,7 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 | P1 L4 | Excel helper-column flag (`COUNTIFS` `dup_n` + `status`), reconciled 8,334.00 → 8,062.00 | the rules still live in cell formulas, not in a recorded recipe; `COUNTIFS` slows on large tables |
 | P1 L5 | Power Query steps (Remove Duplicates, Replace Values, Filter Rows) | repeatable and recorded, but a step in the wrong order changes the answer |
 | P1 L3 | `drop_duplicates()`, boolean masks, `str.strip().str.title()` | still hand-picked thresholds (what is an outlier price?) — see T2 |
+| P1 L6 | R1–R5 written once outside all three tools, each with a reason and a removal count; `clean()` returns the log (16/5/2) so a tool can be audited against it | thresholds are still eyeballed (price ≤ 50), and R4's Title Case renames 76 correct "Water 500ml" lines (75 survive, carrying 256.00, unmatched against the raw menu) — T2/P3 |
 | T2 (planned) | systematic cleaning: IQR / z-score, type and string cleaning | — |
 
 ## P-REPRO — Run it again next month and get the same answer
@@ -87,4 +88,4 @@ three ways on the cafeteria data (`docs/datasets.md` has the numbers).
 | P1 L3 | a script with `main()` run from a terminal or scheduler | data files change and package versions drift unnoticed — Lesson 6 adds a golden-dataset reconciliation |
 | P1 L4 | Excel: named Table and formulas | manual clicks leave no trail |
 | P1 L5 | Power Query applied steps | tied to Power BI |
-| P1 L6 | one script/notebook that rebuilds the answer from the raw file | — |
+| P1 L6 | one script/notebook that rebuilds the answer from the raw file | the golden answer must be re-reviewed and dated per period; Excel and Power BI still cannot be re-run from Python |

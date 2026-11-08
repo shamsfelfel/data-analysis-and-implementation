@@ -240,6 +240,53 @@ window.DAAnchors = {
 "p1l5-s7": "lessons/p1-lesson-05.html",
 "p1l5-s8": "lessons/p1-lesson-05.html",
 "p1l5-s9": "lessons/p1-lesson-05.html",
+"p1l6-e1": "lessons/p1-lesson-06.html",
+"p1l6-e2": "lessons/p1-lesson-06.html",
+"p1l6-e3": "lessons/p1-lesson-06.html",
+"p1l6-e4": "lessons/p1-lesson-06.html",
+"p1l6-h1": "lessons/p1-lesson-06.html",
+"p1l6-h10": "lessons/p1-lesson-06.html",
+"p1l6-h2": "lessons/p1-lesson-06.html",
+"p1l6-h3": "lessons/p1-lesson-06.html",
+"p1l6-h4": "lessons/p1-lesson-06.html",
+"p1l6-h5": "lessons/p1-lesson-06.html",
+"p1l6-h6": "lessons/p1-lesson-06.html",
+"p1l6-h7": "lessons/p1-lesson-06.html",
+"p1l6-h8": "lessons/p1-lesson-06.html",
+"p1l6-h9": "lessons/p1-lesson-06.html",
+"p1l6-s1": "lessons/p1-lesson-06.html",
+"p1l6-s10": "lessons/p1-lesson-06.html",
+"p1l6-s11": "lessons/p1-lesson-06.html",
+"p1l6-s12": "lessons/p1-lesson-06.html",
+"p1l6-s13": "lessons/p1-lesson-06.html",
+"p1l6-s14": "lessons/p1-lesson-06.html",
+"p1l6-s15": "lessons/p1-lesson-06.html",
+"p1l6-s16": "lessons/p1-lesson-06.html",
+"p1l6-s17": "lessons/p1-lesson-06.html",
+"p1l6-s18": "lessons/p1-lesson-06.html",
+"p1l6-s19": "lessons/p1-lesson-06.html",
+"p1l6-s2": "lessons/p1-lesson-06.html",
+"p1l6-s20": "lessons/p1-lesson-06.html",
+"p1l6-s21": "lessons/p1-lesson-06.html",
+"p1l6-s22": "lessons/p1-lesson-06.html",
+"p1l6-s23": "lessons/p1-lesson-06.html",
+"p1l6-s24": "lessons/p1-lesson-06.html",
+"p1l6-s25": "lessons/p1-lesson-06.html",
+"p1l6-s26": "lessons/p1-lesson-06.html",
+"p1l6-s27": "lessons/p1-lesson-06.html",
+"p1l6-s28": "lessons/p1-lesson-06.html",
+"p1l6-s29": "lessons/p1-lesson-06.html",
+"p1l6-s3": "lessons/p1-lesson-06.html",
+"p1l6-s30": "lessons/p1-lesson-06.html",
+"p1l6-s31": "lessons/p1-lesson-06.html",
+"p1l6-s32": "lessons/p1-lesson-06.html",
+"p1l6-s33": "lessons/p1-lesson-06.html",
+"p1l6-s4": "lessons/p1-lesson-06.html",
+"p1l6-s5": "lessons/p1-lesson-06.html",
+"p1l6-s6": "lessons/p1-lesson-06.html",
+"p1l6-s7": "lessons/p1-lesson-06.html",
+"p1l6-s8": "lessons/p1-lesson-06.html",
+"p1l6-s9": "lessons/p1-lesson-06.html",
 "p1lab-h1": "labs/p1-lab.html",
 "p1lab-h10": "labs/p1-lab.html",
 "p1lab-h11": "labs/p1-lab.html",
@@ -1338,6 +1385,178 @@ window.DAHeadings = {
 "p1l5-s9": {
 "ar": "المحرر وقائمة الخطوات المطبَّقة",
 "en": "The Editor and the Applied Steps list"
+},
+"p1l6-h1": {
+"ar": "المفهوم 1 — السؤال، وقد صار قابلًا للتنفيذ",
+"en": "Concept 1 — The question, now made executable"
+},
+"p1l6-h10": {
+"ar": "ملحق — كيف فُحص كل رقم في هذه الصفحة",
+"en": "Appendix — how every number on this page was checked"
+},
+"p1l6-h2": {
+"ar": "المفهوم 2 — خمس قواعد، تُكتب مرة واحدة، على شكل بيانات",
+"en": "Concept 2 — Five rules, written once, as data"
+},
+"p1l6-h3": {
+"ar": "المفهوم 3 — المطابقة: ثلاث إجابات وجدول واحد",
+"en": "Concept 3 — The reconciliation: three answers, one table"
+},
+"p1l6-h4": {
+"ar": "المفهوم 4 — حين تختلف أداة: تدقيق كل قاعدة",
+"en": "Concept 4 — When one tool disagrees: the per-rule audit"
+},
+"p1l6-h5": {
+"ar": "المفهوم 5 — الموجز: صفحة واحدة يستطيع المدير العمل بها",
+"en": "Concept 5 — The brief: one page a manager can act on"
+},
+"p1l6-h6": {
+"ar": "المفهوم 6 — مشروع الفصل: أعد التشغيل واحصل على الأرقام نفسها",
+"en": "Concept 6 — The chapter project: run it again and get the same numbers"
+},
+"p1l6-h7": {
+"ar": "المفهوم 7 — اختيار الأداة، وما كلّفته كل واحدة",
+"en": "Concept 7 — Choosing the tool, and what each one cost"
+},
+"p1l6-h8": {
+"ar": "حيث ينتهي الفصل، ومراجعة ذاتية",
+"en": "Where the chapter ends, and a self-review"
+},
+"p1l6-h9": {
+"ar": "تمارين",
+"en": "Exercises"
+},
+"p1l6-s1": {
+"ar": "الإجابات الثلاث التي معك أصلًا",
+"en": "The three answers you already have"
+},
+"p1l6-s10": {
+"ar": "جدول المطابقة",
+"en": "The reconciliation table"
+},
+"p1l6-s11": {
+"ar": "لماذا يحتاج المال إلى تسامح",
+"en": "Why money needs a tolerance"
+},
+"p1l6-s12": {
+"ar": "الصفّ، من أوله إلى آخره",
+"en": "The line-up, end to end"
+},
+"p1l6-s13": {
+"ar": "يقول Excel 764 و8,237.00",
+"en": "Excel says 764 and 8,237.00"
+},
+"p1l6-s14": {
+"ar": "قاعدة واحدة ناقصة في كل مرة",
+"en": "One rule missing at a time"
+},
+"p1l6-s15": {
+"ar": "القاعدتان اللتان لا يُرى غيابهما",
+"en": "The two rules whose absence is invisible"
+},
+"p1l6-s16": {
+"ar": "ثلاث أدوات وثلاثة افتراضات صامتة",
+"en": "Three tools, three silent defaults"
+},
+"p1l6-s17": {
+"ar": "ما يحتاجه المدير في ستين ثانية",
+"en": "What a manager needs in sixty seconds"
+},
+"p1l6-s18": {
+"ar": "الموجز، وقد اكتمل",
+"en": "The brief, filled in"
+},
+"p1l6-s19": {
+"ar": "توليد الموجز من النتيجة",
+"en": "Generating the brief from the result"
+},
+"p1l6-s2": {
+"ar": "من بطاقة سؤال إلى عقد",
+"en": "From a question card to a contract"
+},
+"p1l6-s20": {
+"ar": "ما يبقى غير مؤكد",
+"en": "What is still uncertain"
+},
+"p1l6-s21": {
+"ar": "سكربت واحد، من الملف الخام",
+"en": "One script, from the raw file"
+},
+"p1l6-s22": {
+"ar": "الإجابة المرجعية",
+"en": "The golden answer"
+},
+"p1l6-s23": {
+"ar": "كيف يبدو الإخفاق",
+"en": "What a failure looks like"
+},
+"p1l6-s24": {
+"ar": "الشهر القادم: ما يتغير وما يجب ألا يتغير",
+"en": "Next month: what changes and what must not"
+},
+"p1l6-s25": {
+"ar": "ستة أسئلة وأداة واحدة",
+"en": "Six questions, one tool"
+},
+"p1l6-s26": {
+"ar": "ما كلّفته كل أداة في هذا الفصل",
+"en": "What each tool cost in this chapter"
+},
+"p1l6-s27": {
+"ar": "حين تكون الإجابة أداتين",
+"en": "When the answer is two tools"
+},
+"p1l6-s28": {
+"ar": "الفصل في صورة واحدة",
+"en": "The chapter in one picture"
+},
+"p1l6-s29": {
+"ar": "قائمة مراجعة ذاتية",
+"en": "A self-review checklist"
+},
+"p1l6-s3": {
+"ar": "كم؟ الأسطر والطلبات والطلبات المعدودة",
+"en": "How many? Lines, orders, counted orders"
+},
+"p1l6-s30": {
+"ar": "أهم الخلاصات",
+"en": "Key takeaways"
+},
+"p1l6-s31": {
+"ar": "أ. حساب الأسطر الثلاثة والعشرين المحذوفة",
+"en": "A. The arithmetic of the 23 removed lines"
+},
+"p1l6-s32": {
+"ar": "ب. لماذا R4 أضعف القواعد الخمس",
+"en": "B. Why R4 is the weakest of the five rules"
+},
+"p1l6-s33": {
+"ar": "ج. البرنامج الذي أنتج كل رقم في هذه الصفحة",
+"en": "C. The program that produced every number on this page"
+},
+"p1l6-s4": {
+"ar": "من D1–D5 إلى R1–R5",
+"en": "D1–D5 become R1–R5"
+},
+"p1l6-s5": {
+"ar": "القواعد على شكل بيانات، في مكان واحد",
+"en": "The rules as data, in one place"
+},
+"p1l6-s6": {
+"ar": "القواعد الخمس نفسها بثلاث لهجات",
+"en": "The same five rules in three dialects"
+},
+"p1l6-s7": {
+"ar": "الترتيب يغيّر السجل لا الإجابة",
+"en": "The order changes the log, not the answer"
+},
+"p1l6-s8": {
+"ar": "771 داخلًا و748 خارجًا",
+"en": "771 in, 748 out"
+},
+"p1l6-s9": {
+"ar": "أكثر ساعة ازدحامًا بأربع طرق",
+"en": "The busiest hour, four ways"
 },
 "p1lab-h1": {
 "ar": "نظرة أولى إلى الملف الحقيقي",
