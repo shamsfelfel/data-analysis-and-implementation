@@ -1,0 +1,52 @@
+{
+  "id": "t2-l2-isna-vs-blank",
+  "title": {
+    "en": "Zero missing values, four empty cells",
+    "ar": "صفر قيمة مفقودة، وأربع خلايا فارغة"
+  },
+  "lede": {
+    "en": "The same four-row file read twice. The ordinary read turns an empty cell into NaN and isna() finds three holes. The read that was told to trust the file keeps the empty cells as empty strings, so isna() reports zero and every numeric column arrives as text. Watch the dtypes, not the counts.",
+    "ar": "الملف نفسه من أربعة صفوف يُقرأ مرتين. القراءة العادية تحوّل الخلية الفارغة إلى NaN فتجد isna() ثلاثة ثقوب. والقراءة التي أُمرت بأن تثق بالملف تُبقي الخلايا الفارغة سلاسل فارغة، فتُبلّغ isna() بصفر ويصل كل عمود رقمي نصًّا. راقب الأنواع لا الأعداد."
+  },
+  "files": {
+    "rents.csv": "id,city,floor,rent\n1,Gaza,2,300\n2,Rafah,G,\n3,Jabalia,,250\n4,Gaza,1,\n"
+  },
+  "code": "import pandas as pd\nloose = pd.read_csv(\"rents.csv\")\nprint(\"loose  holes:\", loose.isna().sum().to_dict())\nprint(\"loose  dtypes:\", loose.dtypes.astype(str).to_dict())\nstrict = pd.read_csv(\"rents.csv\", keep_default_na=False)\nprint(\"strict holes:\", strict.isna().sum().to_dict())\nprint(\"strict dtypes:\", strict.dtypes.astype(str).to_dict())\nempty = strict.eq(\"\")\nprint(\"empty cells:\", empty.sum().to_dict())\nrepaired = strict.mask(empty)\nprint(\"repaired holes:\", repaired.isna().sum().to_dict())\nprint(\"floor survives as:\", repaired[\"floor\"].tolist())\n",
+  "notes": {
+    "2": {
+      "en": "The ordinary read. An empty cell becomes NaN, so rent is float64 with two holes and floor is text because of the 'G'.",
+      "ar": "القراءة العادية. تصير الخلية الفارغة NaN، فيكون rent من النوع float64 وفيه ثقبان، ويكون floor نصًّا بسبب 'G'."
+    },
+    "3": {
+      "en": "isna() finds three holes: one floor and two rents. This is the number a report should quote.",
+      "ar": "تجد isna() ثلاثة ثقوب: طابقًا واحدًا وإيجارين. وهذا هو الرقم الذي ينبغي أن يذكره التقرير."
+    },
+    "5": {
+      "en": "keep_default_na=False tells pandas that no string means 'missing'. Nothing is converted, so nothing is lost — and nothing is counted either.",
+      "ar": "تقول keep_default_na=False لـpandas إن لا سلسلة تعني «مفقود». فلا يُحوَّل شيء، فلا يُفقد شيء — ولا يُعَدّ شيء أيضًا."
+    },
+    "6": {
+      "en": "Zero holes in every column. The file did not change; the question did. Read a report like this as 'nobody has looked yet'.",
+      "ar": "صفر ثقب في كل عمود. لم يتغير الملف بل تغيّر السؤال. اقرأ تقريرًا كهذا على أنه «لم ينظر أحد بعد»."
+    },
+    "7": {
+      "en": "And the price: rent is now object, because '' is not a number. Every arithmetic you run on it will either fail or quietly compare strings.",
+      "ar": "والثمن: صار rent من النوع object، لأن '' ليست رقمًا. وكل حساب تجريه عليه سيفشل أو سيقارن سلاسل بصمت."
+    },
+    "9": {
+      "en": "eq(\"\") is the count the strict read owes you: the same 3 cells, found by asking the right question.",
+      "ar": "‏eq(\"\") هي العدّ الذي تستحقّه على القراءة الصارمة: الخلايا الثلاث نفسها، وُجدت بالسؤال الصحيح."
+    },
+    "11": {
+      "en": "mask(empty) turns exactly the empty cells into NaN — and only those. This is the loader of Lesson 1: read everything as text, then decide what missing means.",
+      "ar": "تحوّل mask(empty) الخلايا الفارغة بالضبط إلى NaN — وتلك وحدها. وهذا محمِّل الدرس 1: اقرأ كل شيء نصًّا ثم قرّر ما معنى «مفقود»."
+    },
+    "end": {
+      "en": "Three reads, three different answers to 'how many values are missing?': 3, 0 and 3. Only the last one also kept 'G' as a floor rather than a hole.",
+      "ar": "ثلاث قراءات وثلاثة أجوبة مختلفة لسؤال «كم قيمة مفقودة؟»: ‏3 و0 و3. والأخيرة وحدها أبقت 'G' طابقًا لا ثقبًا."
+    }
+  },
+  "watch": ["loose", "strict", "empty", "repaired"],
+  "viz": {"loose": "table", "strict": "table", "empty": "table", "repaired": "table"},
+  "max_steps": 60
+}

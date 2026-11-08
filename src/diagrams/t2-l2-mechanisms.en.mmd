@@ -1,0 +1,15 @@
+%% alt: Flowchart of the three missing-data mechanisms on the rental file. One question starts it: does whether the cell is blank depend on anything? If it depends on nothing, the mechanism is MCAR, the example is area_m2 with 27 blanks spread evenly, and a group median is safe. If it depends on a column you can see, the mechanism is MAR, the example is deposit with 123 blanks of which 103 belong to two agencies, and a rule per group is the right answer. If it depends on the hidden value itself, the mechanism is MNAR, the example is monthly_rent with 19 blanks on the dearest flats, and no imputation can recover it, so drop the row and go back to the source. A final note says the three can only be distinguished with knowledge of how the data was collected, never from the file alone.
+flowchart TD
+  S(["A column with blanks"]) --> Q{"Does being blank<br/>depend on anything?"}
+  Q -- "on nothing we can find" --> M1["MCAR<br/>missing completely at random"]
+  Q -- "on a column you can see" --> M2["MAR<br/>missing at random"]
+  Q -- "on the hidden value itself" --> M3["MNAR<br/>missing not at random"]
+  M1 --> E1["area_m2: 27 blanks<br/>no pattern by agency or city"]
+  M2 --> E2["deposit: 123 blanks<br/>103 are two agencies"]
+  M3 --> E3["monthly_rent: 19 blanks<br/>price on request = dear"]
+  E1 --> D1["Fill from a group<br/>median, and flag it"]
+  E2 --> D2["Fit a rule per group,<br/>with a fallback"]
+  E3 --> D3["Drop the row<br/>ask the source"]
+  D1 --> W["The file cannot prove<br/>which one you are in"]
+  D2 --> W
+  D3 --> W

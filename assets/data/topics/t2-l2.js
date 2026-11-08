@@ -1,0 +1,28 @@
+window.DATopics = window.DATopics || {};
+(function (T) {
+  T["t2-sentinel"]                = { href: "t2l2-s1",  en: "sentinels and the read that finds no holes", ar: "القيم النائبة والقراءة التي لا تجد ثقوبًا" };
+  T["t2-missing-count"]           = { href: "t2l2-s2",  en: "counting missing values and their share", ar: "عدّ القيم المفقودة ونسبتها" };
+  T["t2-missing-spellings"]       = { href: "t2l2-s3",  en: "NaN, None, NaT, pd.NA and the empty string", ar: "‏NaN وNone وNaT وpd.NA والسلسلة الفارغة" };
+  T["t2-missing-per-row"]         = { href: "t2l2-s4",  en: "missing per column and per row", ar: "المفقود لكل عمود ولكل صف" };
+  T["t2-missing-cooccurrence"]    = { href: "t2l2-s5",  en: "which columns go blank together", ar: "أي الأعمدة تفرغ معًا" };
+  T["t2-missingness-pattern"]     = { href: "t2l2-s6",  en: "a missingness pattern is a table", ar: "نمط الفقد جدول" };
+  T["t2-mcar"]                    = { href: "t2l2-s7",  en: "MCAR: missing completely at random", ar: "‏MCAR: الفقد العشوائي التامّ" };
+  T["t2-mar"]                     = { href: "t2l2-s8",  en: "MAR: missing at random", ar: "‏MAR: الفقد العشوائي المشروط" };
+  T["t2-mnar"]                    = { href: "t2l2-s9",  en: "MNAR: missing not at random", ar: "‏MNAR: الفقد غير العشوائي" };
+  T["t2-mechanism-evidence"]      = { href: "t2l2-s10", en: "hints, not proof: naming a mechanism", ar: "قرائن لا أدلّة: تسمية الآلية" };
+  T["t2-listwise-deletion"]       = { href: "t2l2-s11", en: "listwise deletion and what it costs", ar: "الحذف الصفّي الكامل وثمنه" };
+  T["t2-dropna-options"]          = { href: "t2l2-s12", en: "subset, how, thresh and dropping a column", ar: "‏subset وhow وthresh وحذف عمود" };
+  T["t2-never-impute-target"]     = { href: "t2l2-s13", en: "never impute the target", ar: "لا تعوّض الهدف قط" };
+  T["t2-impute-centre"]           = { href: "t2l2-s14", en: "mean, median and mode as fillers", ar: "المتوسط والوسيط والمنوال معوِّضات" };
+  T["t2-ffill-wrong"]             = { href: "t2l2-s15", en: "why ffill is wrong without a row order", ar: "لماذا ffill خاطئة بلا ترتيب للصفوف" };
+  T["t2-imputation-variance"]     = { href: "t2l2-s16", en: "the spread imputation destroys", ar: "التشتّت الذي يُهلكه التعويض" };
+  T["t2-group-imputation"]        = { href: "t2l2-s17", en: "group imputation with a fallback", ar: "التعويض بالمجموعات مع بديل" };
+  T["t2-deposit-rule"]            = { href: "t2l2-s18", en: "the MAR-aware deposit rule, measured", ar: "قاعدة التأمين الواعية بـMAR، مقيسةً" };
+  T["t2-impute-mnar-cost"]        = { href: "t2l2-s19", en: "what imputing an MNAR value costs", ar: "ثمن تعويض قيمة مفقودة غير عشوائيًّا" };
+  T["t2-missing-indicator"]       = { href: "t2l2-s20", en: "the missing indicator column", ar: "عمود عَلَم الفقد" };
+  T["t2-indicator-cost"]          = { href: "t2l2-s21", en: "when a flag helps, and what it costs", ar: "متى يُفيد العَلَم وما ثمنه" };
+  T["t2-indicator-leak"]          = { href: "t2l2-s22", en: "the flag you must never build", ar: "العَلَم الذي لا يجوز بناؤه" };
+  T["t2-missing-decisions"]       = { href: "t2l2-s23", en: "five columns, five decisions", ar: "خمسة أعمدة وخمسة قرارات" };
+  T["t2-missing-decision-table"]  = { href: "t2l2-s24", en: "the decision table the code produces", ar: "جدول القرارات الذي يُنتجه الكود" };
+  T["t2-missing-next-month"]      = { href: "t2l2-s25", en: "the same missing-data steps next month", ar: "خطوات المفقود نفسها الشهر القادم" };
+})(window.DATopics);

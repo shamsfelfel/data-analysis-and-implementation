@@ -1,0 +1,16 @@
+%% alt: Decision tree for one column with blanks. First question: is this column the target you are predicting? If yes, drop those rows and never impute them. If no, second question: how much of the column is blank? If almost all of it, drop the column itself. Otherwise, third question: which mechanism? If MNAR, drop the rows or model the missingness, and say so in the log. If MAR, fit a rule per group with a fallback for an empty group. If MCAR, fit a group median, or a global median if the column has few blanks. All three imputation branches then add a missing indicator and write one line in the decision log, with the column, the count, the mechanism and the reason.
+flowchart TD
+  S(["One column with blanks"]) --> Q1{"Is this the column<br/>you predict?"}
+  Q1 -- "yes" --> T["Drop those rows.<br/>Never impute a target."]
+  Q1 -- "no" --> Q2{"How much<br/>is blank?"}
+  Q2 -- "almost all" --> C["Drop the column<br/>and say what it cost"]
+  Q2 -- "some" --> Q3{"Which mechanism?"}
+  Q3 -- "MNAR" --> A3["Drop the rows, or model<br/>the hole as its own fact"]
+  Q3 -- "MAR" --> A2["Rule per group<br/>+ fallback for an empty group"]
+  Q3 -- "MCAR" --> A1["Group median,<br/>or global if few blanks"]
+  A1 --> F["Add a missing indicator"]
+  A2 --> F
+  A3 --> L
+  F --> L["One log row: column, count,<br/>mechanism, decision, reason"]
+  T --> L
+  C --> L

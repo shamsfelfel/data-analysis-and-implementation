@@ -1,0 +1,57 @@
+{
+  "id": "t2-l2-group-impute",
+  "title": {
+    "en": "Fit a median per rooms, apply it to a file you have not seen",
+    "ar": "اضبط وسيطًا لكل عدد غرف، وطبّقه على ملف لم تره"
+  },
+  "lede": {
+    "en": "Six training listings teach one median area per room count. Four new listings arrive, two of them with no area and one of them with a room count the fit has never met. Watch the parameter dictionary being built, then watch it being applied without learning anything new — including the row the fallback has to catch.",
+    "ar": "ستة إعلانات تدريب تُعلِّم وسيطَ مساحة واحدًا لكل عدد غرف. ثم تصل أربعة إعلانات جديدة، اثنان منها بلا مساحة وواحد منها بعدد غرف لم يقابله الضبط قط. راقب قاموس الوسائط وهو يُبنى، ثم راقبه وهو يُطبَّق دون أن يتعلّم شيئًا جديدًا — ومعه الصف الذي يجب أن يلتقطه البديل."
+  },
+  "files": {
+    "train.csv": "id,rooms,area\n1,2,52\n2,2,57\n3,3,70\n4,3,75\n5,4,88\n6,4,92\n",
+    "june.csv": "id,rooms,area\n7,2,55\n8,3,\n9,6,\n10,4,90\n"
+  },
+  "code": "import pandas as pd\ntrain = pd.read_csv(\"train.csv\")\nfitted = {\"by_rooms\": train.groupby(\"rooms\")[\"area\"].median().to_dict(),\n          \"fallback\": float(train[\"area\"].median())}\nprint(\"fitted:\", fitted)\njune = pd.read_csv(\"june.csv\")\nguess = june[\"rooms\"].map(fitted[\"by_rooms\"])\nprint(\"group guess:\", guess.tolist())\nguess = guess.fillna(fitted[\"fallback\"])\nout = june.assign(area_missing=june[\"area\"].isna(),\n                  area=june[\"area\"].fillna(guess))\nprint(out.to_string(index=False))\nprint(\"blank areas left:\", int(out[\"area\"].isna().sum()))\n",
+  "notes": {
+    "2": {
+      "en": "Six training rows, every area present. These are the only rows any parameter may be learned from.",
+      "ar": "ستة صفوف تدريب، وكل مساحة موجودة. وهذه هي الصفوف الوحيدة التي يحقّ لأي وسيط أن يُتعلَّم منها."
+    },
+    "3": {
+      "en": "FIT. groupby('rooms').median() is an aggregation hiding inside a transformation: three numbers out of six rows. The fallback is the median of all six, for a room count the groups do not cover.",
+      "ar": "الضبط. فـgroupby('rooms').median() تجميعٌ متخفٍّ داخل تحويل: ثلاثة أرقام من ستة صفوف. والبديل وسيط الستة جميعًا، لعدد غرف لا تغطّيه المجموعات."
+    },
+    "5": {
+      "en": "The parameters are now data: {2: 54.5, 3: 72.5, 4: 90.0} and a fallback of 72.5. You can print them, save them, and compare them with next month's.",
+      "ar": "صارت الوسائط بياناتٍ: ‏{2: 54.5, 3: 72.5, 4: 90.0} وبديلٌ 72.5. تستطيع أن تطبعها وتحفظها وتقارنها بوسائط الشهر القادم."
+    },
+    "6": {
+      "en": "A new file. Listing 8 has no area, listing 9 has no area and six rooms — a room count the training rows never contained.",
+      "ar": "ملف جديد. الإعلان 8 بلا مساحة، والإعلان 9 بلا مساحة وله ست غرف — وهو عدد غرف لم تحتوِه صفوف التدريب قط."
+    },
+    "7": {
+      "en": "APPLY. map() looks each room count up in the fitted dictionary. Listing 9 gets NaN, because 6 is not a key — the alarm, not a bug.",
+      "ar": "التطبيق. تبحث map() عن كل عدد غرف في القاموس المضبوط. ويحصل الإعلان 9 على NaN، لأن 6 ليس مفتاحًا — وهذا الجرس لا عطب."
+    },
+    "9": {
+      "en": "The fallback catches the unseen room count. Note that it is a fitted number too, not a guess typed in by hand.",
+      "ar": "يلتقط البديل عدد الغرف غير المرئي. ولاحظ أنه رقم مضبوط أيضًا، لا تخمينًا مكتوبًا باليد."
+    },
+    "10": {
+      "en": "The flag is written BEFORE the fill, from the original column. Compute it afterwards and it is all False — the single commonest bug in this lesson.",
+      "ar": "يُكتب العَلَم قبل التعبئة، من العمود الأصلي. وإذا حسبته بعدها كان كله False — وهذا أشيع عطب في هذا الدرس."
+    },
+    "12": {
+      "en": "Two filled areas, two flags set, and nothing was learned from June. The same six training rows would fill July the same way.",
+      "ar": "مساحتان معبَّأتان وعَلَمان مرفوعان، ولم يُتعلَّم شيء من حزيران. وصفوف التدريب الستة نفسها ستعبّئ تموز بالطريقة نفسها."
+    },
+    "end": {
+      "en": "Fit once on the training rows, apply for ever: the group median is a parameter, the flag records where it was used, and the fallback is what makes an unseen group survivable.",
+      "ar": "اضبط مرة على صفوف التدريب وطبّق دائمًا: وسيط المجموعة وسيطٌ مضبوط، والعَلَم يسجّل موضع استعماله، والبديل هو ما يجعل المجموعة غير المرئية قابلة للنجاة."
+    }
+  },
+  "watch": ["train", "fitted", "june", "guess", "out"],
+  "viz": {"train": "table", "june": "table", "out": "table", "fitted": "dict"},
+  "max_steps": 60
+}

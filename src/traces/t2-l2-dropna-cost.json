@@ -1,0 +1,64 @@
+{
+  "id": "t2-l2-dropna-cost",
+  "title": {
+    "en": "What dropna() takes with it",
+    "ar": "ماذا يأخذ dropna() معه"
+  },
+  "lede": {
+    "en": "Seven listings, two of them complete in every column and five missing something. dropna() keeps two rows and throws away four rents it could have learned from; dropna(subset=['rent']) keeps six. Watch which identifiers survive each rule, and notice that one agency disappears entirely.",
+    "ar": "سبعة إعلانات، اثنان منها كاملان في كل عمود وخمسة ينقصها شيء. يُبقي dropna() صفّين ويرمي أربعة إيجارات كان يستطيع التعلُّم منها؛ ويُبقي dropna(subset=['rent']) ستة. راقب أي المعرّفات ينجو من كل قاعدة، ولاحظ أن وكالة تختفي بالكامل."
+  },
+  "files": {
+    "rents.csv": "id,agency,rent,area,deposit\n1,Quds,300,80,300\n2,Noor,250,70,\n3,Quds,,75,\n4,Noor,180,,\n5,Quds,220,65,440\n6,Noor,240,72,\n7,Quds,195,,195\n"
+  },
+  "code": "import pandas as pd\nd = pd.read_csv(\"rents.csv\")\nprint(\"blanks per row:\", d.isna().sum(axis=1).tolist())\nprint(\"blanks per column:\", d.isna().sum().to_dict())\ncomplete = d.dropna()\nprint(\"dropna()        ->\", len(complete), \"rows\", complete[\"id\"].tolist())\ntarget = d.dropna(subset=[\"rent\"])\nprint(\"subset=['rent'] ->\", len(target), \"rows\", target[\"id\"].tolist())\nprint(\"rents to learn from:\", int(complete[\"rent\"].count()), \"vs\", int(target[\"rent\"].count()))\nprint(\"agencies left:\", complete[\"agency\"].unique().tolist(), \"vs\", target[\"agency\"].unique().tolist())\n",
+  "notes": {
+    "2": {
+      "en": "Seven rows. Row 3 has no rent, rows 4 and 7 have no area, and four rows have no deposit.",
+      "ar": "سبعة صفوف. الصف 3 بلا إيجار، والصفان 4 و7 بلا مساحة، وأربعة صفوف بلا تأمين."
+    },
+    "3": {
+      "en": "Per row: 0, 1, 2, 2, 0, 1, 1. Only two rows are complete in every column, which is the whole problem with dropna().",
+      "ar": "لكل صف: ‏0 و1 و2 و2 و0 و1 و1. وصفان فقط كاملان في كل عمود، وهذه هي مشكلة dropna() كلها."
+    },
+    "4": {
+      "en": "Per column the picture looks mild: one rent, two areas, four deposits. Nothing here warns you that more than half the rows will go.",
+      "ar": "تبدو الصورة لكل عمود هيّنة: إيجار واحد ومساحتان وأربعة تأمينات. ولا شيء هنا يحذّرك أن أكثر من نصف الصفوف سيذهب."
+    },
+    "5": {
+      "en": "Two rows left, ids 1 and 5. Five of the seven listings are gone, and the deposit column — which no question in this chapter asks about — did most of the damage.",
+      "ar": "بقي صفّان، بالمعرّفَين 1 و5. فذهب خمسة من الإعلانات السبعة، وعمود التأمين — ولا يسأل عنه أي سؤال في هذا الفصل — هو صاحب معظم الضرر."
+    },
+    "6": {
+      "en": "Three rows left, ids 1, 5 and 7 — and listing 7 has no area, so even this is not a complete table in the sense you wanted.",
+      "ar": "بقيت ثلاثة صفوف، بالمعرّفات 1 و5 و7 — والإعلان 7 بلا مساحة، فليس هذا جدولًا كاملًا بالمعنى الذي أردته."
+    },
+    "7": {
+      "en": "subset=['rent'] drops a row only when the thing you are predicting is absent. One row goes, not four.",
+      "ar": "يحذف subset=['rent'] الصف فقط حين يغيب الشيء الذي تتنبأ به. فيذهب صف واحد لا أربعة."
+    },
+    "9": {
+      "en": "Two rents against six. The first rule threw away four rents that were right there, to protect a deposit column nobody asked about.",
+      "ar": "إيجاران مقابل ستة. فالقاعدة الأولى رمت أربعة إيجارات كانت موجودة، حمايةً لعمود تأمين لم يسأل عنه أحد."
+    },
+    "10": {
+      "en": "And the real damage: Noor never records a deposit, so dropna() deleted the whole agency. The surviving table is not a smaller sample of the market, it is a different market.",
+      "ar": "والضرر الحقيقي: وكالة Noor لا تسجّل تأمينًا قط، فحذف dropna() الوكالة كلها. والجدول الباقي ليس عيّنة أصغر من السوق، بل سوقٌ أخرى."
+    },
+    "end": {
+      "en": "Same file, two defensible-looking rules, two different populations. Drop by the column you are predicting; never drop by a column you were only curious about.",
+      "ar": "الملف نفسه، وقاعدتان تبدو كلٌّ منهما قابلة للدفاع، ومجتمعان مختلفان. احذف بحسب العمود الذي تتنبأ به، ولا تحذف قط بحسب عمود كنت فضوليًّا بشأنه فقط."
+    }
+  },
+  "watch": [
+    "d",
+    "complete",
+    "target"
+  ],
+  "viz": {
+    "d": "table",
+    "complete": "table",
+    "target": "table"
+  },
+  "max_steps": 60
+}

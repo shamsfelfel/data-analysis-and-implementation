@@ -1,0 +1,100 @@
+[
+  { "id": "missing-value",
+    "term": {"en": "Missing value", "ar": "القيمة المفقودة (missing value)"},
+    "def": {
+      "en": "A cell that holds no value, as distinct from a cell that holds a value meaning nothing. listings_raw.csv has 214 of them in 6,539 cells (3.27%): 19 rents, 27 areas, 9 floors, 36 conditions and 123 deposits. Whether pandas sees them at all depends on how the file was read: with keep_default_na=False, isna() reports zero.",
+      "ar": "خلية لا تحمل قيمة، بخلاف الخلية التي تحمل قيمة معناها «لا شيء». في listings_raw.csv ‏214 منها في 6539 خلية (‏3.27%): تسعة عشر إيجارًا، وسبع وعشرون مساحة، وتسعة طوابق، وستّ وثلاثون حالة، ومئة وثلاثة وعشرون تأمينًا. وكون pandas يراها أصلًا يتوقف على كيفية قراءة الملف: فمع keep_default_na=False تُبلّغ isna() بصفر."
+    },
+    "cat": {"en": "Missing data", "ar": "البيانات المفقودة"},
+    "see": ["sentinel-value", "missingness-pattern", "imputation"] },
+
+  { "id": "sentinel-value",
+    "term": {"en": "Sentinel value", "ar": "القيمة النائبة (sentinel value)"},
+    "def": {
+      "en": "An ordinary value used to mean 'no value': an empty string, the text NA or n/a, a 0 rent, a 1900 date, or -1 rooms. A sentinel is dangerous because arithmetic works on it: 19 empty rents read as the string '' make monthly_rent an object column in which isna() finds nothing to report.",
+      "ar": "قيمة عادية تُستعمل بمعنى «لا قيمة»: سلسلة فارغة، أو النص NA أو n/a، أو إيجار 0، أو تاريخ 1900، أو ‎-1 غرفة. والقيمة النائبة خطيرة لأن الحساب يعمل عليها: فتسعة عشر إيجارًا فارغًا تُقرأ سلسلةً '' تجعل monthly_rent عمودًا من نوع object لا تجد isna() فيه ما تُبلّغ عنه."
+    },
+    "cat": {"en": "Missing data", "ar": "البيانات المفقودة"},
+    "see": ["missing-value"] },
+
+  { "id": "missingness-pattern",
+    "term": {"en": "Missingness pattern", "ar": "نمط الفقد (missingness pattern)"},
+    "def": {
+      "en": "Which cells are blank, read as a table rather than as a count: per column, per row, which columns go blank together, and how the blank flag crosses another column. In this file 329 rows are complete, every one of the 19 blank rents also has a blank deposit, and the deposit is blank for 100% of two agencies - none of which a column total can show.",
+      "ar": "أي الخلايا فارغة، مقروءًا جدولًا لا عددًا: لكل عمود، ولكل صف، وأي الأعمدة تفرغ معًا، وكيف يتقاطع عَلَم الفراغ بعمود آخر. في هذا الملف 329 صفًّا كاملة، وكل إيجار من الإيجارات الفارغة التسعة عشر معه تأمين فارغ، والتأمين فارغ في 100% من وكالتين - ولا شيء من ذلك يستطيع مجموعُ عمود أن يُظهره."
+    },
+    "cat": {"en": "Missing data", "ar": "البيانات المفقودة"},
+    "see": ["missing-value", "mcar", "mar", "mnar"] },
+
+  { "id": "mcar",
+    "term": {"en": "MCAR (missing completely at random)", "ar": "الفقد العشوائي التامّ (MCAR)"},
+    "def": {
+      "en": "A column is MCAR when whether a cell is blank depends on nothing - not on the hidden value and not on any other column. The 27 blank area_m2 cells behave this way: the rows that have no area look like the rest of the file (2.93 rooms against 3.07, 18.5% excellent against 15.5%). MCAR is the only mechanism under which a simple fill is unbiased, and it can never be proved from the file.",
+      "ar": "العمود فقدُه عشوائي تامّ إذا كان كون الخلية فارغةً لا يعتمد على شيء - لا على القيمة المخفيّة ولا على أي عمود آخر. وتسلك خلايا area_m2 الفارغة السبع والعشرون هذا السلوك: فالصفوف التي لا مساحة لها تشبه باقي الملف (‏2.93 غرفة مقابل 3.07، و18.5% ممتاز مقابل 15.5%). والفقد العشوائي التامّ هو الآلية الوحيدة التي تكون فيها التعبئة البسيطة غير متحيّزة، ولا يمكن إثباته من الملف قط."
+    },
+    "cat": {"en": "Mechanism", "ar": "الآلية"},
+    "see": ["mar", "mnar", "imputation"] },
+
+  { "id": "mar",
+    "term": {"en": "MAR (missing at random)", "ar": "الفقد العشوائي المشروط (MAR)"},
+    "def": {
+      "en": "A column is MAR when whether a cell is blank depends on a column you can see, but not on the hidden value itself. deposit is the example: 103 of its 123 blanks are every row of Noor Estates and Diwan Rentals, two agencies that simply never publish a deposit. MAR says a rule per group is defensible - it does not promise that the same column predicts the value.",
+      "ar": "العمود فقدُه عشوائي مشروط إذا كان كون الخلية فارغةً يعتمد على عمود تستطيع رؤيته، لا على القيمة المخفيّة نفسها. وdeposit هو المثال: فمئة وثلاثة من فراغاته المئة والثلاثة والعشرين هي كل صفوف Noor Estates وDiwan Rentals، وهما وكالتان لا تنشران تأمينًا قط. ويقول هذا الفقد إن قاعدةً لكل مجموعة قابلة للدفاع - ولا يَعِد بأن العمود نفسه يتنبأ بالقيمة."
+    },
+    "cat": {"en": "Mechanism", "ar": "الآلية"},
+    "see": ["mcar", "mnar", "group-imputation"] },
+
+  { "id": "mnar",
+    "term": {"en": "MNAR (missing not at random)", "ar": "الفقد غير العشوائي (MNAR)"},
+    "def": {
+      "en": "A column is MNAR when whether a cell is blank depends on the hidden value itself. monthly_rent is blank on exactly the dearest flats, because the site prints 'price on request' for premium listings: the 19 blank-rent rows average 3.58 rooms against 3.04 and 81.5 m2 against 71.8. Imputing a central value here is wrong in a known direction, which is why MNAR is the dangerous mechanism.",
+      "ar": "العمود فقدُه غير عشوائي إذا كان كون الخلية فارغةً يعتمد على القيمة المخفيّة نفسها. وmonthly_rent فارغ على أغلى الشقق بالضبط، لأن الموقع يطبع «السعر عند الطلب» للإعلانات الفارهة: فمتوسط الصفوف التسعة عشر ذات الإيجار الفارغ 3.58 غرفة مقابل 3.04، و81.5 م2 مقابل 71.8. والتعويض بقيمة مركزية هنا خطأٌ في اتجاه معروف، ولهذا كان هذا الفقد هو الآلية الخطيرة."
+    },
+    "cat": {"en": "Mechanism", "ar": "الآلية"},
+    "see": ["mcar", "mar", "target"] },
+
+  { "id": "imputation",
+    "term": {"en": "Imputation", "ar": "التعويض (imputation)"},
+    "def": {
+      "en": "Replacing a missing value with an estimate, so that the row survives. It is a fitted step: the estimate is a parameter learned from the training rows and applied everywhere. Imputation always narrows the spread of the column - filling the 123 blank deposits with the mean cuts the standard deviation from 206.49 to 179.42, exactly the factor sqrt((n-1)/(n+k-1)).",
+      "ar": "استبدال قيمة مفقودة بتقدير، لينجو الصف. وهي خطوة مضبوطة: فالتقدير وسيطٌ يُتعلَّم من صفوف التدريب ويُطبَّق في كل مكان. والتعويض يضيّق تشتّت العمود دائمًا - فتعبئة التأمينات الفارغة المئة والثلاثة والعشرين بالمتوسط تهبط بالانحراف المعياري من 206.49 إلى 179.42، أي بالمعامل sqrt((n-1)/(n+k-1)) بالضبط."
+    },
+    "cat": {"en": "Decision", "ar": "القرار"},
+    "see": ["group-imputation", "listwise-deletion", "missing-indicator"] },
+
+  { "id": "listwise-deletion",
+    "term": {"en": "Listwise deletion", "ar": "الحذف الصفّي الكامل (listwise deletion)"},
+    "def": {
+      "en": "Keeping only the rows that are complete in every column - what dropna() does by default. On this file it takes 503 rows to 329, throws away 155 rows whose rent was present, and deletes Noor Estates and Diwan Rentals entirely, so the surviving table is not a smaller sample of the market but a different market.",
+      "ar": "الاحتفاظ بالصفوف الكاملة في كل عمود وحدها - وهو ما تفعله dropna() افتراضًا. وهي تأخذ هذا الملف من 503 صفوف إلى 329، وترمي 155 صفًّا كان إيجارها موجودًا، وتحذف Noor Estates وDiwan Rentals بالكامل، فلا يكون الجدول الباقي عيّنة أصغر من السوق بل سوقًا أخرى."
+    },
+    "cat": {"en": "Decision", "ar": "القرار"},
+    "see": ["imputation", "target", "mar"] },
+
+  { "id": "group-imputation",
+    "term": {"en": "Group imputation", "ar": "التعويض بالمجموعات (group imputation)"},
+    "def": {
+      "en": "Filling a blank with the statistic of the group the row belongs to rather than of the whole column, usually via groupby(...)[col].transform('median'). Measured by hiding a quarter of the known areas, a median per rooms is wrong by 5.16 m2 against 15.10 for the global median. Every group rule needs a fallback for a group with nothing in it.",
+      "ar": "تعبئة الفراغ بإحصاء المجموعة التي ينتمي إليها الصف لا بإحصاء العمود كله، وذلك عادةً عبر groupby(...)[col].transform('median'). وبإخفاء ربع المساحات المعروفة وقياس الخطأ، يُخطئ وسيطُ كل عدد غرف بمقدار 5.16 م2 مقابل 15.10 للوسيط العامّ. وكل قاعدة مجموعات تحتاج بديلًا لمجموعة لا شيء فيها."
+    },
+    "cat": {"en": "Decision", "ar": "القرار"},
+    "see": ["imputation", "mar"] },
+
+  { "id": "missing-indicator",
+    "term": {"en": "Missing indicator", "ar": "عَلَم الفقد (missing indicator)"},
+    "def": {
+      "en": "A boolean column recording that a value was absent before it was filled, written from the original column and never after the fill. area_m2_missing carries real signal here - the training rows with no area ask a median rent of 240 against 195 - and it still buys only 0.25 shekels of held-out accuracy, while a deposit_missing flag makes the same prediction 2.7 shekels worse.",
+      "ar": "عمود منطقي يسجّل أن القيمة كانت غائبة قبل تعبئتها، ويُكتب من العمود الأصلي ولا يُكتب بعد التعبئة قط. ويحمل area_m2_missing إشارةً حقيقية هنا - فصفوف التدريب التي لا مساحة لها تطلب وسيط إيجار 240 مقابل 195 - ولا يشتري مع ذلك إلا 0.25 شيكل من الدقة على الصفوف المحجوزة، في حين يُسوئ عَلَمُ deposit_missing التنبؤ نفسه بـ2.7 شيكل."
+    },
+    "cat": {"en": "Decision", "ar": "القرار"},
+    "see": ["imputation", "target"] },
+
+  { "id": "target",
+    "term": {"en": "Target", "ar": "الهدف (target)"},
+    "def": {
+      "en": "The column a model is asked to predict - here monthly_rent. A blank target is not a hole to be filled but a row that cannot teach anything: imputing it writes 19 fabricated labels, and because the mechanism is MNAR each one is wrong by about 242 shekels in the same direction. Drop rows whose target is missing; keep rows whose features are.",
+      "ar": "العمود الذي يُطلب من النموذج أن يتنبأ به - وهو هنا monthly_rent. والهدف الفارغ ليس ثقبًا يُعبَّأ بل صفًّا لا يستطيع أن يُعلِّم شيئًا: فتعويضه يكتب تسعة عشر عنوانًا مختلقًا، ولأن الآلية فقدٌ غير عشوائي يكون كلٌّ منها خاطئًا بنحو 242 شيكلًا في الاتجاه نفسه. فاحذف الصفوف التي يغيب هدفها، واحتفظ بالصفوف التي تغيب خصائصها."
+    },
+    "cat": {"en": "Decision", "ar": "القرار"},
+    "see": ["mnar", "listwise-deletion", "missing-indicator"] }
+]

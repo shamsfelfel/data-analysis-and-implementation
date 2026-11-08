@@ -1,0 +1,10 @@
+%% alt: Flowchart of the four questions that turn a count of blanks into a pattern. Step one counts blanks per column and gives five numbers: 19 rents, 27 areas, 9 floors, 36 conditions, 123 deposits. Step two counts blanks per row and shows that 329 rows are complete, 139 have one blank, 30 have two and 5 have three. Step three asks which columns go blank together and finds that every blank rent also has a blank deposit. Step four crosses the blank flag against another column and finds that the deposit is blank for every row of two agencies. The conclusion is that a count is one number per column while a pattern is a table, and only the table tells you which mechanism you are looking at.
+flowchart TD
+  C1["1. Blanks per column<br/>isna().sum()"] --> O1["19 / 27 / 9 / 36 / 123<br/>five numbers, no pattern"]
+  O1 --> C2["2. Blanks per row<br/>isna().sum(axis=1)"]
+  C2 --> O2["329 rows clean, 139 with one,<br/>30 with two, 5 with three"]
+  O2 --> C3["3. Which go blank together?<br/>the pattern string"]
+  C3 --> O3["every blank rent also<br/>has a blank deposit"]
+  O3 --> C4["4. Cross the flag against<br/>another column"]
+  C4 --> O4["deposit blank for 100% of<br/>Noor Estates and Diwan Rentals"]
+  O4 --> R(["A count is a number.<br/>A pattern is a table."])
