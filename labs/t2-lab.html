@@ -61,6 +61,30 @@
   <p class="en">Filter the Gaza listings, set their rent to zero, and print the table: nothing changed. pandas printed a warning on the error stream and carried on. Step through it, then watch the two forms that really do write — .copy() plus .loc — and see that the raw table stays raw.</p>
   <p class="ar">رشّح إعلانات غزة واجعل إيجارها صفرًا ثم اطبع الجدول: لم يتغير شيء. طبعت pandas تحذيرًا على مجرى الأخطاء ثم تابعت. اخطُ عبر البرنامج، ثم راقب الصورتين التي تكتب فعلًا — ‏.copy() مع .loc — وانظر كيف يبقى الجدول الخام خامًا.</p>
   <div data-trace-id="t2-l1-view-vs-copy"></div>
+  <h2 id="t2lab-h4"><span class="en">What dropna() takes with it</span><span class="ar">ماذا يأخذ dropna() معه</span></h2>
+  <p class="en">Seven listings, two of them complete in every column and five missing something. dropna() keeps two rows and throws away four rents it could have learned from; dropna(subset=['rent']) keeps six. Watch which identifiers survive each rule, and notice that one agency disappears entirely.</p>
+  <p class="ar">سبعة إعلانات، اثنان منها كاملان في كل عمود وخمسة ينقصها شيء. يُبقي dropna() صفّين ويرمي أربعة إيجارات كان يستطيع التعلُّم منها؛ ويُبقي dropna(subset=['rent']) ستة. راقب أي المعرّفات ينجو من كل قاعدة، ولاحظ أن وكالة تختفي بالكامل.</p>
+  <div data-trace-id="t2-l2-dropna-cost"></div>
+  <h2 id="t2lab-h5"><span class="en">Fit a median per rooms, apply it to a file you have not seen</span><span class="ar">اضبط وسيطًا لكل عدد غرف، وطبّقه على ملف لم تره</span></h2>
+  <p class="en">Six training listings teach one median area per room count. Four new listings arrive, two of them with no area and one of them with a room count the fit has never met. Watch the parameter dictionary being built, then watch it being applied without learning anything new — including the row the fallback has to catch.</p>
+  <p class="ar">ستة إعلانات تدريب تُعلِّم وسيطَ مساحة واحدًا لكل عدد غرف. ثم تصل أربعة إعلانات جديدة، اثنان منها بلا مساحة وواحد منها بعدد غرف لم يقابله الضبط قط. راقب قاموس الوسائط وهو يُبنى، ثم راقبه وهو يُطبَّق دون أن يتعلّم شيئًا جديدًا — ومعه الصف الذي يجب أن يلتقطه البديل.</p>
+  <div data-trace-id="t2-l2-group-impute"></div>
+  <h2 id="t2lab-h6"><span class="en">Zero missing values, four empty cells</span><span class="ar">صفر قيمة مفقودة، وأربع خلايا فارغة</span></h2>
+  <p class="en">The same four-row file read twice. The ordinary read turns an empty cell into NaN and isna() finds three holes. The read that was told to trust the file keeps the empty cells as empty strings, so isna() reports zero and every numeric column arrives as text. Watch the dtypes, not the counts.</p>
+  <p class="ar">الملف نفسه من أربعة صفوف يُقرأ مرتين. القراءة العادية تحوّل الخلية الفارغة إلى NaN فتجد isna() ثلاثة ثقوب. والقراءة التي أُمرت بأن تثق بالملف تُبقي الخلايا الفارغة سلاسل فارغة، فتُبلّغ isna() بصفر ويصل كل عمود رقمي نصًّا. راقب الأنواع لا الأعداد.</p>
+  <div data-trace-id="t2-l2-isna-vs-blank"></div>
+  <h2 id="t2lab-h7"><span class="en">keep="last" keeps the last ROW, not the latest date</span><span class="ar">keep="last" يُبقي الصف الأخير، لا التاريخ الأحدث</span></h2>
+  <p class="en">Six rows describing three flats: one flat typed in twice byte for byte, and two flats reposted on a later date. drop_duplicates() removes the byte-for-byte pair and cannot see the two reposts. Then watch the difference between keep="last" on the file as it arrived — which keeps the OLDER advert for both reposted flats — and keep="last" after sorting on the parsed date, which keeps the one you meant.</p>
+  <p class="ar">ستة صفوف تصف ثلاث شقق: شقة مُدخَلة مرتين حرفًا بحرف، وشقتان أُعيد نشرهما بتاريخ لاحق. تحذف drop_duplicates() الزوج المتطابق حرفيًّا ولا ترى إعادتَي النشر. ثم راقب الفرق بين keep="last" على الملف كما وصل — وهو يُبقي الإعلان الأقدم للشقتين المُعاد نشرهما — وبين keep="last" بعد الترتيب على التاريخ المُحلَّل، وهو يُبقي ما قصدته.</p>
+  <div data-trace-id="t2-l3-dedupe-keep-last"></div>
+  <h2 id="t2lab-h8"><span class="en">The silent NaN: what .map() does with a spelling your dictionary forgot</span><span class="ar">القيمة المفقودة الصامتة: ماذا تفعل .map() بتهجئة نسيها قاموسك</span></h2>
+  <p class="en">Six city cells, five of them covered by a three-key map. The sixth is 'Khan Yunis', which the map does not have. Watch the moment the mapping runs: no error, no warning, and one value quietly becomes NaN. Then watch value_counts() report five rows out of six and say nothing about the missing one — and finally watch the one extra line that turns the silence into a count.</p>
+  <p class="ar">ست خلايا مدينة، خمس منها تغطّيها خريطة بثلاثة مفاتيح. والسادسة 'Khan Yunis' وليست في الخريطة. راقب لحظة تنفيذ الربط: لا خطأ ولا تحذير، وقيمة واحدة تصير NaN بهدوء. ثم راقب value_counts() تُبلّغ عن خمسة صفوف من ستة ولا تقول شيئًا عن الناقص — وأخيرًا راقب السطر الإضافي الواحد الذي يحوّل الصمت إلى عدّ.</p>
+  <div data-trace-id="t2-l3-map-silent-nan"></div>
+  <h2 id="t2lab-h9"><span class="en">One column, two date formats: three parsers and three different answers</span><span class="ar">عمود واحد وصيغتا تاريخ: ثلاثة محلّلات وثلاثة أجوبة مختلفة</span></h2>
+  <p class="en">Five dates: three written YYYY-MM-DD and two written DD/MM/YYYY. errors="coerce" throws the odd ones away without a word. format="mixed" keeps every row and reads 12/04/2026 as the fourth of December. Only parsing each format on purpose, combining, and checking that nothing is left unparsed gives an answer you can defend — and the giveaway is the date range.</p>
+  <p class="ar">خمسة تواريخ: ثلاثة مكتوبة YYYY-MM-DD واثنان مكتوبان DD/MM/YYYY. ترمي errors="coerce" الشاذّة دون كلمة. وتُبقي format="mixed" كل صف وتقرأ 12/04/2026 بأنه الرابع من كانون الأول. ووحده تحليل كل صيغة بقصد، ثم الدمج، ثم التحقّق من أن شيئًا لم يبقَ غير محلَّل، يعطي جوابًا تستطيع الدفاع عنه — والدليل الفاضح هو مدى التواريخ.</p>
+  <div data-trace-id="t2-l3-two-date-formats"></div>
 
 </section>
 <nav class="pager"></nav>
@@ -85,6 +109,12 @@
 <script src="../assets/data/traces/t2-l1-fit-apply.js"></script>
 <script src="../assets/data/traces/t2-l1-order-matters.js"></script>
 <script src="../assets/data/traces/t2-l1-view-vs-copy.js"></script>
+<script src="../assets/data/traces/t2-l2-dropna-cost.js"></script>
+<script src="../assets/data/traces/t2-l2-group-impute.js"></script>
+<script src="../assets/data/traces/t2-l2-isna-vs-blank.js"></script>
+<script src="../assets/data/traces/t2-l3-dedupe-keep-last.js"></script>
+<script src="../assets/data/traces/t2-l3-map-silent-nan.js"></script>
+<script src="../assets/data/traces/t2-l3-two-date-formats.js"></script>
 <script src="../assets/js/trace.js"></script>
 <script src="../assets/js/app.js"></script>
 </body>

@@ -67,6 +67,73 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "business-key",
+  "term": {
+   "en": "Business key",
+   "ar": "المفتاح التجاري (business key)"
+  },
+  "def": {
+   "en": "The smallest set of columns that, by the rules of the thing a table describes, cannot repeat. Here it is listing_id alone, which the rental site issues once per flat; some tables - a payment ledger, for instance - have none at all, and for those drop_duplicates() is not a legal operation.",
+   "ar": "أصغر مجموعة أعمدة لا يمكن أن تتكرر بحكم قواعد الشيء الذي يصفه الجدول. وهو هنا listing_id وحده، ويُصدره موقع التأجير مرة لكل شقة؛ وبعض الجداول - مثل دفتر دفعات - لا مفتاح لها أصلًا، ولتلك لا تكون drop_duplicates() عمليةً مشروعة."
+  },
+  "cat": {
+   "en": "Structure",
+   "ar": "البنية"
+  },
+  "see": [
+   "exact-duplicate",
+   "repost"
+  ],
+  "used": [
+   "t2l3-s6"
+  ]
+ },
+ {
+  "id": "canonical-form",
+  "term": {
+   "en": "Canonical form",
+   "ar": "الصورة المعيارية (canonical form)"
+  },
+  "def": {
+   "en": "The one spelling of a value that every later step, join and chart will use, chosen by a decision rather than derived by a rule. 'Khan Yunis' and 'Khan Younis' are one city only because a CITY_MAP says so; no string function can know it, and .str.title() reaches 11 spellings while renaming 40 already-correct rows.",
+   "ar": "تهجئة القيمة الواحدة التي ستستعملها كل خطوة ودمج ورسم لاحق، وتُختار بقرار لا تُستنبط بقاعدة. فـ'Khan Yunis' و'Khan Younis' مدينة واحدة لأن CITY_MAP تقول ذلك فقط؛ ولا تستطيع دالة نصوص أن تعرفه، وتبلغ .str.title() إحدى عشرة تهجئة وهي تعيد تسمية أربعين صفًّا كان صحيحًا."
+  },
+  "cat": {
+   "en": "Text",
+   "ar": "النصوص"
+  },
+  "see": [
+   "normalisation",
+   "exact-duplicate"
+  ],
+  "used": [
+   "t2l3-s12"
+  ]
+ },
+ {
+  "id": "coercion",
+  "term": {
+   "en": "Coercion",
+   "ar": "الإكراه (coercion)"
+  },
+  "def": {
+   "en": "The errors='coerce' policy of turning every conversion failure into a missing value. It silences an error at the price of merging two kinds of ignorance: on floor it turns 9 blank cells and 19 recorded ground floors into 28 indistinguishable NaNs, and on listed_on it loses 23 dates without a word.",
+   "ar": "سياسة errors='coerce' في تحويل كل عطل في التحويل إلى قيمة مفقودة. وهي تُسكت خطأً بثمن دمج نوعين من الجهل: فعلى floor تحوّل تسع خلايا فارغة وتسعة عشر طابقًا أرضيًّا مسجَّلًا إلى ثماني وعشرين NaN لا تتميّز، وعلى listed_on تفقد ثلاثة وعشرين تاريخًا بلا كلمة."
+  },
+  "cat": {
+   "en": "Types",
+   "ar": "الأنواع"
+  },
+  "see": [
+   "nullable-dtype",
+   "mixed-type-column",
+   "date-ambiguity"
+  ],
+  "used": [
+   "t2l3-s20"
+  ]
+ },
+ {
   "id": "copy",
   "term": {
    "en": "Copy",
@@ -111,6 +178,28 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "exact-duplicate",
+  "term": {
+   "en": "Exact duplicate",
+   "ar": "التكرار الحرفي (exact duplicate)"
+  },
+  "def": {
+   "en": "A row every one of whose values equals the corresponding value of an earlier row, which is the only kind drop_duplicates() can find. listings_raw.csv holds 14 of them, so drop_duplicates() leaves 489 rows - still nine more than the 480 real flats.",
+   "ar": "صفٌّ تساوي كل قيمة من قيمه القيمةَ المقابلة في صف سابق، وهو النوع الوحيد الذي تستطيع drop_duplicates() أن تجده. ويحمل listings_raw.csv أربعة عشر منه، فتُبقي drop_duplicates() ‏489 صفًّا - وهي أكثر بتسعة من الشقق الحقيقية الـ480."
+  },
+  "cat": {
+   "en": "Structure",
+   "ar": "البنية"
+  },
+  "see": [
+   "repost",
+   "business-key"
+  ],
+  "used": [
+   "t2l3-s1"
+  ]
+ },
+ {
   "id": "fit",
   "term": {
    "en": "Fit",
@@ -134,6 +223,73 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "date-ambiguity",
+  "term": {
+   "en": "Format ambiguity",
+   "ar": "غموض الصيغة (format ambiguity)"
+  },
+  "def": {
+   "en": "A value whose written form is consistent with two different real values, so no parser can choose between them. Eleven of the 23 DD/MM/YYYY dates in listed_on read both ways and ten of those land in a different month; 03/04/2026 is the third of April or the fourth of March, and only the source can say which.",
+   "ar": "قيمةٌ تتّسق صورتها المكتوبة مع قيمتين حقيقيتين مختلفتين، فلا يستطيع محلّل أن يختار بينهما. فأحد عشر من تواريخ DD/MM/YYYY الثلاثة والعشرين في listed_on تُقرأ على الوجهين وعشرة منها تحلّ في شهر مختلف؛ و03/04/2026 هي الثالث من نيسان أو الرابع من آذار، ولا يقول أيّهما إلا المصدر."
+  },
+  "cat": {
+   "en": "Text",
+   "ar": "النصوص"
+  },
+  "see": [
+   "coercion",
+   "canonical-form"
+  ],
+  "used": [
+   "t2l3-s27"
+  ]
+ },
+ {
+  "id": "group-imputation",
+  "term": {
+   "en": "Group imputation",
+   "ar": "التعويض بالمجموعات (group imputation)"
+  },
+  "def": {
+   "en": "Filling a blank with the statistic of the group the row belongs to rather than of the whole column, usually via groupby(...)[col].transform('median'). Measured by hiding a quarter of the known areas, a median per rooms is wrong by 5.16 m2 against 15.10 for the global median. Every group rule needs a fallback for a group with nothing in it.",
+   "ar": "تعبئة الفراغ بإحصاء المجموعة التي ينتمي إليها الصف لا بإحصاء العمود كله، وذلك عادةً عبر groupby(...)[col].transform('median'). وبإخفاء ربع المساحات المعروفة وقياس الخطأ، يُخطئ وسيطُ كل عدد غرف بمقدار 5.16 م2 مقابل 15.10 للوسيط العامّ. وكل قاعدة مجموعات تحتاج بديلًا لمجموعة لا شيء فيها."
+  },
+  "cat": {
+   "en": "Decision",
+   "ar": "القرار"
+  },
+  "see": [
+   "imputation",
+   "mar"
+  ],
+  "used": [
+   "t2l2-s18"
+  ]
+ },
+ {
+  "id": "imputation",
+  "term": {
+   "en": "Imputation",
+   "ar": "التعويض (imputation)"
+  },
+  "def": {
+   "en": "Replacing a missing value with an estimate, so that the row survives. It is a fitted step: the estimate is a parameter learned from the training rows and applied everywhere. Imputation always narrows the spread of the column - filling the 123 blank deposits with the mean cuts the standard deviation from 206.49 to 179.42, exactly the factor sqrt((n-1)/(n+k-1)).",
+   "ar": "استبدال قيمة مفقودة بتقدير، لينجو الصف. وهي خطوة مضبوطة: فالتقدير وسيطٌ يُتعلَّم من صفوف التدريب ويُطبَّق في كل مكان. والتعويض يضيّق تشتّت العمود دائمًا - فتعبئة التأمينات الفارغة المئة والثلاثة والعشرين بالمتوسط تهبط بالانحراف المعياري من 206.49 إلى 179.42، أي بالمعامل sqrt((n-1)/(n+k-1)) بالضبط."
+  },
+  "cat": {
+   "en": "Decision",
+   "ar": "القرار"
+  },
+  "see": [
+   "group-imputation",
+   "listwise-deletion",
+   "missing-indicator"
+  ],
+  "used": [
+   "t2l2-s14"
+  ]
+ },
+ {
   "id": "leakage",
   "term": {
    "en": "Leakage",
@@ -154,6 +310,75 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l1-s12"
+  ]
+ },
+ {
+  "id": "listwise-deletion",
+  "term": {
+   "en": "Listwise deletion",
+   "ar": "الحذف الصفّي الكامل (listwise deletion)"
+  },
+  "def": {
+   "en": "Keeping only the rows that are complete in every column - what dropna() does by default. On this file it takes 503 rows to 329, throws away 155 rows whose rent was present, and deletes Noor Estates and Diwan Rentals entirely, so the surviving table is not a smaller sample of the market but a different market.",
+   "ar": "الاحتفاظ بالصفوف الكاملة في كل عمود وحدها - وهو ما تفعله dropna() افتراضًا. وهي تأخذ هذا الملف من 503 صفوف إلى 329، وترمي 155 صفًّا كان إيجارها موجودًا، وتحذف Noor Estates وDiwan Rentals بالكامل، فلا يكون الجدول الباقي عيّنة أصغر من السوق بل سوقًا أخرى."
+  },
+  "cat": {
+   "en": "Decision",
+   "ar": "القرار"
+  },
+  "see": [
+   "imputation",
+   "target",
+   "mar"
+  ],
+  "used": [
+   "t2l2-s11"
+  ]
+ },
+ {
+  "id": "mar",
+  "term": {
+   "en": "MAR (missing at random)",
+   "ar": "الفقد العشوائي المشروط (MAR)"
+  },
+  "def": {
+   "en": "A column is MAR when whether a cell is blank depends on a column you can see, but not on the hidden value itself. deposit is the example: 103 of its 123 blanks are every row of Noor Estates and Diwan Rentals, two agencies that simply never publish a deposit. MAR says a rule per group is defensible - it does not promise that the same column predicts the value.",
+   "ar": "العمود فقدُه عشوائي مشروط إذا كان كون الخلية فارغةً يعتمد على عمود تستطيع رؤيته، لا على القيمة المخفيّة نفسها. وdeposit هو المثال: فمئة وثلاثة من فراغاته المئة والثلاثة والعشرين هي كل صفوف Noor Estates وDiwan Rentals، وهما وكالتان لا تنشران تأمينًا قط. ويقول هذا الفقد إن قاعدةً لكل مجموعة قابلة للدفاع - ولا يَعِد بأن العمود نفسه يتنبأ بالقيمة."
+  },
+  "cat": {
+   "en": "Mechanism",
+   "ar": "الآلية"
+  },
+  "see": [
+   "mcar",
+   "mnar",
+   "group-imputation"
+  ],
+  "used": [
+   "t2l2-s8"
+  ]
+ },
+ {
+  "id": "mcar",
+  "term": {
+   "en": "MCAR (missing completely at random)",
+   "ar": "الفقد العشوائي التامّ (MCAR)"
+  },
+  "def": {
+   "en": "A column is MCAR when whether a cell is blank depends on nothing - not on the hidden value and not on any other column. The 27 blank area_m2 cells behave this way: the rows that have no area look like the rest of the file (2.93 rooms against 3.07, 18.5% excellent against 15.5%). MCAR is the only mechanism under which a simple fill is unbiased, and it can never be proved from the file.",
+   "ar": "العمود فقدُه عشوائي تامّ إذا كان كون الخلية فارغةً لا يعتمد على شيء - لا على القيمة المخفيّة ولا على أي عمود آخر. وتسلك خلايا area_m2 الفارغة السبع والعشرون هذا السلوك: فالصفوف التي لا مساحة لها تشبه باقي الملف (‏2.93 غرفة مقابل 3.07، و18.5% ممتاز مقابل 15.5%). والفقد العشوائي التامّ هو الآلية الوحيدة التي تكون فيها التعبئة البسيطة غير متحيّزة، ولا يمكن إثباته من الملف قط."
+  },
+  "cat": {
+   "en": "Mechanism",
+   "ar": "الآلية"
+  },
+  "see": [
+   "mar",
+   "mnar",
+   "imputation"
+  ],
+  "used": [
+   "t2l2-s7"
   ]
  },
  {
@@ -201,6 +426,121 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "missing-indicator",
+  "term": {
+   "en": "Missing indicator",
+   "ar": "عَلَم الفقد (missing indicator)"
+  },
+  "def": {
+   "en": "A boolean column recording that a value was absent before it was filled, written from the original column and never after the fill. area_m2_missing carries real signal here - the training rows with no area ask a median rent of 240 against 195 - and it still buys only 0.25 shekels of held-out accuracy, while a deposit_missing flag makes the same prediction 2.7 shekels worse.",
+   "ar": "عمود منطقي يسجّل أن القيمة كانت غائبة قبل تعبئتها، ويُكتب من العمود الأصلي ولا يُكتب بعد التعبئة قط. ويحمل area_m2_missing إشارةً حقيقية هنا - فصفوف التدريب التي لا مساحة لها تطلب وسيط إيجار 240 مقابل 195 - ولا يشتري مع ذلك إلا 0.25 شيكل من الدقة على الصفوف المحجوزة، في حين يُسوئ عَلَمُ deposit_missing التنبؤ نفسه بـ2.7 شيكل."
+  },
+  "cat": {
+   "en": "Decision",
+   "ar": "القرار"
+  },
+  "see": [
+   "imputation",
+   "target"
+  ],
+  "used": [
+   "t2l2-s20"
+  ]
+ },
+ {
+  "id": "missing-value",
+  "term": {
+   "en": "Missing value",
+   "ar": "القيمة المفقودة (missing value)"
+  },
+  "def": {
+   "en": "A cell that holds no value, as distinct from a cell that holds a value meaning nothing. listings_raw.csv has 214 of them in 6,539 cells (3.27%): 19 rents, 27 areas, 9 floors, 36 conditions and 123 deposits. Whether pandas sees them at all depends on how the file was read: with keep_default_na=False, isna() reports zero.",
+   "ar": "خلية لا تحمل قيمة، بخلاف الخلية التي تحمل قيمة معناها «لا شيء». في listings_raw.csv ‏214 منها في 6539 خلية (‏3.27%): تسعة عشر إيجارًا، وسبع وعشرون مساحة، وتسعة طوابق، وستّ وثلاثون حالة، ومئة وثلاثة وعشرون تأمينًا. وكون pandas يراها أصلًا يتوقف على كيفية قراءة الملف: فمع keep_default_na=False تُبلّغ isna() بصفر."
+  },
+  "cat": {
+   "en": "Missing data",
+   "ar": "البيانات المفقودة"
+  },
+  "see": [
+   "sentinel-value",
+   "missingness-pattern",
+   "imputation"
+  ],
+  "used": [
+   "t2l2-s1"
+  ]
+ },
+ {
+  "id": "missingness-pattern",
+  "term": {
+   "en": "Missingness pattern",
+   "ar": "نمط الفقد (missingness pattern)"
+  },
+  "def": {
+   "en": "Which cells are blank, read as a table rather than as a count: per column, per row, which columns go blank together, and how the blank flag crosses another column. In this file 329 rows are complete, every one of the 19 blank rents also has a blank deposit, and the deposit is blank for 100% of two agencies - none of which a column total can show.",
+   "ar": "أي الخلايا فارغة، مقروءًا جدولًا لا عددًا: لكل عمود، ولكل صف، وأي الأعمدة تفرغ معًا، وكيف يتقاطع عَلَم الفراغ بعمود آخر. في هذا الملف 329 صفًّا كاملة، وكل إيجار من الإيجارات الفارغة التسعة عشر معه تأمين فارغ، والتأمين فارغ في 100% من وكالتين - ولا شيء من ذلك يستطيع مجموعُ عمود أن يُظهره."
+  },
+  "cat": {
+   "en": "Missing data",
+   "ar": "البيانات المفقودة"
+  },
+  "see": [
+   "missing-value",
+   "mcar",
+   "mar",
+   "mnar"
+  ],
+  "used": [
+   "t2l2-s6"
+  ]
+ },
+ {
+  "id": "mixed-type-column",
+  "term": {
+   "en": "Mixed-type column",
+   "ar": "العمود المختلط الأنواع (mixed-type column)"
+  },
+  "def": {
+   "en": "A column whose values are not all of the same kind, because the form that produced them accepted both. floor holds the digits 0 to 6 for 475 flats, the letter G for nineteen and nothing for nine, so pandas falls back to the object dtype - which guarantees nothing and permits no comparison, sort or mean.",
+   "ar": "عمودٌ ليست قيمه كلها من نوع واحد، لأن الاستمارة التي أنتجتها قبلت الاثنين. فـ floor يحمل الأرقام من 0 إلى 6 لـ475 شقة، والحرف G لتسع عشرة، ولا شيء لتسع، فترتدّ pandas إلى النوع object - وهو لا يضمن شيئًا ولا يسمح بمقارنة ولا ترتيب ولا متوسط."
+  },
+  "cat": {
+   "en": "Types",
+   "ar": "الأنواع"
+  },
+  "see": [
+   "coercion",
+   "nullable-dtype",
+   "ordered-category"
+  ],
+  "used": [
+   "t2l3-s19"
+  ]
+ },
+ {
+  "id": "mnar",
+  "term": {
+   "en": "MNAR (missing not at random)",
+   "ar": "الفقد غير العشوائي (MNAR)"
+  },
+  "def": {
+   "en": "A column is MNAR when whether a cell is blank depends on the hidden value itself. monthly_rent is blank on exactly the dearest flats, because the site prints 'price on request' for premium listings: the 19 blank-rent rows average 3.58 rooms against 3.04 and 81.5 m2 against 71.8. Imputing a central value here is wrong in a known direction, which is why MNAR is the dangerous mechanism.",
+   "ar": "العمود فقدُه غير عشوائي إذا كان كون الخلية فارغةً يعتمد على القيمة المخفيّة نفسها. وmonthly_rent فارغ على أغلى الشقق بالضبط، لأن الموقع يطبع «السعر عند الطلب» للإعلانات الفارهة: فمتوسط الصفوف التسعة عشر ذات الإيجار الفارغ 3.58 غرفة مقابل 3.04، و81.5 م2 مقابل 71.8. والتعويض بقيمة مركزية هنا خطأٌ في اتجاه معروف، ولهذا كان هذا الفقد هو الآلية الخطيرة."
+  },
+  "cat": {
+   "en": "Mechanism",
+   "ar": "الآلية"
+  },
+  "see": [
+   "mcar",
+   "mar",
+   "target"
+  ],
+  "used": [
+   "t2l2-s9"
+  ]
+ },
+ {
   "id": "model-ready",
   "term": {
    "en": "Model-ready",
@@ -220,6 +560,73 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l1-s5"
+  ]
+ },
+ {
+  "id": "normalisation",
+  "term": {
+   "en": "Normalisation",
+   "ar": "التطبيع (normalisation)"
+  },
+  "def": {
+   "en": "The part of a text repair a rule can do: a function applied to each value, with no knowledge of the domain, that removes differences you have decided do not matter. strip, lower and collapsing runs of spaces take the city column from 26 spellings to 11 and the advert column from 47 to 14.",
+   "ar": "الجزء من إصلاح النص الذي تستطيع القاعدة أن تؤديه: دالة تُطبَّق على كل قيمة بلا معرفة بالميدان، تحذف فروقًا قرّرتَ أنها لا تهمّ. فالتشذيب والتصغير وضغط سلاسل المسافات تأخذ عمود المدينة من 26 تهجئة إلى 11 وعمود الإعلان من 47 إلى 14."
+  },
+  "cat": {
+   "en": "Text",
+   "ar": "النصوص"
+  },
+  "see": [
+   "canonical-form",
+   "text-flag"
+  ],
+  "used": [
+   "t2l3-s11"
+  ]
+ },
+ {
+  "id": "nullable-dtype",
+  "term": {
+   "en": "Nullable dtype",
+   "ar": "النوع القابل للفراغ (nullable dtype)"
+  },
+  "def": {
+   "en": "A pandas dtype written with a capital letter - Int64, boolean, string - that holds its own values plus a genuine <NA>, so a count or a yes/no answer can be absent without changing kind. floor as Int64 keeps nine unknown floors and prints 2 rather than 2.0; furnished as boolean can say 'unanswered' where bool cannot.",
+   "ar": "نوعٌ في pandas يُكتب بحرف كبير - Int64 وboolean وstring - يحمل قيمه مع <NA> حقيقية، فيستطيع العدُّ أو جواب نعم/لا أن يغيب دون تغيير الجنس. فعمود floor بنوع Int64 يحفظ تسعة طوابق مجهولة ويطبع 2 لا 2.0؛ وfurnished بنوع boolean يستطيع أن يقول «بلا جواب» وهذا ما لا يستطيعه bool."
+  },
+  "cat": {
+   "en": "Types",
+   "ar": "الأنواع"
+  },
+  "see": [
+   "coercion",
+   "truthiness",
+   "mixed-type-column"
+  ],
+  "used": [
+   "t2l3-s17"
+  ]
+ },
+ {
+  "id": "ordered-category",
+  "term": {
+   "en": "Ordered category",
+   "ar": "الفئة المرتَّبة (ordered category)"
+  },
+  "def": {
+   "en": "A categorical dtype that carries the order of its levels, so comparison operators mean what you want. condition as CategoricalDtype(['poor','fair','good','excellent'], ordered=True) makes level > 'fair' legal and correct for 267 rows, where the same comparison on a string would be a lexicographic lie ('poor' > 'fair' is True).",
+   "ar": "نوعٌ فئوي يحمل ترتيب مستوياته، فتعني عوامل المقارنة ما تريد. فعمود condition بنوع CategoricalDtype(['poor','fair','good','excellent'], ordered=True) يجعل level > 'fair' مشروعةً وصحيحةً لـ267 صفًّا، في حين كانت المقارنة نفسها على نصٍّ كذبةً معجمية (فـ'poor' > 'fair' هي True)."
+  },
+  "cat": {
+   "en": "Types",
+   "ar": "الأنواع"
+  },
+  "see": [
+   "mixed-type-column",
+   "canonical-form"
+  ],
+  "used": [
+   "t2l3-s23"
   ]
  },
  {
@@ -243,6 +650,94 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l1-s8"
+  ]
+ },
+ {
+  "id": "repost",
+  "term": {
+   "en": "Repost",
+   "ar": "إعادة النشر (repost)"
+  },
+  "def": {
+   "en": "The same real thing recorded twice with at least one column different, so no row comparison can find it. Nine flats in this file were advertised again weeks later with a new listed_on and the advert retyped, which is why 489 rows describe only 480 flats.",
+   "ar": "الشيء الحقيقي نفسه مسجَّلًا مرتين وفيه عمود واحد مختلف على الأقل، فلا تجده مقارنةُ صفوف. وتسع شقق في هذا الملف أُعلن عنها مرة أخرى بعد أسابيع بـ listed_on جديد وإعلان أُعيد كتابته، ولهذا تصف 489 صفًّا ‏480 شقة فقط."
+  },
+  "cat": {
+   "en": "Structure",
+   "ar": "البنية"
+  },
+  "see": [
+   "exact-duplicate",
+   "business-key"
+  ],
+  "used": [
+   "t2l3-s3"
+  ]
+ },
+ {
+  "id": "sentinel-value",
+  "term": {
+   "en": "Sentinel value",
+   "ar": "القيمة النائبة (sentinel value)"
+  },
+  "def": {
+   "en": "An ordinary value used to mean 'no value': an empty string, the text NA or n/a, a 0 rent, a 1900 date, or -1 rooms. A sentinel is dangerous because arithmetic works on it: 19 empty rents read as the string '' make monthly_rent an object column in which isna() finds nothing to report.",
+   "ar": "قيمة عادية تُستعمل بمعنى «لا قيمة»: سلسلة فارغة، أو النص NA أو n/a، أو إيجار 0، أو تاريخ 1900، أو ‎-1 غرفة. والقيمة النائبة خطيرة لأن الحساب يعمل عليها: فتسعة عشر إيجارًا فارغًا تُقرأ سلسلةً '' تجعل monthly_rent عمودًا من نوع object لا تجد isna() فيه ما تُبلّغ عنه."
+  },
+  "cat": {
+   "en": "Missing data",
+   "ar": "البيانات المفقودة"
+  },
+  "see": [
+   "missing-value"
+  ],
+  "used": [
+   "t2l2-s1"
+  ]
+ },
+ {
+  "id": "target",
+  "term": {
+   "en": "Target",
+   "ar": "الهدف (target)"
+  },
+  "def": {
+   "en": "The column a model is asked to predict - here monthly_rent. A blank target is not a hole to be filled but a row that cannot teach anything: imputing it writes 19 fabricated labels, and because the mechanism is MNAR each one is wrong by about 242 shekels in the same direction. Drop rows whose target is missing; keep rows whose features are.",
+   "ar": "العمود الذي يُطلب من النموذج أن يتنبأ به - وهو هنا monthly_rent. والهدف الفارغ ليس ثقبًا يُعبَّأ بل صفًّا لا يستطيع أن يُعلِّم شيئًا: فتعويضه يكتب تسعة عشر عنوانًا مختلقًا، ولأن الآلية فقدٌ غير عشوائي يكون كلٌّ منها خاطئًا بنحو 242 شيكلًا في الاتجاه نفسه. فاحذف الصفوف التي يغيب هدفها، واحتفظ بالصفوف التي تغيب خصائصها."
+  },
+  "cat": {
+   "en": "Decision",
+   "ar": "القرار"
+  },
+  "see": [
+   "mnar",
+   "listwise-deletion",
+   "missing-indicator"
+  ],
+  "used": [
+   "t2l2-s13"
+  ]
+ },
+ {
+  "id": "text-flag",
+  "term": {
+   "en": "Text flag",
+   "ar": "علم النص (text flag)"
+  },
+  "def": {
+   "en": "A boolean column recording whether a piece of text mentions one specific thing, chosen by you and therefore explainable. Six flags over the normalised advert column - generator, solar, university, water tank, balcony, repost - replace a 47-column one-hot fingerprint, and the repost flag finds exactly the nine flats the identifier-based dedupe found.",
+   "ar": "عمودٌ منطقي يسجّل هل يذكر النص شيئًا محدّدًا واحدًا، تختاره أنت فيكون قابلًا للشرح. وستة أعلام على عمود الإعلان المُطبَّع - مولّد وشمسي وجامعة وخزان ماء وشرفة وإعادة نشر - تستبدل بصمةً أحادية من 47 عمودًا، ويجد علم إعادة النشر الشقق التسع نفسها التي وجدها حذف المكرّر بالمعرّف."
+  },
+  "cat": {
+   "en": "Text",
+   "ar": "النصوص"
+  },
+  "see": [
+   "normalisation",
+   "repost"
+  ],
+  "used": [
+   "t2l3-s30"
   ]
  },
  {
@@ -289,6 +784,28 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l1-s3"
+  ]
+ },
+ {
+  "id": "truthiness",
+  "term": {
+   "en": "Truthiness",
+   "ar": "الصدقية (truthiness)"
+  },
+  "def": {
+   "en": "Python's rule for converting any object to a boolean: a string is False if it is empty and True otherwise, so the rule is about length and not about meaning. raw['furnished'].astype(bool) therefore marks all 503 flats furnished, including the 334 that say no, with the dtype you asked for and no warning.",
+   "ar": "قاعدة بايثون في تحويل أي كائن إلى قيمة منطقية: فالسلسلة النصية False إن كانت فارغة وTrue فيما سوى ذلك، فالقاعدة عن الطول لا عن المعنى. ولهذا تعلّم raw['furnished'].astype(bool) الشقق الـ503 كلها مفروشة، ومنها الـ334 التي تقول لا، بالنوع الذي طلبته وبلا تحذير."
+  },
+  "cat": {
+   "en": "Types",
+   "ar": "الأنواع"
+  },
+  "see": [
+   "nullable-dtype",
+   "coercion"
+  ],
+  "used": [
+   "t2l3-s16"
   ]
  },
  {

@@ -651,9 +651,106 @@ window.DAAnchors = {
 "t2l1-s7": "lessons/t2-lesson-01.html",
 "t2l1-s8": "lessons/t2-lesson-01.html",
 "t2l1-s9": "lessons/t2-lesson-01.html",
+"t2l2-e1": "lessons/t2-lesson-02.html",
+"t2l2-e2": "lessons/t2-lesson-02.html",
+"t2l2-e3": "lessons/t2-lesson-02.html",
+"t2l2-h1": "lessons/t2-lesson-02.html",
+"t2l2-h2": "lessons/t2-lesson-02.html",
+"t2l2-h3": "lessons/t2-lesson-02.html",
+"t2l2-h4": "lessons/t2-lesson-02.html",
+"t2l2-h5": "lessons/t2-lesson-02.html",
+"t2l2-h6": "lessons/t2-lesson-02.html",
+"t2l2-h7": "lessons/t2-lesson-02.html",
+"t2l2-h8": "lessons/t2-lesson-02.html",
+"t2l2-h9": "lessons/t2-lesson-02.html",
+"t2l2-s1": "lessons/t2-lesson-02.html",
+"t2l2-s10": "lessons/t2-lesson-02.html",
+"t2l2-s11": "lessons/t2-lesson-02.html",
+"t2l2-s12": "lessons/t2-lesson-02.html",
+"t2l2-s13": "lessons/t2-lesson-02.html",
+"t2l2-s14": "lessons/t2-lesson-02.html",
+"t2l2-s15": "lessons/t2-lesson-02.html",
+"t2l2-s16": "lessons/t2-lesson-02.html",
+"t2l2-s17": "lessons/t2-lesson-02.html",
+"t2l2-s18": "lessons/t2-lesson-02.html",
+"t2l2-s19": "lessons/t2-lesson-02.html",
+"t2l2-s2": "lessons/t2-lesson-02.html",
+"t2l2-s20": "lessons/t2-lesson-02.html",
+"t2l2-s21": "lessons/t2-lesson-02.html",
+"t2l2-s22": "lessons/t2-lesson-02.html",
+"t2l2-s23": "lessons/t2-lesson-02.html",
+"t2l2-s24": "lessons/t2-lesson-02.html",
+"t2l2-s25": "lessons/t2-lesson-02.html",
+"t2l2-s26": "lessons/t2-lesson-02.html",
+"t2l2-s27": "lessons/t2-lesson-02.html",
+"t2l2-s28": "lessons/t2-lesson-02.html",
+"t2l2-s29": "lessons/t2-lesson-02.html",
+"t2l2-s3": "lessons/t2-lesson-02.html",
+"t2l2-s4": "lessons/t2-lesson-02.html",
+"t2l2-s5": "lessons/t2-lesson-02.html",
+"t2l2-s6": "lessons/t2-lesson-02.html",
+"t2l2-s7": "lessons/t2-lesson-02.html",
+"t2l2-s8": "lessons/t2-lesson-02.html",
+"t2l2-s9": "lessons/t2-lesson-02.html",
+"t2l3-e1": "lessons/t2-lesson-03.html",
+"t2l3-e2": "lessons/t2-lesson-03.html",
+"t2l3-e3": "lessons/t2-lesson-03.html",
+"t2l3-e4": "lessons/t2-lesson-03.html",
+"t2l3-h1": "lessons/t2-lesson-03.html",
+"t2l3-h2": "lessons/t2-lesson-03.html",
+"t2l3-h3": "lessons/t2-lesson-03.html",
+"t2l3-h4": "lessons/t2-lesson-03.html",
+"t2l3-h5": "lessons/t2-lesson-03.html",
+"t2l3-h6": "lessons/t2-lesson-03.html",
+"t2l3-h7": "lessons/t2-lesson-03.html",
+"t2l3-h8": "lessons/t2-lesson-03.html",
+"t2l3-h9": "lessons/t2-lesson-03.html",
+"t2l3-s1": "lessons/t2-lesson-03.html",
+"t2l3-s10": "lessons/t2-lesson-03.html",
+"t2l3-s11": "lessons/t2-lesson-03.html",
+"t2l3-s12": "lessons/t2-lesson-03.html",
+"t2l3-s13": "lessons/t2-lesson-03.html",
+"t2l3-s14": "lessons/t2-lesson-03.html",
+"t2l3-s15": "lessons/t2-lesson-03.html",
+"t2l3-s16": "lessons/t2-lesson-03.html",
+"t2l3-s17": "lessons/t2-lesson-03.html",
+"t2l3-s18": "lessons/t2-lesson-03.html",
+"t2l3-s19": "lessons/t2-lesson-03.html",
+"t2l3-s2": "lessons/t2-lesson-03.html",
+"t2l3-s20": "lessons/t2-lesson-03.html",
+"t2l3-s21": "lessons/t2-lesson-03.html",
+"t2l3-s22": "lessons/t2-lesson-03.html",
+"t2l3-s23": "lessons/t2-lesson-03.html",
+"t2l3-s24": "lessons/t2-lesson-03.html",
+"t2l3-s25": "lessons/t2-lesson-03.html",
+"t2l3-s26": "lessons/t2-lesson-03.html",
+"t2l3-s27": "lessons/t2-lesson-03.html",
+"t2l3-s28": "lessons/t2-lesson-03.html",
+"t2l3-s29": "lessons/t2-lesson-03.html",
+"t2l3-s3": "lessons/t2-lesson-03.html",
+"t2l3-s30": "lessons/t2-lesson-03.html",
+"t2l3-s31": "lessons/t2-lesson-03.html",
+"t2l3-s32": "lessons/t2-lesson-03.html",
+"t2l3-s33": "lessons/t2-lesson-03.html",
+"t2l3-s34": "lessons/t2-lesson-03.html",
+"t2l3-s35": "lessons/t2-lesson-03.html",
+"t2l3-s36": "lessons/t2-lesson-03.html",
+"t2l3-s37": "lessons/t2-lesson-03.html",
+"t2l3-s4": "lessons/t2-lesson-03.html",
+"t2l3-s5": "lessons/t2-lesson-03.html",
+"t2l3-s6": "lessons/t2-lesson-03.html",
+"t2l3-s7": "lessons/t2-lesson-03.html",
+"t2l3-s8": "lessons/t2-lesson-03.html",
+"t2l3-s9": "lessons/t2-lesson-03.html",
 "t2lab-h1": "labs/t2-lab.html",
 "t2lab-h2": "labs/t2-lab.html",
 "t2lab-h3": "labs/t2-lab.html",
+"t2lab-h4": "labs/t2-lab.html",
+"t2lab-h5": "labs/t2-lab.html",
+"t2lab-h6": "labs/t2-lab.html",
+"t2lab-h7": "labs/t2-lab.html",
+"t2lab-h8": "labs/t2-lab.html",
+"t2lab-h9": "labs/t2-lab.html",
 "track-practical": "index.html",
 "track-theory": "index.html"
 };
@@ -2834,6 +2931,342 @@ window.DAHeadings = {
 "ar": "كتابة الترتيب بحيث يقرأه مراجع",
 "en": "Writing the order down so a reviewer can read it"
 },
+"t2l2-h1": {
+"ar": "المفهوم 1 — عدّ ما ليس موجودًا",
+"en": "Concept 1 — Counting what is not there"
+},
+"t2l2-h2": {
+"ar": "المفهوم 2 — قراءة النمط لا العدّ",
+"en": "Concept 2 — Reading the pattern, not the count"
+},
+"t2l2-h3": {
+"ar": "المفهوم 3 — الآليات الثلاث",
+"en": "Concept 3 — The three mechanisms"
+},
+"t2l2-h4": {
+"ar": "المفهوم 4 — الحذف وثمنه",
+"en": "Concept 4 — Drop, and what it costs"
+},
+"t2l2-h5": {
+"ar": "المفهوم 5 — التعويض والكذبة التي يقولها",
+"en": "Concept 5 — Impute, and the lie it tells"
+},
+"t2l2-h6": {
+"ar": "المفهوم 6 — العَلَم: عمود المؤشِّر",
+"en": "Concept 6 — Flag: the indicator column"
+},
+"t2l2-h7": {
+"ar": "المفهوم 7 — القرار وكتابته",
+"en": "Concept 7 — Deciding, and writing it down"
+},
+"t2l2-h8": {
+"ar": "تمارين",
+"en": "Exercises"
+},
+"t2l2-h9": {
+"ar": "الملحق — الحساب وراء أرقام هذه الصفحة",
+"en": "Appendix — the arithmetic behind the numbers on this page"
+},
+"t2l2-s1": {
+"ar": "القراءة التي لم تجد ثقبًا واحدًا",
+"en": "The read that found no holes at all"
+},
+"t2l2-s10": {
+"ar": "قرائن لا أدلّة — ولماذا MNAR هو الخطير",
+"en": "Hints, not proof — and why MNAR is the dangerous one"
+},
+"t2l2-s11": {
+"ar": "dropna() تحذف الصف لأي فراغ كان",
+"en": "dropna() drops a row for any blank at all"
+},
+"t2l2-s12": {
+"ar": "subset وhow وthresh — وحذف عمود بدلًا من ذلك",
+"en": "subset, how, thresh — and dropping a column instead"
+},
+"t2l2-s13": {
+"ar": "لا تعوّض الهدف قط",
+"en": "Never impute the target"
+},
+"t2l2-s14": {
+"ar": "المتوسط والوسيط والمنوال — وما يفترضه كلٌّ منها",
+"en": "Mean, median, mode — and what each one assumes"
+},
+"t2l2-s15": {
+"ar": "لماذا ffill خاطئة في هذا الملف",
+"en": "Why ffill is wrong on this file"
+},
+"t2l2-s16": {
+"ar": "التشتّت الذي تُهلكه",
+"en": "The spread you destroy"
+},
+"t2l2-s17": {
+"ar": "من متوسط عامّ إلى وسيط مجموعة وعَلَم",
+"en": "From a global mean to a group median and a flag"
+},
+"t2l2-s18": {
+"ar": "قاعدة التأمين الواعية بالفقد المشروط، مقيسةً",
+"en": "The MAR-aware deposit rule, measured"
+},
+"t2l2-s19": {
+"ar": "الرقم الذي يحسم مسألة الهدف",
+"en": "The number that settles the target question"
+},
+"t2l2-s2": {
+"ar": "isna وinfo والنسبة التي تهمّ",
+"en": "isna, info, and the percentage that matters"
+},
+"t2l2-s20": {
+"ar": "area_m2_missing خاصيةً بذاتها",
+"en": "area_m2_missing as a feature of its own"
+},
+"t2l2-s21": {
+"ar": "متى يُفيد العَلَم وما ثمنه",
+"en": "When a flag helps, and what it costs"
+},
+"t2l2-s22": {
+"ar": "العَلَم الذي لا يجوز بناؤه",
+"en": "The flag you must never build"
+},
+"t2l2-s23": {
+"ar": "خمسة أعمدة وخمسة قرارات",
+"en": "Five columns, five decisions"
+},
+"t2l2-s24": {
+"ar": "جدول القرارات الذي يُنتجه الكود",
+"en": "The decision table the code produces"
+},
+"t2l2-s25": {
+"ar": "الخطوات الخمس نفسها على ملف الشهر القادم",
+"en": "The same five steps on next month's file"
+},
+"t2l2-s26": {
+"ar": "أ. لماذا يُضيّق التعويضُ بالمتوسط التشتّتَ بهذا المقدار بالضبط",
+"en": "A. Why mean imputation shrinks the spread by exactly that much"
+},
+"t2l2-s27": {
+"ar": "ب. حسابُ الفقد غير العشوائي في سطرين",
+"en": "B. The MNAR arithmetic, in two lines"
+},
+"t2l2-s28": {
+"ar": "ج. لماذا خسر وسيطُ كل وكالة أمام الوسيط العامّ",
+"en": "C. Why the per-agency median lost to the global one"
+},
+"t2l2-s29": {
+"ar": "أهم الخلاصات، وورقة الأخطاء الشائعة",
+"en": "Key takeaways, and the mistakes cheat-sheet"
+},
+"t2l2-s3": {
+"ar": "NaN وNone وNaT وpd.NA — والمنتحلان",
+"en": "NaN, None, NaT, pd.NA — and the two impostors"
+},
+"t2l2-s4": {
+"ar": "لكل عمود، ثم لكل صف",
+"en": "Per column, and then per row"
+},
+"t2l2-s5": {
+"ar": "أي الأعمدة تفرغ معًا",
+"en": "Which columns go blank together"
+},
+"t2l2-s6": {
+"ar": "نمط الفقد جدول لا رقم",
+"en": "A missingness pattern is a table, not a number"
+},
+"t2l2-s7": {
+"ar": "‏MCAR — المساحة التي لم يكتبها أحد",
+"en": "MCAR — the area nobody typed"
+},
+"t2l2-s8": {
+"ar": "‏MAR — التأمين الذي يعتمد على الوكالة",
+"en": "MAR — the deposit that depends on the agency"
+},
+"t2l2-s9": {
+"ar": "‏MNAR — الإيجار فارغ لأنه مرتفع",
+"en": "MNAR — the rent is blank because it is high"
+},
+"t2l3-h1": {
+"ar": "المفهوم 1 — نوعان من التكرار",
+"en": "Concept 1 — Two kinds of duplicate"
+},
+"t2l3-h2": {
+"ar": "المفهوم 2 — ليس كل تكرار خطأً",
+"en": "Concept 2 — A duplicate is not always an error"
+},
+"t2l3-h3": {
+"ar": "المفهوم 3 — المسافات وحالة الأحرف: الفرق غير المرئي",
+"en": "Concept 3 — Whitespace and case: the invisible difference"
+},
+"t2l3-h4": {
+"ar": "المفهوم 4 — قيم منطقية مكتوبة باثنتي عشرة صورة",
+"en": "Concept 4 — Booleans written twelve ways"
+},
+"t2l3-h5": {
+"ar": "المفهوم 5 — أنواع مختلطة في عمود واحد",
+"en": "Concept 5 — Mixed types in one column"
+},
+"t2l3-h6": {
+"ar": "المفهوم 6 — صيغتا تاريخ في عمود واحد",
+"en": "Concept 6 — Two date formats in one column"
+},
+"t2l3-h7": {
+"ar": "المفهوم 7 — النص خاصيةً لا تسميةً فقط",
+"en": "Concept 7 — Text as a feature, not just a label"
+},
+"t2l3-h8": {
+"ar": "تمارين",
+"en": "Exercises"
+},
+"t2l3-h9": {
+"ar": "الملحق — الحساب وراء أرقام هذه الصفحة",
+"en": "Appendix — the arithmetic behind the numbers on this page"
+},
+"t2l3-s1": {
+"ar": "ما تقارنه duplicated() فعلًا",
+"en": "What duplicated() actually compares"
+},
+"t2l3-s10": {
+"ar": "ستٌّ وعشرون صورة إملائية لخمس مدن",
+"en": "Twenty-six spellings of five cities"
+},
+"t2l3-s11": {
+"ar": "ماذا يحذف كلٌّ من التشذيب والتصغير والضغط",
+"en": "What strip, lower and collapse each remove"
+},
+"t2l3-s12": {
+"ar": "من Title Case إلى خريطة أسماء معيارية",
+"en": "From Title Case to a canonical map"
+},
+"t2l3-s13": {
+"ar": "قيمة NaN الصامتة في .map()",
+"en": "The silent NaN of .map()"
+},
+"t2l3-s14": {
+"ar": "هل أفادت الخريطة المعيارية؟ قِسها",
+"en": "Did the canonical map help? Measure it"
+},
+"t2l3-s15": {
+"ar": "اثنتا عشرة طريقة لكتابة نعم ولا",
+"en": "Twelve ways to write yes and no"
+},
+"t2l3-s16": {
+"ar": "الصدقية: كل سلسلة نصية غير فارغة True",
+"en": "Truthiness: every non-empty string is True"
+},
+"t2l3-s17": {
+"ar": "من astype(bool) إلى ربط يُبلّغ",
+"en": "From astype(bool) to a reported mapping"
+},
+"t2l3-s18": {
+"ar": "ماذا يشتري المنطقي القابل للفراغ",
+"en": "What the nullable boolean buys"
+},
+"t2l3-s19": {
+"ar": "تسعة عشر طابقًا أرضيًّا وتسع خلايا فارغة",
+"en": "Nineteen ground floors and nine blanks"
+},
+"t2l3-s2": {
+"ar": "التكرارات الحرفية الأربعة عشر",
+"en": "The fourteen byte-for-byte repeats"
+},
+"t2l3-s20": {
+"ar": "to_numeric(errors=\"coerce\") يُهلك واقعة",
+"en": "to_numeric(errors=\"coerce\") destroys a fact"
+},
+"t2l3-s21": {
+"ar": "من الإكراه إلى قرار مسجَّل",
+"en": "From coercion to a recorded decision"
+},
+"t2l3-s22": {
+"ar": "لماذا Int64 لا int ولا float",
+"en": "Why Int64 and not int or float"
+},
+"t2l3-s23": {
+"ar": "الوصفة نفسها على عمود ترتيبي",
+"en": "The same recipe on an ordinal column"
+},
+"t2l3-s24": {
+"ar": "أربعمئة وثمانون تاريخ ISO وثلاثة وعشرون غيرها",
+"en": "Four hundred and eighty ISO dates, and twenty-three others"
+},
+"t2l3-s25": {
+"ar": "ماذا تفعل to_datetime بلا format=",
+"en": "What to_datetime does with no format="
+},
+"t2l3-s26": {
+"ar": "format=\"mixed\" والمدى الذي يفضحه",
+"en": "format=\"mixed\" and the range that betrays it"
+},
+"t2l3-s27": {
+"ar": "الغموض الذي لا يحلّه محلّل",
+"en": "The ambiguity no parser can resolve"
+},
+"t2l3-s28": {
+"ar": "الوصفة الآمنة: حلّل وادمج وتأكّد",
+"en": "The safe recipe: parse, combine, assert"
+},
+"t2l3-s29": {
+"ar": "سبعة وأربعون إعلانًا وأربع عشرة جملة",
+"en": "Forty-seven adverts, fourteen sentences"
+},
+"t2l3-s3": {
+"ar": "إعادات النشر التسع التي لا تراها drop_duplicates()",
+"en": "The nine reposts drop_duplicates() cannot see"
+},
+"t2l3-s30": {
+"ar": "حُزمة من الأعلام الأمينة",
+"en": "A bag of honest flags"
+},
+"t2l3-s31": {
+"ar": "علم إعادة النشر الذي يجد التسعة كلها",
+"en": "The repost flag that finds all nine"
+},
+"t2l3-s32": {
+"ar": "المرحلتان 1 و2 تشغيلةً واحدة قابلة للتقرير",
+"en": "Stages 1 and 2 as one reportable run"
+},
+"t2l3-s33": {
+"ar": "الشهر القادم، والخريطة نفسها",
+"en": "Next month, the same map"
+},
+"t2l3-s34": {
+"ar": "أ. من ستٍّ وعشرين تهجئة إلى خمس، معدودةً في كل خطوة",
+"en": "A. From twenty-six spellings to five, counted at every step"
+},
+"t2l3-s35": {
+"ar": "ب. الصفوف التسعون التي يُسقطها مفتاح متعجّل، مفصَّلةً",
+"en": "B. The ninety rows a careless key drops, decomposed"
+},
+"t2l3-s36": {
+"ar": "ج. لماذا تتغير عشرة من التواريخ الملتبسة الأحد عشر شهرًا",
+"en": "C. Why ten of the eleven ambiguous dates change month"
+},
+"t2l3-s37": {
+"ar": "أهم الخلاصات، وورقة الأخطاء الشائعة",
+"en": "Key takeaways, and the mistakes cheat-sheet"
+},
+"t2l3-s4": {
+"ar": "اختيار النسخة التي تبقى",
+"en": "Choosing which copy survives"
+},
+"t2l3-s5": {
+"ar": "التقسيم الذي يشقّ مكرّرًا",
+"en": "The split that straddles a duplicate"
+},
+"t2l3-s6": {
+"ar": "المفتاح التجاري: ما الذي يجعل الصف فريدًا هنا؟",
+"en": "The business key: what makes a row unique here?"
+},
+"t2l3-s7": {
+"ar": "index.is_unique، والفهرس الذي ليس المفتاح",
+"en": "index.is_unique, and the index that is not the key"
+},
+"t2l3-s8": {
+"ar": "مفتاح subset= متعجّل يحذف سبعًا وستين شقة حقيقية",
+"en": "A careless subset= deletes sixty-seven real flats"
+},
+"t2l3-s9": {
+"ar": "شقتان تتشاركان كل عمود مرئي",
+"en": "Two flats that share every visible column"
+},
 "t2lab-h1": {
 "ar": "اضبط مرة، وطبّق في أي مكان: وسيط مُتعلَّم يلاقي ملف الشهر القادم",
 "en": "Fit once, apply anywhere: a learned median meets next month's file"
@@ -2845,6 +3278,30 @@ window.DAHeadings = {
 "t2lab-h3": {
 "ar": "كتابةٌ لا تصل: قطعة ونسخة و.loc",
 "en": "The write that goes nowhere: a slice, a copy, and .loc"
+},
+"t2lab-h4": {
+"ar": "ماذا يأخذ dropna() معه",
+"en": "What dropna() takes with it"
+},
+"t2lab-h5": {
+"ar": "اضبط وسيطًا لكل عدد غرف، وطبّقه على ملف لم تره",
+"en": "Fit a median per rooms, apply it to a file you have not seen"
+},
+"t2lab-h6": {
+"ar": "صفر قيمة مفقودة، وأربع خلايا فارغة",
+"en": "Zero missing values, four empty cells"
+},
+"t2lab-h7": {
+"ar": "keep=\"last\" يُبقي الصف الأخير، لا التاريخ الأحدث",
+"en": "keep=\"last\" keeps the last ROW, not the latest date"
+},
+"t2lab-h8": {
+"ar": "القيمة المفقودة الصامتة: ماذا تفعل .map() بتهجئة نسيها قاموسك",
+"en": "The silent NaN: what .map() does with a spelling your dictionary forgot"
+},
+"t2lab-h9": {
+"ar": "عمود واحد وصيغتا تاريخ: ثلاثة محلّلات وثلاثة أجوبة مختلفة",
+"en": "One column, two date formats: three parsers and three different answers"
 },
 "track-practical": {
 "ar": "العملي — مختبر تحليل البيانات وتصويرها",
