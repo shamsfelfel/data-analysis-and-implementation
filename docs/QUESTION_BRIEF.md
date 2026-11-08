@@ -49,6 +49,11 @@ unless your task message says otherwise: 1 `write`, 1 `ordercode`, 1 `contrast`,
 2. **Every distractor is wrong for a reason the `explain` names** and is tempting because of a real misconception
    (the lesson's silent failures are the best source). No joke options, no "all of the above", no giveaway lengths.
    Spread the correct option across positions; never make it the longest by habit.
+   **Name a distractor by its content, never by its position.** `assess.js` shuffles the options of `mcq`, `multi`
+   and `compare` (deterministically, seeded by `q.id`) and renders them with no number or letter, so "Option 2",
+   "the third option" and «الخيار الثالث» point at something the student cannot see and usually at the wrong
+   option. Write "the answer that blames the mean for the leak" instead. The same goes for `hint`. Do not reach
+   for `noshuffle` to rescue positional prose: the shuffle is deliberate.
 3. **`hint` nudges, never gives the answer away** (point at what to look at or which idea to recall).
 4. **`explain` teaches** (2–5 sentences): why the right answer is right, why the most tempting wrong answer is
    tempting, the rule to carry away. Bilingual, same content in both languages.
