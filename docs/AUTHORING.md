@@ -144,7 +144,8 @@ Links to files in `downloads/` are `href="@/downloads/t1/rents.csv"`. Every clai
     <pre class="code" data-lang="python"><code>…</code></pre>
     <p class="en">What changed and which problem it closes; what is still open.</p><p class="ar">…</p>
   </div>
-  <!-- 2–4 versions. The last is the recommended form. -->
+  <!-- 2–4 versions, or 5 when every step fixes a distinct named defect and
+       merging two would lose a lesson. The last is the recommended form. -->
 </div>
 ```
 The engine renders tabs; lines new in a version (vs the previous one) are marked.

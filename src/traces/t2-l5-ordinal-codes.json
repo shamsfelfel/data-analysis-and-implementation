@@ -1,0 +1,68 @@
+{
+  "id": "t2-l5-ordinal-codes",
+  "title": {
+    "en": "Ordinal codes: the alphabet, the declared order, and the level that renumbers everything",
+    "ar": "الرموز الترتيبية: الأبجدية، والترتيب المعلَن، والمستوى الذي يعيد ترقيم كل شيء"
+  },
+  "lede": {
+    "en": "Five condition values, two numberings. Watch cat.codes on a plain category sort the levels alphabetically, so excellent becomes 0 and poor becomes 3 — the exact opposite of what the word means. Then watch an ordered CategoricalDtype carry the order you declared, which makes a comparison legal. Finally watch June's 'very good': outside the declared order it is -1, and inside it it moves excellent from 3 to 4.",
+    "ar": "خمس قيم حالة وترقيمان. راقب cat.codes على فئة صِرفة ترتّب المستويات أبجديًّا، فتصير excellent صفرًا وpoor ثلاثةً — أي عكس ما تعنيه الكلمة تمامًا. ثم راقب CategoricalDtype مرتَّبًا يحمل الترتيب الذي أعلنتَه، فيصير المقارنة مشروعة. وأخيرًا راقب 'very good' في حزيران: فهي خارج الترتيب المعلَن تساوي ‎-1، وداخله تنقل excellent من 3 إلى 4."
+  },
+  "code": "import pandas as pd\nmarch = pd.Series([\"good\", \"poor\", \"excellent\", \"fair\", \"good\"], name=\"condition\")\nplain = march.astype(\"category\")\nprint(\"alphabetical categories:\", plain.cat.categories.tolist())\nprint(\"alphabetical codes     :\", plain.cat.codes.tolist())\nORDER = [\"poor\", \"fair\", \"good\", \"excellent\"]\nranked = march.astype(pd.CategoricalDtype(ORDER, ordered=True))\nprint(\"declared codes         :\", ranked.cat.codes.tolist())\nprint(\"good or better         :\", (ranked > \"fair\").tolist())\njune = pd.Series([\"good\", \"very good\"], name=\"condition\")\nprint(\"june codes             :\", june.astype(pd.CategoricalDtype(ORDER, ordered=True)).cat.codes.tolist())\nFIVE = [\"poor\", \"fair\", \"good\", \"very good\", \"excellent\"]\nprint(\"five levels            :\", march.astype(pd.CategoricalDtype(FIVE, ordered=True)).cat.codes.tolist())\n",
+  "notes": {
+    "2": {
+      "en": "Five conditions as they arrive: good, poor, excellent, fair, good. In the real file these are 447 cells over four levels, and condition is the strongest single predictor of rent in the chapter.",
+      "ar": "خمس حالات كما تصل: good وpoor وexcellent وfair وgood. وفي الملف الحقيقي هي 447 خلية على أربعة مستويات، وcondition أقوى متنبّئ منفرد بالإيجار في الفصل."
+    },
+    "3": {
+      "en": "astype('category') with no order given. pandas has to choose some order for the categories, and the only order a string has on its own is the alphabet.",
+      "ar": "‏astype('category') بلا ترتيب معطى. فلا بدّ لـ pandas أن تختار ترتيبًا للفئات، والترتيب الوحيد الذي يملكه النص بنفسه هو الأبجدية."
+    },
+    "4": {
+      "en": "['excellent', 'fair', 'good', 'poor']. That list is not wrong — it is alphabetical, exactly as documented. It is simply not a severity order.",
+      "ar": "‏['excellent', 'fair', 'good', 'poor']. وهذه القائمة ليست خاطئة — فهي أبجدية كما هو موثَّق تمامًا. لكنها ببساطة ليست ترتيبًا للشدة."
+    },
+    "5": {
+      "en": "[2, 3, 0, 1, 2]: excellent is 0 and poor is 3. Feed this to a linear model and it will learn that a worse flat costs more. The code runs, the dtype is right, and the feature is upside down.",
+      "ar": "‏[2, 3, 0, 1, 2]: فـ excellent صفر وpoor ثلاثة. غذِّ بهذا نموذجًا خطيًّا فسيتعلّم أن الشقة الأسوأ أغلى. الكود يعمل والنوع صحيح والخاصية مقلوبة."
+    },
+    "6": {
+      "en": "The fix is not code, it is a declaration: four levels, worst first. This list is a fitted parameter of the encoder and belongs in the stored dictionary beside the medians.",
+      "ar": "العلاج ليس كودًا بل إعلانًا: أربعة مستويات، الأسوأ أولًا. وهذه القائمة وسيطٌ مضبوط للمُرمِّز وموضعها في القاموس المحفوظ بجانب الوسطاء."
+    },
+    "7": {
+      "en": "An ordered CategoricalDtype stores the order inside the dtype, which is what Lesson 3 did for this column. The codes are now positions in YOUR list, not in the alphabet.",
+      "ar": "يحفظ CategoricalDtype المرتَّب الترتيبَ داخل النوع، وهذا ما فعله الدرس 3 بهذا العمود. فصارت الرموز مواضعَ في قائمتك لا في الأبجدية."
+    },
+    "8": {
+      "en": "[2, 0, 3, 1, 2]: poor 0, fair 1, good 2, excellent 3. One column, four levels, monotone in the thing it measures. On the real file this single column takes the held-out error from 64.67 to 59.47 shekels.",
+      "ar": "‏[2, 0, 3, 1, 2]: ‏poor صفر وfair واحد وgood اثنان وexcellent ثلاثة. عمود واحد وأربعة مستويات، مطّرد في الشيء الذي يقيسه. وعلى الملف الحقيقي يأخذ هذا العمود الواحد الخطأ المحجوز من 64.67 إلى 59.47 شيكلًا."
+    },
+    "9": {
+      "en": "And the order buys more than a sensible code: a comparison. 'ranked > \"fair\"' is legal on an ordered category and a TypeError on a plain one.",
+      "ar": "ويشتري الترتيب أكثر من رمز معقول: يشتري مقارنة. فـ'ranked > \"fair\"' مشروعة على فئة مرتَّبة وتكون TypeError على فئة صِرفة."
+    },
+    "10": {
+      "en": "June's batch. 'very good' is a level a new form offers, and no amount of cleaning in Lesson 3 could decide where it belongs — that is a question for the source, not for the data.",
+      "ar": "دفعة حزيران. و'very good' مستوى تعرضه استمارة جديدة، ولم يكن تنظيف الدرس 3 بأي قدر ليستطيع أن يقرّر موضعها — فذلك سؤال للمصدر لا للبيانات."
+    },
+    "11": {
+      "en": "[2, -1]. Casting to a dtype that does not list 'very good' gives it the code -1, which is how pandas writes 'not one of the categories'. Note that -1 is a NUMBER: leave it in the matrix and the model reads it as a level below poor.",
+      "ar": "‏[2, -1]. فالتحويل إلى نوع لا يَسرُد 'very good' يعطيها الرمز ‎-1، وهكذا تكتب pandas «ليست إحدى الفئات». ولاحظ أن ‎-1 رقمٌ: فاتركه في المصفوفة فيقرأه النموذج مستوًى أدنى من poor."
+    },
+    "12": {
+      "en": "So suppose you accept the new level and insert it where it belongs, between good and excellent.",
+      "ar": "فافترض أنك قبلت المستوى الجديد وأدخلته في موضعه، بين good وexcellent."
+    },
+    "13": {
+      "en": "[2, 0, 4, 1, 2]. poor, fair and good keep their codes; excellent silently moves from 3 to 4. Every model fitted on the old codes is now wrong about the 75 excellent flats in the file, and nothing in the data changed. An ordered category is a schema, so inserting a level is a schema change that the next step has to be told about.",
+      "ar": "‏[2, 0, 4, 1, 2]. يحفظ poor وfair وgood رموزها؛ وينتقل excellent بصمت من 3 إلى 4. فكل نموذج ضُبط على الرموز القديمة صار مخطئًا بشأن الشقق الممتازة الـ75 في الملف، ولم يتغير شيء في البيانات. فالفئة المرتَّبة مخطط، وإدخال مستوى تغييرٌ في المخطط يجب إخبار الخطوة التالية به."
+    },
+    "end": {
+      "en": "Three numberings of the same five words. The alphabet is a lie, the declared order is a decision you can defend, and inserting a level rewrites the decision. Store the order in the fitted dictionary, apply it unchanged, and treat a new level as a versioned change rather than an edit nobody notices.",
+      "ar": "ثلاثة ترقيمات للكلمات الخمس نفسها. فالأبجدية كذبة، والترتيب المعلَن قرارٌ تستطيع الدفاع عنه، وإدخال مستوًى يعيد كتابة القرار. فاحفظ الترتيب في قاموس الوسائط المضبوطة، وطبّقه دون تغيير، وعامِل المستوى الجديد تغييرًا مُؤرَّخ الإصدار لا تعديلًا لا يلاحظه أحد."
+    }
+  },
+  "watch": ["march", "plain", "ORDER", "ranked", "june", "FIVE"],
+  "max_steps": 40
+}

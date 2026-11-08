@@ -497,7 +497,9 @@ with io.open(os.path.join(T2, "city_reference.csv"), "w", encoding="utf-8", newl
         w.writerow(list(row))
 
 # --- next month's batch: the transform fitted on the raw file must survive it -
-# One city, two agencies and one condition value that the training data never
+# One city and one condition value planted by hand, plus whatever agencies the
+# sampler happens to draw that the training file never contained -- the facts
+# below count them rather than asserting a number, because that count moves.
 # saw -- which is exactly what breaks a one-hot encoding fitted with get_dummies.
 t2_new = []
 new_base = dt.date(2026, 6, 5)
@@ -545,6 +547,7 @@ with io.open(os.path.join(T2, "rent_history_wide.csv"), "w", encoding="utf-8", n
 
 
 # --- the facts, computed from what was written -------------------------------
+import numpy as np
 import pandas as pd
 
 df = pd.read_csv(os.path.join(P1, "cafeteria_orders.csv"))
@@ -665,6 +668,25 @@ fact("T2 planted value errors, which are NOT the same thing as outliers: monthly
         int(t2num.loc[t2num["rooms"] == 12, "listing_id"].iloc[0]),
         ", ".join(str(int(v)) for v in sorted(t2num.loc[t2num["area_m2"] < 1, "listing_id"].unique()))))
 
+_pair = t2num[t2num["deposit"].notna() & t2num["monthly_rent"].notna()]
+_ratio = (_pair["deposit"] / _pair["monthly_rent"]).round(6)
+_whole = _ratio.isin([1.0, 2.0, 3.0])
+fact("T2 the cross-column check that beats every single-column rule: deposit / monthly_rent is exactly 1, 2 or "
+     "3 months in %d of the %d recorded pairs, and the %d exceptions are precisely the two rent errors "
+     "(%s). One ratio check therefore finds the daily rate of 25, which no statistic on the rent column "
+     "alone can reach - it sits inside the IQR fence and its robust z is only -2.36"
+     % (int(_whole.sum()), len(_pair), int((~_whole).sum()),
+        "; ".join("listing %d ratio %.4f" % (int(r["listing_id"]), r["deposit"] / r["monthly_rent"])
+                  for _, r in _pair[~_whole].iterrows())))
+_lr = np.log1p(_r)
+_lq1, _lq3 = _lr.quantile(0.25), _lr.quantile(0.75)
+_llo, _lhi = _lq1 - 1.5 * (_lq3 - _lq1), _lq3 + 1.5 * (_lq3 - _lq1)
+fact("T2 the fence changes its mind on a log scale: 1.5*IQR on log1p(monthly_rent) gives fences of %.2f and "
+     "%.2f shekels and flags %d values - %d low and %d high - where the fence on the raw column flags %d, all "
+     "of them high. The 25 is caught only here, because taking logs is what makes the lower fence bite"
+     % (np.expm1(_llo), np.expm1(_lhi), int(((_lr < _llo) | (_lr > _lhi)).sum()),
+        int((_lr < _llo).sum()), int((_lr > _lhi).sum()),
+        int(((_r < lo) | (_r > hi)).sum())))
 _cond = t2raw["condition"].str.strip().str.lower().replace("", "(blank)").value_counts()
 fact("T2 condition is ordinal (poor < fair < good < excellent) and arrives in %d non-blank spellings plus "
      "%d blanks; after strip+lower: %s"
@@ -727,7 +749,7 @@ with io.open(os.path.join(ROOT, "docs", "datasets.md"), "w", encoding="utf-8", n
             "| `downloads/p1/cafeteria_menu.csv` | the menu: item, category, list_price |\n"
             "| `downloads/t2/listings_raw.csv` | %d rental listings scraped over four months and never cleaned: %d exact duplicates, 9 reposts, %d city spellings, three missing-data mechanisms, two value typos, five areas in dunum |\n" % (len(t2raw), _dup_all, t2raw["city"].nunique()) +
             "| `downloads/t2/city_reference.csv` | one row per city: governorate, population, coastal, km to Gaza City - joins on the *cleaned* city name |\n"
-            "| `downloads/t2/listings_new.csv` | next month's batch, with a city, two agencies and a condition level the training data never saw |\n"
+            "| `downloads/t2/listings_new.csv` | next month's batch, with %d city, %d agencies and %d condition level the training data never saw |\n" % (len(_new_cities), len(_new_agencies), len(_new_cond)) +
             "| `downloads/t2/rent_history_wide.csv` | 40 listings x 4 quarter columns: wide data to melt |\n"
             "\n### Files written by lesson authors (kept by hand, not generated)\n\n"
             "| File | What it is |\n|---|---|\n"

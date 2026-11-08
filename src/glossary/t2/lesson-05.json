@@ -1,0 +1,109 @@
+[
+  { "id": "feature-matrix",
+    "term": {"en": "Feature matrix", "ar": "مصفوفة الخصائص (feature matrix)"},
+    "def": {
+      "en": "The all-numeric table a model is actually given: one row per thing you predict, one column per feature, no text and no gaps. The 480 cleaned flats become a 480 x 16 feature matrix in this lesson, and the point of the lesson is that next month's 85 listings must become an 85 x 16 matrix with the same columns in the same order.",
+      "ar": "الجدول الرقمي بكامله الذي يُعطى للنموذج فعلًا: صفٌّ لكل شيء تتنبأ به، وعمود لكل خاصية، ولا نصّ ولا ثقوب. وتصير الشقق المنظَّفة الـ480 في هذا الدرس مصفوفة خصائص 480 × 16، ومغزى الدرس أن إعلانات الشهر القادم الـ85 يجب أن تصير مصفوفة 85 × 16 بالأعمدة نفسها وبالترتيب نفسه."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["one-hot-encoding", "unseen-category"] },
+
+  { "id": "one-hot-encoding",
+    "term": {"en": "One-hot encoding", "ar": "الترميز الأحادي (one-hot encoding)"},
+    "def": {
+      "en": "Replacing one nominal column by one 0/1 indicator column per category, exactly one of which is 1 in each row. It is the only encoding of a nominal column that invents no order: the canonical city column becomes 5 columns and agency becomes 20.",
+      "ar": "استبدال عمود اسمي واحد بعمود مؤشِّر 0/1 لكل فئة، يكون واحد منها فقط يساوي 1 في كل صف. وهو الترميز الوحيد للعمود الاسمي الذي لا يختلق ترتيبًا: فعمود المدينة المعياري يصير خمسة أعمدة ويصير agency عشرين عمودًا."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["dummy-variable", "dummy-variable-trap", "cardinality"] },
+
+  { "id": "dummy-variable",
+    "term": {"en": "Dummy variable", "ar": "المتغيّر المؤشِّر (dummy variable)"},
+    "def": {
+      "en": "One 0/1 column standing for one category — the output of a one-hot encoding, read one column at a time. city_Gaza is a dummy variable: it is 1 for the 164 Gaza listings and 0 for the other 316.",
+      "ar": "عمود 0/1 واحد يمثّل فئة واحدة — أي مخرج الترميز الأحادي مقروءًا عمودًا عمودًا. فـ city_Gaza متغيّر مؤشِّر: يساوي 1 في إعلانات غزة الـ164 ويساوي 0 في الـ316 الأخرى."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["one-hot-encoding", "dummy-variable-trap"] },
+
+  { "id": "dummy-variable-trap",
+    "term": {"en": "Dummy-variable trap", "ar": "فخّ المتغيّر المؤشِّر (dummy-variable trap)"},
+    "def": {
+      "en": "Keeping all k dummy columns of a category alongside an intercept, so the k columns sum to the intercept's column of ones and the design matrix loses a rank: with 5 city dummies plus an intercept the rank is 5, not 6, and the fitted coefficients are no longer unique. drop_first=True removes one dummy and the rank is full again; a tree never has an intercept, so it never has the trap.",
+      "ar": "الإبقاء على أعمدة المؤشِّر الـk كلها لفئةٍ مع حدٍّ ثابت، فيصير مجموع الأعمدة الـk مساويًا لعمود الآحاد الخاصّ بالحدّ الثابت وتفقد مصفوفة التصميم رتبةً: فمع خمسة مؤشِّرات مدينة وحدٍّ ثابت تكون الرتبة 5 لا 6، ولا تبقى المعاملات المضبوطة وحيدة. وتحذف drop_first=True مؤشِّرًا واحدًا فتعود الرتبة تامّة؛ وليس للشجرة حدٌّ ثابت قط، فليس فيها الفخّ قط."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["dummy-variable", "one-hot-encoding"] },
+
+  { "id": "unseen-category",
+    "term": {"en": "Unseen category", "ar": "الفئة غير المرئية (unseen category)"},
+    "def": {
+      "en": "A value that is legal, correctly spelled, and absent from the categories the encoder was fitted on. June brings four: the city Beit Lahia on 2 rows and three agencies on one row each. Encoded against the fitted list they produce a row of zeros that no error, warning or shape check reveals, which is why the apply step has to count them.",
+      "ar": "قيمة مشروعة ومكتوبة إملاءً صحيحًا وغائبة عن الفئات التي ضُبط عليها المُرمِّز. ويأتي حزيران بأربع: مدينة بيت لاهيا في صفَّين وثلاث وكالات في صفٍّ لكل منها. وترميزها على القائمة المضبوطة يُنتج صفًّا من الأصفار لا يكشفه خطأ ولا تحذير ولا فحص شكل، ولهذا يجب أن تعدّها خطوة التطبيق."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["one-hot-encoding", "feature-matrix"] },
+
+  { "id": "ordinal-encoding",
+    "term": {"en": "Ordinal encoding", "ar": "الترميز الترتيبي (ordinal encoding)"},
+    "def": {
+      "en": "Mapping the levels of an ordered column to integers that follow the order you declared, so condition becomes poor 0, fair 1, good 2, excellent 3. It is right only when the order is real, and it additionally assumes every step is the same size: this one column takes the held-out error from 64.67 to 59.48 shekels, while the alphabetical numbering cat.codes produces makes excellent 0 and reverses the sign.",
+      "ar": "ربط مستويات عمود مرتَّب بأعداد صحيحة تتبع الترتيب الذي أعلنتَه، فيصير condition هو poor صفرًا وfair واحدًا وgood اثنين وexcellent ثلاثة. وهو صحيح فقط حين يكون الترتيب حقيقيًّا، ويفترض زيادةً على ذلك أن كل خطوة بالحجم نفسه: فهذا العمود الواحد يأخذ الخطأ المحجوز من 64.67 إلى 59.48 شيكلًا، في حين يجعل الترقيم الأبجدي الذي تنتجه cat.codes قيمةَ excellent صفرًا ويقلب الإشارة."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["one-hot-encoding", "feature-matrix"] },
+
+  { "id": "cardinality",
+    "term": {"en": "Cardinality", "ar": "التعدّد (cardinality)"},
+    "def": {
+      "en": "The number of distinct values a categorical column has. city has a cardinality of 5 and agency of 20 over 480 rows, with five agencies appearing exactly once - high enough that one-hot encoding it produces a matrix that is 95% zeros and a parameter per agency that most agencies have too few rows to support.",
+      "ar": "عدد القيم المميّزة في عمود فئوي. فتعدّد city هو 5 وتعدّد agency هو 20 على 480 صفًّا، وخمس وكالات تظهر مرة واحدة بالضبط - وهذا عالٍ بما يكفي لأن يُنتج ترميزه الأحادي مصفوفة 95% منها أصفار ووسيطًا لكل وكالة لا تملك معظم الوكالات صفوفًا تكفي لإسناده."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["one-hot-encoding", "frequency-encoding", "target-encoding"] },
+
+  { "id": "frequency-encoding",
+    "term": {"en": "Frequency encoding", "ar": "الترميز بالتكرار (frequency encoding)"},
+    "def": {
+      "en": "Replacing a high-cardinality column by one number per row: how often that category occurs in the training rows. It costs one column instead of twenty and leaks nothing, because it never looks at the target - but it makes every category of equal size indistinguishable, and on this file four agencies share the same encoded value.",
+      "ar": "استبدال عمود عالي التعدّد برقم واحد لكل صف: كم مرة تظهر تلك الفئة في صفوف التدريب. ويكلّف عمودًا واحدًا بدل عشرين ولا يسرّب شيئًا، لأنه لا ينظر إلى الهدف قط - لكنه يجعل كل فئتين متساويتي الحجم غير متميّزتين، وفي هذا الملف تتشارك أربع وكالات القيمة المرمَّزة نفسها."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["target-encoding", "cardinality"] },
+
+  { "id": "target-encoding",
+    "term": {"en": "Target encoding", "ar": "الترميز بالهدف (target encoding)"},
+    "def": {
+      "en": "Replacing a category by the average target value of its rows - here, the mean rent of each agency. It is the easiest way in this chapter to fool yourself: a row's own rent sits inside its own encoding, so for the four agencies with one training row the encoded value IS that row's rent. Fitted on every row it made the held-out error look better than the honest version; fitted out of fold or on the training rows only it is defensible, and on this file it still loses to one constant.",
+      "ar": "استبدال الفئة بمتوسط قيمة الهدف في صفوفها - وهو هنا متوسط إيجار كل وكالة. وهو أسهل طريقة في هذا الفصل لتخدع بها نفسك: فإيجار الصف نفسه يجلس داخل ترميزه، فتكون القيمة المرمَّزة للوكالات الأربع ذات الصف التدريبي الواحد هي إيجار ذلك الصف عينه. وضبطُه على كل الصفوف جعل الخطأ المحجوز يبدو أفضل من النسخة الأمينة؛ وضبطُه خارج الطيّة أو على صفوف التدريب وحدها قابلٌ للدفاع، وهو في هذا الملف ما زال يخسر أمام ثابت واحد."
+    },
+    "cat": {"en": "Encoding", "ar": "الترميز"},
+    "see": ["frequency-encoding", "cardinality", "leakage"] },
+
+  { "id": "min-max-scaling",
+    "term": {"en": "Min-max scaling", "ar": "توحيد المقياس بالحدَّين (min-max scaling)"},
+    "def": {
+      "en": "Mapping a column onto [0, 1] with (x - min) / (max - min), so the two fitted parameters are the smallest and the largest training value. Both are the extremes of the column, which makes it the most fragile of the three scalers: with the 99999 still in monthly_rent, 460 of 461 rents land below 0.01.",
+      "ar": "ربط العمود بالمجال [0، 1] بالصيغة (x - min) / (max - min)، فيكون الوسيطان المضبوطان أصغر قيمة تدريب وأكبرها. وكلاهما طرفٌ من أطراف العمود، وهذا يجعله أهشّ المُقايِسات الثلاثة: فمع بقاء 99999 في monthly_rent يهبط 460 من 461 إيجارًا تحت 0.01."
+    },
+    "cat": {"en": "Scaling", "ar": "توحيد المقاييس"},
+    "see": ["standardisation", "robust-scaling"] },
+
+  { "id": "standardisation",
+    "term": {"en": "Standardisation", "ar": "التوحيد المعياري (standardisation)"},
+    "def": {
+      "en": "Mapping a column to a mean of 0 and a standard deviation of 1 with (x - mean) / std. It has no fixed output range, so an extreme value is not forced inside a box - but both parameters are averages over every row, so one typo moves both: the same column gives a std of 4648.33 with the 99999 and 81.68 without it.",
+      "ar": "ربط العمود بمتوسط صفر وانحراف معياري واحد بالصيغة (x - mean) / std. ولا مدى ثابت لمخرجه، فلا تُكرَه القيمة المتطرفة داخل صندوق - لكن الوسيطين متوسطان على كل الصفوف، فخطأ إدخال واحد يحرّكهما: فالعمود نفسه يعطي انحرافًا 4648.33 مع 99999 و81.68 بدونها."
+    },
+    "cat": {"en": "Scaling", "ar": "توحيد المقاييس"},
+    "see": ["min-max-scaling", "robust-scaling"] },
+
+  { "id": "robust-scaling",
+    "term": {"en": "Robust scaling", "ar": "التوحيد الحصين (robust scaling)"},
+    "def": {
+      "en": "Mapping a column with (x - median) / IQR, so both fitted parameters are positions rather than sums and the largest value cannot move either. On monthly_rent its quartiles are -0.45, 0 and 0.55 whether the 99999 is present or not, and the typo itself comes out at 997.99 - visibly wrong instead of quietly flattening the column.",
+      "ar": "ربط العمود بالصيغة (x - median) / IQR، فيكون الوسيطان المضبوطان موضعين لا مجموعين ولا تستطيع القيمة الأكبر أن تحرّك أيًّا منهما. وعلى monthly_rent تكون ربيعاته ‎-0.45 و0 و0.55 سواء وُجدت 99999 أم لا، ويخرج خطأ الإدخال نفسه عند 997.99 - خاطئًا ظاهرًا لا مُسطِّحًا للعمود بهدوء."
+    },
+    "cat": {"en": "Scaling", "ar": "توحيد المقاييس"},
+    "see": ["min-max-scaling", "standardisation"] }
+]

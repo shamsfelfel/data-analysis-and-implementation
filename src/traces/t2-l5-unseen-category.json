@@ -1,0 +1,69 @@
+{
+  "id": "t2-l5-unseen-category",
+  "title": {
+    "en": "The unseen category: a shape mismatch, then the fitted column list that fixes it",
+    "ar": "الفئة غير المرئية: عدم تطابق في الشكل، ثم قائمة الأعمدة المضبوطة التي تُصلحه"
+  },
+  "lede": {
+    "en": "Six March listings over three cities, three June listings over three cities plus one city March never had. Watch get_dummies build its columns from whatever it finds, so the two matrices come out six-by-three and four-by-four — a shape mismatch a model would refuse. Then watch the fix: the column list is a fitted parameter, reindex forces June into it, and the value that is not on the list becomes a counted line instead of an invisible row of zeros.",
+    "ar": "ستة إعلانات من آذار على ثلاث مدن، وأربعة إعلانات من حزيران على ثلاث مدن ومدينةٍ لم تكن في آذار قط. راقب get_dummies تبني أعمدتها من القيم التي تجدها مهما كانت، فتخرج المصفوفتان ستًّا في ثلاث وأربعًا في أربع — أي عدم تطابق في الشكل يرفضه النموذج. ثم راقب العلاج: قائمة الأعمدة وسيطٌ مضبوط، وتُكرِه reindex حزيرانَ عليها، وتصير القيمة التي ليست في القائمة سطرًا معدودًا لا صفًّا صفريًّا غير مرئي."
+  },
+  "files": {
+    "march.csv": "city,rent\nGaza,260\nRafah,175\nGaza,240\nJabalia,190\nRafah,180\nGaza,255\n",
+    "june.csv": "city,rent\nGaza,250\nBeit Lahia,200\nRafah,185\nJabalia,195\n"
+  },
+  "code": "import pandas as pd\nmarch = pd.read_csv(\"march.csv\")\njune = pd.read_csv(\"june.csv\")\nnaive_march = pd.get_dummies(march[\"city\"], prefix=\"city\", dtype=\"int8\")\nnaive_june = pd.get_dummies(june[\"city\"], prefix=\"city\", dtype=\"int8\")\nprint(\"march\", naive_march.shape, \"june\", naive_june.shape)\nfitted = {\"cities\": sorted(march[\"city\"].unique())}\nseen = june[\"city\"].isin(fitted[\"cities\"])\nunseen = june.loc[~seen, \"city\"].value_counts()\nwide = naive_june.reindex(columns=naive_march.columns, fill_value=0)\nprint(wide.to_string(index=False))\nprint(\"unseen:\", unseen.to_dict())\n",
+  "notes": {
+    "2": {
+      "en": "March: six listings over three cities — Gaza, Rafah, Jabalia. This is the file the encoder is allowed to learn from.",
+      "ar": "آذار: ستة إعلانات على ثلاث مدن — غزة ورفح وجباليا. وهذا هو الملف المسموح للمُرمِّز أن يتعلّم منه."
+    },
+    "3": {
+      "en": "June: four listings. Three cities March knows, and one it does not: 'Beit Lahia' is a real city that simply was not in the training batch.",
+      "ar": "حزيران: أربعة إعلانات. ثلاث مدن يعرفها آذار، وواحدة لا يعرفها: 'Beit Lahia' مدينة حقيقية لم تكن في دفعة التدريب فحسب."
+    },
+    "4": {
+      "en": "get_dummies builds one column per distinct value it FINDS. Three cities in March, so three columns: city_Gaza, city_Jabalia, city_Rafah.",
+      "ar": "تبني get_dummies عمودًا لكل قيمة مميّزة تجدها. وثلاث مدن في آذار فثلاثة أعمدة: city_Gaza وcity_Jabalia وcity_Rafah."
+    },
+    "5": {
+      "en": "The same call on June finds FOUR distinct cities, so it builds four columns — including city_Beit Lahia, which no March matrix has. Nothing warns.",
+      "ar": "النداء نفسه على حزيران يجد أربع مدن مميّزة فيبني أربعة أعمدة — ومنها city_Beit Lahia التي لا توجد في أي مصفوفة آذار. ولا شيء يحذّر."
+    },
+    "6": {
+      "en": "(6, 3) against (4, 4). A model fitted on three columns cannot even be called with four, which at least fails loudly. The quiet version of the same bug is a June file whose values happen to be a subset of March's: then the widths match and the column MEANINGS have shifted.",
+      "ar": "‏(6, 3) مقابل (4, 4). والنموذج المضبوط على ثلاثة أعمدة لا يمكن نداؤه بأربعة أصلًا، وهذا على الأقل يفشل بصوت عالٍ. والصورة الصامتة من العطب نفسه هي ملف حزيران تكون قيمه مجموعة فرعية من قيم آذار: فتتطابق العروض وقد انزاحت معاني الأعمدة."
+    },
+    "7": {
+      "en": "FIT. The list of categories is a parameter exactly like a median: learned from the training rows, stored, never recomputed. Sorting it makes the column order deterministic too.",
+      "ar": "الضبط (fit). قائمة الفئات وسيطٌ تمامًا كالوسيط الحسابي: تُتعلَّم من صفوف التدريب وتُحفظ ولا تُعاد حسابها قط. وترتيبها يجعل ترتيب الأعمدة حتميًّا أيضًا."
+    },
+    "8": {
+      "en": "APPLY, part one: ask of each June value whether the fitted list contains it. This is the only line that can tell you a new category has arrived.",
+      "ar": "التطبيق (apply)، الجزء الأول: اسأل عن كل قيمة من حزيران هل تحتويها القائمة المضبوطة. وهذا السطر الوحيد الذي يستطيع أن يخبرك أن فئة جديدة وصلت."
+    },
+    "9": {
+      "en": "The unseen values, counted by name. One row says 'Beit Lahia': in the real file this reads 'Beit Lahia: 2' plus three agencies, which is five of eighty-five rows.",
+      "ar": "القيم غير المرئية معدودةً بأسمائها. وصفٌّ واحد يقول 'Beit Lahia': وفي الملف الحقيقي يقرأ هذا 'Beit Lahia: 2' مع ثلاث وكالات، أي خمسة صفوف من خمسة وثمانين."
+    },
+    "10": {
+      "en": "APPLY, part two: reindex forces June onto March's exact columns. city_Beit Lahia is dropped because it is not on the list; a March column June never used would be created and filled with 0.",
+      "ar": "التطبيق، الجزء الثاني: تُكرِه reindex حزيرانَ على أعمدة آذار بالضبط. فيُسقَط city_Beit Lahia لأنه ليس في القائمة؛ وأي عمود من آذار لم يستعمله حزيران كان سيُنشَأ ويُعبَّأ بصفر."
+    },
+    "11": {
+      "en": "Four rows, three columns, the same three names in the same order as March. The second row is all zeros — the Beit Lahia listing, encoded as 'none of the cities I know'. That is the right encoding and a terrible report, which is why line 9 exists.",
+      "ar": "أربعة صفوف وثلاثة أعمدة، والأسماء الثلاثة نفسها بالترتيب نفسه كما في آذار. والصف الثاني كله أصفار — وهو إعلان بيت لاهيا مرمَّزًا بأنه «لا شيء من المدن التي أعرفها». وهذا هو الترميز الصحيح والتقرير السيئ، ولهذا وُجد السطر 9."
+    },
+    "12": {
+      "en": "The log line that turns a silent row of zeros into a fact somebody can act on: add the city to the map, or decide that two rows is a cost you accept, and write down which.",
+      "ar": "سطر السجل الذي يحوّل صفًّا صفريًّا صامتًا إلى واقعة يستطيع أحدٌ أن يفعل بها شيئًا: أضِف المدينة إلى الخريطة، أو اقبل أن صفَّين ثمنٌ محتمَل، واكتب أيَّهما."
+    },
+    "end": {
+      "en": "A one-hot encoder has two fitted parameters, not zero: the category list and the column order. Store both, reindex against them, and report what was not on the list — then March's matrix and June's matrix are the same matrix, and a new city is a line in the log rather than a crash or a silent zero.",
+      "ar": "للمُرمِّز الأحادي وسيطان مضبوطان لا صفر: قائمة الفئات وترتيب الأعمدة. فاحفظهما، وأعِد الفهرسة عليهما، وأبلِغ عمّا لم يكن في القائمة — فتصير مصفوفة آذار ومصفوفة حزيران مصفوفةً واحدة، وتصير المدينة الجديدة سطرًا في السجل لا انهيارًا ولا صفرًا صامتًا."
+    }
+  },
+  "watch": ["march", "june", "naive_march", "naive_june", "fitted", "unseen", "wide"],
+  "viz": {"march": "table", "june": "table", "naive_march": "table", "naive_june": "table", "wide": "table", "fitted": "dict"},
+  "max_steps": 40
+}

@@ -1,0 +1,35 @@
+%% alt: A sequence diagram of the four exchanges that decide the shape of a one-hot matrix. The participants are the March file of 480 flats, the encoder, the stored fitted dictionary, the June file of 85 listings, and the model. In the first exchange the naive code asks get_dummies for a matrix of March and gets 480 by 25, then asks for a matrix of June and gets 85 by 19, and the model refuses the June matrix because the widths do not match. In the second exchange the code concatenates the two files and encodes them together, which does produce one matrix of 565 by 29, but June's rents have now helped choose March's columns, and a file that has not arrived yet is still unencodable. In the third exchange the encoder is fitted on March alone: it stores the twenty-five column names in the fitted dictionary, and June is encoded and then reindexed against those stored names, so June comes back as 85 by 25 and the model accepts it. In the fourth exchange the apply step also compares June's values against the stored category list before encoding, and returns a log row saying Beit Lahia equals two and three agencies unseen, so the five all-zero rows are counted and named instead of being silently zeroed.
+sequenceDiagram
+  participant M as March (480 flats)
+  participant E as Encoder
+  participant S as `fitted`
+  participant J as June (85 rows)
+  participant D as Model
+
+  Note over M,D: 1. One encoder per file
+  E->>M: get_dummies(city, agency)
+  M-->>E: 480 x 25
+  E->>J: get_dummies(city, agency)
+  J-->>E: 85 x 19
+  E->>D: predict(85 x 19)
+  D-->>E: refused: expected 25 columns
+
+  Note over M,D: 2. Encode the two files together
+  E->>M: concat(March, June)
+  M-->>E: 565 x 29
+  Note right of E: leaks June, and<br/>July is still unencodable
+
+  Note over M,D: 3. Fit on March, store the columns
+  E->>M: fit: 25 column names
+  E->>S: store cities, agencies, columns
+  S-->>E: the same 25 names
+  E->>J: reindex(columns=fitted, fill_value=0)
+  J-->>E: 85 x 25
+  E->>D: predict(85 x 25)
+  D-->>E: accepted
+
+  Note over M,D: 4. Count what you have never seen
+  E->>S: is each June value in the list?
+  S-->>E: Beit Lahia=2, 3 agencies unseen
+  E->>D: 85 x 25 + a log row
+  D-->>E: accepted, 5 rows flagged

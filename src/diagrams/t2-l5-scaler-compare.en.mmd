@@ -1,0 +1,24 @@
+%% alt: A flowchart comparing three scalers on the same rent column, before and after the value repair. One column of 461 rents enters, containing a 99999 that is really a phone number and a 25 that is really a daily rate. On the unrepaired column, min-max scaling divides by a range of 99974, so 460 of the 461 rents land below 0.01 and the quartiles are 0.0013, 0.00175 and 0.0023; standardisation divides by a standard deviation of 4648, so every real rent sits in a band 0.12 standard deviations wide, between minus 0.087 and plus 0.033, while the typo sits at 21.4; robust scaling divides by the interquartile range of 100, so the body of the column is unharmed with quartiles at minus 0.45, zero and 0.55, and the typo is pushed out to 997.99 where you can see it. After the LIMITS rule of Lesson 4 voids both, min-max gives quartiles of 0.20, 0.28 and 0.39, standardisation gives minus 0.69, minus 0.14 and 0.54 with a true mean of zero and standard deviation of one, and robust scaling gives exactly the same quartiles as before, because the median and the interquartile range never saw either bad value. The conclusion is that scaling is stage five and the value repair is stage two, and that a robust scaler is the one that fails visibly rather than quietly.
+flowchart TD
+  C(["`monthly_rent`, 461 values<br/>99999 and 25"]) --> B{"Has stage 2<br/>repaired the values?"}
+  B -- "no" --> N1["min-max: range 99974<br/>460 of 461 below 0.01"]
+  B -- "no" --> N2["standard: std 4648<br/>market in a 0.12 band"]
+  B -- "no" --> N3["robust: IQR 100<br/>body intact, typo at 997.99"]
+  B -- "yes" --> Y1["min-max: range 530<br/>quartiles 0.20 / 0.28 / 0.39"]
+  B -- "yes" --> Y2["standard: std 81.68<br/>mean 0, std 1 for real"]
+  B -- "yes" --> Y3["robust: IQR 100<br/>quartiles unchanged"]
+  N1 --> F["Feature destroyed:<br/>no error, no warning"]
+  N2 --> F
+  N3 --> V["Feature survived,<br/>and the typo is visible"]
+  Y1 --> G["Usable feature"]
+  Y2 --> G
+  Y3 --> G
+  F --> R["Repair values (stage 2)<br/>before you scale (stage 5)"]
+  V --> R
+  class N1 dg-bad
+  class N2 dg-bad
+  class F dg-bad
+  class N3 dg-warn
+  class V dg-warn
+  class G dg-good
+  class R dg-hl

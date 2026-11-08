@@ -28,6 +28,8 @@ invent a different number for the same data. Re-run the script, never hand-edit 
 - T2 monthly_rent (the 484 rows that have one): min=25, median=200.0, mean=416.3, max=99999, std=4536.6 - mean above median, so right-skewed
 - T2 IQR fence on monthly_rent: Q1=153.8, Q3=255.0, IQR=101.2, fences [1.9, 406.9]; 12 values fall outside (0 low, 12 high). |z|>3 flags only 1 of them, because the single 99999 inflates the standard deviation it is measured against - drop that one typo and |z|>3 flags 6 while IQR flags 11. Note what NEITHER rule finds: the daily rate of 25 sits inside the lower fence of 1.9, so only domain knowledge catches it
 - T2 planted value errors, which are NOT the same thing as outliers: monthly_rent 99999 (listing_id 5062, a phone number) and 25 (listing_id 5208, a daily rate); rooms 0 (listing_id 5134) and 12 (listing_id 5319); 5 area_m2 values recorded in dunum, so they read 0.0x instead of 5x-9x m2 (5015, 5099, 5167, 5290, 5403)
+- T2 the cross-column check that beats every single-column rule: deposit / monthly_rent is exactly 1, 2 or 3 months in 378 of the 380 recorded pairs, and the 2 exceptions are precisely the two rent errors (listing 5208 ratio 5.4000; listing 5062 ratio 0.0015). One ratio check therefore finds the daily rate of 25, which no statistic on the rent column alone can reach - it sits inside the IQR fence and its robust z is only -2.36
+- T2 the fence changes its mind on a log scale: 1.5*IQR on log1p(monthly_rent) gives fences of 71.71 and 543.78 shekels and flags 8 values - 5 low and 3 high - where the fence on the raw column flags 12, all of them high. The 25 is caught only here, because taking logs is what makes the lower fence bite
 - T2 condition is ordinal (poor < fair < good < excellent) and arrives in 14 non-blank spellings plus 36 blanks; after strip+lower: good=188, fair=144, excellent=79, poor=56, (blank)=36
 - T2 agency is high-cardinality: 20 agencies over 503 rows; the top 5 carry 364 rows (72%) while 4 agencies appear exactly once and 8 appear at most three times - one-hot encoding it adds 20 columns, most of them almost all zeros
 - T2 listed_on: 480 rows ISO (YYYY-MM-DD) and 23 rows DD/MM/YYYY; pd.to_datetime without format= warns and falls back per value, so 03/04/2026 and 2026-04-03 can end up as different days
@@ -49,7 +51,7 @@ invent a different number for the same data. Re-run the script, never hand-edit 
 | `downloads/p1/cafeteria_menu.csv` | the menu: item, category, list_price |
 | `downloads/t2/listings_raw.csv` | 503 rental listings scraped over four months and never cleaned: 14 exact duplicates, 9 reposts, 26 city spellings, three missing-data mechanisms, two value typos, five areas in dunum |
 | `downloads/t2/city_reference.csv` | one row per city: governorate, population, coastal, km to Gaza City - joins on the *cleaned* city name |
-| `downloads/t2/listings_new.csv` | next month's batch, with a city, two agencies and a condition level the training data never saw |
+| `downloads/t2/listings_new.csv` | next month's batch, with 1 city, 3 agencies and 1 condition level the training data never saw |
 | `downloads/t2/rent_history_wide.csv` | 40 listings x 4 quarter columns: wide data to melt |
 
 ### Files written by lesson authors (kept by hand, not generated)

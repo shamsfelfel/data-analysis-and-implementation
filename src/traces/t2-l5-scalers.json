@@ -1,0 +1,63 @@
+{
+  "id": "t2-l5-scalers",
+  "title": {
+    "en": "Three scalers and one phone number: what each formula does with a value that is not a rent",
+    "ar": "ثلاثة مُقايِسات ورقم هاتف واحد: ماذا تفعل كل صيغة بقيمة ليست إيجارًا"
+  },
+  "lede": {
+    "en": "Four ordinary rents and one 99999 that is really a phone number. Watch min-max scaling hand 99.9% of the output range to the typo and squeeze the whole market below 0.002. Watch standardisation hide the same damage better, because the standard deviation is driven by the same value. Watch robust scaling keep the four real rents between -1 and 0.45 and push the typo out to 906.7, where you can see it. Then watch what one mask() changes.",
+    "ar": "أربعة إيجارات عادية وقيمة 99999 هي في الحقيقة رقم هاتف. راقب توحيد المقياس بالحدَّين يسلّم 99.9% من مدى المخرج إلى خطأ الإدخال ويضغط السوق كلها تحت 0.002. وراقب التوحيد المعياري يُخفي الضرر نفسه إخفاءً أحسن، لأن الانحراف المعياري مدفوعٌ بالقيمة نفسها. وراقب التوحيد الحصين يحفظ الإيجارات الأربعة الحقيقية بين ‎-1 و0.45 ويدفع خطأ الإدخال إلى 906.7 حيث تراه. ثم راقب ما يغيّره نداءٌ واحد لـ mask()."
+  },
+  "code": "import pandas as pd\nrent = pd.Series([150.0, 200.0, 260.0, 310.0, 99999.0], name=\"monthly_rent\")\n\ndef minmax(s):\n    return (s - s.min()) / (s.max() - s.min())\n\ndef standard(s):\n    return (s - s.mean()) / s.std()\n\ndef robust(s):\n    q1, q3 = s.quantile(.25), s.quantile(.75)\n    return (s - s.median()) / (q3 - q1)\n\nprint(\"min-max :\", minmax(rent).round(6).tolist())\nprint(\"standard:\", standard(rent).round(4).tolist())\nprint(\"robust  :\", robust(rent).round(4).tolist())\nLIMITS = (50, 2000)\nrepaired = rent.mask(~rent.between(*LIMITS))\nprint(\"min-max after the repair:\", minmax(repaired).round(4).tolist())\n",
+  "notes": {
+    "2": {
+      "en": "Five values. Four are rents a landlord in Gaza might ask; the fifth, 99999, is listing 5062's phone number typed into the rent box. Nothing in the dtype can tell them apart — all five are float64.",
+      "ar": "خمس قيم. أربعٌ منها إيجارات قد يطلبها مالك في غزة؛ والخامسة 99999 هي رقم هاتف الإعلان 5062 كُتب في خانة الإيجار. ولا شيء في النوع يستطيع التمييز بينها — فالخمس كلها float64."
+    },
+    "4": {
+      "en": "Min-max scaling: subtract the minimum, divide by the range. Two fitted parameters, min and max, and both come from the extremes of the column — which is exactly what makes it fragile.",
+      "ar": "توحيد المقياس بالحدَّين: اطرح الحدّ الأدنى واقسم على المدى. وسيطان مضبوطان هما الأدنى والأعلى، وكلاهما يأتي من طرفَي العمود — وهذا بعينه ما يجعله هشًّا."
+    },
+    "7": {
+      "en": "Standardisation: subtract the mean, divide by the standard deviation. Two fitted parameters again, and both are averages over every row, so one extreme value moves them both.",
+      "ar": "التوحيد المعياري: اطرح المتوسط واقسم على الانحراف المعياري. ووسيطان مضبوطان أيضًا، وكلاهما متوسطٌ على كل الصفوف، فالقيمة المتطرفة الواحدة تحرّكهما معًا."
+    },
+    "10": {
+      "en": "Robust scaling: subtract the median, divide by the interquartile range. Still two fitted parameters, but neither of them can be moved by the largest value — the median is a position and the quartiles are positions.",
+      "ar": "التوحيد الحصين: اطرح الوسيط واقسم على المدى الربيعي. ووسيطان مضبوطان أيضًا، لكن لا تستطيع القيمة الأكبر أن تحرّك أيًّا منهما — فالوسيط موضع والربيعان موضعان."
+    },
+    "14": {
+      "en": "[0.0, 0.000501, 0.001102, 0.001602, 1.0]. The four real rents occupy the first two thousandths of the range; the typo gets the rest. In the real 461-row column, 460 of the values land below 0.01. The feature is destroyed and nothing raised a warning.",
+      "ar": "‏[0.0, 0.000501, 0.001102, 0.001602, 1.0]. فالإيجارات الحقيقية الأربعة تشغل أول جزأين من الألف من المدى؛ ويأخذ خطأ الإدخال الباقي. وفي العمود الحقيقي ذي الـ461 صفًّا يهبط 460 من القيم تحت 0.01. فالخاصية مهدورة ولم يرفع شيءٌ تحذيرًا."
+    },
+    "15": {
+      "en": "[-0.449, -0.4479, -0.4465, -0.4454, 1.7889]. This looks healthier and is not: the four rents differ by 0.0036 of a standard deviation in total, because the standard deviation is 20,000-odd. A quartile summary of this column would read as if it had some spread.",
+      "ar": "‏[-0.449, -0.4479, -0.4465, -0.4454, 1.7889]. ويبدو هذا أصحّ وليس كذلك: فالإيجارات الأربعة تفترق بـ0.0036 من الانحراف المعياري إجمالًا، لأن الانحراف المعياري يزيد على عشرين ألفًا. ولكان تلخيصٌ ربيعي لهذا العمود يُقرأ كأن فيه بعض التشتّت."
+    },
+    "16": {
+      "en": "[-1.0, -0.5455, 0.0, 0.4545, 906.7182]. The four rents keep their shape — this is a usable feature — and the typo comes out at 906.7, far outside anything a scaler should produce. That is the alarm: a robust scaler does not hide a bad value, it points at it.",
+      "ar": "‏[-1.0, -0.5455, 0.0, 0.4545, 906.7182]. فتحفظ الإيجارات الأربعة شكلها — وهذه خاصية صالحة — ويخرج خطأ الإدخال عند 906.7، أي بعيدًا خارج أي شيء ينبغي لمُقايِس أن ينتجه. وهذا هو الجرس: فالمُقايِس الحصين لا يُخفي القيمة السيئة بل يشير إليها."
+    },
+    "17": {
+      "en": "Stage 2 of the canonical order, in Lesson 4's form: a named domain limit per column, kept beside the code and applied with mask so the row survives. The step learns nothing from the data — the limits come from knowing the market — so it is pure apply and may be run on any file.",
+      "ar": "المرحلة 2 من الترتيب القياسي بصورة الدرس 4: حدّ ميداني مسمّى لكل عمود، محفوظ بجانب الكود ومطبّق بـmask فينجو الصف. ولا تتعلّم الخطوة شيئًا من البيانات — فالحدود تأتي من معرفة السوق — فهي تطبيق صِرف ويجوز تشغيلها على أي ملف."
+    },
+    "end": {
+      "en": "Three formulas, two fitted parameters each, and one typo that decides all six. On the real column the body of the robust scaling is identical before and after the repair (quartiles -0.45, 0, 0.55) because the median and the IQR never saw the 99999 — which is the argument for a robust scaler and the argument for repairing values first, in that order.",
+      "ar": "ثلاث صيغ، لكل منها وسيطان مضبوطان، وخطأ إدخال واحد يقرّر الستة كلها. وعلى العمود الحقيقي يكون جسم التوحيد الحصين متطابقًا قبل الإصلاح وبعده (الربيعات ‎-0.45 و0 و0.55) لأن الوسيط والمدى الربيعي لم يرَيا 99999 قط — وهذه حجةٌ للمُقايِس الحصين وحجةٌ لإصلاح القيم أولًا، بهذا الترتيب."
+    },
+    "19": {
+      "en": "[0.0, 0.3125, 0.6875, 1.0, nan]. The same formula, the same column, one cell different — and now the feature spans the range it was supposed to span. Nothing about min-max scaling was wrong; the input was. That is why scaling is stage 5.",
+      "ar": "‏[0.0, 0.3125, 0.6875, 1.0, nan]. الصيغة نفسها والعمود نفسه وخلية واحدة مختلفة — وصارت الخاصية الآن تمتدّ على المدى الذي كان ينبغي أن تمتدّ عليه. فلم يكن في توحيد المقياس بالحدَّين خطأ، بل في المدخل. ولهذا يكون توحيد المقاييس المرحلة 5."
+    },
+    "18": {
+      "en": "APPLY, part two: a value outside its named limits becomes missing, and the row stays. Nothing is deleted and nothing is estimated - this same line runs unchanged on June.",
+      "ar": "التطبيق، الجزء الثاني: القيمة الخارجة عن حدودها المسمّاة تصير مفقودة ويبقى الصف. فلا شيء يُحذف ولا شيء يُقدَّر - وهذا السطر نفسه يعمل دون تغيير على حزيران."
+    }
+  },
+  "watch": [
+    "rent",
+    "repaired"
+  ],
+  "max_steps": 60
+}

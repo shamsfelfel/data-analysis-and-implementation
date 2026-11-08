@@ -1,0 +1,27 @@
+%% alt: Decision tree that chooses an encoder for one column from its measurement level. The first question is the measurement level written down in Theory 1 Lesson 2. If the column is an identifier, leave it out of the feature matrix, because it names one row and cannot generalise. If it is nominal, ask how many categories it has: up to about fifteen, one-hot encode it against a fitted category list; more than that, fold the rare levels into an Other bucket, or use a frequency encoding, and reach for target encoding only out of fold and only when the measurement says it helps. If it is ordinal, map the declared order to integer codes through an explicit ordered CategoricalDtype, never through cat.codes on an unordered category, because that numbers the levels alphabetically. If it is interval or ratio, keep the number and scale it, choosing min-max, standardisation or robust scaling by the shape of the column. Every branch ends at the same place: the category list, the code map and the scaler parameters are fitted on the training rows only, stored in the fitted dictionary, and applied unchanged to next month's file, where a value outside the fitted list is counted and reported rather than silently zeroed.
+flowchart TD
+  S(["One column"]) --> Q1{"Measurement level?<br/>(T1 L2)"}
+  Q1 -- "identifier" --> ID["Leave it out.<br/>It names one row."]
+  Q1 -- "nominal" --> Q2{"How many<br/>categories?"}
+  Q1 -- "ordinal" --> ORD["Declared order to codes<br/>via ordered `CategoricalDtype`"]
+  Q1 -- "interval / ratio" --> NUM{"Shape of the<br/>column?"}
+  Q2 -- "up to ~15" --> OH["One-hot against a<br/>fitted category list"]
+  Q2 -- "high cardinality" --> HC["Rare levels to `Other`,<br/>or a frequency encoding"]
+  HC -.-> TE["Target encoding:<br/>out of fold, or not at all"]
+  ORD --> WARN["Never `cat.codes` on an<br/>unordered category"]
+  NUM -- "bounded, no outliers" --> MM["min-max to [0, 1]"]
+  NUM -- "roughly symmetric" --> ZS["standardise:<br/>mean 0, std 1"]
+  NUM -- "skewed or heavy-tailed" --> RB["robust: median and IQR"]
+  OH --> F[["`fitted`: category lists,<br/>code maps, scaler parameters"]]
+  HC --> F
+  TE --> F
+  WARN --> F
+  MM --> F
+  ZS --> F
+  RB --> F
+  ID --> F
+  F --> A["Apply unchanged to June.<br/>Unseen values counted, not zeroed."]
+  class ID dg-mute
+  class WARN dg-bad
+  class TE dg-warn
+  class A dg-good
