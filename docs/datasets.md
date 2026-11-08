@@ -17,6 +17,21 @@ invent a different number for the same data. Re-run the script, never hand-edit 
 - P1 top 3 items by revenue: Shawarma Wrap=1368.00; Chicken Rice=1020.00; Falafel Sandwich=917.00
 - P1 revenue by category: Food=4205.00; Drink=2769.00; Snack=747.00; Dessert=341.00
 - P1 busiest hour by distinct orders: 12:00 (119 orders); then 13:00 (117), 11:00 (99)
+- T2 listings_raw.csv: 503 rows, columns listing_id, city, governorate, agency, monthly_rent, area_m2, rooms, floor, condition, furnished, deposit, listed_on, advert; listed 2026-02-01..2026-05-31
+- T2 duplicates come in two kinds: 14 rows are byte-for-byte repeats (df.duplicated().sum()) and 9 more are reposts - the same listing_id with a later listed_on and the advert retyped, so every column does not match and drop_duplicates() cannot see them. drop_duplicates() leaves 489 rows; drop_duplicates(subset=['listing_id']) leaves 480, which is the number of real flats
+- T2 city spellings: 26 distinct strings in the raw column for 5 real cities; lowercasing and collapsing spaces still leaves 11 (Khan Yunis / Khan Younis, Jabalya / Jabalia differ by more than case) - a canonical map is needed, not .str.title()
+- T2 furnished is written 12 ways: ' no', '0', '1', 'FALSE', 'N', 'No', 'TRUE', 'Y', 'Yes', 'no', 'yes', 'yes '
+- T2 missing (blank cells): monthly_rent=19, area_m2=27, floor=9, condition=36, deposit=123
+- T2 missingness is NOT one mechanism, which is the whole point of the column. area_m2 blanks are spread at random (MCAR). deposit is blank for every row of Noor Estates and Diwan Rentals plus a few others: it depends on `agency`, a column you can see (MAR), so a per-agency rule beats a global one. monthly_rent is blank where the rent is high - the site prints 'price on request' for premium flats (MNAR): mean rooms 3.58 vs 3.04, mean area 81.5 vs 71.8 m2, 32% excellent vs 15%, 42% furnished vs 33%. Those are hints, not proof - MNAR cannot be proved from the file, only learned from the source - and imputing the mean rent drags exactly the most expensive listings down to average
+- T2 monthly_rent (the 484 rows that have one): min=25, median=200.0, mean=416.3, max=99999, std=4536.6 - mean above median, so right-skewed
+- T2 IQR fence on monthly_rent: Q1=153.8, Q3=255.0, IQR=101.2, fences [1.9, 406.9]; 12 values fall outside (0 low, 12 high). |z|>3 flags only 1 of them, because the single 99999 inflates the standard deviation it is measured against - drop that one typo and |z|>3 flags 6 while IQR flags 11. Note what NEITHER rule finds: the daily rate of 25 sits inside the lower fence of 1.9, so only domain knowledge catches it
+- T2 planted value errors, which are NOT the same thing as outliers: monthly_rent 99999 (listing_id 5062, a phone number) and 25 (listing_id 5208, a daily rate); rooms 0 (listing_id 5134) and 12 (listing_id 5319); 5 area_m2 values recorded in dunum, so they read 0.0x instead of 5x-9x m2 (5015, 5099, 5167, 5290, 5403)
+- T2 condition is ordinal (poor < fair < good < excellent) and arrives in 14 non-blank spellings plus 36 blanks; after strip+lower: good=188, fair=144, excellent=79, poor=56, (blank)=36
+- T2 agency is high-cardinality: 20 agencies over 503 rows; the top 5 carry 364 rows (72%) while 4 agencies appear exactly once and 8 appear at most three times - one-hot encoding it adds 20 columns, most of them almost all zeros
+- T2 listed_on: 480 rows ISO (YYYY-MM-DD) and 23 rows DD/MM/YYYY; pd.to_datetime without format= warns and falls back per value, so 03/04/2026 and 2026-04-03 can end up as different days
+- T2 the merge trap: city_reference.csv holds the 5 cities under their canonical spelling plus Beit Lahia (in no listing). Merging on the RAW city column matches 316 of 503 rows (63%) and an inner join silently drops the rest; merging on the cleaned name matches all 503. An outer join on the clean name leaves Beit Lahia as 1 unmatched reference row
+- T2 listings_new.csv: 85 rows for June 2026, already canonically spelled, and carrying what the training data never saw - city 'Beit Lahia' (2 rows), agencies 'Burhan Realty' and 'Sumud Housing' (1 row each) and condition 'very good' (1 row); 3 blank area_m2, 2 blank monthly_rent, 1 blank condition. get_dummies() on this file alone produces different columns than on listings_raw.csv
+- T2 rent_history_wide.csv: 40 listings x 4 quarter columns; melting gives 160 long rows, of which 153 carry a rent and 7 are blank quarters
 
 ## Files
 
@@ -30,6 +45,10 @@ invent a different number for the same data. Re-run the script, never hand-edit 
 | `downloads/p1/cafeteria_orders.csv` | one month of cafeteria order lines (messy on purpose) |
 | `downloads/p1/cafeteria_orders.xlsx` | the same as an Excel workbook: Table `tblOrders`, sheet `Menu` with Table `tblMenu` |
 | `downloads/p1/cafeteria_menu.csv` | the menu: item, category, list_price |
+| `downloads/t2/listings_raw.csv` | 503 rental listings scraped over four months and never cleaned: duplicates, reposts, 27 city spellings, three missing-data mechanisms, two value typos, five areas in dunum |
+| `downloads/t2/city_reference.csv` | one row per city: governorate, population, coastal, km to Gaza City - joins on the *cleaned* city name |
+| `downloads/t2/listings_new.csv` | next month's batch, with a city, two agencies and a condition level the training data never saw |
+| `downloads/t2/rent_history_wide.csv` | 40 listings x 4 quarter columns: wide data to melt |
 
 ### Files written by lesson authors (kept by hand, not generated)
 
