@@ -99,14 +99,6 @@ async function serviceWorkerReady(page) {
   });
 }
 
-/** The precache list the generated service worker ships with. */
-function precacheList() {
-  const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
-  const block = /var PRECACHE = \[([\s\S]*?)\];/.exec(sw);
-  if (!block) throw new Error('sw.js has no PRECACHE list');
-  return [...block[1].matchAll(/"([^"]+)"/g)].map((m) => m[1]);
-}
-
 module.exports = {
   ROOT,
   sitePages,
@@ -114,5 +106,4 @@ module.exports = {
   open,
   watchForProblems,
   serviceWorkerReady,
-  precacheList,
 };

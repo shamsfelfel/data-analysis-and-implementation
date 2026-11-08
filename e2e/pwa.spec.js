@@ -9,7 +9,7 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('fs');
 const path = require('path');
-const { ROOT, open, sitePages, serviceWorkerReady, precacheList } = require('./helpers');
+const { ROOT, open, sitePages, serviceWorkerReady } = require('./helpers');
 
 test.describe('manifest', () => {
   test('is served, parses, and names icons that exist', async ({ request, baseURL }) => {
@@ -62,64 +62,10 @@ test.describe('service worker', () => {
     expect(state.scriptURL).toContain('/sw.js');
   });
 
-  test("clears its own old caches and leaves a sibling course's alone", async ({ page }) => {
-    // The courses are published to one GitHub Pages origin, each under its own
-    // project path, and Cache Storage is scoped to the origin rather than the
-    // path. A worker that deleted every cache that was not its own would throw
-    // away the sibling courses' offline copies. Plant one cache of each kind
-    // and make the worker install and activate from scratch.
-    await open(page, 'index.html');
-    await serviceWorkerReady(page);
-
-    await page.evaluate(async () => {
-      await caches.open('da-19700101-1'); // an older build of this course
-      await caches.open('oop-19700101-1'); // another course on the same origin
-    });
-
-    await page.evaluate(async () => {
-      const reg = await navigator.serviceWorker.getRegistration();
-      if (reg) await reg.unregister();
-    });
-    await page.reload();
-    await serviceWorkerReady(page);
-
-    const keys = async () => page.evaluate(() => caches.keys());
-    await expect
-      .poll(async () => (await keys()).includes('da-19700101-1'),
-            { message: 'this course kept one of its own stale caches' })
-      .toBe(false);
-
-    const after = await keys();
-    expect(after, "a sibling course's cache was deleted").toContain('oop-19700101-1');
-    expect(after.some((k) => /^da-\d{8}-\d+$/.test(k)),
-           'this course precached nothing under its own prefix').toBe(true);
-  });
-
-  test('precaches every file the site is made of', async ({ request }) => {
-    const listed = precacheList();
-
-    // Everything it names must exist...
-    for (const url of listed) {
-      if (url === './') continue;
-      const res = await request.get('/' + url);
-      expect(res.status(), `sw.js precaches ${url}, which 404s`).toBe(200);
-    }
-
-    // ...and every page of the course must be named.
-    for (const p of sitePages()) {
-      expect(listed, `sw.js does not precache ${p.href}`).toContain(p.href);
-    }
-
-    // ...as must every stylesheet and script under assets/.
-    const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
-      e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]
-    );
-    const assets = walk(path.join(ROOT, 'assets'))
-      .map((f) => path.relative(ROOT, f).split(path.sep).join('/'));
-    for (const a of assets) {
-      expect(listed, `sw.js does not precache ${a}`).toContain(a);
-    }
-  });
+  /* The prefix guard, the precache list and a sibling's caches surviving an
+     activation are checked in e2e/sw-invariants.spec.js, which is the same
+     file in all seven apps on this origin. They used to be checked here, in a
+     slightly different way in each of four repositories. */
 
   test('the course still opens with the network off', async ({ page, context }) => {
     // Visit once online so the worker can install and fill its cache.
