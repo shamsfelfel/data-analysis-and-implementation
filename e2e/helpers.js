@@ -4,6 +4,13 @@
  * The page list is read out of src/registry.json rather than written here,
  * so a chapter added to the course is a chapter the suite starts walking
  * without anyone remembering to add it.
+ *
+ * A chapter being written carries `ready: false` in the registry. Its pages
+ * are built and deployed -- they are simply not linked from the course home --
+ * so the shell tests (layout, navigation, offline) still walk them and must
+ * pass: a half-written chapter may not break the site. What those pages do not
+ * yet have is finished content, so the tests that assert on content --
+ * `lessonPages()` and `bankPages()` -- skip them until the chapter is ready.
  */
 const fs = require('fs');
 const path = require('path');
@@ -22,6 +29,7 @@ function sitePages() {
       out.push({
         chapter: ch.key,
         track: ch.track,
+        ready: ch.ready !== false,
         id: p.id,
         kind: p.kind,
         n: p.n || null,
@@ -36,9 +44,15 @@ function sitePages() {
   return out;
 }
 
-/** The pages that carry a graded question bank. */
+/** The lesson pages of the chapters that are finished. */
+function lessonPages() {
+  return sitePages().filter((p) => p.kind === 'lesson' && p.ready);
+}
+
+/** The pages that carry a graded question bank. A test page in a chapter still
+ *  being written shows a "being written" notice instead, and has no bank. */
 function bankPages() {
-  return sitePages().filter((p) => p.bank);
+  return sitePages().filter((p) => p.bank && p.ready);
 }
 
 /**
@@ -102,6 +116,7 @@ async function serviceWorkerReady(page) {
 module.exports = {
   ROOT,
   sitePages,
+  lessonPages,
   bankPages,
   open,
   watchForProblems,
