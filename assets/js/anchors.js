@@ -586,6 +586,27 @@ window.DAAnchors = {
 "t1lab-h7": "labs/t1-lab.html",
 "t1lab-h8": "labs/t1-lab.html",
 "t1lab-h9": "labs/t1-lab.html",
+"t2-chapter": "chapters/t2.html",
+"t2-exam-a": "exams/t2-exam-a.html",
+"t2-exam-b": "exams/t2-exam-b.html",
+"t2-exam-c": "exams/t2-exam-c.html",
+"t2-glossary": "glossary/t2-glossary.html",
+"t2-lab": "labs/t2-lab.html",
+"t2-lesson-01": "lessons/t2-lesson-01.html",
+"t2-lesson-02": "lessons/t2-lesson-02.html",
+"t2-lesson-03": "lessons/t2-lesson-03.html",
+"t2-lesson-04": "lessons/t2-lesson-04.html",
+"t2-lesson-05": "lessons/t2-lesson-05.html",
+"t2-lesson-06": "lessons/t2-lesson-06.html",
+"t2-test-01": "tests/t2-test-01.html",
+"t2-test-02": "tests/t2-test-02.html",
+"t2-test-03": "tests/t2-test-03.html",
+"t2-test-04": "tests/t2-test-04.html",
+"t2-test-05": "tests/t2-test-05.html",
+"t2-test-06": "tests/t2-test-06.html",
+"t2idx-h1": "chapters/t2.html",
+"t2idx-h2": "chapters/t2.html",
+"t2idx-s1": "chapters/t2.html",
 "track-practical": "index.html",
 "track-theory": "index.html"
 };
@@ -2593,6 +2614,18 @@ window.DAHeadings = {
 "t1lab-h9": {
 "ar": "كيف يقسّم قارئ CSV سطرًا فيه تنصيص",
 "en": "How a CSV reader splits a quoted line"
+},
+"t2idx-h1": {
+"ar": "الدروس",
+"en": "The lessons"
+},
+"t2idx-h2": {
+"ar": "كيف تستخدم هذا الفصل",
+"en": "How to use this chapter"
+},
+"t2idx-s1": {
+"ar": "الفصل في سطر واحد",
+"en": "The chapter in one line"
 },
 "track-practical": {
 "ar": "العملي — مختبر تحليل البيانات وتصويرها",

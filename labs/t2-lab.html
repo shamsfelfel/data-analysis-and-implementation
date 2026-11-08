@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Data analysis taught from first principles to professional practice, in English and Arabic, with tests, a glossary, diagrams and a step-through execution lab.">
+<title data-en="Execution Lab · Theory 2 · Data Analysis" data-ar="مختبر التنفيذ · تحويل البيانات · تحليل البيانات">Execution Lab · Theory 2 · Data Analysis</title>
+<script>
+/* Theme, language and the path back to the site root, all before the
+   first paint: a dark reader must not see a white flash, and an Arabic
+   reader must not see a left-to-right page redraw itself. */
+(function () {
+  window.DA_BASE = "../";
+  try {
+    var l = localStorage.getItem("da.lang");
+    if (l === "ar" || l === "en") {
+      document.documentElement.lang = l;
+      document.documentElement.dir = l === "ar" ? "rtl" : "ltr";
+    }
+    var t = localStorage.getItem("da.theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+  } catch (e) {}
+})();
+</script>
+<meta name="theme-color" content="#0d6f6a">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Data Analysis">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../assets/css/tokens.css">
+<link rel="stylesheet" href="../assets/css/base.css">
+<link rel="stylesheet" href="../assets/css/chrome.css">
+<link rel="stylesheet" href="../assets/css/components.css">
+<link rel="stylesheet" href="../assets/css/trace.css">
+</head>
+<body data-chapter="t2" data-page="t2-lab" data-kind="lab" data-path="labs/t2-lab.html">
+<main>
+<section class="page" id="t2-lab">
+<nav class="crumbs"></nav>
+
+  <span class="kicker">Execution Lab</span>
+  <h1><span class="en">Execution Lab &mdash; watch the code run</span><span class="ar">مختبر التنفيذ &mdash; شاهد الكود يُنفَّذ</span></h1>
+  <p class="lede en">Step through the programs of this chapter one line at a time. The highlighted line is about to run; beside it you see what exists <em>right now</em> &mdash; variables, lists, tables, trees and the call stack &mdash; with what just changed flagged, and a note on what is happening. Use <strong>Next</strong> and <strong>Back</strong>, press <strong>Run</strong>, drag the slider, or click a line to jump to it.</p>
+  <p class="lede ar">تنقّل في برامج هذا الفصل سطرًا سطرًا. السطر المظلَّل على وشك أن يُنفَّذ؛ وبجانبه ترى ما هو موجود <em>الآن</em> &mdash; المتغيرات والقوائم والجداول والأشجار ومكدّس الاستدعاءات &mdash; مع تمييز ما تغيّر للتو وملاحظة عمّا يجري. استخدم <strong>التالي</strong> و<strong>السابق</strong>، أو اضغط <strong>تشغيل</strong>، أو اسحب المنزلق، أو انقر سطرًا للانتقال إليه.</p>
+  <p class="en">No traces yet.</p><p class="ar">لا توجد تتبّعات بعد.</p>
+
+</section>
+<nav class="pager"></nav>
+</main>
+<footer class="site">
+  <p class="byline">
+    <img class="byline-face" src="../assets/img/shams.jpg" width="34" height="34"
+         alt="" decoding="async">
+    <span class="en">Shams Raed Felfel</span><span class="ar">شمس رائد فلفل</span>
+  </p>
+  <span class="en">Works fully offline · nothing you answer leaves this device</span>
+  <span class="ar">يعمل دون اتصال بالكامل · لا تغادر إجاباتك هذا الجهاز</span>
+</footer>
+<script src="../assets/js/registry.js"></script>
+<script src="../assets/js/course.js"></script>
+<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/theme.js"></script>
+<script src="../assets/js/progress.js"></script>
+<script src="../assets/js/anchors.js"></script>
+<script src="../assets/js/chrome.js"></script>
+<script src="../assets/js/code.js"></script>
+<script src="../assets/js/trace.js"></script>
+<script src="../assets/js/app.js"></script>
+</body>
+</html>

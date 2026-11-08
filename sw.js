@@ -26,7 +26,7 @@
    that ships changes. A rebuild that changes nothing keeps the name,
    and this file stays byte-identical, so an installed reader
    re-downloads nothing: there are no timestamps in here on purpose. */
-var CACHE = 'da-11471975ec65';
+var CACHE = 'da-88592d0152fa';
 
 /* THE INVARIANT ON THIS ORIGIN.
 
@@ -210,6 +210,10 @@ var PRECACHE = [
   "downloads/t1/schools_api_page1.json",
   "downloads/t1/schools_api_page2.json",
   "downloads/t1/schools_api_page3.json",
+  "downloads/t2/city_reference.csv",
+  "downloads/t2/listings_new.csv",
+  "downloads/t2/listings_raw.csv",
+  "downloads/t2/rent_history_wide.csv",
   "exams/p1-exam-a.html",
   "exams/p1-exam-b.html",
   "exams/p1-exam-c.html",
@@ -374,7 +378,7 @@ var HASHES = [
   'b295603194a3',
   'ebf186763479',
   '37e6957a5c7e',
-  '9f81e6b5eaeb',
+  'e08b27889f95',
   '4229037a3a63',
   'f65639c5ac6e',
   'b100340b81aa',
@@ -384,7 +388,7 @@ var HASHES = [
   'cb33dd14f237',
   'bd5b7b249897',
   '397e7459526a',
-  '3d9831e409dd',
+  '948e5b5fab91',
   'f19f5d9227f8',
   '254147e71363',
   '1f8d00c7e714',
@@ -392,12 +396,12 @@ var HASHES = [
   '41eeb0e24cc8',
   '0fa076918f79',
   '1a4ef35f630c',
-  'f1fab146dd0f',
+  '71527de74885',
   '8f859ef982ed',
   'd990afc8db85',
   'd81748f6a038',
   '6f09c1a38e5f',
-  '88c26fc7c90b',
+  '7ad7b32b2889',
   '1a741267e89d',
   '77b69b7f0a00',
   '2868522e7db4',
@@ -407,6 +411,10 @@ var HASHES = [
   'c6c927659f33',
   'fa7d0732105f',
   '3d9fd4984f42',
+  'ce90b17ec30c',
+  '654ede0303ce',
+  'e706d94cbcbd',
+  '0e747b7d5fd3',
   '3a8b291a5ea7',
   '7a744c7802b9',
   '0ce73ebb4b77',

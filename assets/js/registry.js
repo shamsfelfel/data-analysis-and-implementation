@@ -491,17 +491,236 @@ window.DA_REGISTRY = {
      "href": "exams/p1-exam-c.html"
     }
    ]
-  }
- ],
- "planned": [
+  },
   {
+   "key": "t2",
    "track": "theory",
    "num": 2,
+   "ready": false,
    "title": {
     "en": "Data Transformation",
     "ar": "تحويل البيانات"
-   }
-  },
+   },
+   "blurb": {
+    "en": "From a correctly typed table to one a model can learn from: missing values, duplicates, text, outliers, encoding, scaling, reshaping — and one pipeline you can run again next month.",
+    "ar": "من جدول مضبوط الأنواع إلى جدول يستطيع نموذج أن يتعلّم منه: القيم المفقودة والتكرارات والنصوص والقيم الشاذة والترميز وتوحيد المقاييس وإعادة التشكيل — وخط تحويل واحد تعيد تشغيله الشهر القادم."
+   },
+   "domain": {
+    "en": "The same rental listings, being prepared to predict rent",
+    "ar": "إعلانات التأجير نفسها، تُجهَّز للتنبؤ بالإيجار"
+   },
+   "pages": [
+    {
+     "id": "t2-chapter",
+     "kind": "chapter",
+     "title": {
+      "en": "Chapter home",
+      "ar": "صفحة الفصل"
+     },
+     "href": "chapters/t2.html"
+    },
+    {
+     "id": "t2-lesson-01",
+     "kind": "lesson",
+     "n": 1,
+     "title": {
+      "en": "From Typed Table to Model-Ready",
+      "ar": "من جدول مضبوط الأنواع إلى جدول جاهز للنموذج"
+     },
+     "blurb": {
+      "en": "What transformation is, the order its steps have to run in, why every parameter must be learned from the training rows alone, and how to chain steps without ever touching the raw table.",
+      "ar": "ما هو التحويل، وبأي ترتيب يجب أن تجري خطواته، ولماذا يجب أن يُتعلَّم كل وسيط من صفوف التدريب وحدها، وكيف تُسلسل الخطوات دون أن تمسّ الجدول الخام."
+     },
+     "href": "lessons/t2-lesson-01.html"
+    },
+    {
+     "id": "t2-test-01",
+     "kind": "test",
+     "of": 1,
+     "bank": "t2-test-01",
+     "title": {
+      "en": "Test 1 — From Typed Table to Model-Ready",
+      "ar": "اختبار 1 — من جدول مضبوط الأنواع إلى جدول جاهز للنموذج"
+     },
+     "href": "tests/t2-test-01.html"
+    },
+    {
+     "id": "t2-lesson-02",
+     "kind": "lesson",
+     "n": 2,
+     "title": {
+      "en": "Missing Data: Find It, Understand It, Decide",
+      "ar": "البيانات المفقودة: اعثر عليها، وافهمها، ثم اقرّر"
+     },
+     "blurb": {
+      "en": "Counting the blanks, reading the pattern, telling MCAR from MAR from MNAR — and choosing between dropping, imputing and flagging, each with its price named.",
+      "ar": "عدّ الخلايا الفارغة، وقراءة النمط، والتمييز بين الفقد العشوائي التام والعشوائي المشروط وغير العشوائي — ثم الاختيار بين الحذف والتعويض والتعليم، وثمن كل خيار مسمّى."
+     },
+     "href": "lessons/t2-lesson-02.html"
+    },
+    {
+     "id": "t2-test-02",
+     "kind": "test",
+     "of": 2,
+     "bank": "t2-test-02",
+     "title": {
+      "en": "Test 2 — Missing Data: Find It, Understand It, Decide",
+      "ar": "اختبار 2 — البيانات المفقودة: اعثر عليها، وافهمها، ثم اقرّر"
+     },
+     "href": "tests/t2-test-02.html"
+    },
+    {
+     "id": "t2-lesson-03",
+     "kind": "lesson",
+     "n": 3,
+     "title": {
+      "en": "Duplicates, Text and Types: Making Values Comparable",
+      "ar": "التكرارات والنصوص والأنواع: جعل القيم قابلة للمقارنة"
+     },
+     "blurb": {
+      "en": "Exact repeats and reposts, a canonical map instead of Title Case, whitespace and case, a boolean written six ways, and two date formats hiding in one column.",
+      "ar": "التكرارات الحرفية وإعادات النشر، وخريطة أسماء معيارية بدل Title Case، والمسافات وحالة الأحرف، وقيمة منطقية مكتوبة بست صور، وصيغتا تاريخ تتخفّيان في عمود واحد."
+     },
+     "href": "lessons/t2-lesson-03.html"
+    },
+    {
+     "id": "t2-test-03",
+     "kind": "test",
+     "of": 3,
+     "bank": "t2-test-03",
+     "title": {
+      "en": "Test 3 — Duplicates, Text and Types: Making Values Comparable",
+      "ar": "اختبار 3 — التكرارات والنصوص والأنواع: جعل القيم قابلة للمقارنة"
+     },
+     "href": "tests/t2-test-03.html"
+    },
+    {
+     "id": "t2-lesson-04",
+     "kind": "lesson",
+     "n": 4,
+     "title": {
+      "en": "Outliers and Skew: Thresholds You Can Defend",
+      "ar": "القيم الشاذة والالتواء: حدود تستطيع الدفاع عنها"
+     },
+     "blurb": {
+      "en": "From an eyeballed cut-off to the IQR fence, the z-score, the robust z and a domain rule — and when to flag, cap, transform or leave an extreme value exactly where it is.",
+      "ar": "من حدٍّ مقدَّر بالنظر إلى سياج الربيعات ودرجة z ودرجة z الحصينة وقاعدة من الميدان — ومتى تعلّم القيمة المتطرفة أو تقصّها أو تحوّلها أو تتركها في موضعها تمامًا."
+     },
+     "href": "lessons/t2-lesson-04.html"
+    },
+    {
+     "id": "t2-test-04",
+     "kind": "test",
+     "of": 4,
+     "bank": "t2-test-04",
+     "title": {
+      "en": "Test 4 — Outliers and Skew: Thresholds You Can Defend",
+      "ar": "اختبار 4 — القيم الشاذة والالتواء: حدود تستطيع الدفاع عنها"
+     },
+     "href": "tests/t2-test-04.html"
+    },
+    {
+     "id": "t2-lesson-05",
+     "kind": "lesson",
+     "n": 5,
+     "title": {
+      "en": "Encoding Categories, Scaling Numbers",
+      "ar": "ترميز الفئات وتوحيد مقاييس الأرقام"
+     },
+     "blurb": {
+      "en": "One-hot, ordinal and frequency encoding, the unseen-category trap, min-max against standard against robust scaling, and the leakage that fitting on every row quietly causes.",
+      "ar": "الترميز الأحادي والترتيبي والترددي، وفخّ الفئة غير المرئية، والمقايسة الدنيا-العليا مقابل المعيارية مقابل الحصينة، والتسرّب الذي يسبّبه بهدوء ضبطُ الوسائط على كل الصفوف."
+     },
+     "href": "lessons/t2-lesson-05.html"
+    },
+    {
+     "id": "t2-test-05",
+     "kind": "test",
+     "of": 5,
+     "bank": "t2-test-05",
+     "title": {
+      "en": "Test 5 — Encoding Categories, Scaling Numbers",
+      "ar": "اختبار 5 — ترميز الفئات وتوحيد مقاييس الأرقام"
+     },
+     "href": "tests/t2-test-05.html"
+    },
+    {
+     "id": "t2-lesson-06",
+     "kind": "lesson",
+     "n": 6,
+     "title": {
+      "en": "Reshape, Combine, and the Pipeline",
+      "ar": "إعادة التشكيل والدمج وخط التحويل"
+     },
+     "blurb": {
+      "en": "Long against wide, groupby-agg against transform, merge semantics and the row-count trap — then one fitted transform, with its report, that you can run again on next month's file.",
+      "ar": "الطويل مقابل العريض، وتجميع groupby مقابل transform، ودلالات الدمج وفخّ عدد الصفوف — ثم تحويل واحد مضبوط الوسائط، مع تقريره، تستطيع إعادة تشغيله على ملف الشهر القادم."
+     },
+     "href": "lessons/t2-lesson-06.html"
+    },
+    {
+     "id": "t2-test-06",
+     "kind": "test",
+     "of": 6,
+     "bank": "t2-test-06",
+     "title": {
+      "en": "Test 6 — Reshape, Combine, and the Pipeline",
+      "ar": "اختبار 6 — إعادة التشكيل والدمج وخط التحويل"
+     },
+     "href": "tests/t2-test-06.html"
+    },
+    {
+     "id": "t2-lab",
+     "kind": "lab",
+     "title": {
+      "en": "Execution Lab",
+      "ar": "مختبر التنفيذ"
+     },
+     "href": "labs/t2-lab.html"
+    },
+    {
+     "id": "t2-glossary",
+     "kind": "glossary",
+     "title": {
+      "en": "Glossary",
+      "ar": "قاموس المصطلحات"
+     },
+     "href": "glossary/t2-glossary.html"
+    },
+    {
+     "id": "t2-exam-a",
+     "kind": "exam",
+     "bank": "t2-exam-a",
+     "title": {
+      "en": "Chapter Test A — Core",
+      "ar": "اختبار الفصل أ — الأساسيات"
+     },
+     "href": "exams/t2-exam-a.html"
+    },
+    {
+     "id": "t2-exam-b",
+     "kind": "exam",
+     "bank": "t2-exam-b",
+     "title": {
+      "en": "Chapter Test B — Applied",
+      "ar": "اختبار الفصل ب — التطبيق"
+     },
+     "href": "exams/t2-exam-b.html"
+    },
+    {
+     "id": "t2-exam-c",
+     "kind": "exam",
+     "bank": "t2-exam-c",
+     "title": {
+      "en": "Chapter Test C — Advanced",
+      "ar": "اختبار الفصل ج — المتقدم"
+     },
+     "href": "exams/t2-exam-c.html"
+    }
+   ]
+  }
+ ],
+ "planned": [
   {
    "track": "theory",
    "num": 3,

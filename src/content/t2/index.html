@@ -1,0 +1,69 @@
+<section class="page" id="t2-chapter">
+
+  <span class="kicker">Theory &middot; Chapter 2</span>
+  <h1><span class="en">Data Transformation</span><span class="ar">تحويل البيانات</span></h1>
+
+  <p class="lede en"><a href="#t1-chapter">Chapter&nbsp;1</a> left you with a table whose columns are correctly typed and whose load you can prove. That table is still not something a model can learn from. Nineteen rents are blank &mdash; and they are the expensive ones. Twenty-three rows are the same flat written twice. Five cities appear under twenty-six spellings. One rent is a phone number, another is a daily rate, and the column that predicts rent best is a word rather than a number. This chapter is the repair &mdash; and the discipline that keeps the repair honest: every decision written down, every parameter learned from the training rows only, and every step runnable again next month on a file you have not seen.</p>
+  <p class="lede ar">تركك <a href="#t1-chapter">الفصل الأول</a> بجدول أعمدته مضبوطة الأنواع وتحميله قابل للإثبات. وهذا الجدول ما زال غير صالح ليتعلّم منه نموذج: تسعة عشر إيجارًا فارغة &mdash; وهي الإيجارات المرتفعة. وثلاثة وعشرون صفًّا هي الشقة نفسها مكتوبةً مرتين. وخمس مدن تظهر بستٍّ وعشرين صورة إملائية. وأحد الإيجارات رقم هاتف، وآخر أجرة يوم، والعمود الأقدر على التنبؤ بالإيجار كلمةٌ لا رقم. هذا الفصل هو الإصلاح &mdash; والانضباط الذي يحفظ للإصلاح صدقه: كل قرار مكتوب، وكل وسيط مُتعلَّم من صفوف التدريب وحدها، وكل خطوة قابلة لإعادة التشغيل الشهر القادم على ملف لم تره.</p>
+
+  <div class="note">
+    <h4><span class="en">The running example</span><span class="ar">المثال الجاري</span></h4>
+    <p class="en">One file carries the whole chapter: <a class="data-dl" href="@/downloads/t2/listings_raw.csv">listings_raw.csv</a> &mdash; 503 rows a scraper collected over four months from the same rental market you met in Chapter&nbsp;1, and nobody cleaned. Three smaller files join it when the lesson needs them: <a href="@/downloads/t2/city_reference.csv">city_reference.csv</a> (what each city is, to join to), <a href="@/downloads/t2/rent_history_wide.csv">rent_history_wide.csv</a> (one column per quarter, the shape a spreadsheet produces), and <a href="@/downloads/t2/listings_new.csv">listings_new.csv</a> &mdash; next month's batch, which arrives carrying a city, two agencies and a condition level the first file never contained.</p>
+    <p class="ar">يحمل الفصل كلَّه ملف واحد: <a class="data-dl" href="@/downloads/t2/listings_raw.csv">listings_raw.csv</a> &mdash; ‏503 صفوف جمعها زاحف على مدى أربعة أشهر من سوق التأجير نفسه الذي قابلته في الفصل الأول، ولم ينظّفها أحد. وتنضمّ إليه ثلاثة ملفات أصغر حين يحتاجها الدرس: <a href="@/downloads/t2/city_reference.csv">city_reference.csv</a> (تعريف كل مدينة، للدمج)، و<a href="@/downloads/t2/rent_history_wide.csv">rent_history_wide.csv</a> (عمود لكل ربع سنة، وهو الشكل الذي تنتجه الجداول الحسابية)، و<a href="@/downloads/t2/listings_new.csv">listings_new.csv</a> &mdash; دفعة الشهر القادم، وتأتي حاملةً مدينةً ووكالتين ومستوى حالة لم يحتوِها الملف الأول قط.</p>
+  </div>
+
+  <div class="problem">
+    <h4><span class="en">The question the whole chapter serves</span><span class="ar">السؤال الذي يخدمه الفصل كله</span></h4>
+    <p class="en">&ldquo;Given a listing &mdash; its city, size, rooms, condition and furnishing &mdash; what monthly rent should it ask?&rdquo; Every transformation in this chapter is judged by one test: does it make that question answerable, on rows the method has never seen? A step that improves the table you measured it on, and only that table, has not helped. It has lied to you, politely.</p>
+    <p class="ar">«بناءً على إعلان &mdash; مدينته ومساحته وغرفه وحالته وفرشه &mdash; كم ينبغي أن يطلب إيجارًا شهريًّا؟» كل تحويل في هذا الفصل يُحكَم عليه باختبار واحد: هل يجعل ذلك السؤال قابلًا للإجابة على صفوف لم ترها الطريقة قط؟ فالخطوة التي تُحسّن الجدول الذي قِستها عليه، وذلك الجدول فقط، لم تُفِد شيئًا؛ بل كذبت عليك بلطف.</p>
+  </div>
+
+  <h2 id="t2idx-h1"><span class="en">What you will be able to do</span><span class="ar">ماذا ستستطيع أن تفعل</span></h2>
+  <ul class="objectives">
+    <li><span class="en">Order a transformation pipeline correctly, and say for each step which parameters it <em>learns</em> and which it merely applies.</span><span class="ar">ترتّب خط التحويل ترتيبًا صحيحًا، وتقول عن كل خطوة أي الوسائط <em>تتعلّمها</em> وأيّها تطبّقها فقط.</span></li>
+    <li><span class="en">Measure missing data, name its mechanism, and defend dropping, imputing or flagging &mdash; with the cost of your choice stated.</span><span class="ar">تقيس البيانات المفقودة وتسمّي آليتها، وتدافع عن الحذف أو التعويض أو التعليم &mdash; وثمن اختيارك مُعلَن.</span></li>
+    <li><span class="en">Repair duplicates, ragged text, booleans written six ways and two date formats, using a recorded rule rather than a lucky one-liner.</span><span class="ar">تُصلح التكرارات والنصوص المهلهلة والقيم المنطقية المكتوبة بست صور وصيغتَي التاريخ، بقاعدة مسجَّلة لا بسطر محظوظ.</span></li>
+    <li><span class="en">Choose an outlier rule &mdash; IQR, z, robust z or a domain limit &mdash; justify the threshold, and distinguish a wrong value from a rare one.</span><span class="ar">تختار قاعدة للقيم الشاذة &mdash; الربيعات أو z أو z الحصينة أو حدًّا ميدانيًّا &mdash; وتبرّر الحدّ، وتفرّق بين قيمة خاطئة وقيمة نادرة.</span></li>
+    <li><span class="en">Encode categorical columns and scale numeric ones without leaking information, and survive a category you have never seen.</span><span class="ar">ترمّز الأعمدة الفئوية وتوحّد مقاييس العددية دون تسريب معلومات، وتنجو من فئة لم ترها قبلًا.</span></li>
+    <li><span class="en">Reshape and combine tables knowing exactly what each operation does to the row count &mdash; and wrap the lot in one fitted, reportable transform.</span><span class="ar">تعيد تشكيل الجداول وتدمجها وأنت تعرف بالضبط ما تفعله كل عملية بعدد الصفوف &mdash; وتضمّ كل ذلك في تحويل واحد مضبوط الوسائط وقابل للتقرير.</span></li>
+  </ul>
+
+  <figure class="diagram" data-diagram="t2-chapter-map">
+    <figcaption><span class="en">The chapter in six lessons: what each one repairs, and what it hands to the next.</span><span class="ar">الفصل في ستة دروس: ما يُصلحه كلٌّ منها، وما يسلّمه إلى الذي بعده.</span></figcaption>
+  </figure>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens &mdash; transformation <em>is</em> the model</span><span class="ar">منظور الذكاء الاصطناعي &mdash; التحويل <em>هو</em> النموذج</span></h4>
+    <p class="en">Practitioners say the algorithm is a commodity and the features are the work, and this chapter is why. The same rows, encoded two different ways, give two different models. Three of the mistakes you will learn to avoid here are the three that most often make a model look brilliant in a notebook and useless in production: <strong>leakage</strong> (a scaler or an imputer that learned from rows the model will be tested on), <strong>unseen categories</strong> (a one-hot encoding fitted in March that meets a new agency in June and silently produces a different set of columns), and <strong>a transformation that destroys the signal</strong> (a mean-imputed rent on listings whose rent was hidden precisely because it was high).</p>
+    <p class="ar">يقول المختصّون إن الخوارزمية سلعة متاحة وإن العمل الحقيقي في الخصائص، وهذا الفصل هو السبب. فالصفوف نفسها، إذا رُمِّزت بطريقتين، أعطت نموذجين مختلفين. وثلاثة من الأخطاء التي ستتعلّم تجنّبها هنا هي الثلاثة الأكثر تسبّبًا في أن يبدو النموذج عبقريًّا في الدفتر وعديم النفع في الإنتاج: <strong>التسرّب (leakage)</strong>، أي مُقايِس أو مُعوِّض تعلّم من صفوف سيُختبر عليها النموذج؛ و<strong>الفئات غير المرئية</strong>، أي ترميز أحادي ضُبط في آذار فقابل وكالة جديدة في حزيران فأنتج بصمت مجموعة أعمدة مختلفة؛ و<strong>تحويل يُهلك الإشارة</strong>، أي إيجار مُعوَّض بالمتوسط على إعلانات أُخفي إيجارها لأنه مرتفع بالضبط.</p>
+  </div>
+
+  <div class="thread">
+    <h4><span class="en">Threads this chapter closes &mdash; and reopens</span><span class="ar">خيوط يُغلقها هذا الفصل &mdash; ويفتحها</span></h4>
+    <p class="en"><strong>&ldquo;What may I do with this column?&rdquo;</strong> began in <a href="#t1-lesson-02">Theory&nbsp;1 Lesson&nbsp;2</a> as a measurement level you wrote down and nothing checked. Lesson&nbsp;5 here turns the level into the encoder you are allowed to use. <strong>&ldquo;Remove the rows that should not be counted&rdquo;</strong> ended <a href="#p1-lesson-06">Practical&nbsp;1 Lesson&nbsp;6</a> with thresholds eyeballed by a human and a Title Case rule that renamed 76 correct lines; Lessons&nbsp;3 and&nbsp;4 replace both with rules you can defend. And <strong>&ldquo;turn a messy value into a number&rdquo;</strong> ended <a href="#t1-lesson-06">Theory&nbsp;1 Lesson&nbsp;6</a> reporting failures it could not fix; Lesson&nbsp;3 fixes them. What stays open after this chapter is said plainly in Lesson&nbsp;6: these steps are still hand-wired, and feature engineering has not started.</p>
+    <p class="ar"><strong>«ماذا يحقّ لي أن أفعل بهذا العمود؟»</strong> بدأ في <a href="#t1-lesson-02">الدرس 2 من النظري 1</a> مستوى قياس تكتبه ولا يفحصه شيء؛ والدرس 5 هنا يحوّل المستوى إلى المُرمِّز المسموح لك باستعماله. و<strong>«احذف الصفوف التي لا ينبغي عدّها»</strong> انتهى في <a href="#p1-lesson-06">الدرس 6 من العملي 1</a> بحدود قدّرها إنسان بالنظر وبقاعدة Title Case أعادت تسمية 76 سطرًا صحيحًا؛ والدرسان 3 و4 يستبدلان بهما قواعد تستطيع الدفاع عنها. و<strong>«حوّل قيمة نصية فوضوية إلى رقم»</strong> انتهى في <a href="#t1-lesson-06">الدرس 6 من النظري 1</a> وهو يُبلّغ عن أعطال لم يستطع إصلاحها؛ والدرس 3 يُصلحها. وما يبقى مفتوحًا بعد هذا الفصل يُقال صريحًا في الدرس 6: هذه الخطوات ما زالت موصولة باليد، وهندسة الخصائص لم تبدأ بعد.</p>
+  </div>
+
+  <div class="callout prereq">
+    <h4><span class="en">Before you start</span><span class="ar">قبل أن تبدأ</span></h4>
+    <p class="en"><a href="#t1-chapter">Theory Chapter&nbsp;1</a>, and in particular <a href="#t1-lesson-02">measurement levels</a> and <a href="#t1-lesson-03">pandas dtypes</a>: this chapter assumes you can read a <code>dtype</code>, tell a nominal column from an ordinal one, and load a CSV without corrupting it. No statistics beyond the mean, the median and the quartiles &mdash; each is defined here where it is first used. No machine-learning library: every transformation is written in plain pandas so you can see what it does, and the appendix of <a href="#t2-lesson-06">Lesson&nbsp;6</a> names the <code>scikit-learn</code> objects that do the same job in production.</p>
+    <p class="ar"><a href="#t1-chapter">الفصل النظري الأول</a>، وبخاصة <a href="#t1-lesson-02">مستويات القياس</a> و<a href="#t1-lesson-03">أنواع pandas</a>: يفترض هذا الفصل أنك تقرأ <code>dtype</code>، وتميّز العمود الاسمي من الترتيبي، وتحمّل ملف CSV دون إفساده. ولا يلزمك من الإحصاء غير المتوسط والوسيط والربيعات &mdash; وكلٌّ منها معرَّف هنا حيث يُستعمل أول مرة. ولا تلزمك مكتبة تعلُّم آلي: كل تحويل مكتوب بـ pandas صِرفة لترى ما يفعله، ويذكر ملحق <a href="#t2-lesson-06">الدرس 6</a> كائنات <code>scikit-learn</code> التي تؤدي العمل نفسه في الإنتاج.</p>
+  </div>
+
+  <!--GEN:index-->
+
+  <h2 id="t2idx-h2"><span class="en">How to use this chapter</span><span class="ar">كيف تستخدم هذا الفصل</span></h2>
+  <ul>
+    <li><span class="en">Download the file and run every snippet on it. The numbers in this chapter are real; if yours differ, one of us has a bug and it is worth finding.</span><span class="ar">نزّل الملف وشغّل عليه كل مقطع. الأرقام في هذا الفصل حقيقية؛ فإن اختلفت أرقامك فعند أحدنا خلل يستحق أن يُعثر عليه.</span></li>
+    <li><span class="en">Predict before you read: say what a step will do to the row count, then check. Transformation bugs are almost always row counts.</span><span class="ar">تنبّأ قبل أن تقرأ: قل ما ستفعله الخطوة بعدد الصفوف ثم تحقّق. فأعطال التحويل أعداد صفوف في معظم الأحوال.</span></li>
+    <li><span class="en">In every versioned-code block, read Version&nbsp;1 and try to name its defect before opening Version&nbsp;2 &mdash; the tests ask exactly that.</span><span class="ar">في كل صندوق كود متعدّد النسخ، اقرأ النسخة 1 وحاول تسمية عيبها قبل أن تفتح النسخة 2 &mdash; فالاختبارات تسأل ذلك بالضبط.</span></li>
+    <li><span class="en">Keep a decision log as you go. By Lesson&nbsp;6 you will need it, and writing it then from memory is how analyses become unreproducible.</span><span class="ar">اكتب سجل قرارات أثناء تقدّمك. ستحتاجه في الدرس 6، وكتابته حينها من الذاكرة هي الطريق إلى تحليل غير قابل للتكرار.</span></li>
+  </ul>
+
+  <div class="card takeaways">
+    <h3 id="t2idx-s1"><span class="en">The chapter in one line</span><span class="ar">الفصل في سطر واحد</span></h3>
+    <p class="en">A transformation is a decision about data, so write it down, learn its parameters from the training rows only, and make it run again &mdash; unchanged &mdash; on data you have never seen.</p>
+    <p class="ar">التحويل قرار بشأن البيانات؛ فاكتبه، وتعلَّم وسائطه من صفوف التدريب وحدها، واجعله يعمل مرة أخرى &mdash; دون تغيير &mdash; على بيانات لم ترها قط.</p>
+  </div>
+
+</section>
