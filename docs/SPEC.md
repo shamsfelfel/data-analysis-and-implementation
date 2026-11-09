@@ -26,7 +26,7 @@ why) and **Practical** (how to do it with real tools) side by side.
 | # | Chapter | Status |
 |---|---|---|
 | T1 | Basic Data Types and Data Sources | **done** |
-| T2 | Data Transformation | planned |
+| T2 | Data Transformation | **done** |
 | T3 | Matplotlib (+ Seaborn) | planned |
 | T4 | Exploratory Data Analysis | planned |
 | T5 | Time Series Data | planned |
