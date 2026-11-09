@@ -742,7 +742,166 @@ window.DAAnchors = {
 "t2l3-s7": "lessons/t2-lesson-03.html",
 "t2l3-s8": "lessons/t2-lesson-03.html",
 "t2l3-s9": "lessons/t2-lesson-03.html",
+"t2l4-e1": "lessons/t2-lesson-04.html",
+"t2l4-e2": "lessons/t2-lesson-04.html",
+"t2l4-e3": "lessons/t2-lesson-04.html",
+"t2l4-e4": "lessons/t2-lesson-04.html",
+"t2l4-h1": "lessons/t2-lesson-04.html",
+"t2l4-h2": "lessons/t2-lesson-04.html",
+"t2l4-h3": "lessons/t2-lesson-04.html",
+"t2l4-h4": "lessons/t2-lesson-04.html",
+"t2l4-h5": "lessons/t2-lesson-04.html",
+"t2l4-h6": "lessons/t2-lesson-04.html",
+"t2l4-h7": "lessons/t2-lesson-04.html",
+"t2l4-h8": "lessons/t2-lesson-04.html",
+"t2l4-h9": "lessons/t2-lesson-04.html",
+"t2l4-s1": "lessons/t2-lesson-04.html",
+"t2l4-s10": "lessons/t2-lesson-04.html",
+"t2l4-s11": "lessons/t2-lesson-04.html",
+"t2l4-s12": "lessons/t2-lesson-04.html",
+"t2l4-s13": "lessons/t2-lesson-04.html",
+"t2l4-s14": "lessons/t2-lesson-04.html",
+"t2l4-s15": "lessons/t2-lesson-04.html",
+"t2l4-s16": "lessons/t2-lesson-04.html",
+"t2l4-s17": "lessons/t2-lesson-04.html",
+"t2l4-s18": "lessons/t2-lesson-04.html",
+"t2l4-s19": "lessons/t2-lesson-04.html",
+"t2l4-s2": "lessons/t2-lesson-04.html",
+"t2l4-s20": "lessons/t2-lesson-04.html",
+"t2l4-s21": "lessons/t2-lesson-04.html",
+"t2l4-s22": "lessons/t2-lesson-04.html",
+"t2l4-s23": "lessons/t2-lesson-04.html",
+"t2l4-s24": "lessons/t2-lesson-04.html",
+"t2l4-s25": "lessons/t2-lesson-04.html",
+"t2l4-s26": "lessons/t2-lesson-04.html",
+"t2l4-s27": "lessons/t2-lesson-04.html",
+"t2l4-s28": "lessons/t2-lesson-04.html",
+"t2l4-s29": "lessons/t2-lesson-04.html",
+"t2l4-s3": "lessons/t2-lesson-04.html",
+"t2l4-s30": "lessons/t2-lesson-04.html",
+"t2l4-s31": "lessons/t2-lesson-04.html",
+"t2l4-s32": "lessons/t2-lesson-04.html",
+"t2l4-s33": "lessons/t2-lesson-04.html",
+"t2l4-s34": "lessons/t2-lesson-04.html",
+"t2l4-s35": "lessons/t2-lesson-04.html",
+"t2l4-s36": "lessons/t2-lesson-04.html",
+"t2l4-s37": "lessons/t2-lesson-04.html",
+"t2l4-s38": "lessons/t2-lesson-04.html",
+"t2l4-s39": "lessons/t2-lesson-04.html",
+"t2l4-s4": "lessons/t2-lesson-04.html",
+"t2l4-s40": "lessons/t2-lesson-04.html",
+"t2l4-s5": "lessons/t2-lesson-04.html",
+"t2l4-s6": "lessons/t2-lesson-04.html",
+"t2l4-s7": "lessons/t2-lesson-04.html",
+"t2l4-s8": "lessons/t2-lesson-04.html",
+"t2l4-s9": "lessons/t2-lesson-04.html",
+"t2l5-e1": "lessons/t2-lesson-05.html",
+"t2l5-e2": "lessons/t2-lesson-05.html",
+"t2l5-e3": "lessons/t2-lesson-05.html",
+"t2l5-e4": "lessons/t2-lesson-05.html",
+"t2l5-h1": "lessons/t2-lesson-05.html",
+"t2l5-h10": "lessons/t2-lesson-05.html",
+"t2l5-h2": "lessons/t2-lesson-05.html",
+"t2l5-h3": "lessons/t2-lesson-05.html",
+"t2l5-h4": "lessons/t2-lesson-05.html",
+"t2l5-h5": "lessons/t2-lesson-05.html",
+"t2l5-h6": "lessons/t2-lesson-05.html",
+"t2l5-h7": "lessons/t2-lesson-05.html",
+"t2l5-h8": "lessons/t2-lesson-05.html",
+"t2l5-h9": "lessons/t2-lesson-05.html",
+"t2l5-s1": "lessons/t2-lesson-05.html",
+"t2l5-s10": "lessons/t2-lesson-05.html",
+"t2l5-s11": "lessons/t2-lesson-05.html",
+"t2l5-s12": "lessons/t2-lesson-05.html",
+"t2l5-s13": "lessons/t2-lesson-05.html",
+"t2l5-s14": "lessons/t2-lesson-05.html",
+"t2l5-s15": "lessons/t2-lesson-05.html",
+"t2l5-s16": "lessons/t2-lesson-05.html",
+"t2l5-s17": "lessons/t2-lesson-05.html",
+"t2l5-s18": "lessons/t2-lesson-05.html",
+"t2l5-s19": "lessons/t2-lesson-05.html",
+"t2l5-s2": "lessons/t2-lesson-05.html",
+"t2l5-s20": "lessons/t2-lesson-05.html",
+"t2l5-s21": "lessons/t2-lesson-05.html",
+"t2l5-s22": "lessons/t2-lesson-05.html",
+"t2l5-s23": "lessons/t2-lesson-05.html",
+"t2l5-s24": "lessons/t2-lesson-05.html",
+"t2l5-s25": "lessons/t2-lesson-05.html",
+"t2l5-s26": "lessons/t2-lesson-05.html",
+"t2l5-s27": "lessons/t2-lesson-05.html",
+"t2l5-s28": "lessons/t2-lesson-05.html",
+"t2l5-s29": "lessons/t2-lesson-05.html",
+"t2l5-s3": "lessons/t2-lesson-05.html",
+"t2l5-s30": "lessons/t2-lesson-05.html",
+"t2l5-s31": "lessons/t2-lesson-05.html",
+"t2l5-s32": "lessons/t2-lesson-05.html",
+"t2l5-s33": "lessons/t2-lesson-05.html",
+"t2l5-s34": "lessons/t2-lesson-05.html",
+"t2l5-s35": "lessons/t2-lesson-05.html",
+"t2l5-s36": "lessons/t2-lesson-05.html",
+"t2l5-s37": "lessons/t2-lesson-05.html",
+"t2l5-s4": "lessons/t2-lesson-05.html",
+"t2l5-s5": "lessons/t2-lesson-05.html",
+"t2l5-s6": "lessons/t2-lesson-05.html",
+"t2l5-s7": "lessons/t2-lesson-05.html",
+"t2l5-s8": "lessons/t2-lesson-05.html",
+"t2l5-s9": "lessons/t2-lesson-05.html",
+"t2l6-e1": "lessons/t2-lesson-06.html",
+"t2l6-e2": "lessons/t2-lesson-06.html",
+"t2l6-h1": "lessons/t2-lesson-06.html",
+"t2l6-h2": "lessons/t2-lesson-06.html",
+"t2l6-h3": "lessons/t2-lesson-06.html",
+"t2l6-h4": "lessons/t2-lesson-06.html",
+"t2l6-h5": "lessons/t2-lesson-06.html",
+"t2l6-h6": "lessons/t2-lesson-06.html",
+"t2l6-h7": "lessons/t2-lesson-06.html",
+"t2l6-h8": "lessons/t2-lesson-06.html",
+"t2l6-s1": "lessons/t2-lesson-06.html",
+"t2l6-s10": "lessons/t2-lesson-06.html",
+"t2l6-s11": "lessons/t2-lesson-06.html",
+"t2l6-s12": "lessons/t2-lesson-06.html",
+"t2l6-s13": "lessons/t2-lesson-06.html",
+"t2l6-s14": "lessons/t2-lesson-06.html",
+"t2l6-s15": "lessons/t2-lesson-06.html",
+"t2l6-s16": "lessons/t2-lesson-06.html",
+"t2l6-s17": "lessons/t2-lesson-06.html",
+"t2l6-s18": "lessons/t2-lesson-06.html",
+"t2l6-s19": "lessons/t2-lesson-06.html",
+"t2l6-s2": "lessons/t2-lesson-06.html",
+"t2l6-s20": "lessons/t2-lesson-06.html",
+"t2l6-s21": "lessons/t2-lesson-06.html",
+"t2l6-s22": "lessons/t2-lesson-06.html",
+"t2l6-s23": "lessons/t2-lesson-06.html",
+"t2l6-s24": "lessons/t2-lesson-06.html",
+"t2l6-s25": "lessons/t2-lesson-06.html",
+"t2l6-s26": "lessons/t2-lesson-06.html",
+"t2l6-s27": "lessons/t2-lesson-06.html",
+"t2l6-s28": "lessons/t2-lesson-06.html",
+"t2l6-s29": "lessons/t2-lesson-06.html",
+"t2l6-s3": "lessons/t2-lesson-06.html",
+"t2l6-s30": "lessons/t2-lesson-06.html",
+"t2l6-s31": "lessons/t2-lesson-06.html",
+"t2l6-s32": "lessons/t2-lesson-06.html",
+"t2l6-s33": "lessons/t2-lesson-06.html",
+"t2l6-s34": "lessons/t2-lesson-06.html",
+"t2l6-s35": "lessons/t2-lesson-06.html",
+"t2l6-s36": "lessons/t2-lesson-06.html",
+"t2l6-s4": "lessons/t2-lesson-06.html",
+"t2l6-s5": "lessons/t2-lesson-06.html",
+"t2l6-s6": "lessons/t2-lesson-06.html",
+"t2l6-s7": "lessons/t2-lesson-06.html",
+"t2l6-s8": "lessons/t2-lesson-06.html",
+"t2l6-s9": "lessons/t2-lesson-06.html",
 "t2lab-h1": "labs/t2-lab.html",
+"t2lab-h10": "labs/t2-lab.html",
+"t2lab-h11": "labs/t2-lab.html",
+"t2lab-h12": "labs/t2-lab.html",
+"t2lab-h13": "labs/t2-lab.html",
+"t2lab-h14": "labs/t2-lab.html",
+"t2lab-h15": "labs/t2-lab.html",
+"t2lab-h16": "labs/t2-lab.html",
+"t2lab-h17": "labs/t2-lab.html",
+"t2lab-h18": "labs/t2-lab.html",
 "t2lab-h2": "labs/t2-lab.html",
 "t2lab-h3": "labs/t2-lab.html",
 "t2lab-h4": "labs/t2-lab.html",
@@ -3267,9 +3426,605 @@ window.DAHeadings = {
 "ar": "شقتان تتشاركان كل عمود مرئي",
 "en": "Two flats that share every visible column"
 },
+"t2l4-h1": {
+"ar": "المفهوم 1 — ثلاثة أشياء مختلفة تُسمّى «قيمة شاذة»",
+"en": "Concept 1 — Three different things called “an outlier”"
+},
+"t2l4-h2": {
+"ar": "المفهوم 2 — انظر قبل أن تقيس",
+"en": "Concept 2 — Look before you measure"
+},
+"t2l4-h3": {
+"ar": "المفهوم 3 — الحدّ المقدَّر بالنظر، ولماذا لا ينجو من المراجعة",
+"en": "Concept 3 — The eyeballed threshold, and why it will not survive review"
+},
+"t2l4-h4": {
+"ar": "المفهوم 4 — السياج الربيعي",
+"en": "Concept 4 — The IQR fence"
+},
+"t2l4-h5": {
+"ar": "المفهوم 5 — الدرجة المعيارية والحصينة منها",
+"en": "Concept 5 — The z-score, and the robust one"
+},
+"t2l4-h6": {
+"ar": "المفهوم 6 — أربعة أعمال وأربعة أثمان",
+"en": "Concept 6 — Four actions, four costs"
+},
+"t2l4-h7": {
+"ar": "المفهوم 7 — الالتواء والتحويل اللوغاريتمي",
+"en": "Concept 7 — Skew and the log transform"
+},
+"t2l4-h8": {
+"ar": "تمارين",
+"en": "Exercises"
+},
+"t2l4-h9": {
+"ar": "الملحق — الحساب وراء أرقام هذه الصفحة",
+"en": "Appendix — the arithmetic behind the numbers on this page"
+},
+"t2l4-s1": {
+"ar": "الثلاثة كلها مرئية في describe() واحدة",
+"en": "All three, visible in one describe()"
+},
+"t2l4-s10": {
+"ar": "sort_values(): انظر في الصفوف لا في الأرقام",
+"en": "sort_values(): look at the rows, not the numbers"
+},
+"t2l4-s11": {
+"ar": "السطر الذي يكتبه الجميع",
+"en": "The line everybody writes"
+},
+"t2l4-s12": {
+"ar": "ما حذفه rent < 1000 بصمت",
+"en": "What rent < 1000 silently deleted"
+},
+"t2l4-s13": {
+"ar": "الشهر القادم لا يفعل شيئًا أصلًا",
+"en": "Next month it does nothing at all"
+},
+"t2l4-s14": {
+"ar": "حدّ rent > 5000 الذي استند إليه الدرس 2",
+"en": "The rent > 5000 that Lesson 2 leaned on"
+},
+"t2l4-s15": {
+"ar": "الربيع والمدى الربيعي، جملة لكلٍّ منهما",
+"en": "Quartile and inter-quartile range, one sentence each"
+},
+"t2l4-s16": {
+"ar": "قاعدة 1.5 والقيم الاثنتا عشرة التي تعلّمها هنا",
+"en": "The 1.5 rule, and the twelve values it flags here"
+},
+"t2l4-s17": {
+"ar": "السياج وسيطٌ مضبوط",
+"en": "The fence is a fitted parameter"
+},
+"t2l4-s18": {
+"ar": "السياج نفسه على شقق الدرس 3 الـ480",
+"en": "The same fence on Lesson 3's 480 flats"
+},
+"t2l4-s19": {
+"ar": "بأمانة عن 1.5 وعن عمود مالي ملتوٍ",
+"en": "Honest about 1.5, and about a skewed money column"
+},
+"t2l4-s2": {
+"ar": "قيمة خاطئة: ‏99999 رقم هاتف",
+"en": "A wrong value: 99999 is a phone number"
+},
+"t2l4-s20": {
+"ar": "الدرجة المعيارية والرقم الذي تقسم عليه",
+"en": "The z-score, and the number it divides by"
+},
+"t2l4-s21": {
+"ar": "لماذا يعلّم |z| > 3 صفًّا من اثني عشر",
+"en": "Why |z| > 3 flags one row out of twelve"
+},
+"t2l4-s22": {
+"ar": "‏z الحصينة: الوسيط والانحراف المطلق الوسيطي و0.6745",
+"en": "The robust z: the median, the MAD and 0.6745"
+},
+"t2l4-s23": {
+"ar": "خمس نسخ لقاعدة شواذٍّ واحدة",
+"en": "Five versions of one outlier rule"
+},
+"t2l4-s24": {
+"ar": "ما لا تجده أيٌّ منها، والشيء الواحد الذي يجده",
+"en": "What none of them finds, and the one thing that does"
+},
+"t2l4-s25": {
+"ar": "الإزالة وثمنها",
+"en": "Remove, and what it costs"
+},
+"t2l4-s26": {
+"ar": "تحديد السقف: clip والوِنْزَرة",
+"en": "Cap: clip and winsorising"
+},
+"t2l4-s27": {
+"ar": "التحويل بدل الحذف",
+"en": "Transform instead of deleting"
+},
+"t2l4-s28": {
+"ar": "التعليم والإبقاء",
+"en": "Flag and keep"
+},
+"t2l4-s29": {
+"ar": "ستة أعمال ومسطرة واحدة",
+"en": "Six actions, one ruler"
+},
+"t2l4-s3": {
+"ar": "وحدة خاطئة: خمس مساحات مسجَّلة بالدونم",
+"en": "A wrong unit: five areas recorded in dunum"
+},
+"t2l4-s30": {
+"ar": "أصلح في أي مكان؛ واحذف في صفوف التدريب وحدها",
+"en": "Repair anywhere; remove in the training rows only"
+},
+"t2l4-s31": {
+"ar": "العلم الذي لا يجوز أن يكون خاصية",
+"en": "The flag you must not use as a feature"
+},
+"t2l4-s32": {
+"ar": "الالتواء معرَّفًا ومقيسًا",
+"en": "Skew, defined and measured"
+},
+"t2l4-s33": {
+"ar": "np.log1p ولماذا لا np.log",
+"en": "np.log1p, and why not np.log"
+},
+"t2l4-s34": {
+"ar": "كيف يبدو عمود الإيجار بعد ذلك",
+"en": "What the rent column looks like afterwards"
+},
+"t2l4-s35": {
+"ar": "expm1 للمتوسط ليس المتوسط",
+"en": "expm1 of a mean is not the mean"
+},
+"t2l4-s36": {
+"ar": "ما لا يصلحه التحويل اللوغاريتمي",
+"en": "What the log transform does not fix"
+},
+"t2l4-s37": {
+"ar": "أ. من أين يأتي 1.5 × المدى الربيعي",
+"en": "A. Where 1.5 × IQR comes from"
+},
+"t2l4-s38": {
+"ar": "ب. لماذا يُقاس الانحراف المطلق الوسيطي بـ0.6745",
+"en": "B. Why the MAD is scaled by 0.6745"
+},
+"t2l4-s39": {
+"ar": "ج. خلية واحدة معدودةً بدقّة",
+"en": "C. One cell, counted exactly"
+},
+"t2l4-s4": {
+"ar": "قيمة نادرة لكنها حقيقية: شقة الـ580 شيكلًا",
+"en": "A rare but real value: the 580-shekel flat"
+},
+"t2l4-s40": {
+"ar": "أهم الخلاصات، وورقة الأخطاء الشائعة",
+"en": "Key takeaways, and the mistakes cheat-sheet"
+},
+"t2l4-s5": {
+"ar": "لماذا خلط الثلاثة هو الخطأ الذي يمنعه هذا الدرس",
+"en": "Why conflating the three is the mistake this lesson prevents"
+},
+"t2l4-s6": {
+"ar": "describe() ثمانية أرقام ومخبأ",
+"en": "describe() is eight numbers and a hiding place"
+},
+"t2l4-s7": {
+"ar": "quantile(): الشكل بالأرقام التي تختارها",
+"en": "quantile(): the shape in the numbers you choose"
+},
+"t2l4-s8": {
+"ar": "مجالات متساوية العرض ومتساوية العدّ، وأي سؤال يجيب كلٌّ منها",
+"en": "Equal-width bins, equal-count bins, and which question each answers"
+},
+"t2l4-s9": {
+"ar": "رسم تكراري تستطيع طباعته، في طرفية وفي سجل",
+"en": "A histogram you can print, in a terminal, in a log"
+},
+"t2l5-h1": {
+"ar": "المفهوم 1 — النموذج يأخذ أرقامًا، وقاعدة واحدة تحكم أي الأرقام",
+"en": "Concept 1 — A model takes numbers, and one rule governs which numbers"
+},
+"t2l5-h10": {
+"ar": "الملحق — الحساب وراء أرقام هذه الصفحة",
+"en": "Appendix — the arithmetic behind the numbers on this page"
+},
+"t2l5-h2": {
+"ar": "المفهوم 2 — من الاسمي إلى الأحادي: عمود لكل فئة",
+"en": "Concept 2 — Nominal to one-hot: one column per category"
+},
+"t2l5-h3": {
+"ar": "المفهوم 3 — الفئة التي لم ترها قط",
+"en": "Concept 3 — The category you have never seen"
+},
+"t2l5-h4": {
+"ar": "المفهوم 4 — من الترتيبي إلى رمز مرتَّب",
+"en": "Concept 4 — Ordinal to an ordered code"
+},
+"t2l5-h5": {
+"ar": "المفهوم 5 — التعدّد العالي: عشرون وكالة على 480 صفًّا",
+"en": "Concept 5 — High cardinality: twenty agencies over 480 rows"
+},
+"t2l5-h6": {
+"ar": "المفهوم 6 — توحيد المقاييس: ثلاث صيغ، لكل منها وسيطان",
+"en": "Concept 6 — Scaling: three formulas, two parameters each"
+},
+"t2l5-h7": {
+"ar": "المفهوم 7 — أي النماذج تهتمّ وأيُّها لا تهتمّ",
+"en": "Concept 7 — Which models care, and which do not"
+},
+"t2l5-h8": {
+"ar": "المفهوم 8 — الضبط على صفوف التدريب، بالأرقام",
+"en": "Concept 8 — Fit on the training rows, with the numbers"
+},
+"t2l5-h9": {
+"ar": "تمارين",
+"en": "Exercises"
+},
+"t2l5-s1": {
+"ar": "أسرع ترميز، وما يجعل النموذج يعتقده",
+"en": "The quickest encoding, and what it makes a model believe"
+},
+"t2l5-s10": {
+"ar": "لماذا ترميز الملفين معًا هو الجواب الأسوأ",
+"en": "Why encoding the two files together is the worse answer"
+},
+"t2l5-s11": {
+"ar": "قائمة الفئات وسيطٌ مضبوط",
+"en": "The category list is a fitted parameter"
+},
+"t2l5-s12": {
+"ar": "من صفر صامت إلى سطر معدود",
+"en": "From a silent zero to a counted line"
+},
+"t2l5-s13": {
+"ar": "الصف الصفري، وما يكلّفك drop_first هنا",
+"en": "The all-zero row, and what drop_first costs you here"
+},
+"t2l5-s14": {
+"ar": "الترتيب الأبجدي ليس معنًى",
+"en": "Alphabetical order is not meaning"
+},
+"t2l5-s15": {
+"ar": "الترتيب المعلَن والمقارنة التي يشتريها",
+"en": "The declared order, and the comparison it buys"
+},
+"t2l5-s16": {
+"ar": "هل يُجدي الترتيب فعلًا؟ قِسه",
+"en": "Does the order actually pay? Measure it"
+},
+"t2l5-s17": {
+"ar": "مستوى very good في حزيران وإعادة الترقيم التي يُلزمها",
+"en": "June's very good, and the renumbering it forces"
+},
+"t2l5-s18": {
+"ar": "شكل المشكلة",
+"en": "The shape of the problem"
+},
+"t2l5-s19": {
+"ar": "الترميز بالتكرار: عمود واحد، وما يرميه",
+"en": "Frequency encoding: one column, and what it throws away"
+},
+"t2l5-s2": {
+"ar": "المدن الخمس نفسها بأبجدية أخرى",
+"en": "The same five cities in a different alphabet"
+},
+"t2l5-s20": {
+"ar": "الترميز بالهدف، والتسرّب الذي فيه",
+"en": "Target encoding, and the leak inside it"
+},
+"t2l5-s21": {
+"ar": "خارج الطيّة، والتمليس",
+"en": "Out of fold, and smoothing"
+},
+"t2l5-s22": {
+"ar": "دلو Other والقياس الذي يحسمه",
+"en": "The Other bucket, and the measurement that settles it"
+},
+"t2l5-s23": {
+"ar": "لماذا يهمّ المقياس أصلًا",
+"en": "Why a scale matters at all"
+},
+"t2l5-s24": {
+"ar": "تعريف توحيد الحدَّين والمعياري والحصين",
+"en": "Min–max, standard and robust, defined"
+},
+"t2l5-s25": {
+"ar": "النسخ الأربع على العمود الحقيقي",
+"en": "The four versions on the real column"
+},
+"t2l5-s26": {
+"ar": "العمود area_m2 والمساحات الخمس المسجَّلة بالدونم",
+"en": "area_m2, and the five areas recorded in dunum"
+},
+"t2l5-s27": {
+"ar": "التقسيم لا يتزحزح بتوحيد المقياس",
+"en": "A split does not move when you rescale"
+},
+"t2l5-s28": {
+"ar": "‏kNN: تسعة وتسعون في المئة من المسافة من عمود واحد",
+"en": "kNN: ninety-nine per cent of the distance from one column"
+},
+"t2l5-s29": {
+"ar": "القائمة الأمينة",
+"en": "The honest list"
+},
+"t2l5-s3": {
+"ar": "القاعدة الواحدة: لا يحقّ للترميز أن يختلق ترتيبًا",
+"en": "The one rule: an encoding may not invent an order"
+},
+"t2l5-s30": {
+"ar": "الحدّان المتعلَّمان من 360 صفًّا",
+"en": "The min and the max learned on 360 rows"
+},
+"t2l5-s31": {
+"ar": "قيمة حزيران خارج [0, 1] سلوكٌ صحيح",
+"en": "A June value outside [0, 1] is correct behaviour"
+},
+"t2l5-s32": {
+"ar": "قاموس fitted وقد نما",
+"en": "fitted, grown"
+},
+"t2l5-s33": {
+"ar": "المُرمِّز كله على ملف الشهر القادم",
+"en": "The whole encoder on next month's file"
+},
+"t2l5-s34": {
+"ar": "أ. فخّ المتغيّر المؤشِّر، وما تفعله drop_first حقًّا",
+"en": "A. The dummy-variable trap, and what drop_first is really doing"
+},
+"t2l5-s35": {
+"ar": "ب. لماذا ينهار توحيد الحدَّين ولا ينهار التوحيد الحصين",
+"en": "B. Why min–max collapses and robust scaling does not"
+},
+"t2l5-s36": {
+"ar": "ج. الترميز بالهدف هو النموذج الأحادي مضغوطًا",
+"en": "C. Target encoding is the one-hot model, compressed"
+},
+"t2l5-s37": {
+"ar": "أهم الخلاصات، وورقة الأخطاء الشائعة",
+"en": "Key takeaways, and the mistakes cheat-sheet"
+},
+"t2l5-s4": {
+"ar": "مستوى القياس يصير إذنًا",
+"en": "The measurement level becomes a permission"
+},
+"t2l5-s5": {
+"ar": "عمود لكل فئة، والعرض الذي يتبع",
+"en": "One column per category, and the width that follows"
+},
+"t2l5-s6": {
+"ar": "columns= وprefix= وdtype=\"int8\"",
+"en": "columns=, prefix= and dtype=\"int8\""
+},
+"t2l5-s7": {
+"ar": "drop_first=: صحيح لنموذج خطي خاطئ لشجرة",
+"en": "drop_first=: right for a linear model, wrong for a tree"
+},
+"t2l5-s8": {
+"ar": "عشرون وكالة و95% أصفار",
+"en": "Twenty agencies, ninety-five per cent zeros"
+},
+"t2l5-s9": {
+"ar": "ملفان ومصفوفتان وعدم تطابق في الشكل",
+"en": "Two files, two matrices, one shape mismatch"
+},
+"t2l6-h1": {
+"ar": "المفهوم 1 — الطويل والعريض: الأرقام نفسها في شكلين",
+"en": "Concept 1 — Long and wide: the same numbers, two shapes"
+},
+"t2l6-h2": {
+"ar": "المفهوم 2 — groupby: agg مقابل transform",
+"en": "Concept 2 — groupby: agg against transform"
+},
+"t2l6-h3": {
+"ar": "المفهوم 3 — الدمج وفخّ عدد الصفوف",
+"en": "Concept 3 — Merging, and the row-count trap"
+},
+"t2l6-h4": {
+"ar": "المفهوم 4 — concat: رصُّ شهرين",
+"en": "Concept 4 — concat: stacking two months"
+},
+"t2l6-h5": {
+"ar": "المفهوم 5 — الخط مجمَّعًا",
+"en": "Concept 5 — The pipeline, assembled"
+},
+"t2l6-h6": {
+"ar": "المفهوم 6 — ما ما زال هذا الخط يخطئ فيه",
+"en": "Concept 6 — What this pipeline still gets wrong"
+},
+"t2l6-h7": {
+"ar": "تمارين",
+"en": "Exercises"
+},
+"t2l6-h8": {
+"ar": "ملحق — الحسابُ وراء أرقام هذه الصفحة ونظيرُها في المكتبة",
+"en": "Appendix — the arithmetic behind the numbers on this page, and the library equivalent"
+},
+"t2l6-s1": {
+"ar": "البيانات المرتَّبة في جملة واحدة",
+"en": "Tidy data, in one sentence"
+},
+"t2l6-s10": {
+"ar": "ما أردتَه له: مقياسُ المجموعة خاصيةً وتعويضًا",
+"en": "What you wanted it for: a group statistic as a feature, and as a fill"
+},
+"t2l6-s11": {
+"ar": "جدولُ مرجع واحد وأربعة أنواع دمج",
+"en": "One reference table, four kinds of join"
+},
+"t2l6-s12": {
+"ar": "الدمج على عمود المدينة الخام: 316 من 503",
+"en": "Merging on the raw city column: 316 of 503"
+},
+"t2l6-s13": {
+"ar": "الدمج على الاسم المنظَّف: الـ503 كلها",
+"en": "Merging on the cleaned name: all 503"
+},
+"t2l6-s14": {
+"ar": "الدمج الخارجي والمدينة بلا إعلانات",
+"en": "The outer join, and the city with no listings"
+},
+"t2l6-s15": {
+"ar": "من متعدّد إلى متعدّد: حين تصير 480 شقة 644 صفًّا",
+"en": "Many to many: when 480 flats become 644 rows"
+},
+"t2l6-s16": {
+"ar": "validate= وindicator= والتأكيدُ بعد كل دمج",
+"en": "validate=, indicator=, and the assertion after every merge"
+},
+"t2l6-s17": {
+"ar": "شهران ومجموعتا أعمدة و4491 فراغًا",
+"en": "Two months, two column sets, 4,491 blanks"
+},
+"t2l6-s18": {
+"ar": "join=\"inner\" يُسقط ثلاثةً وأربعين عمودًا دون أن يقول",
+"en": "join=\"inner\" drops forty-three columns without saying so"
+},
+"t2l6-s19": {
+"ar": "ignore_index= وkeys= واللافتاتُ الخمس والثمانون المكرَّرة",
+"en": "ignore_index=, keys= and the eighty-five duplicated labels"
+},
+"t2l6-s2": {
+"ar": "melt: أربعون في أربعة تصير مئةً وستين",
+"en": "melt: forty by four becomes one hundred and sixty"
+},
+"t2l6-s20": {
+"ar": "العلاجُ الحقيقي هو قائمة الفئات المضبوطة",
+"en": "The real fix is the fitted category list"
+},
+"t2l6-s21": {
+"ar": "كلُّ قرارات الفصل مجموعةً في وحدة واحدة",
+"en": "Every decision of the chapter, gathered in one module"
+},
+"t2l6-s22": {
+"ar": "transform_listings نسخةً نسخة",
+"en": "transform_listings, version by version"
+},
+"t2l6-s23": {
+"ar": "تقريرُ آذار: سبعةَ عشر سطرَ سجل",
+"en": "The March report: seventeen rows of log"
+},
+"t2l6-s24": {
+"ar": "حزيران بالوسائط المضبوطة بلا تغيير",
+"en": "June, with the fitted parameters, unchanged"
+},
+"t2l6-s25": {
+"ar": "هل يُفيد ذلك كلُّه؟ المسطرةُ مرةً أخيرة",
+"en": "Does the whole thing help? The ruler, one last time"
+},
+"t2l6-s26": {
+"ar": "التأكيداتُ الثلاثة مُفعَّلةً عن قصد",
+"en": "The three assertions, fired on purpose"
+},
+"t2l6-s27": {
+"ar": "fitted قاموسٌ في الذاكرة لا أثرٌ مؤرَّخ",
+"en": "fitted is a dict in memory, not a dated artefact"
+},
+"t2l6-s28": {
+"ar": "ستةُ حدود و1.5 و3.5 لم يستنبطها أحد",
+"en": "Six limits, a 1.5 and a 3.5 that nobody derived"
+},
+"t2l6-s29": {
+"ar": "تقسيمٌ واحد وبذرةٌ واحدة وبلا تحقّق متقاطع",
+"en": "One split, one seed, no cross-validation"
+},
+"t2l6-s3": {
+"ar": "pivot: الأرقام نفسها عودةً إلى شبكة",
+"en": "pivot: the same numbers, back in a grid"
+},
+"t2l6-s30": {
+"ar": "هندسةُ الخصائص لم تبدأ بعد",
+"en": "Feature engineering has not started"
+},
+"t2l6-s31": {
+"ar": "ما سيستبدله Pipeline وColumnTransformer",
+"en": "What Pipeline and ColumnTransformer would replace"
+},
+"t2l6-s32": {
+"ar": "أ. لماذا الإذابةُ ثم الاستقطاب ليست رحلةً تامّة",
+"en": "A. Why melt and pivot is not quite a round trip"
+},
+"t2l6-s33": {
+"ar": "ب. حسابُ الدمج من متعدّد إلى متعدّد",
+"en": "B. The arithmetic of a many-to-many join"
+},
+"t2l6-s34": {
+"ar": "ج. لماذا km_to_gaza يساوي صفرًا بالضبط",
+"en": "C. Why km_to_gaza is worth exactly nothing"
+},
+"t2l6-s35": {
+"ar": "د. نظيرُ scikit-learn مبنيًّا ومشغَّلًا",
+"en": "D. The scikit-learn equivalent, built and run"
+},
+"t2l6-s36": {
+"ar": "خلاصات — الدرس والفصل",
+"en": "Key takeaways — the lesson, and the chapter"
+},
+"t2l6-s4": {
+"ar": "pivot_table وaggfunc والمكرَّرات التي تحسب متوسطها دون أن تخبرك",
+"en": "pivot_table, aggfunc, and the duplicates it averages without telling you"
+},
+"t2l6-s5": {
+"ar": "أي شكل يحتاجه النموذج وأيٌّ يقرؤه الإنسان",
+"en": "Which shape a model needs, and which a human reads"
+},
+"t2l6-s6": {
+"ar": "agg تُرجع صفًّا لكل مجموعة، وهذا يغيّر معنى الصف",
+"en": "agg returns one row per group, and that changes what a row is"
+},
+"t2l6-s7": {
+"ar": "الإسناد الذي لا يعبّئ شيئًا على الإطلاق",
+"en": "The assignment that fills nothing at all"
+},
+"t2l6-s8": {
+"ar": "الصورة الأهدأ: أربع خلايا خاطئة وثلاث صحيحة بالحظ",
+"en": "The quieter version: four cells wrong, three right by luck"
+},
+"t2l6-s9": {
+"ar": "transform: قيمةٌ لكل صف أصلي",
+"en": "transform: one value per original row"
+},
 "t2lab-h1": {
 "ar": "اضبط مرة، وطبّق في أي مكان: وسيط مُتعلَّم يلاقي ملف الشهر القادم",
 "en": "Fit once, apply anywhere: a learned median meets next month's file"
+},
+"t2lab-h10": {
+"ar": "حذف أم تحديد سقف: القيمة المتطرفة نفسها، عملان، وعمودان مختلفان",
+"en": "Drop or cap: the same extreme value, two actions, two different columns"
+},
+"t2lab-h11": {
+"ar": "خطأ إدخال واحد وقاعدتان: لماذا يرى سياج الربيعات قيمتين متطرفتين ويرى |z| > 3 واحدة",
+"en": "One typo, two rules: why the IQR fence sees two extremes and |z| > 3 sees one"
+},
+"t2lab-h12": {
+"ar": "‏log1p وexpm1: ماذا يفعل التحويل بالالتواء، وماذا يفعل بالمتوسط",
+"en": "log1p and expm1: what the transform does to the skew, and what it does to a mean"
+},
+"t2lab-h13": {
+"ar": "الرموز الترتيبية: الأبجدية، والترتيب المعلَن، والمستوى الذي يعيد ترقيم كل شيء",
+"en": "Ordinal codes: the alphabet, the declared order, and the level that renumbers everything"
+},
+"t2lab-h14": {
+"ar": "ثلاثة مُقايِسات ورقم هاتف واحد: ماذا تفعل كل صيغة بقيمة ليست إيجارًا",
+"en": "Three scalers and one phone number: what each formula does with a value that is not a rent"
+},
+"t2lab-h15": {
+"ar": "الفئة غير المرئية: عدم تطابق في الشكل، ثم قائمة الأعمدة المضبوطة التي تُصلحه",
+"en": "The unseen category: a shape mismatch, then the fitted column list that fixes it"
+},
+"t2lab-h16": {
+"ar": "‏agg مقابل transform: الإسناد الذي لا يعبّئ شيئًا والإسناد الذي يعبّئ كل صف",
+"en": "agg against transform: the assignment that fills nothing, and the one that fills every row"
+},
+"t2lab-h17": {
+"ar": "دمج واحد وثلاثة أعداد صفوف: الدمج الذي يحذف، والدمج الذي يبلّغ، والدمج الذي يضاعف",
+"en": "One merge, three row counts: the join that deletes, the join that reports, and the join that multiplies"
+},
+"t2lab-h18": {
+"ar": "الشكل كله في أربعين سطرًا: اضبط مرة، وطبّق مرتين، وأبلِغ عنهما، وأكّد قبل الإرجاع",
+"en": "The whole shape in forty lines: fit once, apply twice, report both, assert before returning"
 },
 "t2lab-h2": {
 "ar": "ترتيبان، جدولان: عوِّض ثم احذف المكرّر، أو احذف المكرّر ثم عوِّض",

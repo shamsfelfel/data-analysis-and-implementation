@@ -85,6 +85,42 @@
   <p class="en">Five dates: three written YYYY-MM-DD and two written DD/MM/YYYY. errors="coerce" throws the odd ones away without a word. format="mixed" keeps every row and reads 12/04/2026 as the fourth of December. Only parsing each format on purpose, combining, and checking that nothing is left unparsed gives an answer you can defend — and the giveaway is the date range.</p>
   <p class="ar">خمسة تواريخ: ثلاثة مكتوبة YYYY-MM-DD واثنان مكتوبان DD/MM/YYYY. ترمي errors="coerce" الشاذّة دون كلمة. وتُبقي format="mixed" كل صف وتقرأ 12/04/2026 بأنه الرابع من كانون الأول. ووحده تحليل كل صيغة بقصد، ثم الدمج، ثم التحقّق من أن شيئًا لم يبقَ غير محلَّل، يعطي جوابًا تستطيع الدفاع عنه — والدليل الفاضح هو مدى التواريخ.</p>
   <div data-trace-id="t2-l3-two-date-formats"></div>
+  <h2 id="t2lab-h10"><span class="en">Drop or cap: the same extreme value, two actions, two different columns</span><span class="ar">حذف أم تحديد سقف: القيمة المتطرفة نفسها، عملان، وعمودان مختلفان</span></h2>
+  <p class="en">Ten rents, one of them 580. One action deletes the row; the other pulls the value down to the fence and keeps the row. Watch the row count, the median, the mean and the standard deviation after each. Dropping loses a flat and moves the middle; capping keeps every flat and changes a value that was true. Neither is free, and the choice is not arithmetic.</p>
+  <p class="ar">عشرة إيجارات، أحدها 580. يحذف أحد العملين الصف؛ ويجرّ الآخر القيمة إلى السياج ويُبقي الصف. راقب عدد الصفوف والوسيط والمتوسط والانحراف المعياري بعد كلٍّ منهما. فالحذف يُفقد شقةً ويحرّك الوسط؛ وتحديد السقف يُبقي كل شقة ويغيّر قيمةً كانت صحيحة. ولا واحد منهما بلا ثمن، والاختيار ليس حسابًا.</p>
+  <div data-trace-id="t2-l4-clip-vs-drop"></div>
+  <h2 id="t2lab-h11"><span class="en">One typo, two rules: why the IQR fence sees two extremes and |z| &gt; 3 sees one</span><span class="ar">خطأ إدخال واحد وقاعدتان: لماذا يرى سياج الربيعات قيمتين متطرفتين ويرى |z| &gt; 3 واحدة</span></h2>
+  <p class="en">Eleven rents in sorted order: nine ordinary ones, a genuinely expensive flat at 580, and a phone number typed into the rent box. Watch the two rules being built side by side. The quartiles read positions in the sorted column, so the 99999 contributes nothing but its rank. The mean and the standard deviation read every value, so the 99999 moves both of them — and the rule that divides by the standard deviation ends up measuring the typo against a ruler the typo made.</p>
+  <p class="ar">أحد عشر إيجارًا مرتَّبة: تسعة عادية، وشقة غالية حقًّا بـ580، ورقم هاتف كُتب في خانة الإيجار. راقب القاعدتين تُبنيان جنبًا إلى جنب. فالربيعات تقرأ مواضع في العمود المرتَّب، فلا تساهم 99999 إلا برتبتها. أما المتوسط والانحراف المعياري فيقرآن كل قيمة، فتحرّكهما 99999 كليهما — وتنتهي القاعدة التي تقسم على الانحراف المعياري إلى قياس خطأ الإدخال بمسطرة صنعها خطأ الإدخال نفسه.</p>
+  <div data-trace-id="t2-l4-iqr-vs-z"></div>
+  <h2 id="t2lab-h12"><span class="en">log1p and expm1: what the transform does to the skew, and what it does to a mean</span><span class="ar">‏log1p وexpm1: ماذا يفعل التحويل بالالتواء، وماذا يفعل بالمتوسط</span></h2>
+  <p class="en">Eleven rents with a long right tail. np.log1p compresses the tail and the skew falls from 0.8844 to -0.1132. Then the catch: the median survives the round trip exactly, because a logarithm preserves order, while the mean does not — expm1 of the mean of the logs is 230.93 against a true mean of 270.00. Watch which of the two summaries you are allowed to transform back.</p>
+  <p class="ar">أحد عشر إيجارًا بذيل أيمن طويل. تضغط np.log1p الذيل فيهبط الالتواء من 0.8844 إلى -0.1132. ثم المأخذ: ينجو الوسيط من الرحلة ذهابًا وعودةً بالضبط، لأن اللوغاريتم يحفظ الترتيب، ولا ينجو المتوسط — فـexpm1 لمتوسط اللوغاريتمات 230.93 مقابل متوسط حقيقي 270.00. راقب أيَّ التلخيصين يحقّ لك أن تعيده.</p>
+  <div data-trace-id="t2-l4-log1p"></div>
+  <h2 id="t2lab-h13"><span class="en">Ordinal codes: the alphabet, the declared order, and the level that renumbers everything</span><span class="ar">الرموز الترتيبية: الأبجدية، والترتيب المعلَن، والمستوى الذي يعيد ترقيم كل شيء</span></h2>
+  <p class="en">Five condition values, two numberings. Watch cat.codes on a plain category sort the levels alphabetically, so excellent becomes 0 and poor becomes 3 — the exact opposite of what the word means. Then watch an ordered CategoricalDtype carry the order you declared, which makes a comparison legal. Finally watch June's 'very good': outside the declared order it is -1, and inside it it moves excellent from 3 to 4.</p>
+  <p class="ar">خمس قيم حالة وترقيمان. راقب cat.codes على فئة صِرفة ترتّب المستويات أبجديًّا، فتصير excellent صفرًا وpoor ثلاثةً — أي عكس ما تعنيه الكلمة تمامًا. ثم راقب CategoricalDtype مرتَّبًا يحمل الترتيب الذي أعلنتَه، فيصير المقارنة مشروعة. وأخيرًا راقب 'very good' في حزيران: فهي خارج الترتيب المعلَن تساوي ‎-1، وداخله تنقل excellent من 3 إلى 4.</p>
+  <div data-trace-id="t2-l5-ordinal-codes"></div>
+  <h2 id="t2lab-h14"><span class="en">Three scalers and one phone number: what each formula does with a value that is not a rent</span><span class="ar">ثلاثة مُقايِسات ورقم هاتف واحد: ماذا تفعل كل صيغة بقيمة ليست إيجارًا</span></h2>
+  <p class="en">Four ordinary rents and one 99999 that is really a phone number. Watch min-max scaling hand 99.9% of the output range to the typo and squeeze the whole market below 0.002. Watch standardisation hide the same damage better, because the standard deviation is driven by the same value. Watch robust scaling keep the four real rents between -1 and 0.45 and push the typo out to 906.7, where you can see it. Then watch what one mask() changes.</p>
+  <p class="ar">أربعة إيجارات عادية وقيمة 99999 هي في الحقيقة رقم هاتف. راقب توحيد المقياس بالحدَّين يسلّم 99.9% من مدى المخرج إلى خطأ الإدخال ويضغط السوق كلها تحت 0.002. وراقب التوحيد المعياري يُخفي الضرر نفسه إخفاءً أحسن، لأن الانحراف المعياري مدفوعٌ بالقيمة نفسها. وراقب التوحيد الحصين يحفظ الإيجارات الأربعة الحقيقية بين ‎-1 و0.45 ويدفع خطأ الإدخال إلى 906.7 حيث تراه. ثم راقب ما يغيّره نداءٌ واحد لـ mask().</p>
+  <div data-trace-id="t2-l5-scalers"></div>
+  <h2 id="t2lab-h15"><span class="en">The unseen category: a shape mismatch, then the fitted column list that fixes it</span><span class="ar">الفئة غير المرئية: عدم تطابق في الشكل، ثم قائمة الأعمدة المضبوطة التي تُصلحه</span></h2>
+  <p class="en">Six March listings over three cities, three June listings over three cities plus one city March never had. Watch get_dummies build its columns from whatever it finds, so the two matrices come out six-by-three and four-by-four — a shape mismatch a model would refuse. Then watch the fix: the column list is a fitted parameter, reindex forces June into it, and the value that is not on the list becomes a counted line instead of an invisible row of zeros.</p>
+  <p class="ar">ستة إعلانات من آذار على ثلاث مدن، وأربعة إعلانات من حزيران على ثلاث مدن ومدينةٍ لم تكن في آذار قط. راقب get_dummies تبني أعمدتها من القيم التي تجدها مهما كانت، فتخرج المصفوفتان ستًّا في ثلاث وأربعًا في أربع — أي عدم تطابق في الشكل يرفضه النموذج. ثم راقب العلاج: قائمة الأعمدة وسيطٌ مضبوط، وتُكرِه reindex حزيرانَ عليها، وتصير القيمة التي ليست في القائمة سطرًا معدودًا لا صفًّا صفريًّا غير مرئي.</p>
+  <div data-trace-id="t2-l5-unseen-category"></div>
+  <h2 id="t2lab-h16"><span class="en">agg against transform: the assignment that fills nothing, and the one that fills every row</span><span class="ar">‏agg مقابل transform: الإسناد الذي لا يعبّئ شيئًا والإسناد الذي يعبّئ كل صف</span></h2>
+  <p class="en">Six listings over four cities. The same groupby, written two ways. The first way looks like the obvious line of pandas and produces a column of NaN from end to end, because the thing on the right is indexed by city and the thing on the left is indexed by row. The second way differs by one method name and fills all six rows. Watch the index of each intermediate value, because the index is the whole story.</p>
+  <p class="ar">ستة إعلانات على أربع مدن. والتجميع نفسه مكتوبًا بطريقتين. الأولى تبدو سطر pandas البديهي وتنتج عمودًا من NaN من أوله إلى آخره، لأن ما في اليمين مفهرس بالمدينة وما في اليسار مفهرس بالصف. والثانية تختلف باسم دالة واحدة فتعبّئ الصفوف الستة كلها. راقب فهرس كل قيمة وسيطة، فالفهرس هو الحكاية كلها.</p>
+  <div data-trace-id="t2-l6-agg-vs-transform"></div>
+  <h2 id="t2lab-h17"><span class="en">One merge, three row counts: the join that deletes, the join that reports, and the join that multiplies</span><span class="ar">دمج واحد وثلاثة أعداد صفوف: الدمج الذي يحذف، والدمج الذي يبلّغ، والدمج الذي يضاعف</span></h2>
+  <p class="en">Five listings and a four-row city reference. One of the five cities is spelled in lower case, which is the whole of the bug. An inner join quietly returns four rows; a left join with indicator=True returns five and names the one that did not match; and a reference file in which one city appears twice turns five listings into seven without changing a single cell. Watch the row count on every step, because in transformation work the row count is where the bugs live.</p>
+  <p class="ar">خمسة إعلانات ومرجع مدن من أربعة صفوف. وإحدى المدن الخمس مكتوبة بأحرف صغيرة، وهذا هو العطب كله. فالدمج الداخلي يُرجع أربعة صفوف بهدوء؛ والدمج الأيسر مع indicator=True يُرجع خمسة ويسمّي الذي لم يطابق؛ وملف مرجع تظهر فيه مدينة مرتين يحوّل خمسة إعلانات إلى سبعة دون أن تتغيّر خلية واحدة. راقب عدد الصفوف في كل خطوة، فعدد الصفوف في عمل التحويل هو مسكن الأعطال.</p>
+  <div data-trace-id="t2-l6-merge-rowcount"></div>
+  <h2 id="t2lab-h18"><span class="en">The whole shape in forty lines: fit once, apply twice, report both, assert before returning</span><span class="ar">الشكل كله في أربعين سطرًا: اضبط مرة، وطبّق مرتين، وأبلِغ عنهما، وأكّد قبل الإرجاع</span></h2>
+  <p class="en">A miniature of the chapter's pipeline, small enough to step through: one fit, three steps in the shape (frame, log_row), one assertion, and a run() that takes fitted=None the first time and the stored dictionary the second. Six March listings with one exact duplicate and one blank area go in; four June listings nobody has seen follow them through the same code with the same three numbers. Watch the call stack: every parameter is read, never recomputed, on the second pass.</p>
+  <p class="ar">نموذج مصغَّر من خط الفصل، صغير بما يكفي للتنقّل خطوة خطوة: ضبطٌ واحد، وثلاث خطوات على الشكل (frame, log_row)، وتأكيد واحد، ودالة run() تأخذ fitted=None في المرة الأولى والقاموس المحفوظ في الثانية. تدخل ستة إعلانات من آذار فيها تكرار تامّ ومساحة فارغة؛ وتتبعها أربعة إعلانات من حزيران لم يرها أحد عبر الكود نفسه وبالأرقام الثلاثة نفسها. راقب مكدّس النداء: كل وسيط يُقرأ ولا يُعاد حسابه في الممرّ الثاني.</p>
+  <div data-trace-id="t2-l6-pipeline"></div>
 
 </section>
 <nav class="pager"></nav>
@@ -115,6 +151,15 @@
 <script src="../assets/data/traces/t2-l3-dedupe-keep-last.js"></script>
 <script src="../assets/data/traces/t2-l3-map-silent-nan.js"></script>
 <script src="../assets/data/traces/t2-l3-two-date-formats.js"></script>
+<script src="../assets/data/traces/t2-l4-clip-vs-drop.js"></script>
+<script src="../assets/data/traces/t2-l4-iqr-vs-z.js"></script>
+<script src="../assets/data/traces/t2-l4-log1p.js"></script>
+<script src="../assets/data/traces/t2-l5-ordinal-codes.js"></script>
+<script src="../assets/data/traces/t2-l5-scalers.js"></script>
+<script src="../assets/data/traces/t2-l5-unseen-category.js"></script>
+<script src="../assets/data/traces/t2-l6-agg-vs-transform.js"></script>
+<script src="../assets/data/traces/t2-l6-merge-rowcount.js"></script>
+<script src="../assets/data/traces/t2-l6-pipeline.js"></script>
 <script src="../assets/js/trace.js"></script>
 <script src="../assets/js/app.js"></script>
 </body>

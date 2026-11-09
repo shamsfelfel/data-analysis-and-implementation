@@ -19,7 +19,8 @@ window.DAGlossary["t2"] = [
    "transformation"
   ],
   "used": [
-   "t2l1-s3"
+   "t2l1-s3",
+   "t2l6-s6"
   ]
  },
  {
@@ -111,6 +112,73 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "cardinality",
+  "term": {
+   "en": "Cardinality",
+   "ar": "التعدّد (cardinality)"
+  },
+  "def": {
+   "en": "The number of distinct values a categorical column has. city has a cardinality of 5 and agency of 20 over 480 rows, with five agencies appearing exactly once - high enough that one-hot encoding it produces a matrix that is 95% zeros and a parameter per agency that most agencies have too few rows to support.",
+   "ar": "عدد القيم المميّزة في عمود فئوي. فتعدّد city هو 5 وتعدّد agency هو 20 على 480 صفًّا، وخمس وكالات تظهر مرة واحدة بالضبط - وهذا عالٍ بما يكفي لأن يُنتج ترميزه الأحادي مصفوفة 95% منها أصفار ووسيطًا لكل وكالة لا تملك معظم الوكالات صفوفًا تكفي لإسناده."
+  },
+  "cat": {
+   "en": "Encoding",
+   "ar": "الترميز"
+  },
+  "see": [
+   "one-hot-encoding",
+   "frequency-encoding",
+   "target-encoding"
+  ],
+  "used": [
+   "t2l5-s8"
+  ]
+ },
+ {
+  "id": "cartesian-fan-out",
+  "term": {
+   "en": "Cartesian fan-out",
+   "ar": "التضاعف الديكارتي (cartesian fan-out)"
+  },
+  "def": {
+   "en": "The row multiplication that happens when a merge key is not unique on one side: every matching left row is copied once per match. A city reference in which Gaza appears twice turns 480 flats into 644 rows and moves the mean rent from 211.05 to 223.59 shekels without a single cell being edited. `validate=\"m:1\"` turns it into an error at the line that caused it.",
+   "ar": "تضاعفُ الصفوف الذي يحدث عندما لا يكون مفتاح الدمج فريدًا في أحد الطرفين: فيُنسَخ كل صف أيسر مطابق مرةً لكل مطابقة. فمرجعُ مدن تظهر فيه غزة مرتين يحوّل 480 شقة إلى 644 صفًّا ويزيح متوسط الإيجار من 211.05 إلى 223.59 شيكلًا دون أن تُحرَّر خليةٌ واحدة. وتحوّله `validate=\"m:1\"` إلى خطأ عند السطر المسبِّب له."
+  },
+  "cat": {
+   "en": "Combining",
+   "ar": "الدمج"
+  },
+  "see": [
+   "inner-join",
+   "business-key"
+  ],
+  "used": [
+   "t2l6-s15"
+  ]
+ },
+ {
+  "id": "clipping",
+  "term": {
+   "en": "Clipping (winsorising)",
+   "ar": "القصّ والوِنْزَرة (clipping, winsorising)"
+  },
+  "def": {
+   "en": "Replacing every value beyond a threshold with the threshold itself, so the row survives and the number changes: Series.clip(lower, upper) in pandas. Winsorising is the same move with percentile thresholds - clipping monthly_rent at p01 and p99 (74.1 and 466.8) touches 10 rows and moves the mean from 210.14 to 209.83 while the median does not move at all.",
+   "ar": "استبدال كل قيمة خارج حدٍّ بالحدّ نفسه، فينجو الصف ويتغيّر الرقم: ‏Series.clip(lower, upper) في pandas. والوِنْزَرة هي العمل نفسه بحدود مئينية — فقصّ monthly_rent عند p01 وp99 (‏74.1 و466.8) يمسّ عشرة صفوف وينقل المتوسط من 210.14 إلى 209.83 ولا يحرّك الوسيط أصلًا."
+  },
+  "cat": {
+   "en": "Outliers",
+   "ar": "القيم الشاذة"
+  },
+  "see": [
+   "fence",
+   "outlier"
+  ],
+  "used": [
+   "t2l4-s26"
+  ]
+ },
+ {
   "id": "coercion",
   "term": {
    "en": "Coercion",
@@ -131,6 +199,28 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l3-s20"
+  ]
+ },
+ {
+  "id": "concatenation",
+  "term": {
+   "en": "Concatenation",
+   "ar": "التجميع بالرصّ (concatenation)"
+  },
+  "def": {
+   "en": "Stacking frames rather than matching them on a key: `pd.concat` lines up columns by name and rows by index. Stacking March's 52 dummy columns under June's 13 gives 54 columns and 4,491 blank cells, because the two files were encoded separately — which is why the fitted category list, not `join=\"inner\"`, is the real fix.",
+   "ar": "رصُّ الأطر بدل مطابقتها على مفتاح: فتصطفّ `pd.concat` الأعمدةَ بالاسم والصفوفَ بالفهرس. ورصُّ أعمدة آذار الـ52 المؤشِّرة تحت أعمدة حزيران الـ13 يعطي 54 عمودًا و4491 خليةً فارغة، لأن الملفين رُمِّزا على انفراد — ولهذا فإن العلاج الحقيقي هو قائمة الفئات المضبوطة لا `join=\"inner\"`."
+  },
+  "cat": {
+   "en": "Combining",
+   "ar": "الدمج"
+  },
+  "see": [
+   "unseen-category",
+   "feature-matrix"
+  ],
+  "used": [
+   "t2l6-s17"
   ]
  },
  {
@@ -178,6 +268,50 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "dummy-variable",
+  "term": {
+   "en": "Dummy variable",
+   "ar": "المتغيّر المؤشِّر (dummy variable)"
+  },
+  "def": {
+   "en": "One 0/1 column standing for one category — the output of a one-hot encoding, read one column at a time. city_Gaza is a dummy variable: it is 1 for the 164 Gaza listings and 0 for the other 316.",
+   "ar": "عمود 0/1 واحد يمثّل فئة واحدة — أي مخرج الترميز الأحادي مقروءًا عمودًا عمودًا. فـ city_Gaza متغيّر مؤشِّر: يساوي 1 في إعلانات غزة الـ164 ويساوي 0 في الـ316 الأخرى."
+  },
+  "cat": {
+   "en": "Encoding",
+   "ar": "الترميز"
+  },
+  "see": [
+   "one-hot-encoding",
+   "dummy-variable-trap"
+  ],
+  "used": [
+   "t2l5-s5"
+  ]
+ },
+ {
+  "id": "dummy-variable-trap",
+  "term": {
+   "en": "Dummy-variable trap",
+   "ar": "فخّ المتغيّر المؤشِّر (dummy-variable trap)"
+  },
+  "def": {
+   "en": "Keeping all k dummy columns of a category alongside an intercept, so the k columns sum to the intercept's column of ones and the design matrix loses a rank: with 5 city dummies plus an intercept the rank is 5, not 6, and the fitted coefficients are no longer unique. drop_first=True removes one dummy and the rank is full again; a tree never has an intercept, so it never has the trap.",
+   "ar": "الإبقاء على أعمدة المؤشِّر الـk كلها لفئةٍ مع حدٍّ ثابت، فيصير مجموع الأعمدة الـk مساويًا لعمود الآحاد الخاصّ بالحدّ الثابت وتفقد مصفوفة التصميم رتبةً: فمع خمسة مؤشِّرات مدينة وحدٍّ ثابت تكون الرتبة 5 لا 6، ولا تبقى المعاملات المضبوطة وحيدة. وتحذف drop_first=True مؤشِّرًا واحدًا فتعود الرتبة تامّة؛ وليس للشجرة حدٌّ ثابت قط، فليس فيها الفخّ قط."
+  },
+  "cat": {
+   "en": "Encoding",
+   "ar": "الترميز"
+  },
+  "see": [
+   "dummy-variable",
+   "one-hot-encoding"
+  ],
+  "used": [
+   "t2l5-s7"
+  ]
+ },
+ {
   "id": "exact-duplicate",
   "term": {
    "en": "Exact duplicate",
@@ -197,6 +331,51 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l3-s1"
+  ]
+ },
+ {
+  "id": "feature-matrix",
+  "term": {
+   "en": "Feature matrix",
+   "ar": "مصفوفة الخصائص (feature matrix)"
+  },
+  "def": {
+   "en": "The all-numeric table a model is actually given: one row per thing you predict, one column per feature, no text and no gaps. The 480 cleaned flats become a 480 x 16 feature matrix in this lesson, and the point of the lesson is that next month's 85 listings must become an 85 x 16 matrix with the same columns in the same order.",
+   "ar": "الجدول الرقمي بكامله الذي يُعطى للنموذج فعلًا: صفٌّ لكل شيء تتنبأ به، وعمود لكل خاصية، ولا نصّ ولا ثقوب. وتصير الشقق المنظَّفة الـ480 في هذا الدرس مصفوفة خصائص 480 × 16، ومغزى الدرس أن إعلانات الشهر القادم الـ85 يجب أن تصير مصفوفة 85 × 16 بالأعمدة نفسها وبالترتيب نفسه."
+  },
+  "cat": {
+   "en": "Encoding",
+   "ar": "الترميز"
+  },
+  "see": [
+   "one-hot-encoding",
+   "unseen-category"
+  ],
+  "used": [
+   "t2l5-s4"
+  ]
+ },
+ {
+  "id": "fence",
+  "term": {
+   "en": "Fence",
+   "ar": "السياج (fence)"
+  },
+  "def": {
+   "en": "A threshold placed k inter-quartile ranges beyond a quartile, conventionally with k = 1.5: the fences of monthly_rent are Q1 - 1.5 x IQR = 1.875 and Q3 + 1.5 x IQR = 406.875, and twelve values fall outside, all of them high. The fence is a fitted parameter, not a constant: refitted on the 363 training rents it moves to 397.5.",
+   "ar": "حدٌّ يوضع على بُعد k من المدى الربيعي خارج ربيعٍ ما، والعُرف أن k = 1.5: فسياجا monthly_rent هما Q1 − 1.5 × IQR = 1.875 وQ3 + 1.5 × IQR = 406.875، وتقع اثنتا عشرة قيمة خارجهما كلها مرتفعة. والسياج وسيطٌ مضبوط لا ثابت: فإذا أُعيد ضبطه على إيجارات التدريب الـ363 انتقل إلى 397.5."
+  },
+  "cat": {
+   "en": "Outliers",
+   "ar": "القيم الشاذة"
+  },
+  "see": [
+   "iqr",
+   "quartile",
+   "z-score"
+  ],
+  "used": [
+   "t2l4-s16"
   ]
  },
  {
@@ -245,6 +424,28 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "frequency-encoding",
+  "term": {
+   "en": "Frequency encoding",
+   "ar": "الترميز بالتكرار (frequency encoding)"
+  },
+  "def": {
+   "en": "Replacing a high-cardinality column by one number per row: how often that category occurs in the training rows. It costs one column instead of twenty and leaks nothing, because it never looks at the target - but it makes every category of equal size indistinguishable, and on this file four agencies share the same encoded value.",
+   "ar": "استبدال عمود عالي التعدّد برقم واحد لكل صف: كم مرة تظهر تلك الفئة في صفوف التدريب. ويكلّف عمودًا واحدًا بدل عشرين ولا يسرّب شيئًا، لأنه لا ينظر إلى الهدف قط - لكنه يجعل كل فئتين متساويتي الحجم غير متميّزتين، وفي هذا الملف تتشارك أربع وكالات القيمة المرمَّزة نفسها."
+  },
+  "cat": {
+   "en": "Encoding",
+   "ar": "الترميز"
+  },
+  "see": [
+   "target-encoding",
+   "cardinality"
+  ],
+  "used": [
+   "t2l5-s18"
+  ]
+ },
+ {
   "id": "group-imputation",
   "term": {
    "en": "Group imputation",
@@ -264,6 +465,51 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l2-s18"
+  ]
+ },
+ {
+  "id": "groupby-transform",
+  "term": {
+   "en": "groupby transform",
+   "ar": "تحويل المجموعات (groupby transform)"
+  },
+  "def": {
+   "en": "A grouped calculation that returns one value per original row instead of one row per group, so it can be assigned straight back into the frame. `df.groupby(\"city\")[\"monthly_rent\"].transform(\"median\")` gives all 480 rows their own city's median; the same line with `.median()` instead gives 480 cells of NaN, because the result is then indexed by city and the frame is indexed by row.",
+   "ar": "حسابٌ على المجموعات يُرجع قيمةً لكل صف أصلي بدل صفٍّ لكل مجموعة، فيمكن إسناده إلى الإطار مباشرة. فـ`df.groupby(\"city\")[\"monthly_rent\"].transform(\"median\")` تعطي الصفوف الـ480 كلَّها وسيطَ مدينتها؛ والسطر نفسه بـ`.median()` يعطي 480 خلية NaN، لأن الناتج حينها مفهرس بالمدينة والإطار مفهرس بالصف."
+  },
+  "cat": {
+   "en": "Grouping",
+   "ar": "التجميع"
+  },
+  "see": [
+   "aggregation",
+   "transformation"
+  ],
+  "used": [
+   "t2l6-s9"
+  ]
+ },
+ {
+  "id": "idempotence",
+  "term": {
+   "en": "Idempotence",
+   "ar": "التماثل عند التكرار (idempotence)"
+  },
+  "def": {
+   "en": "The property that running a step twice gives the same result as running it once, so a pipeline can be re-run on its own output without damage. Every stage-1 and stage-2 rule in this chapter is idempotent in its values — `make_comparable` on its own output returns the same 480 flats — but the join is not until it drops the columns it is about to add, and the row ORDER is not until the sort is made stable.",
+   "ar": "خاصيةُ أن تشغيل الخطوة مرتين يعطي ما يعطيه تشغيلها مرة، فيستطيع الخط أن يُعاد تشغيله على مخرجه نفسه بلا ضرر. وكل قاعدة في المرحلتين 1 و2 في هذا الفصل متماثلة في قيمها — فـ`make_comparable` على مخرجها نفسه تُرجع الشقق الـ480 نفسها — لكن الدمج ليس كذلك حتى يُسقط الأعمدة التي هو على وشك إضافتها، وترتيبُ الصفوف ليس كذلك حتى يُجعَل الفرز مستقرًّا."
+  },
+  "cat": {
+   "en": "Pipeline",
+   "ar": "خط التحويل"
+  },
+  "see": [
+   "pipeline",
+   "decision-log"
+  ],
+  "used": [
+   "t2l6-s16",
+   "t2l6-s27"
   ]
  },
  {
@@ -287,6 +533,51 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l2-s14"
+  ]
+ },
+ {
+  "id": "inner-join",
+  "term": {
+   "en": "Inner join",
+   "ar": "الدمج الداخلي (inner join)"
+  },
+  "def": {
+   "en": "A merge that keeps only the rows whose key matched on both sides, so it can delete rows without a message. Joining the 503 listings to `city_reference.csv` on the raw city column matches 316 and an inner join therefore drops 187 flats; joining on the cleaned name matches all 503 and drops none.",
+   "ar": "دمجٌ يبقي الصفوف التي طابق مفتاحها في الطرفين وحدها، فيستطيع أن يحذف صفوفًا دون رسالة. فدمج الإعلانات الـ503 بـ`city_reference.csv` على عمود المدينة الخام يطابق 316، فيُسقط الدمج الداخلي 187 شقة؛ والدمج على الاسم المنظَّف يطابق الـ503 كلها ولا يُسقط شيئًا."
+  },
+  "cat": {
+   "en": "Combining",
+   "ar": "الدمج"
+  },
+  "see": [
+   "outer-join",
+   "cartesian-fan-out"
+  ],
+  "used": [
+   "t2l6-s14"
+  ]
+ },
+ {
+  "id": "iqr",
+  "term": {
+   "en": "Inter-quartile range (IQR)",
+   "ar": "المدى الربيعي (inter-quartile range, IQR)"
+  },
+  "def": {
+   "en": "Q3 minus Q1: the width of the middle half of the data. On monthly_rent it is 255.0 - 153.75 = 101.25 shekels. Because it is built from two ranks, it describes the spread of the ordinary values and ignores how extreme the extremes are, which is exactly what the standard deviation cannot do.",
+   "ar": "‏Q3 ناقص Q1: عرض النصف الأوسط من البيانات. وفي monthly_rent هو 255.0 − 153.75 = 101.25 شيكلًا. ولأنه مبني من رتبتين فهو يصف تشتّت القيم العادية ويُهمل مقدار تطرّف المتطرفات، وهذا بالضبط ما لا يستطيعه الانحراف المعياري."
+  },
+  "cat": {
+   "en": "Spread",
+   "ar": "التشتّت"
+  },
+  "see": [
+   "quartile",
+   "fence",
+   "robust-statistic"
+  ],
+  "used": [
+   "t2l4-s15"
   ]
  },
  {
@@ -333,6 +624,51 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l2-s11"
+  ]
+ },
+ {
+  "id": "log-transform",
+  "term": {
+   "en": "Log transform",
+   "ar": "التحويل اللوغاريتمي (log transform)"
+  },
+  "def": {
+   "en": "Replacing a value by its logarithm to compress a long right tail; np.log1p computes log(1 + x) so that a zero survives instead of becoming minus infinity. It deletes nothing, invents nothing and preserves order, so a median prediction is unchanged - but expm1 of a mean of logs is 195.16 where the true mean is 210.14, so a mean may not be carried back.",
+   "ar": "استبدال القيمة بلوغاريتمها لضغط ذيل أيمن طويل؛ وتحسب np.log1p المقدار log(1 + x) حتى ينجو الصفر بدل أن يصير سالب ما لا نهاية. ولا تحذف شيئًا ولا تختلق شيئًا وتحفظ الترتيب، فلا يتغيّر تنبؤ الوسيط — لكن expm1 لمتوسط اللوغاريتمات 195.16 والمتوسط الحقيقي 210.14، فلا يجوز إعادة متوسط."
+  },
+  "cat": {
+   "en": "Distribution",
+   "ar": "التوزيع"
+  },
+  "see": [
+   "skew",
+   "clipping"
+  ],
+  "used": [
+   "t2l4-s33"
+  ]
+ },
+ {
+  "id": "long-format",
+  "term": {
+   "en": "Long format",
+   "ar": "الشكل الطويل (long format)"
+  },
+  "def": {
+   "en": "One row per observation of a value, with the thing being measured named in a column of its own. Melting the 40 x 4 quarter grid gives 160 long rows of (listing_id, quarter, rent) — more rows, fewer columns, and a shape in which groupby, a time axis and a model all work.",
+   "ar": "صفٌّ واحد لكل مشاهدة لقيمة، والشيء المقيس مسمَّى في عمود خاص به. فإذابة شبكة الأرباع 40 × 4 تعطي 160 صفًّا طويلًا من (listing_id, quarter, rent) — صفوفٌ أكثر وأعمدة أقلّ، وشكلٌ يعمل فيه groupby ومحور الزمن والنموذج جميعًا."
+  },
+  "cat": {
+   "en": "Shape",
+   "ar": "الشكل"
+  },
+  "see": [
+   "wide-format",
+   "melt",
+   "tidy-data"
+  ],
+  "used": [
+   "t2l6-s2"
   ]
  },
  {
@@ -404,6 +740,50 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "mad",
+  "term": {
+   "en": "Median absolute deviation (MAD)",
+   "ar": "الانحراف المطلق الوسيطي (median absolute deviation, MAD)"
+  },
+  "def": {
+   "en": "The median of the absolute distances from the median. For monthly_rent the median is 200.0 and the MAD is 50.0, whatever the 99999 does, because moving one value cannot move a median of 484 distances. Scaling it by 0.6745 puts it on the same footing as a standard deviation, which gives the robust z-score.",
+   "ar": "وسيط المسافات المطلقة عن الوسيط. ففي monthly_rent الوسيط 200.0 والانحراف المطلق الوسيطي 50.0، مهما فعلت 99999، لأن تحريك قيمة واحدة لا يستطيع تحريك وسيط 484 مسافة. وقياسُه بالمعامل 0.6745 يضعه على قدم الانحراف المعياري، فتخرج الدرجة المعيارية الحصينة."
+  },
+  "cat": {
+   "en": "Spread",
+   "ar": "التشتّت"
+  },
+  "see": [
+   "z-score",
+   "robust-statistic"
+  ],
+  "used": [
+   "t2l4-s22"
+  ]
+ },
+ {
+  "id": "melt",
+  "term": {
+   "en": "Melt",
+   "ar": "الإذابة (melt)"
+  },
+  "def": {
+   "en": "The pandas operation that turns wide into long: the chosen value columns become two columns, one holding the old column name and one holding the value. `melt` keeps blank cells as rows, so the 40 x 4 grid gives 160 rows of which 7 carry no rent — a count you must decide about rather than discover later.",
+   "ar": "عملية pandas التي تحوّل العريض إلى طويل: فتصير أعمدة القيم المختارة عمودين، أحدهما يحمل اسم العمود القديم والآخر يحمل القيمة. وتُبقي `melt` الخلايا الفارغة صفوفًا، فتعطي شبكة 40 × 4 ‏160 صفًّا منها 7 لا تحمل إيجارًا — وهو عددٌ يجب أن تقرّر فيه لا أن تكتشفه لاحقًا."
+  },
+  "cat": {
+   "en": "Shape",
+   "ar": "الشكل"
+  },
+  "see": [
+   "long-format",
+   "pivot"
+  ],
+  "used": [
+   "t2l6-s2"
+  ]
+ },
+ {
   "id": "method-chaining",
   "term": {
    "en": "Method chaining",
@@ -423,6 +803,28 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l1-s18"
+  ]
+ },
+ {
+  "id": "min-max-scaling",
+  "term": {
+   "en": "Min-max scaling",
+   "ar": "توحيد المقياس بالحدَّين (min-max scaling)"
+  },
+  "def": {
+   "en": "Mapping a column onto [0, 1] with (x - min) / (max - min), so the two fitted parameters are the smallest and the largest training value. Both are the extremes of the column, which makes it the most fragile of the three scalers: with the 99999 still in monthly_rent, 460 of 461 rents land below 0.01.",
+   "ar": "ربط العمود بالمجال [0، 1] بالصيغة (x - min) / (max - min)، فيكون الوسيطان المضبوطان أصغر قيمة تدريب وأكبرها. وكلاهما طرفٌ من أطراف العمود، وهذا يجعله أهشّ المُقايِسات الثلاثة: فمع بقاء 99999 في monthly_rent يهبط 460 من 461 إيجارًا تحت 0.01."
+  },
+  "cat": {
+   "en": "Scaling",
+   "ar": "توحيد المقاييس"
+  },
+  "see": [
+   "standardisation",
+   "robust-scaling"
+  ],
+  "used": [
+   "t2l5-s24"
   ]
  },
  {
@@ -541,6 +943,29 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "model-artefact",
+  "term": {
+   "en": "Model artefact",
+   "ar": "أثر النموذج (model artefact)"
+  },
+  "def": {
+   "en": "The stored output of a fit: the parameters, the column order and the date and row count they were measured on, written to disk beside the matrix they produced. The chapter's `fitted` dictionary holds 17 parameters and is 89 lines of JSON; while it lives only in memory, an edit to `COND_ORDER` renumbers 75 of 480 flats and nothing raises.",
+   "ar": "المخرجُ المحفوظ لعملية الضبط: الوسائط وترتيب الأعمدة والتاريخ وعدد الصفوف الذي قِيست عليه، مكتوبًا على القرص بجانب المصفوفة التي أنتجته. ويحمل قاموس `fitted` في هذا الفصل 17 وسيطًا وهو 89 سطرًا من JSON؛ وما دام يسكن الذاكرة وحدها فإن تعديلًا في `COND_ORDER` يعيد ترقيم 75 شقة من 480 ولا يُرفَع خطأ."
+  },
+  "cat": {
+   "en": "Pipeline",
+   "ar": "خط التحويل"
+  },
+  "see": [
+   "fit",
+   "apply",
+   "decision-log"
+  ],
+  "used": [
+   "t2l6-s27"
+  ]
+ },
+ {
   "id": "model-ready",
   "term": {
    "en": "Model-ready",
@@ -608,6 +1033,29 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "one-hot-encoding",
+  "term": {
+   "en": "One-hot encoding",
+   "ar": "الترميز الأحادي (one-hot encoding)"
+  },
+  "def": {
+   "en": "Replacing one nominal column by one 0/1 indicator column per category, exactly one of which is 1 in each row. It is the only encoding of a nominal column that invents no order: the canonical city column becomes 5 columns and agency becomes 20.",
+   "ar": "استبدال عمود اسمي واحد بعمود مؤشِّر 0/1 لكل فئة، يكون واحد منها فقط يساوي 1 في كل صف. وهو الترميز الوحيد للعمود الاسمي الذي لا يختلق ترتيبًا: فعمود المدينة المعياري يصير خمسة أعمدة ويصير agency عشرين عمودًا."
+  },
+  "cat": {
+   "en": "Encoding",
+   "ar": "الترميز"
+  },
+  "see": [
+   "dummy-variable",
+   "dummy-variable-trap",
+   "cardinality"
+  ],
+  "used": [
+   "t2l5-s5"
+  ]
+ },
+ {
   "id": "ordered-category",
   "term": {
    "en": "Ordered category",
@@ -627,6 +1075,72 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l3-s23"
+  ]
+ },
+ {
+  "id": "ordinal-encoding",
+  "term": {
+   "en": "Ordinal encoding",
+   "ar": "الترميز الترتيبي (ordinal encoding)"
+  },
+  "def": {
+   "en": "Mapping the levels of an ordered column to integers that follow the order you declared, so condition becomes poor 0, fair 1, good 2, excellent 3. It is right only when the order is real, and it additionally assumes every step is the same size: this one column takes the held-out error from 64.67 to 59.48 shekels, while the alphabetical numbering cat.codes produces makes excellent 0 and reverses the sign.",
+   "ar": "ربط مستويات عمود مرتَّب بأعداد صحيحة تتبع الترتيب الذي أعلنتَه، فيصير condition هو poor صفرًا وfair واحدًا وgood اثنين وexcellent ثلاثة. وهو صحيح فقط حين يكون الترتيب حقيقيًّا، ويفترض زيادةً على ذلك أن كل خطوة بالحجم نفسه: فهذا العمود الواحد يأخذ الخطأ المحجوز من 64.67 إلى 59.48 شيكلًا، في حين يجعل الترقيم الأبجدي الذي تنتجه cat.codes قيمةَ excellent صفرًا ويقلب الإشارة."
+  },
+  "cat": {
+   "en": "Encoding",
+   "ar": "الترميز"
+  },
+  "see": [
+   "one-hot-encoding",
+   "feature-matrix"
+  ],
+  "used": [
+   "t2l5-s15"
+  ]
+ },
+ {
+  "id": "outer-join",
+  "term": {
+   "en": "Outer join",
+   "ar": "الدمج الخارجي (outer join)"
+  },
+  "def": {
+   "en": "A merge that keeps every row of both sides, filling the missing half with blanks, so nothing is lost and the unmatched rows become visible. An outer join of the cleaned listings and the city reference gives 504 rows: the 503 listings plus Beit Lahia, a real city that appears in no March listing.",
+   "ar": "دمجٌ يبقي كل صف من الطرفين ويعبّئ النصف المفقود بفراغات، فلا يُفقد شيء وتصير الصفوف غير المطابقة مرئية. فالدمج الخارجي للإعلانات المنظَّفة مع مرجع المدن يعطي 504 صفوف: الإعلانات الـ503 زائد بيت لاهيا، وهي مدينة حقيقية لا تظهر في أي إعلان من آذار."
+  },
+  "cat": {
+   "en": "Combining",
+   "ar": "الدمج"
+  },
+  "see": [
+   "inner-join"
+  ],
+  "used": [
+   "t2l6-s14"
+  ]
+ },
+ {
+  "id": "outlier",
+  "term": {
+   "en": "Outlier",
+   "ar": "القيمة الشاذة (outlier)"
+  },
+  "def": {
+   "en": "A value far from the rest of its column. The word names a position, not a defect: the rent of 99999 and the genuine 580-shekel flat in Gaza City are both outliers of monthly_rent, and they need opposite actions, so the word is a prompt to investigate rather than a licence to delete.",
+   "ar": "قيمة بعيدة عن بقية عمودها. والكلمة تسمّي موضعًا لا عيبًا: فالإيجار 99999 وشقةُ الخمس مئة والثمانين شيكلًا الحقيقية في مدينة غزة كلتاهما قيمة شاذة في monthly_rent، وتحتاجان عملين متعاكسين، فالكلمة دعوةٌ إلى التحقّق لا إذنٌ بالحذف."
+  },
+  "cat": {
+   "en": "Outliers",
+   "ar": "القيم الشاذة"
+  },
+  "see": [
+   "value-error",
+   "unit-error",
+   "fence"
+  ],
+  "used": [
+   "t2l4-s1"
   ]
  },
  {
@@ -653,6 +1167,50 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "pivot",
+  "term": {
+   "en": "Pivot",
+   "ar": "الاستقطاب (pivot)"
+  },
+  "def": {
+   "en": "The inverse of melting: long back to wide, one row per index value and one column per distinct key. `pivot` refuses the job when an index-column pair appears twice; `pivot_table` accepts it and silently averages the duplicates, which makes it a reporting tool and a trap at once.",
+   "ar": "عكس الإذابة: من الطويل إلى العريض، صفٌّ لكل قيمة فهرس وعمودٌ لكل مفتاح مميّز. وترفض `pivot` المهمة إذا تكرّر زوجُ فهرس-عمود؛ وتقبلها `pivot_table` فتحسب متوسط المكرَّرات بصمت، وهذا يجعلها أداة تقرير وفخًّا في الوقت نفسه."
+  },
+  "cat": {
+   "en": "Shape",
+   "ar": "الشكل"
+  },
+  "see": [
+   "melt",
+   "wide-format"
+  ],
+  "used": [
+   "t2l6-s3"
+  ]
+ },
+ {
+  "id": "quartile",
+  "term": {
+   "en": "Quartile",
+   "ar": "الربيع (quartile)"
+  },
+  "def": {
+   "en": "One of the three values that cut a sorted column into four equal-sized parts. Q1 is the value a quarter of the way up (153.75 for the 484 rents here), Q2 is the median (200.0) and Q3 is three quarters of the way up (255.0). A quartile reads a position, so a single impossible cell changes it only by its rank.",
+   "ar": "واحد من ثلاث قيم تقطع عمودًا مرتَّبًا إلى أربعة أجزاء متساوية الحجم. فـQ1 القيمة عند رُبع الطريق (‏153.75 للإيجارات الـ484 هنا)، وQ2 الوسيط (‏200.0)، وQ3 عند ثلاثة أرباع الطريق (‏255.0). والربيع يقرأ موضعًا، فلا تغيّره خليةٌ مستحيلة واحدة إلا برتبتها."
+  },
+  "cat": {
+   "en": "Spread",
+   "ar": "التشتّت"
+  },
+  "see": [
+   "iqr",
+   "fence"
+  ],
+  "used": [
+   "t2l4-s15"
+  ]
+ },
+ {
   "id": "repost",
   "term": {
    "en": "Repost",
@@ -675,6 +1233,51 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "robust-scaling",
+  "term": {
+   "en": "Robust scaling",
+   "ar": "التوحيد الحصين (robust scaling)"
+  },
+  "def": {
+   "en": "Mapping a column with (x - median) / IQR, so both fitted parameters are positions rather than sums and the largest value cannot move either. On monthly_rent its quartiles are -0.45, 0 and 0.55 whether the 99999 is present or not, and the typo itself comes out at 997.99 - visibly wrong instead of quietly flattening the column.",
+   "ar": "ربط العمود بالصيغة (x - median) / IQR، فيكون الوسيطان المضبوطان موضعين لا مجموعين ولا تستطيع القيمة الأكبر أن تحرّك أيًّا منهما. وعلى monthly_rent تكون ربيعاته ‎-0.45 و0 و0.55 سواء وُجدت 99999 أم لا، ويخرج خطأ الإدخال نفسه عند 997.99 - خاطئًا ظاهرًا لا مُسطِّحًا للعمود بهدوء."
+  },
+  "cat": {
+   "en": "Scaling",
+   "ar": "توحيد المقاييس"
+  },
+  "see": [
+   "min-max-scaling",
+   "standardisation"
+  ],
+  "used": [
+   "t2l5-s24"
+  ]
+ },
+ {
+  "id": "robust-statistic",
+  "term": {
+   "en": "Robust statistic",
+   "ar": "الإحصاء الحصين (robust statistic)"
+  },
+  "def": {
+   "en": "A summary a few arbitrary values cannot move far. The median and the IQR of monthly_rent are 200.0 and 101.25 with the 99999 in place and 200.0 and 102.5 without it; the mean and the standard deviation go from 416.3 and 4536.6 to 210.1 and 81.5. Robust does not mean correct - a robust rule still flagged the typo and the real 580 alike.",
+   "ar": "تلخيصٌ لا تستطيع قيمٌ قليلة عشوائية أن تحرّكه بعيدًا. فوسيط monthly_rent ومداه الربيعي 200.0 و101.25 مع وجود 99999 و200.0 و102.5 بدونها؛ أما المتوسط والانحراف المعياري فينتقلان من 416.3 و4536.6 إلى 210.1 و81.5. والحصانة لا تعني الصواب — فالقاعدة الحصينة علّمت خطأ الإدخال والـ580 الحقيقية سواءً بسواء."
+  },
+  "cat": {
+   "en": "Spread",
+   "ar": "التشتّت"
+  },
+  "see": [
+   "mad",
+   "iqr",
+   "z-score"
+  ],
+  "used": [
+   "t2l4-s15"
+  ]
+ },
+ {
   "id": "sentinel-value",
   "term": {
    "en": "Sentinel value",
@@ -693,6 +1296,50 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l2-s1"
+  ]
+ },
+ {
+  "id": "skew",
+  "term": {
+   "en": "Skew",
+   "ar": "الالتواء (skew)"
+  },
+  "def": {
+   "en": "A number saying which side of the middle carries the long tail: positive means a tail to the right, zero means the two sides balance. monthly_rent has a skew of 21.99 with the 99999 in it, 1.01 once that cell is voided, and -0.47 after np.log1p - three readings of one column, and only the middle one is about the market.",
+   "ar": "رقمٌ يقول أي جانبي الوسط يحمل الذيل الطويل: فالموجب يعني ذيلًا إلى اليمين، والصفر يعني توازن الجانبين. ولـmonthly_rent التواءٌ يساوي 21.99 مع وجود 99999 فيه، و1.01 بعد إفراغ تلك الخلية، و−0.47 بعد np.log1p — ثلاث قراءات لعمود واحد، وواحدةٌ وسطى منها فقط هي عن السوق."
+  },
+  "cat": {
+   "en": "Distribution",
+   "ar": "التوزيع"
+  },
+  "see": [
+   "log-transform",
+   "outlier"
+  ],
+  "used": [
+   "t2l4-s32"
+  ]
+ },
+ {
+  "id": "standardisation",
+  "term": {
+   "en": "Standardisation",
+   "ar": "التوحيد المعياري (standardisation)"
+  },
+  "def": {
+   "en": "Mapping a column to a mean of 0 and a standard deviation of 1 with (x - mean) / std. It has no fixed output range, so an extreme value is not forced inside a box - but both parameters are averages over every row, so one typo moves both: the same column gives a std of 4648.33 with the 99999 and 81.68 without it.",
+   "ar": "ربط العمود بمتوسط صفر وانحراف معياري واحد بالصيغة (x - mean) / std. ولا مدى ثابت لمخرجه، فلا تُكرَه القيمة المتطرفة داخل صندوق - لكن الوسيطين متوسطان على كل الصفوف، فخطأ إدخال واحد يحرّكهما: فالعمود نفسه يعطي انحرافًا 4648.33 مع 99999 و81.68 بدونها."
+  },
+  "cat": {
+   "en": "Scaling",
+   "ar": "توحيد المقاييس"
+  },
+  "see": [
+   "min-max-scaling",
+   "robust-scaling"
+  ],
+  "used": [
+   "t2l5-s24"
   ]
  },
  {
@@ -719,6 +1366,29 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "target-encoding",
+  "term": {
+   "en": "Target encoding",
+   "ar": "الترميز بالهدف (target encoding)"
+  },
+  "def": {
+   "en": "Replacing a category by the average target value of its rows - here, the mean rent of each agency. It is the easiest way in this chapter to fool yourself: a row's own rent sits inside its own encoding, so for the four agencies with one training row the encoded value IS that row's rent. Fitted on every row it made the held-out error look better than the honest version; fitted out of fold or on the training rows only it is defensible, and on this file it still loses to one constant.",
+   "ar": "استبدال الفئة بمتوسط قيمة الهدف في صفوفها - وهو هنا متوسط إيجار كل وكالة. وهو أسهل طريقة في هذا الفصل لتخدع بها نفسك: فإيجار الصف نفسه يجلس داخل ترميزه، فتكون القيمة المرمَّزة للوكالات الأربع ذات الصف التدريبي الواحد هي إيجار ذلك الصف عينه. وضبطُه على كل الصفوف جعل الخطأ المحجوز يبدو أفضل من النسخة الأمينة؛ وضبطُه خارج الطيّة أو على صفوف التدريب وحدها قابلٌ للدفاع، وهو في هذا الملف ما زال يخسر أمام ثابت واحد."
+  },
+  "cat": {
+   "en": "Encoding",
+   "ar": "الترميز"
+  },
+  "see": [
+   "frequency-encoding",
+   "cardinality",
+   "leakage"
+  ],
+  "used": [
+   "t2l5-s18"
+  ]
+ },
+ {
   "id": "text-flag",
   "term": {
    "en": "Text flag",
@@ -738,6 +1408,28 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l3-s30"
+  ]
+ },
+ {
+  "id": "tidy-data",
+  "term": {
+   "en": "Tidy data",
+   "ar": "البيانات المرتَّبة (tidy data)"
+  },
+  "def": {
+   "en": "A table in which each variable is a column, each observation is a row, and each kind of observation is its own table. The 480-flat frame is tidy for the question \"what rent should this flat ask?\", because one observation is one flat; the same rents arranged as four quarter columns are not, because one observation is then one flat-quarter spread across four cells.",
+   "ar": "جدولٌ كل متغيّر فيه عمود، وكل مشاهدة صفٌّ، وكل نوع من المشاهدات جدولٌ خاص به. فإطار الشقق الـ480 مرتَّب بالنسبة للسؤال «كم ينبغي أن تطلب هذه الشقة إيجارًا؟» لأن المشاهدة الواحدة شقةٌ واحدة؛ والإيجارات نفسها مرتَّبةً في أربعة أعمدة ربعية ليست مرتَّبة، لأن المشاهدة الواحدة تصير شقةً-ربعًا موزّعةً على أربع خلايا."
+  },
+  "cat": {
+   "en": "Shape",
+   "ar": "الشكل"
+  },
+  "see": [
+   "long-format",
+   "wide-format"
+  ],
+  "used": [
+   "t2l6-s1"
   ]
  },
  {
@@ -783,7 +1475,8 @@ window.DAGlossary["t2"] = [
    "model-ready"
   ],
   "used": [
-   "t2l1-s3"
+   "t2l1-s3",
+   "t2l6-s6"
   ]
  },
  {
@@ -809,6 +1502,72 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "unit-error",
+  "term": {
+   "en": "Unit error",
+   "ar": "خطأ الوحدة (unit error)"
+  },
+  "def": {
+   "en": "A value recorded correctly in the wrong unit, so the digits are right and the scale is not. Five areas in this file were written in dunum and read 0.0379 to 0.0878 instead of 37.9 to 87.8 square metres; multiplying by 1000 behind a provenance flag recovers five real rows that every outlier rule would otherwise have deleted.",
+   "ar": "قيمة مسجَّلة تسجيلًا صحيحًا بوحدة خاطئة، فالأرقام صحيحة والمقياس ليس كذلك. فخمس مساحات في هذا الملف كُتبت بالدونم فتُقرأ من 0.0379 إلى 0.0878 بدل 37.9 إلى 87.8 مترًا مربعًا؛ وضربُها في 1000 وراء علم مَنشأ يستعيد خمسة صفوف حقيقية كانت كل قاعدة شواذ ستحذفها."
+  },
+  "cat": {
+   "en": "Outliers",
+   "ar": "القيم الشاذة"
+  },
+  "see": [
+   "value-error",
+   "outlier"
+  ],
+  "used": [
+   "t2l4-s3"
+  ]
+ },
+ {
+  "id": "unseen-category",
+  "term": {
+   "en": "Unseen category",
+   "ar": "الفئة غير المرئية (unseen category)"
+  },
+  "def": {
+   "en": "A value that is legal, correctly spelled, and absent from the categories the encoder was fitted on. June brings four: the city Beit Lahia on 2 rows and three agencies on one row each. Encoded against the fitted list they produce a row of zeros that no error, warning or shape check reveals, which is why the apply step has to count them.",
+   "ar": "قيمة مشروعة ومكتوبة إملاءً صحيحًا وغائبة عن الفئات التي ضُبط عليها المُرمِّز. ويأتي حزيران بأربع: مدينة بيت لاهيا في صفَّين وثلاث وكالات في صفٍّ لكل منها. وترميزها على القائمة المضبوطة يُنتج صفًّا من الأصفار لا يكشفه خطأ ولا تحذير ولا فحص شكل، ولهذا يجب أن تعدّها خطوة التطبيق."
+  },
+  "cat": {
+   "en": "Encoding",
+   "ar": "الترميز"
+  },
+  "see": [
+   "one-hot-encoding",
+   "feature-matrix"
+  ],
+  "used": [
+   "t2l5-s11"
+  ]
+ },
+ {
+  "id": "value-error",
+  "term": {
+   "en": "Value error",
+   "ar": "خطأ القيمة (value error)"
+  },
+  "def": {
+   "en": "A cell holding something the column cannot mean at all, so it is a fact about the recording rather than about the flat. monthly_rent 99999 on listing 5062 is a phone number typed into the rent box; the repair is to void the cell everywhere in the file, because voiding an impossible value learns nothing from the data.",
+   "ar": "خلية تحمل شيئًا لا يمكن أن يعنيه العمود أصلًا، فهي واقعة عن التسجيل لا عن الشقة. فـmonthly_rent بقيمة 99999 في الإعلان 5062 رقم هاتف كُتب في خانة الإيجار؛ والإصلاح أن تُفرَّغ الخلية في كل مكان في الملف، لأن إفراغ قيمة مستحيلة لا يتعلّم شيئًا من البيانات."
+  },
+  "cat": {
+   "en": "Outliers",
+   "ar": "القيم الشاذة"
+  },
+  "see": [
+   "outlier",
+   "unit-error"
+  ],
+  "used": [
+   "t2l4-s2"
+  ]
+ },
+ {
   "id": "view",
   "term": {
    "en": "View",
@@ -828,6 +1587,51 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l1-s17"
+  ]
+ },
+ {
+  "id": "wide-format",
+  "term": {
+   "en": "Wide format",
+   "ar": "الشكل العريض (wide format)"
+  },
+  "def": {
+   "en": "One row per subject, with a separate column per period or category — the shape a spreadsheet produces and a person reads. `rent_history_wide.csv` is 40 listings x 4 quarter columns; adding a fifth quarter means adding a column, which is why no model is written against this shape.",
+   "ar": "صفٌّ واحد لكل موضوع، وعمودٌ مستقلّ لكل فترة أو فئة — وهو الشكل الذي ينتجه الجدول الحسابي ويقرؤه الإنسان. فـ`rent_history_wide.csv` هو 40 إعلانًا × 4 أعمدة ربعية؛ وإضافة ربع خامس تعني إضافة عمود، ولهذا لا يُكتَب نموذج على هذا الشكل."
+  },
+  "cat": {
+   "en": "Shape",
+   "ar": "الشكل"
+  },
+  "see": [
+   "long-format",
+   "pivot"
+  ],
+  "used": [
+   "t2l6-s1"
+  ]
+ },
+ {
+  "id": "z-score",
+  "term": {
+   "en": "z-score",
+   "ar": "الدرجة المعيارية (z-score)"
+  },
+  "def": {
+   "en": "How many standard deviations a value sits from the mean: (x - mean) / std. The usual rule flags |z| > 3, and it fails on this column because both the mean (416.3) and the standard deviation (4536.6) are computed from the 99999 it is meant to catch, so it flags 1 of the 12 values the fence flags. Remove that one cell and it flags 6.",
+   "ar": "كم انحرافًا معياريًّا تبعد القيمة عن المتوسط: ‏(x − mean) / std. والقاعدة المعتادة تعلّم |z| > 3، وهي تفشل في هذا العمود لأن المتوسط (‏416.3) والانحراف المعياري (‏4536.6) محسوبان كلاهما من القيمة 99999 التي يُفترض أن تُلقَط، فتعلّم واحدة من القيم الاثنتي عشرة التي يعلّمها السياج. وإذا حذفت تلك الخلية وحدها علّمت ستًّا."
+  },
+  "cat": {
+   "en": "Outliers",
+   "ar": "القيم الشاذة"
+  },
+  "see": [
+   "mad",
+   "robust-statistic",
+   "fence"
+  ],
+  "used": [
+   "t2l4-s20"
   ]
  }
 ];
