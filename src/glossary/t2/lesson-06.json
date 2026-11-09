@@ -1,0 +1,231 @@
+[
+  {
+    "id": "tidy-data",
+    "term": {
+      "en": "Tidy data",
+      "ar": "البيانات المرتَّبة (tidy data)"
+    },
+    "def": {
+      "en": "A table in which each variable is a column, each observation is a row, and each kind of observation is its own table. The 480-flat frame is tidy for the question \"what rent should this flat ask?\", because one observation is one flat; the same rents arranged as four quarter columns are not, because one observation is then one flat-quarter spread across four cells.",
+      "ar": "جدولٌ كل متغيّر فيه عمود، وكل مشاهدة صفٌّ، وكل نوع من المشاهدات جدولٌ خاص به. فإطار الشقق الـ480 مرتَّب بالنسبة للسؤال «كم ينبغي أن تطلب هذه الشقة إيجارًا؟» لأن المشاهدة الواحدة شقةٌ واحدة؛ والإيجارات نفسها مرتَّبةً في أربعة أعمدة ربعية ليست مرتَّبة، لأن المشاهدة الواحدة تصير شقةً-ربعًا موزّعةً على أربع خلايا."
+    },
+    "cat": {
+      "en": "Shape",
+      "ar": "الشكل"
+    },
+    "see": [
+      "long-format",
+      "wide-format"
+    ]
+  },
+  {
+    "id": "long-format",
+    "term": {
+      "en": "Long format",
+      "ar": "الشكل الطويل (long format)"
+    },
+    "def": {
+      "en": "One row per observation of a value, with the thing being measured named in a column of its own. Melting the 40 x 4 quarter grid gives 160 long rows of (listing_id, quarter, rent) — more rows, fewer columns, and a shape in which groupby, a time axis and a model all work.",
+      "ar": "صفٌّ واحد لكل مشاهدة لقيمة، والشيء المقيس مسمَّى في عمود خاص به. فإذابة شبكة الأرباع 40 × 4 تعطي 160 صفًّا طويلًا من (listing_id, quarter, rent) — صفوفٌ أكثر وأعمدة أقلّ، وشكلٌ يعمل فيه groupby ومحور الزمن والنموذج جميعًا."
+    },
+    "cat": {
+      "en": "Shape",
+      "ar": "الشكل"
+    },
+    "see": [
+      "wide-format",
+      "melt",
+      "tidy-data"
+    ]
+  },
+  {
+    "id": "wide-format",
+    "term": {
+      "en": "Wide format",
+      "ar": "الشكل العريض (wide format)"
+    },
+    "def": {
+      "en": "One row per subject, with a separate column per period or category — the shape a spreadsheet produces and a person reads. `rent_history_wide.csv` is 40 listings x 4 quarter columns; adding a fifth quarter means adding a column, which is why no model is written against this shape.",
+      "ar": "صفٌّ واحد لكل موضوع، وعمودٌ مستقلّ لكل فترة أو فئة — وهو الشكل الذي ينتجه الجدول الحسابي ويقرؤه الإنسان. فـ`rent_history_wide.csv` هو 40 إعلانًا × 4 أعمدة ربعية؛ وإضافة ربع خامس تعني إضافة عمود، ولهذا لا يُكتَب نموذج على هذا الشكل."
+    },
+    "cat": {
+      "en": "Shape",
+      "ar": "الشكل"
+    },
+    "see": [
+      "long-format",
+      "pivot"
+    ]
+  },
+  {
+    "id": "melt",
+    "term": {
+      "en": "Melt",
+      "ar": "الإذابة (melt)"
+    },
+    "def": {
+      "en": "The pandas operation that turns wide into long: the chosen value columns become two columns, one holding the old column name and one holding the value. `melt` keeps blank cells as rows, so the 40 x 4 grid gives 160 rows of which 7 carry no rent — a count you must decide about rather than discover later.",
+      "ar": "عملية pandas التي تحوّل العريض إلى طويل: فتصير أعمدة القيم المختارة عمودين، أحدهما يحمل اسم العمود القديم والآخر يحمل القيمة. وتُبقي `melt` الخلايا الفارغة صفوفًا، فتعطي شبكة 40 × 4 ‏160 صفًّا منها 7 لا تحمل إيجارًا — وهو عددٌ يجب أن تقرّر فيه لا أن تكتشفه لاحقًا."
+    },
+    "cat": {
+      "en": "Shape",
+      "ar": "الشكل"
+    },
+    "see": [
+      "long-format",
+      "pivot"
+    ]
+  },
+  {
+    "id": "pivot",
+    "term": {
+      "en": "Pivot",
+      "ar": "الاستقطاب (pivot)"
+    },
+    "def": {
+      "en": "The inverse of melting: long back to wide, one row per index value and one column per distinct key. `pivot` refuses the job when an index-column pair appears twice; `pivot_table` accepts it and silently averages the duplicates, which makes it a reporting tool and a trap at once.",
+      "ar": "عكس الإذابة: من الطويل إلى العريض، صفٌّ لكل قيمة فهرس وعمودٌ لكل مفتاح مميّز. وترفض `pivot` المهمة إذا تكرّر زوجُ فهرس-عمود؛ وتقبلها `pivot_table` فتحسب متوسط المكرَّرات بصمت، وهذا يجعلها أداة تقرير وفخًّا في الوقت نفسه."
+    },
+    "cat": {
+      "en": "Shape",
+      "ar": "الشكل"
+    },
+    "see": [
+      "melt",
+      "wide-format"
+    ]
+  },
+  {
+    "id": "groupby-transform",
+    "term": {
+      "en": "groupby transform",
+      "ar": "تحويل المجموعات (groupby transform)"
+    },
+    "def": {
+      "en": "A grouped calculation that returns one value per original row instead of one row per group, so it can be assigned straight back into the frame. `df.groupby(\"city\")[\"monthly_rent\"].transform(\"median\")` gives all 480 rows their own city's median; the same line with `.median()` instead gives 480 cells of NaN, because the result is then indexed by city and the frame is indexed by row.",
+      "ar": "حسابٌ على المجموعات يُرجع قيمةً لكل صف أصلي بدل صفٍّ لكل مجموعة، فيمكن إسناده إلى الإطار مباشرة. فـ`df.groupby(\"city\")[\"monthly_rent\"].transform(\"median\")` تعطي الصفوف الـ480 كلَّها وسيطَ مدينتها؛ والسطر نفسه بـ`.median()` يعطي 480 خلية NaN، لأن الناتج حينها مفهرس بالمدينة والإطار مفهرس بالصف."
+    },
+    "cat": {
+      "en": "Grouping",
+      "ar": "التجميع"
+    },
+    "see": [
+      "aggregation",
+      "transformation"
+    ]
+  },
+  {
+    "id": "inner-join",
+    "term": {
+      "en": "Inner join",
+      "ar": "الدمج الداخلي (inner join)"
+    },
+    "def": {
+      "en": "A merge that keeps only the rows whose key matched on both sides, so it can delete rows without a message. Joining the 503 listings to `city_reference.csv` on the raw city column matches 316 and an inner join therefore drops 187 flats; joining on the cleaned name matches all 503 and drops none.",
+      "ar": "دمجٌ يبقي الصفوف التي طابق مفتاحها في الطرفين وحدها، فيستطيع أن يحذف صفوفًا دون رسالة. فدمج الإعلانات الـ503 بـ`city_reference.csv` على عمود المدينة الخام يطابق 316، فيُسقط الدمج الداخلي 187 شقة؛ والدمج على الاسم المنظَّف يطابق الـ503 كلها ولا يُسقط شيئًا."
+    },
+    "cat": {
+      "en": "Combining",
+      "ar": "الدمج"
+    },
+    "see": [
+      "outer-join",
+      "cartesian-fan-out"
+    ]
+  },
+  {
+    "id": "outer-join",
+    "term": {
+      "en": "Outer join",
+      "ar": "الدمج الخارجي (outer join)"
+    },
+    "def": {
+      "en": "A merge that keeps every row of both sides, filling the missing half with blanks, so nothing is lost and the unmatched rows become visible. An outer join of the cleaned listings and the city reference gives 504 rows: the 503 listings plus Beit Lahia, a real city that appears in no March listing.",
+      "ar": "دمجٌ يبقي كل صف من الطرفين ويعبّئ النصف المفقود بفراغات، فلا يُفقد شيء وتصير الصفوف غير المطابقة مرئية. فالدمج الخارجي للإعلانات المنظَّفة مع مرجع المدن يعطي 504 صفوف: الإعلانات الـ503 زائد بيت لاهيا، وهي مدينة حقيقية لا تظهر في أي إعلان من آذار."
+    },
+    "cat": {
+      "en": "Combining",
+      "ar": "الدمج"
+    },
+    "see": [
+      "inner-join"
+    ]
+  },
+  {
+    "id": "cartesian-fan-out",
+    "term": {
+      "en": "Cartesian fan-out",
+      "ar": "التضاعف الديكارتي (cartesian fan-out)"
+    },
+    "def": {
+      "en": "The row multiplication that happens when a merge key is not unique on one side: every matching left row is copied once per match. A city reference in which Gaza appears twice turns 480 flats into 644 rows and moves the mean rent from 211.05 to 223.59 shekels without a single cell being edited. `validate=\"m:1\"` turns it into an error at the line that caused it.",
+      "ar": "تضاعفُ الصفوف الذي يحدث عندما لا يكون مفتاح الدمج فريدًا في أحد الطرفين: فيُنسَخ كل صف أيسر مطابق مرةً لكل مطابقة. فمرجعُ مدن تظهر فيه غزة مرتين يحوّل 480 شقة إلى 644 صفًّا ويزيح متوسط الإيجار من 211.05 إلى 223.59 شيكلًا دون أن تُحرَّر خليةٌ واحدة. وتحوّله `validate=\"m:1\"` إلى خطأ عند السطر المسبِّب له."
+    },
+    "cat": {
+      "en": "Combining",
+      "ar": "الدمج"
+    },
+    "see": [
+      "inner-join",
+      "business-key"
+    ]
+  },
+  {
+    "id": "concatenation",
+    "term": {
+      "en": "Concatenation",
+      "ar": "التجميع بالرصّ (concatenation)"
+    },
+    "def": {
+      "en": "Stacking frames rather than matching them on a key: `pd.concat` lines up columns by name and rows by index. Stacking March's 52 dummy columns under June's 13 gives 54 columns and 4,491 blank cells, because the two files were encoded separately — which is why the fitted category list, not `join=\"inner\"`, is the real fix.",
+      "ar": "رصُّ الأطر بدل مطابقتها على مفتاح: فتصطفّ `pd.concat` الأعمدةَ بالاسم والصفوفَ بالفهرس. ورصُّ أعمدة آذار الـ52 المؤشِّرة تحت أعمدة حزيران الـ13 يعطي 54 عمودًا و4491 خليةً فارغة، لأن الملفين رُمِّزا على انفراد — ولهذا فإن العلاج الحقيقي هو قائمة الفئات المضبوطة لا `join=\"inner\"`."
+    },
+    "cat": {
+      "en": "Combining",
+      "ar": "الدمج"
+    },
+    "see": [
+      "unseen-category",
+      "feature-matrix"
+    ]
+  },
+  {
+    "id": "idempotence",
+    "term": {
+      "en": "Idempotence",
+      "ar": "التماثل عند التكرار (idempotence)"
+    },
+    "def": {
+      "en": "The property that running a step twice gives the same result as running it once, so a pipeline can be re-run on its own output without damage. Every stage-1 and stage-2 rule in this chapter is idempotent in its values — `make_comparable` on its own output returns the same 480 flats — but the join is not until it drops the columns it is about to add, and the row ORDER is not until the sort is made stable.",
+      "ar": "خاصيةُ أن تشغيل الخطوة مرتين يعطي ما يعطيه تشغيلها مرة، فيستطيع الخط أن يُعاد تشغيله على مخرجه نفسه بلا ضرر. وكل قاعدة في المرحلتين 1 و2 في هذا الفصل متماثلة في قيمها — فـ`make_comparable` على مخرجها نفسه تُرجع الشقق الـ480 نفسها — لكن الدمج ليس كذلك حتى يُسقط الأعمدة التي هو على وشك إضافتها، وترتيبُ الصفوف ليس كذلك حتى يُجعَل الفرز مستقرًّا."
+    },
+    "cat": {
+      "en": "Pipeline",
+      "ar": "خط التحويل"
+    },
+    "see": [
+      "pipeline",
+      "decision-log"
+    ]
+  },
+  {
+    "id": "model-artefact",
+    "term": {
+      "en": "Model artefact",
+      "ar": "أثر النموذج (model artefact)"
+    },
+    "def": {
+      "en": "The stored output of a fit: the parameters, the column order and the date and row count they were measured on, written to disk beside the matrix they produced. The chapter's `fitted` dictionary holds 17 parameters and is 89 lines of JSON; while it lives only in memory, an edit to `COND_ORDER` renumbers 75 of 480 flats and nothing raises.",
+      "ar": "المخرجُ المحفوظ لعملية الضبط: الوسائط وترتيب الأعمدة والتاريخ وعدد الصفوف الذي قِيست عليه، مكتوبًا على القرص بجانب المصفوفة التي أنتجته. ويحمل قاموس `fitted` في هذا الفصل 17 وسيطًا وهو 89 سطرًا من JSON؛ وما دام يسكن الذاكرة وحدها فإن تعديلًا في `COND_ORDER` يعيد ترقيم 75 شقة من 480 ولا يُرفَع خطأ."
+    },
+    "cat": {
+      "en": "Pipeline",
+      "ar": "خط التحويل"
+    },
+    "see": [
+      "fit",
+      "apply",
+      "decision-log"
+    ]
+  }
+]

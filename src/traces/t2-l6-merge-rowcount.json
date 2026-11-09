@@ -1,0 +1,87 @@
+{
+  "id": "t2-l6-merge-rowcount",
+  "title": {
+    "en": "One merge, three row counts: the join that deletes, the join that reports, and the join that multiplies",
+    "ar": "دمج واحد وثلاثة أعداد صفوف: الدمج الذي يحذف، والدمج الذي يبلّغ، والدمج الذي يضاعف"
+  },
+  "lede": {
+    "en": "Five listings and a four-row city reference. One of the five cities is spelled in lower case, which is the whole of the bug. An inner join quietly returns four rows; a left join with indicator=True returns five and names the one that did not match; and a reference file in which one city appears twice turns five listings into seven without changing a single cell. Watch the row count on every step, because in transformation work the row count is where the bugs live.",
+    "ar": "خمسة إعلانات ومرجع مدن من أربعة صفوف. وإحدى المدن الخمس مكتوبة بأحرف صغيرة، وهذا هو العطب كله. فالدمج الداخلي يُرجع أربعة صفوف بهدوء؛ والدمج الأيسر مع indicator=True يُرجع خمسة ويسمّي الذي لم يطابق؛ وملف مرجع تظهر فيه مدينة مرتين يحوّل خمسة إعلانات إلى سبعة دون أن تتغيّر خلية واحدة. راقب عدد الصفوف في كل خطوة، فعدد الصفوف في عمل التحويل هو مسكن الأعطال."
+  },
+  "files": {
+    "flats.csv": "listing_id,city,rent\n5098,Gaza,265\n5293,gaza,240\n5027,Rafah,175\n5288,Jabalia,190\n5045,Gaza,255\n",
+    "ref.csv": "city,km_to_gaza_city\nGaza,0.0\nRafah,34.0\nJabalia,6.8\nBeit Lahia,11.4\n"
+  },
+  "code": "import pandas as pd\nflats = pd.read_csv(\"flats.csv\")\nref = pd.read_csv(\"ref.csv\")\ninner = flats.merge(ref, on=\"city\", how=\"inner\")\nprint(\"inner:\", len(flats), \"->\", len(inner))\nleft = flats.merge(ref, on=\"city\", how=\"left\", indicator=True)\nprint(left[\"_merge\"].value_counts().to_string())\nref2 = pd.concat([ref, ref[ref[\"city\"] == \"Gaza\"]], ignore_index=True)\nfan = flats.merge(ref2, on=\"city\", how=\"left\")\nprint(\"fan-out:\", len(flats), \"->\", len(fan))\nprint(\"mean rent: %.2f -> %.2f\" % (flats[\"rent\"].mean(), fan[\"rent\"].mean()))\ntry:\n    flats.merge(ref2, on=\"city\", how=\"left\", validate=\"m:1\")\nexcept Exception as e:\n    print(\"validate='m:1' raised\", type(e).__name__)\n",
+  "notes": {
+    "2": {
+      "en": "Five listings. Look at row 5293: its city is 'gaza' in lower case. In the real file this is one of twenty-six spellings of five cities, and Lesson 3 spent a concept on it.",
+      "ar": "خمسة إعلانات. انظر إلى الصف 5293: مدينته 'gaza' بأحرف صغيرة. وفي الملف الحقيقي هذه واحدة من ستٍّ وعشرين صورة إملائية لخمس مدن، وأفرد لها الدرس 3 مفهومًا كاملًا."
+    },
+    "3": {
+      "en": "The reference: four cities, each exactly once, one of which (Beit Lahia) has no listing at all. A reference table is the easy half of a join — the key is unique, which is what makes m:1 the right validation.",
+      "ar": "المرجع: أربع مدن كلٌّ منها مرة واحدة بالضبط، وإحداها (بيت لاهيا) بلا إعلان على الإطلاق. وجدول المرجع هو النصف السهل من الدمج — فمفتاحه فريد، وهذا ما يجعل m:1 هو التحقّق الصحيح."
+    },
+    "4": {
+      "en": "how='inner' keeps only the rows that matched on both sides. Nothing in this line mentions the lower-case 'gaza', and nothing is about to mention it.",
+      "ar": "تبقي how='inner' الصفوف التي طابقت في الطرفين وحدها. ولا شيء في هذا السطر يذكر 'gaza' الصغيرة، ولا شيء على وشك أن يذكرها."
+    },
+    "5": {
+      "en": "Five in, four out. One listing has been deleted by a join, with no message of any kind. In the real file this is 503 in and 316 out: 187 flats gone, and every number you compute afterwards is a number about a different market.",
+      "ar": "خمسة تدخل وأربعة تخرج. حُذف إعلانٌ بدمج، ودون أي رسالة من أي نوع. وفي الملف الحقيقي هذا 503 تدخل و316 تخرج: ‏187 شقة اختفت، وكل رقم تحسبه بعدها رقمٌ عن سوق أخرى."
+    },
+    "6": {
+      "en": "Two changes. how='left' keeps every listing whatever happens, so the row count cannot fall; indicator=True adds a _merge column that says, per row, which side it came from. Together they turn a deletion into a report.",
+      "ar": "تغييران. تبقي how='left' كل إعلان مهما حدث، فلا يستطيع عدد الصفوف أن ينقص؛ وتضيف indicator=True عمود _merge يقول لكل صف من أي طرف جاء. فيحوّلان معًا الحذفَ إلى تقرير."
+    },
+    "7": {
+      "en": "both=4, left_only=1. That single line is the difference between a merge you can defend and a merge you cannot. It is also free: you can drop the column afterwards and keep the count.",
+      "ar": "‏both=4 وleft_only=1. وهذا السطر وحده هو الفرق بين دمج تستطيع الدفاع عنه ودمج لا تستطيع. وهو مجاني أيضًا: تستطيع إسقاط العمود بعدها والاحتفاظ بالعدد."
+    },
+    "8": {
+      "en": "Now the dangerous case, and it is not a kind of join at all. Somebody re-sent the reference file and it was appended, so Gaza appears twice. The frame still looks right: five columns, sensible values, nothing missing.",
+      "ar": "والآن الحالة الخطيرة، وهي ليست نوعًا من الدمج أصلًا. أعاد أحدهم إرسال ملف المرجع فأُلحق، فظهرت غزة مرتين. والإطار ما زال يبدو سليمًا: أعمدة معقولة وقيم معقولة ولا شيء مفقود."
+    },
+    "9": {
+      "en": "The same left join as before, against a reference whose key is no longer unique. Every Gaza listing now matches two reference rows, so every Gaza listing is copied twice. This is a cartesian fan-out, and how='left' does not protect you from it.",
+      "ar": "الدمج الأيسر نفسه كما قبل، لكن على مرجعٍ لم يبقَ مفتاحه فريدًا. فكل إعلان في غزة يطابق الآن صفَّي مرجع، فيُنسَخ كل إعلان في غزة مرتين. وهذا تضاعف ديكارتي، وhow='left' لا تحميك منه."
+    },
+    "10": {
+      "en": "Five rows in, seven out. The row count went UP, which is the one direction people never check for, because 'left join' sounds like a promise that it cannot.",
+      "ar": "خمسة صفوف تدخل وسبعة تخرج. ارتفع عدد الصفوف، وهذا هو الاتجاه الوحيد الذي لا يفحصه الناس قط، لأن «الدمج الأيسر» يبدو وعدًا بأن ذلك لا يحدث."
+    },
+    "11": {
+      "en": "And here is the damage: the mean rent moved, although not one cell was edited. The two Gaza listings now vote twice each. On the real file this is 211.05 shekels becoming 223.59 — a twelve-and-a-half-shekel change in an answer, caused by a duplicated row in a reference file nobody looked at.",
+      "ar": "وهذا هو الضرر: انزاح متوسط الإيجار وإن لم تُحرَّر خليةٌ واحدة. فإعلانا غزة يصوّتان الآن مرتين لكلٍّ منهما. وعلى الملف الحقيقي هذا 211.05 شيكلًا تصير 223.59 — انزياحٌ باثني عشر شيكلًا ونصف في جواب، سببه صفٌّ مكرَّر في ملف مرجع لم ينظر إليه أحد."
+    },
+    "13": {
+      "en": "The one-word defence. validate='m:1' asserts that the key is unique on the right, which is the claim you were making anyway when you wrote 'left join against a reference table'.",
+      "ar": "الدفاع بكلمة واحدة. تؤكّد validate='m:1' أن المفتاح فريد في الطرف الأيمن، وهذا هو الادّعاء الذي كنت تدّعيه أصلًا عندما كتبت «دمج أيسر على جدول مرجع»."
+    },
+    "15": {
+      "en": "A MergeError, before the frame exists. That is the whole point: the failure now happens at the line that caused it, not in a mean three functions later. Add an assertion on the row count as well, because validate= only guards uniqueness, not the arithmetic you were about to do.",
+      "ar": "خطأ MergeError قبل أن يوجد الإطار. وهذا هو المغزى كله: صار العطل يحدث عند السطر المسبِّب له، لا في متوسطٍ بعد ثلاث دوال. وأضِف تأكيدًا على عدد الصفوف أيضًا، فإن validate= تحرس التفرّد وحده لا الحساب الذي كنت على وشك إجرائه."
+    },
+    "end": {
+      "en": "Three defences, all cheap, all one line: join on a key you have cleaned, pass how='left' with indicator=True so an unmatched row is counted instead of deleted, and pass validate='m:1' so a reference that gained a duplicate row fails loudly. Then assert the row count, because a merge is the only operation in this chapter that can change it in both directions.",
+      "ar": "ثلاثة دفاعات كلها رخيصة وكلها سطر واحد: ادمج على مفتاح نظّفته، ومرّر how='left' مع indicator=True ليُعَدّ الصف غير المطابق بدل أن يُحذف، ومرّر validate='m:1' ليفشل بصوت عالٍ مرجعٌ اكتسب صفًّا مكرَّرًا. ثم أكّد عدد الصفوف، فالدمج هو العملية الوحيدة في هذا الفصل التي تستطيع تغييره في الاتجاهين."
+    }
+  },
+  "watch": [
+    "flats",
+    "ref",
+    "inner",
+    "left",
+    "ref2",
+    "fan"
+  ],
+  "viz": {
+    "flats": "table",
+    "ref": "table",
+    "inner": "table",
+    "left": "table",
+    "ref2": "table",
+    "fan": "table"
+  },
+  "max_steps": 40
+}

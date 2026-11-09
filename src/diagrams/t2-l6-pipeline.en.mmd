@@ -1,0 +1,20 @@
+%% alt: Flowchart of the assembled transformation pipeline. One raw CSV enters at the top. Stage 2 parses the two date formats first, because the deduplication of stage 1 needs a sortable date to choose which copy of a repost survives. Stage 1 then makes one row per flat, taking 503 rows to 480. Stage 2 proper applies the recorded maps: CITY_MAP for twenty-six city spellings, BOOL_MAP for the twelve ways of writing furnished, FLOOR_WORDS for the nineteen ground floors, the declared condition order, the six advert flags, the dunum unit repair and the LIMITS domain rule, and then joins city_reference with validate equals m colon 1. Stage 3 decides every hole by its mechanism: the unlabelled rows are flagged and never filled, the area takes a median per rooms, the rooms and the condition take the training median and mode, and the deposit takes months of rent per agency. Stage 4 flags the fence, the robust z and the odd deposit ratio, and deletes nothing. Stage 5 encodes and scales against fitted category lists and scaler parameters, producing an eighteen-column matrix. Two things leave the pipeline beside the matrix: a report with one row per step, and the fitted dictionary, which is the only thing the next month's run is allowed to reuse. Three assertions guard the exit: the row count must equal the row count out of stage 1, no required column may contain a blank, and the column set must equal the fitted one.
+flowchart TD
+  RAW[("listings_raw.csv<br/>503 rows")] --> P["Stage 2 first:<br/>`parse_dates` 480 ISO + 23 slash"]
+  P --> S1["**Stage 1 - structure**<br/>one row per flat<br/>503 to 480"]
+  S1 --> S2["**Stage 2 - values**<br/>`CITY_MAP` `BOOL_MAP` `FLOOR_WORDS`<br/>`COND_ORDER` `FLAGS` dunum `LIMITS`"]
+  S2 --> J["join `city_reference`<br/>`validate='m:1'` + row assert"]
+  J --> S3["**Stage 3 - missing**<br/>flag unlabelled, median per rooms,<br/>mode, months of rent per agency"]
+  S3 --> S4["**Stage 4 - outliers**<br/>fence, robust z, deposit ratio<br/>flags only, no deletion"]
+  S4 --> S5["**Stage 5 - encode and scale**<br/>fitted lists, fitted min-max,<br/>fitted robust scale"]
+  S5 --> A{"three assertions"}
+  A -- "rows, blanks, columns OK" --> X[["matrix<br/>480 x 18"]]
+  A -- "any one fails" --> STOP["raise:<br/>return nothing"]
+  S5 --> REP[/"report<br/>one row per step"/]
+  S5 --> FIT[("`fitted`<br/>17 parameters")]
+  FIT -. "reused unchanged" .-> NEXT[("listings_new.csv<br/>85 rows")]
+  NEXT --> P
+  class STOP dg-bad
+  class X dg-good
+  class FIT dg-warn
+  class REP dg-mute

@@ -1,0 +1,24 @@
+%% alt: Flowchart of the four kinds of join and what each one does to the row count, measured on the real files. Five hundred and three listings meet a six-row city reference. The first and only question that matters is which key you join on. Joining on the raw city column matches three hundred and sixteen rows, because twenty-six spellings stand for five cities; joining on the cleaned name matches all five hundred and three. Under each key the four kinds then behave differently. An inner join keeps only matched rows: three hundred and sixteen on the raw key, which silently deletes one hundred and eighty-seven listings, or five hundred and three on the clean key, which deletes nothing. A left join keeps every listing and fills the reference columns with blanks where there was no match: five hundred and three rows either way, with one hundred and eighty-seven rows of blanks on the raw key. A right join keeps every reference row, so it adds Beit Lahia, a city with no listings, as one row of blanks. An outer join keeps both, giving five hundred and four rows. Beside all four sits the trap that is not a kind of join at all: if the key is not unique on the right, every matching left row is copied once per match, so four hundred and eighty flats against a reference whose Gaza row appears twice becomes six hundred and forty-four rows and a mean rent that moved from 211.05 to 223.59 shekels without a single cell changing. The defences are the same three every time: validate equals m colon 1, indicator equals True, and an assertion on the row count after the merge.
+flowchart TD
+  L[("listings<br/>503 rows")] --> K{"join on which key?"}
+  R[("city_reference<br/>6 rows")] --> K
+  K -- "raw `city`<br/>26 spellings" --> BAD["matches 316 of 503"]
+  K -- "cleaned `city`<br/>5 names" --> GOOD["matches 503 of 503"]
+  BAD --> H1{"`how=`"}
+  GOOD --> H2{"`how=`"}
+  H1 -- "inner" --> I1["316 rows<br/>**187 listings deleted**"]
+  H1 -- "left" --> L1["503 rows<br/>187 rows of blanks"]
+  H2 -- "inner / left" --> I2["503 rows<br/>nothing lost"]
+  H2 -- "right / outer" --> O2["504 rows<br/>Beit Lahia: 1 unmatched<br/>reference row"]
+  FAN["**the trap:** key not unique on the right<br/>480 flats x a doubled Gaza row<br/>= 644 rows, mean rent 211.05 to 223.59"]
+  DEF["`validate='m:1'` · `indicator=True`<br/>`assert len(out) == len(left)`"]
+  I1 -.-> DEF
+  O2 -.-> DEF
+  FAN --> DEF
+  DEF --> OK[["a merge you can defend"]]
+  class I1 dg-bad
+  class FAN dg-bad
+  class L1 dg-warn
+  class I2 dg-good
+  class OK dg-good
+  class O2 dg-mute

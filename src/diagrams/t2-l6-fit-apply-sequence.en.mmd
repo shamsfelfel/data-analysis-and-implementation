@@ -1,0 +1,28 @@
+%% alt: Sequence diagram of one month of a fitted pipeline, with five participants: the analyst, the March batch, the transform, the stored fitted artefact and the June batch. In March the analyst calls transform_listings on the training rows with no fitted dictionary. The transform runs stages one and two, which learn nothing, then measures every parameter it needs on those rows only: the medians and the mode of stage three, the median and the MAD and the fence of stage four, and the category lists, the column order and the scaler extremes of stage five. It writes those seventeen parameters into the fitted dictionary, hands the analyst a matrix and a report, and the analyst stores the dictionary beside the matrix with a date on it. In June the analyst loads the same artefact and calls the same function with it. The transform now learns nothing at all: it reads each parameter out of the dictionary, applies it unchanged, and reports what it could not recognise, namely two Beit Lahia listings whose city is not on the fitted list. Three assertions then check the row count, the blank cells and the column set before anything is returned. The last exchange is the warning: if June had refitted, the two matrices would carry different numbers for a reason that has nothing to do with any flat, and the two months would not be comparable.
+sequenceDiagram
+  autonumber
+  actor An as Analyst
+  participant Mar as March batch<br/>360 training rows
+  participant T as transform_listings
+  participant F as fitted artefact<br/>(dated, on disk)
+  participant Jun as June batch<br/>85 rows
+
+  An->>T: transform_listings(march, fitted=None)
+  T->>Mar: stages 1 and 2 (learn nothing)
+  Mar-->>T: 360 comparable rows
+  T->>Mar: measure the parameters
+  Mar-->>T: medians, mode, MAD, fence,<br/>category lists, min and max
+  T->>F: write 17 parameters + the column order
+  T-->>An: (matrix 360x18, report, fitted)
+  An->>F: store it with a date and a row count
+
+  Note over An,F: one month later, nothing refitted
+
+  An->>F: load the same artefact
+  F-->>An: 17 parameters
+  An->>T: transform_listings(june, fitted)
+  T->>Jun: stages 1 to 5, apply only
+  Jun-->>T: 85 rows, 2 cities not on the list
+  T->>T: assert rows, blanks, columns
+  T-->>An: (matrix 85x18, report:<br/>unseen Beit Lahia=2)
+  Note over T,Jun: refitting here would move every<br/>June number for no reason in the data

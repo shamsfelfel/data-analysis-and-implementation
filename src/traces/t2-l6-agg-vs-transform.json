@@ -1,0 +1,66 @@
+{
+  "id": "t2-l6-agg-vs-transform",
+  "title": {
+    "en": "agg against transform: the assignment that fills nothing, and the one that fills every row",
+    "ar": "‏agg مقابل transform: الإسناد الذي لا يعبّئ شيئًا والإسناد الذي يعبّئ كل صف"
+  },
+  "lede": {
+    "en": "Six listings over four cities. The same groupby, written two ways. The first way looks like the obvious line of pandas and produces a column of NaN from end to end, because the thing on the right is indexed by city and the thing on the left is indexed by row. The second way differs by one method name and fills all six rows. Watch the index of each intermediate value, because the index is the whole story.",
+    "ar": "ستة إعلانات على أربع مدن. والتجميع نفسه مكتوبًا بطريقتين. الأولى تبدو سطر pandas البديهي وتنتج عمودًا من NaN من أوله إلى آخره، لأن ما في اليمين مفهرس بالمدينة وما في اليسار مفهرس بالصف. والثانية تختلف باسم دالة واحدة فتعبّئ الصفوف الستة كلها. راقب فهرس كل قيمة وسيطة، فالفهرس هو الحكاية كلها."
+  },
+  "files": {
+    "flats.csv": "listing_id,city,rent\n5098,Gaza,265\n5181,Khan Younis,280\n5027,Rafah,175\n5288,Jabalia,190\n5293,Gaza,240\n5045,Rafah,180\n"
+  },
+  "code": "import pandas as pd\nflats = pd.read_csv(\"flats.csv\")\nper_city = flats.groupby(\"city\")[\"rent\"].median()\nprint(per_city.to_string())\nbug = flats.copy()\nbug[\"city_median\"] = flats.groupby(\"city\")[\"rent\"].median()\nprint(\"filled:\", int(bug[\"city_median\"].notna().sum()), \"of\", len(bug))\nok = flats.copy()\nok[\"city_median\"] = flats.groupby(\"city\")[\"rent\"].transform(\"median\")\nprint(\"filled:\", int(ok[\"city_median\"].notna().sum()), \"of\", len(ok))\nok[\"vs_city\"] = (ok[\"rent\"] / ok[\"city_median\"]).round(3)\nprint(ok.to_string(index=False))\n",
+  "notes": {
+    "2": {
+      "en": "Six listings, three columns, and the index pandas gave them: 0 to 5. Nothing about a city appears in that index, and that is the fact the next lines turn on.",
+      "ar": "ستة إعلانات وثلاثة أعمدة والفهرس الذي أعطاه pandas لها: من 0 إلى 5. ولا شيء عن المدينة يظهر في ذلك الفهرس، وهذه هي الواقعة التي تدور عليها الأسطر التالية."
+    },
+    "3": {
+      "en": "An aggregation: four groups in, four values out. Look at per_city — it is a Series of length four whose INDEX is the four city names. It no longer has one entry per listing, because an aggregation changes what a row is.",
+      "ar": "تجميع (aggregation): أربع مجموعات تدخل وأربع قيم تخرج. انظر إلى per_city — فهو متسلسلة طولها أربعة وفهرسها أسماء المدن الأربع. ولم يبقَ له مدخل لكل إعلان، لأن التجميع يغيّر معنى الصف."
+    },
+    "6": {
+      "en": "The line everybody writes. On the left, a column of a six-row frame indexed 0 to 5. On the right, a four-value Series indexed by city name. pandas aligns the two by index, finds not one label in common, and writes NaN into every cell. It does not warn, because alignment is exactly what assignment is defined to do.",
+      "ar": "السطر الذي يكتبه الجميع. في اليسار عمودٌ من إطار بستة صفوف مفهرسةً من 0 إلى 5. وفي اليمين متسلسلة بأربع قيم مفهرسة بأسماء المدن. فيوفّق pandas بينهما بالفهرس فلا يجد لافتةً واحدة مشتركة، فيكتب NaN في كل خلية. ولا يحذّر، لأن التوفيق بالفهرس هو تعريف الإسناد نفسه."
+    },
+    "7": {
+      "en": "Zero of six. The column exists, its dtype is float64, and every value in it is missing. A later groupby on it returns an empty result and a later mean returns NaN, and by then the line that caused it is a hundred lines away.",
+      "ar": "صفر من ستة. العمود موجود ونوعه float64 وكل قيمة فيه مفقودة. وتجميعٌ لاحق عليه يُرجع نتيجة فارغة، ومتوسطٌ لاحق يُرجع NaN، وحينها يكون السطر المسبِّب على بعد مئة سطر."
+    },
+    "9": {
+      "en": "One method name different. transform computes the same four medians and then puts each group's value back on EVERY row of that group, so what comes out is indexed 0 to 5 like the frame. Same groups, same numbers, different shape — and the shape is what makes the assignment legal.",
+      "ar": "اسم دالة واحد مختلف. تحسب transform الوسائط الأربعة نفسها ثم تضع قيمة كل مجموعة على كل صف من صفوفها، فيخرج الناتج مفهرسًا من 0 إلى 5 كالإطار. المجموعات نفسها والأرقام نفسها وشكلٌ مختلف — والشكل هو ما يجعل الإسناد مشروعًا."
+    },
+    "10": {
+      "en": "Six of six. This is the single most useful line of pandas in the whole chapter: it is how Lesson 2's median per rooms becomes a fill, and how a group statistic becomes a feature of a row.",
+      "ar": "ستة من ستة. وهذا أنفع سطر pandas في الفصل كله: فهو كيف يصير وسيط الدرس 2 حسب الغرف تعويضًا، وكيف يصير مقياس المجموعة خاصيةً للصف."
+    },
+    "11": {
+      "en": "And here is why you wanted it on every row: a ratio between a listing and its own city. 265 against a Gaza median of 252.5 is 1.050, and no aggregation can produce that column, because the arithmetic needs the row and the group at the same time.",
+      "ar": "وهذا سبب رغبتك فيه على كل صف: نسبةٌ بين الإعلان ومدينته. فـ265 مقابل وسيط غزة 252.5 تساوي 1.050، ولا يستطيع أي تجميع أن ينتج هذا العمود، لأن الحساب يحتاج الصف والمجموعة في وقت واحد."
+    },
+    "12": {
+      "en": "Read the two right-hand columns together. Gaza's two listings share a median of 252.5 and sit either side of it; Jabalia's single listing is its own median, so its ratio is exactly 1.0 — a group of one carries no information, which is worth remembering before you build a feature out of twenty agencies.",
+      "ar": "اقرأ العمودين الأيمنين معًا. فإعلانا غزة يتقاسمان وسيطًا 252.5 ويقعان على جانبيه؛ وإعلان جباليا الوحيد هو وسيط نفسه، فنسبته 1.0 بالضبط — والمجموعة من عضو واحد لا تحمل معلومة، وهذا يستحق التذكّر قبل أن تبني خاصيةً من عشرين وكالة."
+    },
+    "end": {
+      "en": "agg answers a question about groups and returns one row per group; transform answers a question about rows and returns one value per row. If you are assigning the result back into the frame you almost always wanted transform, and the symptom of getting it wrong is a column of NaN rather than an error.",
+      "ar": "تجيب agg عن سؤال في المجموعات فتُرجع صفًّا لكل مجموعة؛ وتجيب transform عن سؤال في الصفوف فتُرجع قيمةً لكل صف. فإن كنت تُسند الناتج إلى الإطار فقد أردت transform في الغالب الأعمّ، وعَرَضُ الخطأ عمودٌ من NaN لا رسالةُ خطأ."
+    }
+  },
+  "watch": [
+    "flats",
+    "per_city",
+    "bug",
+    "ok"
+  ],
+  "viz": {
+    "flats": "table",
+    "per_city": "table",
+    "bug": "table",
+    "ok": "table"
+  },
+  "max_steps": 40
+}

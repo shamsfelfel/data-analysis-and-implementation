@@ -1,0 +1,77 @@
+{
+  "id": "t2-l6-pipeline",
+  "title": {
+    "en": "The whole shape in forty lines: fit once, apply twice, report both, assert before returning",
+    "ar": "الشكل كله في أربعين سطرًا: اضبط مرة، وطبّق مرتين، وأبلِغ عنهما، وأكّد قبل الإرجاع"
+  },
+  "lede": {
+    "en": "A miniature of the chapter's pipeline, small enough to step through: one fit, three steps in the shape (frame, log_row), one assertion, and a run() that takes fitted=None the first time and the stored dictionary the second. Six March listings with one exact duplicate and one blank area go in; four June listings nobody has seen follow them through the same code with the same three numbers. Watch the call stack: every parameter is read, never recomputed, on the second pass.",
+    "ar": "نموذج مصغَّر من خط الفصل، صغير بما يكفي للتنقّل خطوة خطوة: ضبطٌ واحد، وثلاث خطوات على الشكل (frame, log_row)، وتأكيد واحد، ودالة run() تأخذ fitted=None في المرة الأولى والقاموس المحفوظ في الثانية. تدخل ستة إعلانات من آذار فيها تكرار تامّ ومساحة فارغة؛ وتتبعها أربعة إعلانات من حزيران لم يرها أحد عبر الكود نفسه وبالأرقام الثلاثة نفسها. راقب مكدّس النداء: كل وسيط يُقرأ ولا يُعاد حسابه في الممرّ الثاني."
+  },
+  "files": {
+    "march.csv": "listing_id,city,area\n5098,Gaza,83.8\n5181,Khan Younis,92.0\n5027,Rafah,\n5288,Jabalia,60.5\n5098,Gaza,83.8\n5045,Rafah,113.6\n",
+    "june.csv": "listing_id,city,area\n7001,Khan Younis,92.0\n7004,Beit Lahia,114.0\n7048,Gaza,70.0\n7061,Rafah,\n"
+  },
+  "code": "import pandas as pd\n\ndef fit(d):\n    a = d[\"area\"]\n    return {\"area_median\": float(a.median()), \"lo\": float(a.min()), \"hi\": float(a.max())}\n\ndef dedupe(d, f):\n    out = d.drop_duplicates()\n    return out, {\"step\": \"dedupe\", \"rows_in\": len(d), \"rows_out\": len(out), \"cells\": 0}\n\ndef fill_area(d, f):\n    n = int(d[\"area\"].isna().sum())\n    out = d.assign(area=d[\"area\"].fillna(f[\"area_median\"]))\n    return out, {\"step\": \"fill_area\", \"rows_in\": len(d), \"rows_out\": len(out), \"cells\": n}\n\ndef scale_area(d, f):\n    a = (d[\"area\"] - f[\"lo\"]) / (f[\"hi\"] - f[\"lo\"])\n    return d.assign(area01=a.round(3)), {\"step\": \"scale_area\", \"rows_in\": len(d), \"rows_out\": len(d), \"cells\": len(d)}\n\nPIPELINE = [dedupe, fill_area, scale_area]\n\ndef run(d, fitted=None):\n    log = []\n    if fitted is None:\n        fitted = fit(d.drop_duplicates())\n    for step in PIPELINE:\n        d, row = step(d, fitted)\n        log.append(row)\n    assert d[\"area01\"].notna().all(), \"blank cells in the output\"\n    return d, pd.DataFrame(log), fitted\n\nmarch = pd.read_csv(\"march.csv\")\nX, report, fitted = run(march)\nprint(report.to_string(index=False))\nprint(\"fitted:\", fitted)\njune = pd.read_csv(\"june.csv\")\nY, report2, _ = run(june, fitted)\nprint(report2.to_string(index=False))\nprint(\"same columns:\", list(X.columns) == list(Y.columns))\nprint(\"June outside [0, 1]:\", int(((Y[\"area01\"] < 0) | (Y[\"area01\"] > 1)).sum()))\n",
+  "notes": {
+    "20": {
+      "en": "The pipeline is a list, and the list IS the order. Reading those three names in sequence tells a reviewer the whole design: structure, then the hole, then the scale. Lesson 1 argued that order; here it is as data.",
+      "ar": "الخط قائمة، والقائمة هي الترتيب نفسه. وقراءة تلك الأسماء الثلاثة بالتوالي تقول للمراجع التصميمَ كله: البنية ثم الثقب ثم المقياس. وقد حجّ الدرس 1 لذلك الترتيب؛ وهو هنا بيانات."
+    },
+    "33": {
+      "en": "First call, with no fitted dictionary: this is the fit-and-apply pass over the training rows. Watch the stack grow — run() is about to call fit(), and fit() is the only function in the program allowed to look at the data as a whole.",
+      "ar": "النداء الأول بلا قاموس وسائط: هذا هو ممرّ الضبط والتطبيق على صفوف التدريب. راقب المكدّس ينمو — فـrun() على وشك نداء fit()، وfit() هي الدالة الوحيدة في البرنامج المسموح لها أن تنظر إلى البيانات ككل."
+    },
+    "25": {
+      "en": "fit() is called on the DEDUPLICATED frame, not on the six rows as they arrived. That is stage 1 before every parameter, in one expression: if the repeated listing were still here it would vote twice in the median, the minimum and the maximum.",
+      "ar": "تُنادى fit() على الإطار منزوع التكرار، لا على الصفوف الستة كما وصلت. وهذه هي المرحلة 1 قبل كل وسيط، في تعبير واحد: فلو بقي الإعلان المكرَّر هنا لصوّت مرتين في الوسيط وفي الأصغر وفي الأكبر."
+    },
+    "5": {
+      "en": "Three numbers, and they are the whole of what this pipeline knows: the median that fills a hole, and the minimum and maximum that set the scale. Every later line reads them and none recomputes them.",
+      "ar": "ثلاثة أرقام، وهي كل ما يعرفه هذا الخط: الوسيط الذي يعبّئ ثقبًا، والأصغر والأكبر اللذان يضبطان المقياس. وكل سطر لاحق يقرأها ولا يُعيد حساب شيء منها."
+    },
+    "27": {
+      "en": "The loop. Each step takes a frame and the fitted dictionary and returns a new frame and a log row — the (frame, log_row) shape of Lesson 1. Nothing is mutated: d is rebound to the step's output, and the caller's march is never touched.",
+      "ar": "الحلقة. كل خطوة تأخذ إطارًا وقاموس الوسائط وتُرجع إطارًا جديدًا وسطر سجل — وهو الشكل (frame, log_row) من الدرس 1. ولا شيء يُطفَّر: فـd يُعاد ربطها بناتج الخطوة، ولا تُمَسّ march الخاصة بالمنادي أبدًا."
+    },
+    "29": {
+      "en": "The assertion that makes the function worth trusting. It is not a comment and not a test file: it runs on every batch for ever, and if a future edit leaves a blank in the output nothing is returned at all.",
+      "ar": "التأكيد الذي يجعل الدالة جديرة بالثقة. فهو ليس تعليقًا ولا ملف اختبار: يعمل على كل دفعة إلى الأبد، وإن تركت تعديلةٌ لاحقة فراغًا في المخرج فلا يُرجَع شيء على الإطلاق."
+    },
+    "34": {
+      "en": "Three rows of log, produced by the code they describe. Six rows in, five out of dedupe, one cell filled, five scaled. A prose decision log can go stale; this one cannot, because it is a side effect of the run.",
+      "ar": "ثلاثة أسطر سجل، أنتجها الكود الذي تصفه. ستة صفوف تدخل وخمسة تخرج من dedupe، وخليةٌ واحدة عُبّئت، وخمسة قيست. وسجل القرارات النثري يستطيع أن يتعفّن؛ وهذا لا يستطيع، لأنه أثر جانبي للتشغيل."
+    },
+    "37": {
+      "en": "Second call, and the only difference is the second argument. fitted is not None, so line 26 does not run: no median is measured on June, no minimum, no maximum. June is scored by March's three numbers, which is what makes the two months comparable.",
+      "ar": "النداء الثاني، والفرق الوحيد هو الوسيط الثاني. فـfitted ليست None، فلا يعمل السطر 26: لا يُقاس وسيطٌ على حزيران ولا أصغر ولا أكبر. فيُقيَّم حزيران بأرقام آذار الثلاثة، وهذا ما يجعل الشهرين قابلين للمقارنة."
+    },
+    "40": {
+      "en": "One June value outside [0, 1]: the 114-metre flat, half a metre larger than anything March contained. That is not a bug and must not be clipped — it is the free alarm that this row is outside the range the parameters were fitted on. In the real pipeline this exact line reads 1 as well.",
+      "ar": "قيمةٌ واحدة من حزيران خارج [0, 1]: شقة الـ114 مترًا، وهي أكبر بنصف متر من كل ما احتواه آذار. وهذا ليس عطبًا ولا يجوز قصّه — بل هو الإنذار المجاني بأن هذا الصف خارج المجال الذي ضُبطت عليه الوسائط. وفي الخط الحقيقي يقرأ هذا السطر نفسه 1 أيضًا."
+    },
+    "end": {
+      "en": "Read the two reports side by side and you have the whole discipline of this chapter on one screen: the same three steps, the same three parameters, two different batches, and a per-batch report that says what each one did. Everything Lesson 6 adds to this miniature is scale — eighteen steps instead of three, seventeen parameters instead of three, and three assertions instead of one.",
+      "ar": "اقرأ التقريرين جنبًا إلى جنب فيكون لديك انضباط هذا الفصل كله على شاشة واحدة: الخطوات الثلاث نفسها، والوسائط الثلاثة نفسها، ودفعتان مختلفتان، وتقريرٌ لكل دفعة يقول ما فعلته. وكل ما يضيفه الدرس 6 إلى هذا المصغَّر هو الحجم — ثماني عشرة خطوة بدل ثلاث، وسبعة عشر وسيطًا بدل ثلاثة، وثلاثة تأكيدات بدل واحد."
+    }
+  },
+  "watch": [
+    "march",
+    "X",
+    "report",
+    "fitted",
+    "june",
+    "Y",
+    "report2"
+  ],
+  "viz": {
+    "march": "table",
+    "X": "table",
+    "report": "table",
+    "june": "table",
+    "Y": "table",
+    "report2": "table",
+    "fitted": "dict"
+  },
+  "max_steps": 120
+}
