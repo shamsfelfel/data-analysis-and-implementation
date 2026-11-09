@@ -973,38 +973,53 @@ window.DABanks = window.DABanks || {};
         id: "t2ax21",
         type: "error",
         level: "medium",
-        topics: ["t2-groupby-nan-bug", "t2-transform", "t2-agg-row-meaning"],
+        topics: ["t2-pivot-table", "t2-pivot-back", "t2-repost"],
         q: {
-          en: "The program should give every flat the median rent of its own city, so that <code>rent_vs_city</code> says whether it is dear or cheap for where it is. It prints <code>dtype: float64</code> and then <code>non-blank cells: 0 of 480</code>. Nothing is raised and no warning appears. Click the offending line.",
-          ar: "ينبغي للبرنامج أن يعطي كل شقة وسيطَ إيجار مدينتها، لكي يقول <code>rent_vs_city</code> أهي غالية أم رخيصة بالنسبة إلى موضعها. وهو يطبع <code>dtype: float64</code> ثم <code>non-blank cells: 0 of 480</code>. ولا يُثار شيء ولا يظهر أي تحذير. انقر السطر المسؤول."
+          en: "The program should put the long rent history back into a grid a housing officer can read: one rent per flat per quarter. Listing 5002 was advertised twice, the second advert 40 shekels dearer, so the history holds two rents for each of its quarters. The program prints <code>grid: (40, 4)</code>, then <code>on record for 5002 in Q1: [110.0, 150.0]</code>, then <code>the grid cell: 130.0</code> — a number that appears nowhere in the data and belongs to no advert. Nothing is raised and no warning appears. Click the offending line.",
+          ar: "ينبغي للبرنامج أن يُعيد سجلّ الإيجارات الطويل إلى شبكة يقرؤها موظّف إسكان: إيجار واحد لكل شقة في كل ربع. وقد أُعلن عن الإعلان 5002 مرتين، والإعلان الثاني أغلى بـ40 شيكلًا، فيحمل السجل إيجارين لكل ربع من أرباعه. ويطبع البرنامج <code>grid: (40, 4)</code> ثم <code>on record for 5002 in Q1: [110.0, 150.0]</code> ثم <code>the grid cell: 130.0</code> — وهو رقم لا يظهر في البيانات في أي موضع ولا ينتمي إلى أي إعلان. ولا يُثار شيء ولا يظهر أي تحذير. انقر السطر المسؤول."
         },
         code: code(
           "import pandas as pd",
-          "from pipe import make_comparable",
           "",
-          "march = pd.read_csv(\"listings_raw.csv\")",
-          "flats, _ = make_comparable(march)              # 480 flats, one row per listing_id",
+          "wide = pd.read_csv(\"rent_history_wide.csv\")           # 40 listings x 4 quarter columns",
+          "QUARTERS = [c for c in wide.columns if c.startswith(\"rent_\")]",
+          "long = wide.melt(id_vars=[\"listing_id\", \"city\"], value_vars=QUARTERS,",
+          "                 var_name=\"quarter\", value_name=\"rent\")",
           "",
-          "out = flats.copy()",
-          "out[\"city_median\"] = flats.groupby(\"city\")[\"monthly_rent\"].median()",
-          "out[\"rent_vs_city\"] = (out[\"monthly_rent\"] / out[\"city_median\"]).round(4)",
+          "repost  = long[long[\"listing_id\"] == 5002].assign(rent=lambda d: d[\"rent\"] + 40)",
+          "history = pd.concat([long, repost], ignore_index=True)   # 5002 was advertised twice",
           "",
-          "print(\"dtype:\", out[\"city_median\"].dtype)",
-          "print(\"non-blank cells:\", int(out[\"city_median\"].notna().sum()), \"of\", len(out))"
+          "grid = history.pivot_table(index=\"listing_id\", columns=\"quarter\", values=\"rent\")",
+          "",
+          "print(\"grid:\", grid.shape)",
+          "print(\"on record for 5002 in Q1:\",",
+          "      history.loc[(history[\"listing_id\"] == 5002)",
+          "                  & (history[\"quarter\"] == \"rent_2026q1\"), \"rent\"].tolist())",
+          "print(\"the grid cell:\", grid.loc[5002, \"rent_2026q1\"])"
         ),
-        answer: 8,
+        answer: 11,
         solution: {
-          code: "out[\"city_median\"] = flats.groupby(\"city\")[\"monthly_rent\"].transform(\"median\")",
-          en: "<code>median()</code> returns five values indexed by city name; <code>transform(\"median\")</code> returns 480 values indexed like the frame. One method name, and the assignment becomes legal: 480 of 480 cells, the two Khan Younis rows carrying the same 185.0 and the Gaza row 252.5.",
-          ar: "تُعيد <code>median()</code> خمس قيم مفهرسةً بأسماء المدن؛ أما <code>transform(\"median\")</code> فتُعيد 480 قيمة مفهرسةً كالإطار. اسمُ تابعٍ واحد، فيصير الإسناد مشروعًا: 480 خلية من 480، وصفّا خان يونس يحملان 185.0 نفسها وصفّ غزة يحمل 252.5."
+          code: code(
+            "one_per_cell = history.drop_duplicates([\"listing_id\", \"quarter\"], keep=\"last\")",
+            "grid = one_per_cell.pivot(index=\"listing_id\", columns=\"quarter\", values=\"rent\")",
+            "",
+            "print(\"history rows:\", len(history), \"-> one per cell:\", len(one_per_cell))",
+            "print(\"the grid cell:\", grid.loc[5002, \"rent_2026q1\"])"
+          ),
+          out: code(
+            "history rows: 164 -> one per cell: 160",
+            "the grid cell: 150.0"
+          ),
+          en: "<code>pivot</code> has the guarantee <code>pivot_table</code> lacks: handed a duplicated cell it refuses the job — <code>ValueError: Index contains duplicate entries, cannot reshape</code> — instead of averaging it. So decide which copy survives first, which is Lesson 3's decision and here the later advert, and the cell becomes 150.0: a rent somebody actually quoted. If you must use <code>pivot_table</code>, the diagnostic is one line — pivot the same thing again with <code>aggfunc=\"count\"</code> and look for a cell that is not 1; all four of 5002's read 2 where every other row reads 1.",
+          ar: "لـ<code>pivot</code> ضمانٌ تفتقر إليه <code>pivot_table</code>: فهي إذا سُلّمت خليةً مكرَّرة ترفض المهمّة — <code>ValueError: Index contains duplicate entries, cannot reshape</code> — بدل أن تحسب متوسطها. فاقرِر أولًا أي نسخة تبقى، وهو قرار الدرس 3، وهو هنا الإعلان الأحدث، فتصير الخلية 150.0: إيجارًا أعلنه أحدٌ فعلًا. وإن كان لا بدّ من <code>pivot_table</code> فالتشخيص سطر واحد — استقطِب الشيء نفسه مرةً أخرى بـ<code>aggfunc=\"count\"</code> وابحث عن خلية لا تساوي 1؛ فخلايا 5002 الأربع كلها تقرأ 2 حيث يقرأ كل صف آخر 1."
         },
         hint: {
-          en: "The groupby is right and the median is right. Ask what the index of the thing on the right-hand side is, and what the index of the frame on the left is.",
-          ar: "التجميع صحيح والوسيط صحيح. اسأل: ما فهرس الشيء في الطرف الأيمن، وما فهرس الإطار في الطرف الأيسر؟"
+          en: "Two rents have to become one cell, so something chose how. Find the line that made that choice, and ask where the choice is written down.",
+          ar: "إيجاران يجب أن يصيرا خلية واحدة، فلا بدّ أن شيئًا اختار الكيفية. اعثر على السطر الذي اتّخذ ذلك الاختيار، واسأل: أين هو مكتوب؟"
         },
         explain: {
-          en: "Line 8 assigns an <em>aggregation</em> into a frame. <code>groupby(\"city\")[\"monthly_rent\"].median()</code> is five values whose index is five city names; the frame's index is 480 row labels. Assigning a Series into a DataFrame aligns it by index, pandas finds not one label in common, and every row is filled with <code>NaN</code>. It is not a bug and it cannot warn, because alignment is the definition of assignment — the same mechanism is what makes <code>df.loc[mask, \"x\"] = other_series</code> land the right values on the right rows. Line 9 is the tempting wrong click, because it is where the useless column is first used; it divides faithfully and gets <code>NaN</code> because its input is already blank. And 480 cells of <code>NaN</code> is the <em>lucky</em> outcome: group by <code>rooms</code> on a frame whose index is <code>0…479</code> and the room counts <em>are</em> row labels, so five cells receive a number, three right by coincidence and two the median of a different room count. The rule that ends it: if you are assigning the result of a <code>groupby</code>, you wanted <code>transform</code>.",
-          ar: "السطر 8 يُسند <em>تجميعًا</em> إلى إطار. فـ<code>groupby(\"city\")[\"monthly_rent\"].median()</code> خمس قيم فهرسها خمسة أسماء مدن؛ وفهرس الإطار 480 لافتة صفّ. وإسناد متسلسلة إلى إطار بيانات يحاذيها بالفهرس، فلا تجد pandas لافتةً واحدة مشتركة، فتُعبَّأ كل الصفوف بـ<code>NaN</code>. وهذا ليس خطأً برمجيًّا ولا يمكنه التحذير، لأن المحاذاة هي تعريف الإسناد — وهذه الآلية نفسها هي ما يجعل <code>df.loc[mask, \"x\"] = other_series</code> تُنزل القيم الصحيحة على الصفوف الصحيحة. والسطر 9 هو النقرة الخاطئة المغرية، لأنه أول موضع يُستخدم فيه العمود العاطل؛ وهو يقسم بأمانة فيحصل على <code>NaN</code> لأن مدخله فارغ أصلًا. و480 خلية <code>NaN</code> هي النتيجة <em>المحظوظة</em>: جمّع بحسب <code>rooms</code> على إطار فهرسه <code>0…479</code> فتكون أعداد الغرف لافتاتِ صفوف <em>بالفعل</em>، فتتلقّى خمس خلايا رقمًا، ثلاثٌ منها صحيحة بالمصادفة واثنتان وسيطُ عدد غرف آخر. والقاعدة التي تُنهي الأمر: إن كنت تُسند ناتج <code>groupby</code> فأنت أردت <code>transform</code>."
+          en: "Line 11 is where two rents silently become one number. <code>pivot</code> and <code>pivot_table</code> are not two names for one operation: <code>pivot</code> refuses a duplicated cell outright, while <code>pivot_table</code> accepts the job and averages, because <code>aggfunc</code> defaults to <code>\"mean\"</code>. So the defect is not the averaging — averaging is precisely what this call asked for. The defect is that the decision to average was made by a default rather than by the author, and what comes out is a 130.0 that belongs to no flat and no advert, inside a grid of the right shape with the right dtype and nothing missing. Line 9 is the tempting wrong click, and it is worth saying why it is wrong: a repost is real data, this chapter's file holds nine of them, so the pipeline has to cope with one — and Lesson 3 already decided how, by keeping one row per business key and choosing the copy by its parsed date. Making that decision visibly, upstream, is the pipeline's job; having <code>pivot_table</code> make it with arithmetic is the bug. The habit to carry away: any cell of a <code>pivot_table</code> computed from more than one row should either be intended or be a bug, and the count table is how you tell.",
+          ar: "في السطر 11 يصير إيجاران رقمًا واحدًا بصمت. فـ<code>pivot</code> و<code>pivot_table</code> ليسا اسمين لعملية واحدة: <code>pivot</code> ترفض الخلية المكرَّرة رفضًا صريحًا، أما <code>pivot_table</code> فتقبل المهمّة وتحسب المتوسط، لأن <code>aggfunc</code> قيمتها الافتراضية <code>\"mean\"</code>. فالعيب ليس حساب المتوسط — فحساب المتوسط هو بالضبط ما طلبه هذا النداء. العيب أن قرار حساب المتوسط اتّخذته قيمةٌ افتراضية لا المؤلّف، والذي يخرج هو 130.0 لا ينتمي إلى أي شقة ولا إلى أي إعلان، داخل شبكة بالشكل الصحيح والنوع الصحيح ولا ناقص فيها. والسطر 9 هو النقرة الخاطئة المغرية، ويجدر بيان سبب خطئها: إعادة النشر بيانات حقيقية، وملفّ هذا الفصل يحمل تسعًا منها، فعلى خطّ الأنابيب أن يتعامل مع واحدة — وقد قرّر الدرس 3 الكيفية أصلًا، بإبقاء صفّ واحد لكل مفتاح تجاري واختيار النسخة بتاريخها المحلَّل. واتّخاذ ذلك القرار على نحو مرئيّ في الأعلى هو عمل خطّ الأنابيب؛ أما أن تتّخذه <code>pivot_table</code> بالحساب فذاك هو الخطأ. والعادة التي تحملها معك: أي خلية في <code>pivot_table</code> حُسبت من أكثر من صف واحد فإمّا أن تكون مقصودة وإمّا أن تكون خطأً، وجدول الأعداد هو ما يكشف أيّهما."
         }
       },
 
