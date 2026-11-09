@@ -35,8 +35,8 @@
       "ar": "يحفظ CategoricalDtype المرتَّب الترتيبَ داخل النوع، وهذا ما فعله الدرس 3 بهذا العمود. فصارت الرموز مواضعَ في قائمتك لا في الأبجدية."
     },
     "8": {
-      "en": "[2, 0, 3, 1, 2]: poor 0, fair 1, good 2, excellent 3. One column, four levels, monotone in the thing it measures. On the real file this single column takes the held-out error from 64.67 to 59.47 shekels.",
-      "ar": "‏[2, 0, 3, 1, 2]: ‏poor صفر وfair واحد وgood اثنان وexcellent ثلاثة. عمود واحد وأربعة مستويات، مطّرد في الشيء الذي يقيسه. وعلى الملف الحقيقي يأخذ هذا العمود الواحد الخطأ المحجوز من 64.67 إلى 59.47 شيكلًا."
+      "en": "[2, 0, 3, 1, 2]: poor 0, fair 1, good 2, excellent 3. One column, four levels, monotone in the thing it measures. On the real file this single column takes the held-out error from 64.67 to 59.48 shekels.",
+      "ar": "‏[2, 0, 3, 1, 2]: ‏poor صفر وfair واحد وgood اثنان وexcellent ثلاثة. عمود واحد وأربعة مستويات، مطّرد في الشيء الذي يقيسه. وعلى الملف الحقيقي يأخذ هذا العمود الواحد الخطأ المحجوز من 64.67 إلى 59.48 شيكلًا."
     },
     "9": {
       "en": "And the order buys more than a sensible code: a comparison. 'ranked > \"fair\"' is legal on an ordered category and a TypeError on a plain one.",
@@ -63,6 +63,13 @@
       "ar": "ثلاثة ترقيمات للكلمات الخمس نفسها. فالأبجدية كذبة، والترتيب المعلَن قرارٌ تستطيع الدفاع عنه، وإدخال مستوًى يعيد كتابة القرار. فاحفظ الترتيب في قاموس الوسائط المضبوطة، وطبّقه دون تغيير، وعامِل المستوى الجديد تغييرًا مُؤرَّخ الإصدار لا تعديلًا لا يلاحظه أحد."
     }
   },
-  "watch": ["march", "plain", "ORDER", "ranked", "june", "FIVE"],
+  "watch": [
+    "march",
+    "plain",
+    "ORDER",
+    "ranked",
+    "june",
+    "FIVE"
+  ],
   "max_steps": 40
 }

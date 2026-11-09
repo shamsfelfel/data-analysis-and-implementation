@@ -43,8 +43,8 @@
       "ar": "المرحلة 2 من الترتيب القياسي بصورة الدرس 4: حدّ ميداني مسمّى لكل عمود، محفوظ بجانب الكود ومطبّق بـmask فينجو الصف. ولا تتعلّم الخطوة شيئًا من البيانات — فالحدود تأتي من معرفة السوق — فهي تطبيق صِرف ويجوز تشغيلها على أي ملف."
     },
     "end": {
-      "en": "Three formulas, two fitted parameters each, and one typo that decides all six. On the real column the body of the robust scaling is identical before and after the repair (quartiles -0.45, 0, 0.55) because the median and the IQR never saw the 99999 — which is the argument for a robust scaler and the argument for repairing values first, in that order.",
-      "ar": "ثلاث صيغ، لكل منها وسيطان مضبوطان، وخطأ إدخال واحد يقرّر الستة كلها. وعلى العمود الحقيقي يكون جسم التوحيد الحصين متطابقًا قبل الإصلاح وبعده (الربيعات ‎-0.45 و0 و0.55) لأن الوسيط والمدى الربيعي لم يرَيا 99999 قط — وهذه حجةٌ للمُقايِس الحصين وحجةٌ لإصلاح القيم أولًا، بهذا الترتيب."
+      "en": "Three formulas, two fitted parameters each, and one typo that decides all six. On the real column the body of the robust scaling is identical before and after the repair (quartiles -0.45, 0, 0.55) because the median and the IQR never saw either of the two values Lesson 4's LIMITS rule voids — which is the argument for a robust scaler and the argument for repairing values first, in that order.",
+      "ar": "ثلاث صيغ، لكل منها وسيطان مضبوطان، وخطأ إدخال واحد يقرّر الستة كلها. وعلى العمود الحقيقي يكون جسم التوحيد الحصين متطابقًا قبل الإصلاح وبعده (الربيعات ‎-0.45 و0 و0.55) لأن الوسيط والمدى الربيعي لم يرَيا أيًّا من القيمتين اللتين تُفرغهما قاعدة LIMITS في الدرس 4 قط — وهذه حجةٌ للمُقايِس الحصين وحجةٌ لإصلاح القيم أولًا، بهذا الترتيب."
     },
     "19": {
       "en": "[0.0, 0.3125, 0.6875, 1.0, nan]. The same formula, the same column, one cell different — and now the feature spans the range it was supposed to span. Nothing about min-max scaling was wrong; the input was. That is why scaling is stage 5.",
