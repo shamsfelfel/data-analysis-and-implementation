@@ -532,7 +532,7 @@ window.DA_REGISTRY = {
    "key": "t2",
    "track": "theory",
    "num": 2,
-   "ready": false,
+   "ready": true,
    "title": {
     "en": "Data Transformation",
     "ar": "تحويل البيانات"
@@ -716,7 +716,7 @@ window.DA_REGISTRY = {
       "ar": "اختبار 6 — إعادة التشكيل والدمج وخط التحويل"
      },
      "href": "tests/t2-test-06.html",
-     "written": false
+     "written": true
     },
     {
      "id": "t2-lab",
@@ -747,7 +747,7 @@ window.DA_REGISTRY = {
       "ar": "اختبار الفصل أ — الأساسيات"
      },
      "href": "exams/t2-exam-a.html",
-     "written": false
+     "written": true
     },
     {
      "id": "t2-exam-b",
@@ -758,7 +758,7 @@ window.DA_REGISTRY = {
       "ar": "اختبار الفصل ب — التطبيق"
      },
      "href": "exams/t2-exam-b.html",
-     "written": false
+     "written": true
     },
     {
      "id": "t2-exam-c",
@@ -769,7 +769,7 @@ window.DA_REGISTRY = {
       "ar": "اختبار الفصل ج — المتقدم"
      },
      "href": "exams/t2-exam-c.html",
-     "written": false
+     "written": true
     }
    ]
   }

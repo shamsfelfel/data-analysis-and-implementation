@@ -26,7 +26,7 @@
    that ships changes. A rebuild that changes nothing keeps the name,
    and this file stays byte-identical, so an installed reader
    re-downloads nothing: there are no timestamps in here on purpose. */
-var CACHE = 'da-693a46b94d65';
+var CACHE = 'da-6a8b1c3ac2a9';
 
 /* THE INVARIANT ON THIS ORIGIN.
 
@@ -90,11 +90,15 @@ var PRECACHE = [
   "assets/data/questions/t1-test-04.js",
   "assets/data/questions/t1-test-05.js",
   "assets/data/questions/t1-test-06.js",
+  "assets/data/questions/t2-exam-a.js",
+  "assets/data/questions/t2-exam-b.js",
+  "assets/data/questions/t2-exam-c.js",
   "assets/data/questions/t2-test-01.js",
   "assets/data/questions/t2-test-02.js",
   "assets/data/questions/t2-test-03.js",
   "assets/data/questions/t2-test-04.js",
   "assets/data/questions/t2-test-05.js",
+  "assets/data/questions/t2-test-06.js",
   "assets/data/topics/p1-l1.js",
   "assets/data/topics/p1-l2.js",
   "assets/data/topics/p1-l3.js",
@@ -328,7 +332,7 @@ var PRECACHE = [
    cache instead of downloading it again -- so editing one lesson in a
    course of two hundred files costs one download, not two hundred. */
 var HASHES = [
-  'c98b23915981',
+  'd31cafd17320',
   'a897473407c2',
   'c5f8d257f121',
   '6af5e38ed5df',
@@ -358,11 +362,15 @@ var HASHES = [
   '69802f97ed7d',
   '5be085531be0',
   '5a0cdb5ec931',
+  '89485930b5da',
+  '7da1e2575755',
+  '5bff716dfc07',
   'c510eea40b08',
   'ab18f7c0bcbd',
   'ed5d9e43e5df',
   '8309facb9bdd',
   'bbf4e8f90113',
+  '7489dfcd321e',
   'ee0a0336de8a',
   'be407c149990',
   'abebaf02c75c',
@@ -381,7 +389,7 @@ var HASHES = [
   '1076c8341c2d',
   '470f822f7451',
   '56218c926d90',
-  'a5eaef86c96b',
+  '380d29ed24ad',
   '75cfb0507e17',
   '411b64788c88',
   'abcf7d2c3d4a',
@@ -494,7 +502,7 @@ var HASHES = [
   'd2af3580d797',
   '73b5576ed2ce',
   '37e6957a5c7e',
-  '1944a7717c05',
+  '4d75c30545b4',
   '4229037a3a63',
   'f65639c5ac6e',
   'b100340b81aa',
@@ -504,7 +512,7 @@ var HASHES = [
   '0941d8036b5d',
   '9d179e222b9f',
   '397e7459526a',
-  '8366bd9adafb',
+  'b30e0d6c0b1d',
   'f19f5d9227f8',
   '254147e71363',
   '1f8d00c7e714',
@@ -538,9 +546,9 @@ var HASHES = [
   '90856c34c0ba',
   '0d3e76bc9a65',
   'da5a6c52f545',
-  '11cc7f1a0767',
-  '3acf88930d94',
-  '71cfab506341',
+  '21e0ef727b33',
+  '9cce52d58ef9',
+  '1c519df01baa',
   '0d92c39a0d9b',
   '7511f55c68a8',
   '3a78e0250dc8',
@@ -548,7 +556,7 @@ var HASHES = [
   '8239133c3181',
   '7e3fa151f88a',
   '6de1b4b8281e',
-  'c98b23915981',
+  'd31cafd17320',
   'd9502d68556a',
   '8b55bd97efcf',
   '59deba459cc0',
@@ -569,7 +577,7 @@ var HASHES = [
   '927f30b40a16',
   'bc3222f9e199',
   'c66d0a335eda',
-  'ff2eb60fc4da',
+  '6c4cff9c769b',
   'b7ffae05485b',
   'a5f0c03b6cb4',
   '3a5e56f2c59d',
@@ -588,7 +596,7 @@ var HASHES = [
   '485c5628c280',
   '7a861e2f4678',
   '1122e18bcc83',
-  '020ee013b0a0'
+  '67933485a951'
 ];
 
 /* The first 12 hex characters of a body's SHA-256, the same way

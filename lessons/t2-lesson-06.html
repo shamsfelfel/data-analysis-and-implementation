@@ -317,7 +317,7 @@ non-blank cells: 0 of 480
     <p class="ar">العمودُ الفارغ كله واضحٌ على الأقل لحظةَ طبعه، ويُرجع <code>mean()</code> التالي <code>NaN</code> لا رقمًا معقولًا. والحالةُ الخطيرة مفتاحُ مجموعة قيمه <em>تشبه لافتات الصفوف</em>، فحينها تطابق قلةٌ من الصفوف ولا تطابق البقية.</p>
   </div>
 
-  <h3 id="t2l6-s8"><span class="en">The quieter version: four cells wrong, three right by luck</span><span class="ar">الصورة الأهدأ: أربع خلايا خاطئة وثلاث صحيحة بالحظ</span></h3>
+  <h3 id="t2l6-s8"><span class="en">The quieter version: two cells wrong, three right by luck</span><span class="ar">الصورة الأهدأ: خليتان خاطئتان وثلاث صحيحة بالحظ</span></h3>
   <p class="en">Group by <code>rooms</code> instead of <code>city</code>, on a frame whose index was reset to <code>0&hellip;479</code>. The aggregation's index is now the room counts &mdash; 1, 2, 3, 4, 5 &mdash; and those <em>are</em> row labels of the frame. Predict the number of non-blank cells before you read it.</p>
   <p class="ar">جمّع على <code>rooms</code> بدل <code>city</code>، على إطار أُعيد فهرسُه إلى <code>0…479</code>. فصار فهرسُ التجميع أعدادَ الغرف &mdash; 1 و2 و3 و4 و5 &mdash; وتلك <em>هي</em> لافتاتُ صفوف في الإطار. تنبّأ بعدد الخلايا غير الفارغة قبل أن تقرأه.</p>
   <pre class="code bad" data-lang="python"><code>rows = flats.reset_index(drop=True)                 # index is now 0 .. 479

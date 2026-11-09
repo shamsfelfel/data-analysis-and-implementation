@@ -3979,8 +3979,8 @@ window.DAHeadings = {
 "en": "The assignment that fills nothing at all"
 },
 "t2l6-s8": {
-"ar": "الصورة الأهدأ: أربع خلايا خاطئة وثلاث صحيحة بالحظ",
-"en": "The quieter version: four cells wrong, three right by luck"
+"ar": "الصورة الأهدأ: خليتان خاطئتان وثلاث صحيحة بالحظ",
+"en": "The quieter version: two cells wrong, three right by luck"
 },
 "t2l6-s9": {
 "ar": "transform: قيمةٌ لكل صف أصلي",

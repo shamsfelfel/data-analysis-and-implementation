@@ -459,7 +459,7 @@
       "key": "t2",
       "track": "theory",
       "num": 2,
-      "ready": false,
+      "ready": true,
       "title": {
         "en": "Data Transformation",
         "ar": "تحويل البيانات"
