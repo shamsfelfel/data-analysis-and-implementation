@@ -128,6 +128,35 @@
     return out;
   }
 
+  /* What to put on the right of a road-ahead row. A chapter that is only
+     planned has nothing to report. One that is registered and being written
+     does: its lessons land before its tests, and a reader can start the
+     moment the first lesson is up, so say how many are ready rather than
+     "being written" over a chapter that is two thirds readable. The label is
+     rebuilt on a language change like every other, through data-ui. */
+  function progressTag(ch) {
+    var tag = el("span", "soon");
+    var pages = ch.pages || [];
+    var total = 0, done = 0;
+    for (var i = 0; i < pages.length; i++) {
+      if (pages[i].kind !== "lesson") continue;
+      total++;
+      if (pages[i].written) done++;
+    }
+    if (!total || !done) {
+      tag.setAttribute("data-ui", "soon");
+      tag.textContent = t("soon");
+      return tag;
+    }
+    var key = done === total ? "partAll" : "partLessons";
+    tag.className = "soon part";
+    tag.setAttribute("data-ui", key);
+    tag.setAttribute("data-a", String(done));
+    tag.setAttribute("data-b", String(total));
+    tag.textContent = t(key).replace("{a}", done).replace("{b}", total);
+    return tag;
+  }
+
   function fillRoadmap() {
     if (!window.COURSE) return;
     var hosts = document.querySelectorAll("[data-roadmap]");
@@ -143,10 +172,7 @@
         name.appendChild(el("span", "en", ahead[i].title.en));
         name.appendChild(el("span", "ar", ahead[i].title.ar));
         li.appendChild(name);
-        var tag = el("span", "soon");
-        tag.setAttribute("data-ui", "soon");
-        tag.textContent = t("soon");
-        li.appendChild(tag);
+        li.appendChild(progressTag(ahead[i]));
         host.appendChild(li);
       }
     }

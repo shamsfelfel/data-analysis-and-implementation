@@ -55,7 +55,14 @@
   function relabel(scope) {
     var els = (scope || document).querySelectorAll("[data-ui]");
     for (var i = 0; i < els.length; i++) {
-      els[i].textContent = t(els[i].getAttribute("data-ui"));
+      var s = t(els[i].getAttribute("data-ui"));
+      /* A label may carry its own numbers: data-a and data-b fill {a} and {b}.
+         Without this a counted label ("4 of 6 lessons ready") would come back
+         from a language change with its placeholders showing. */
+      var a = els[i].getAttribute("data-a"), b = els[i].getAttribute("data-b");
+      if (a !== null) s = s.replace("{a}", a);
+      if (b !== null) s = s.replace("{b}", b);
+      els[i].textContent = s;
     }
   }
 

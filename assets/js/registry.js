@@ -63,7 +63,8 @@ window.DA_REGISTRY = {
       "en": "Chapter home",
       "ar": "صفحة الفصل"
      },
-     "href": "chapters/t1.html"
+     "href": "chapters/t1.html",
+     "written": true
     },
     {
      "id": "t1-lesson-01",
@@ -77,7 +78,8 @@ window.DA_REGISTRY = {
       "en": "Structured, semi-structured and unstructured data — and why a model can only eat one of them directly.",
       "ar": "بيانات مُهيكلة وشبه مُهيكلة وغير مُهيكلة — ولماذا لا يستطيع النموذج أن يتغذّى مباشرة إلا على واحد منها."
      },
-     "href": "lessons/t1-lesson-01.html"
+     "href": "lessons/t1-lesson-01.html",
+     "written": true
     },
     {
      "id": "t1-test-01",
@@ -88,7 +90,8 @@ window.DA_REGISTRY = {
       "en": "Test 1 — The Three Shapes of Data",
       "ar": "اختبار 1 — أشكال البيانات الثلاثة"
      },
-     "href": "tests/t1-test-01.html"
+     "href": "tests/t1-test-01.html",
+     "written": true
     },
     {
      "id": "t1-lesson-02",
@@ -102,7 +105,8 @@ window.DA_REGISTRY = {
       "en": "Nominal, ordinal, interval and ratio: which arithmetic, which summary and which chart each level allows.",
       "ar": "الاسمي والترتيبي والفتري والنسبي: أي حساب وأي ملخّص وأي رسم يسمح به كل مستوى."
      },
-     "href": "lessons/t1-lesson-02.html"
+     "href": "lessons/t1-lesson-02.html",
+     "written": true
     },
     {
      "id": "t1-test-02",
@@ -113,7 +117,8 @@ window.DA_REGISTRY = {
       "en": "Test 2 — What the Values Mean",
       "ar": "اختبار 2 — ماذا تعني القيم؟"
      },
-     "href": "tests/t1-test-02.html"
+     "href": "tests/t1-test-02.html",
+     "written": true
     },
     {
      "id": "t1-lesson-03",
@@ -127,7 +132,8 @@ window.DA_REGISTRY = {
       "en": "Lists and dicts, NumPy arrays, Series and DataFrames; reading dtypes, missing values and safe casting.",
       "ar": "القوائم والقواميس ومصفوفات NumPy وSeries وDataFrame؛ وقراءة الأنواع والقيم المفقودة والتحويل الآمن."
      },
-     "href": "lessons/t1-lesson-03.html"
+     "href": "lessons/t1-lesson-03.html",
+     "written": true
     },
     {
      "id": "t1-test-03",
@@ -138,7 +144,8 @@ window.DA_REGISTRY = {
       "en": "Test 3 — From Python Containers to pandas dtypes",
       "ar": "اختبار 3 — من حاويات بايثون إلى أنواع pandas"
      },
-     "href": "tests/t1-test-03.html"
+     "href": "tests/t1-test-03.html",
+     "written": true
     },
     {
      "id": "t1-lesson-04",
@@ -152,7 +159,8 @@ window.DA_REGISTRY = {
       "en": "Delimiters, encodings, headers, dates and Excel's serial numbers — the quiet ways a file loads wrong.",
       "ar": "الفواصل والترميز والعناوين والتواريخ والأرقام التسلسلية في إكسل — الطرق الصامتة التي يُحمَّل بها الملف خطأً."
      },
-     "href": "lessons/t1-lesson-04.html"
+     "href": "lessons/t1-lesson-04.html",
+     "written": true
     },
     {
      "id": "t1-test-04",
@@ -163,7 +171,8 @@ window.DA_REGISTRY = {
       "en": "Test 4 — Flat Files: CSV and Excel",
       "ar": "اختبار 4 — الملفات المسطّحة: CSV وExcel"
      },
-     "href": "tests/t1-test-04.html"
+     "href": "tests/t1-test-04.html",
+     "written": true
     },
     {
      "id": "t1-lesson-05",
@@ -177,7 +186,8 @@ window.DA_REGISTRY = {
       "en": "Parsing JSON, flattening it into a table, and pulling data from an API with status codes, pages and rate limits.",
       "ar": "تحليل JSON وتسطيحه إلى جدول وجلب البيانات من واجهة برمجية برموز الاستجابة والصفحات وحدود المعدّل."
      },
-     "href": "lessons/t1-lesson-05.html"
+     "href": "lessons/t1-lesson-05.html",
+     "written": true
     },
     {
      "id": "t1-test-05",
@@ -188,7 +198,8 @@ window.DA_REGISTRY = {
       "en": "Test 5 — Nested Data and APIs: JSON",
       "ar": "اختبار 5 — البيانات المتشعّبة والواجهات: JSON وAPI"
      },
-     "href": "tests/t1-test-05.html"
+     "href": "tests/t1-test-05.html",
+     "written": true
     },
     {
      "id": "t1-lesson-06",
@@ -202,7 +213,8 @@ window.DA_REGISTRY = {
       "en": "A validation ritual for every new dataset, choosing the right format, and a capstone from raw sources to a typed table.",
       "ar": "طقس تحقّق لكل مجموعة بيانات جديدة، واختيار الصيغة المناسبة، ومشروع ختامي من المصادر الخام إلى جدول مضبوط الأنواع."
      },
-     "href": "lessons/t1-lesson-06.html"
+     "href": "lessons/t1-lesson-06.html",
+     "written": true
     },
     {
      "id": "t1-test-06",
@@ -213,7 +225,8 @@ window.DA_REGISTRY = {
       "en": "Test 6 — Did It Really Load? Validation & Capstone",
       "ar": "اختبار 6 — هل تحمّلت فعلًا؟ التحقّق والمشروع الختامي"
      },
-     "href": "tests/t1-test-06.html"
+     "href": "tests/t1-test-06.html",
+     "written": true
     },
     {
      "id": "t1-lab",
@@ -222,7 +235,8 @@ window.DA_REGISTRY = {
       "en": "Execution Lab",
       "ar": "مختبر التنفيذ"
      },
-     "href": "labs/t1-lab.html"
+     "href": "labs/t1-lab.html",
+     "written": false
     },
     {
      "id": "t1-glossary",
@@ -231,7 +245,8 @@ window.DA_REGISTRY = {
       "en": "Glossary",
       "ar": "قاموس المصطلحات"
      },
-     "href": "glossary/t1-glossary.html"
+     "href": "glossary/t1-glossary.html",
+     "written": true
     },
     {
      "id": "t1-exam-a",
@@ -241,7 +256,8 @@ window.DA_REGISTRY = {
       "en": "Chapter Test A — Core",
       "ar": "اختبار الفصل أ — الأساسيات"
      },
-     "href": "exams/t1-exam-a.html"
+     "href": "exams/t1-exam-a.html",
+     "written": true
     },
     {
      "id": "t1-exam-b",
@@ -251,7 +267,8 @@ window.DA_REGISTRY = {
       "en": "Chapter Test B — Applied",
       "ar": "اختبار الفصل ب — التطبيق"
      },
-     "href": "exams/t1-exam-b.html"
+     "href": "exams/t1-exam-b.html",
+     "written": true
     },
     {
      "id": "t1-exam-c",
@@ -261,7 +278,8 @@ window.DA_REGISTRY = {
       "en": "Chapter Test C — Advanced",
       "ar": "اختبار الفصل ج — المتقدم"
      },
-     "href": "exams/t1-exam-c.html"
+     "href": "exams/t1-exam-c.html",
+     "written": true
     }
    ]
   },
@@ -290,7 +308,8 @@ window.DA_REGISTRY = {
       "en": "Chapter home",
       "ar": "صفحة الفصل"
      },
-     "href": "chapters/p1.html"
+     "href": "chapters/p1.html",
+     "written": true
     },
     {
      "id": "p1-lesson-01",
@@ -304,7 +323,8 @@ window.DA_REGISTRY = {
       "en": "From a vague question to a decision: ask, acquire, clean, explore, model, communicate — and where AI projects differ.",
       "ar": "من سؤال غامض إلى قرار: اسأل، واجمع، ونظّف، واستكشف، وانمذج، وتواصل — وأين تختلف مشاريع الذكاء الاصطناعي."
      },
-     "href": "lessons/p1-lesson-01.html"
+     "href": "lessons/p1-lesson-01.html",
+     "written": true
     },
     {
      "id": "p1-test-01",
@@ -315,7 +335,8 @@ window.DA_REGISTRY = {
       "en": "Test 1 — The Data Analysis Lifecycle",
       "ar": "اختبار 1 — دورة حياة تحليل البيانات"
      },
-     "href": "tests/p1-test-01.html"
+     "href": "tests/p1-test-01.html",
+     "written": true
     },
     {
      "id": "p1-lesson-02",
@@ -329,7 +350,8 @@ window.DA_REGISTRY = {
       "en": "Python, a virtual environment, JupyterLab, Excel and Power BI Desktop installed and verified — plus a map of which tool for which job.",
       "ar": "بايثون وبيئة افتراضية وJupyterLab وإكسل وPower BI Desktop مثبّتة ومفحوصة — مع خريطة لأي أداة لأي عمل."
      },
-     "href": "lessons/p1-lesson-02.html"
+     "href": "lessons/p1-lesson-02.html",
+     "written": true
     },
     {
      "id": "p1-test-02",
@@ -340,7 +362,8 @@ window.DA_REGISTRY = {
       "en": "Test 2 — Setting Up Your Workbench",
       "ar": "اختبار 2 — تجهيز بيئة العمل"
      },
-     "href": "tests/p1-test-02.html"
+     "href": "tests/p1-test-02.html",
+     "written": true
     },
     {
      "id": "p1-lesson-03",
@@ -354,7 +377,8 @@ window.DA_REGISTRY = {
       "en": "Cells, kernels, modes and shortcuts — and the hidden-state trap that makes notebooks lie.",
       "ar": "الخلايا والنواة والأوضاع والاختصارات — وفخّ الحالة الخفية الذي يجعل الدفاتر تكذب."
      },
-     "href": "lessons/p1-lesson-03.html"
+     "href": "lessons/p1-lesson-03.html",
+     "written": true
     },
     {
      "id": "p1-test-03",
@@ -365,7 +389,8 @@ window.DA_REGISTRY = {
       "en": "Test 3 — Jupyter Notebooks Done Right",
       "ar": "اختبار 3 — دفاتر Jupyter كما يجب"
      },
-     "href": "tests/p1-test-03.html"
+     "href": "tests/p1-test-03.html",
+     "written": true
     },
     {
      "id": "p1-lesson-04",
@@ -379,7 +404,8 @@ window.DA_REGISTRY = {
       "en": "Tables, structured references, data types and a first look at a dataset — and the Excel habits that silently corrupt data.",
       "ar": "الجداول والمراجع المهيكلة وأنواع البيانات ونظرة أولى على مجموعة بيانات — وعادات إكسل التي تفسد البيانات بصمت."
      },
-     "href": "lessons/p1-lesson-04.html"
+     "href": "lessons/p1-lesson-04.html",
+     "written": true
     },
     {
      "id": "p1-test-04",
@@ -390,7 +416,8 @@ window.DA_REGISTRY = {
       "en": "Test 4 — Excel as an Analysis Tool",
       "ar": "اختبار 4 — إكسل أداةً للتحليل"
      },
-     "href": "tests/p1-test-04.html"
+     "href": "tests/p1-test-04.html",
+     "written": true
     },
     {
      "id": "p1-lesson-05",
@@ -404,7 +431,8 @@ window.DA_REGISTRY = {
       "en": "Get Data, Power Query, the model and report views, and your first visuals — what Power BI automates and what it hides.",
       "ar": "جلب البيانات وPower Query وعرضا النموذج والتقرير وأولى الرسوم — ما تؤتمته Power BI وما تخفيه."
      },
-     "href": "lessons/p1-lesson-05.html"
+     "href": "lessons/p1-lesson-05.html",
+     "written": true
     },
     {
      "id": "p1-test-05",
@@ -415,7 +443,8 @@ window.DA_REGISTRY = {
       "en": "Test 5 — Power BI Desktop: First Tour",
       "ar": "اختبار 5 — Power BI Desktop: الجولة الأولى"
      },
-     "href": "tests/p1-test-05.html"
+     "href": "tests/p1-test-05.html",
+     "written": true
     },
     {
      "id": "p1-lesson-06",
@@ -429,7 +458,8 @@ window.DA_REGISTRY = {
       "en": "Answer the same business question in Excel, Power BI and pandas, compare the results line by line, and finish the chapter project.",
       "ar": "أجب عن السؤال التجاري نفسه في إكسل وPower BI وpandas، وقارن النتائج سطرًا بسطر، وأنجز مشروع الفصل."
      },
-     "href": "lessons/p1-lesson-06.html"
+     "href": "lessons/p1-lesson-06.html",
+     "written": true
     },
     {
      "id": "p1-test-06",
@@ -440,7 +470,8 @@ window.DA_REGISTRY = {
       "en": "Test 6 — One Question, Three Tools",
       "ar": "اختبار 6 — سؤال واحد بثلاث أدوات"
      },
-     "href": "tests/p1-test-06.html"
+     "href": "tests/p1-test-06.html",
+     "written": true
     },
     {
      "id": "p1-lab",
@@ -449,7 +480,8 @@ window.DA_REGISTRY = {
       "en": "Execution Lab",
       "ar": "مختبر التنفيذ"
      },
-     "href": "labs/p1-lab.html"
+     "href": "labs/p1-lab.html",
+     "written": false
     },
     {
      "id": "p1-glossary",
@@ -458,7 +490,8 @@ window.DA_REGISTRY = {
       "en": "Glossary",
       "ar": "قاموس المصطلحات"
      },
-     "href": "glossary/p1-glossary.html"
+     "href": "glossary/p1-glossary.html",
+     "written": true
     },
     {
      "id": "p1-exam-a",
@@ -468,7 +501,8 @@ window.DA_REGISTRY = {
       "en": "Chapter Test A — Core",
       "ar": "اختبار الفصل أ — الأساسيات"
      },
-     "href": "exams/p1-exam-a.html"
+     "href": "exams/p1-exam-a.html",
+     "written": true
     },
     {
      "id": "p1-exam-b",
@@ -478,7 +512,8 @@ window.DA_REGISTRY = {
       "en": "Chapter Test B — Applied",
       "ar": "اختبار الفصل ب — التطبيق"
      },
-     "href": "exams/p1-exam-b.html"
+     "href": "exams/p1-exam-b.html",
+     "written": true
     },
     {
      "id": "p1-exam-c",
@@ -488,7 +523,8 @@ window.DA_REGISTRY = {
       "en": "Chapter Test C — Advanced",
       "ar": "اختبار الفصل ج — المتقدم"
      },
-     "href": "exams/p1-exam-c.html"
+     "href": "exams/p1-exam-c.html",
+     "written": true
     }
    ]
   },
@@ -517,7 +553,8 @@ window.DA_REGISTRY = {
       "en": "Chapter home",
       "ar": "صفحة الفصل"
      },
-     "href": "chapters/t2.html"
+     "href": "chapters/t2.html",
+     "written": true
     },
     {
      "id": "t2-lesson-01",
@@ -531,7 +568,8 @@ window.DA_REGISTRY = {
       "en": "What transformation is, the order its steps have to run in, why every parameter must be learned from the training rows alone, and how to chain steps without ever touching the raw table.",
       "ar": "ما هو التحويل، وبأي ترتيب يجب أن تجري خطواته، ولماذا يجب أن يُتعلَّم كل وسيط من صفوف التدريب وحدها، وكيف تُسلسل الخطوات دون أن تمسّ الجدول الخام."
      },
-     "href": "lessons/t2-lesson-01.html"
+     "href": "lessons/t2-lesson-01.html",
+     "written": true
     },
     {
      "id": "t2-test-01",
@@ -542,7 +580,8 @@ window.DA_REGISTRY = {
       "en": "Test 1 — From Typed Table to Model-Ready",
       "ar": "اختبار 1 — من جدول مضبوط الأنواع إلى جدول جاهز للنموذج"
      },
-     "href": "tests/t2-test-01.html"
+     "href": "tests/t2-test-01.html",
+     "written": true
     },
     {
      "id": "t2-lesson-02",
@@ -556,7 +595,8 @@ window.DA_REGISTRY = {
       "en": "Counting the blanks, reading the pattern, telling MCAR from MAR from MNAR — and choosing between dropping, imputing and flagging, each with its price named.",
       "ar": "عدّ الخلايا الفارغة، وقراءة النمط، والتمييز بين الفقد العشوائي التام والعشوائي المشروط وغير العشوائي — ثم الاختيار بين الحذف والتعويض والتعليم، وثمن كل خيار مسمّى."
      },
-     "href": "lessons/t2-lesson-02.html"
+     "href": "lessons/t2-lesson-02.html",
+     "written": true
     },
     {
      "id": "t2-test-02",
@@ -567,7 +607,8 @@ window.DA_REGISTRY = {
       "en": "Test 2 — Missing Data: Find It, Understand It, Decide",
       "ar": "اختبار 2 — البيانات المفقودة: اعثر عليها، وافهمها، ثم اقرّر"
      },
-     "href": "tests/t2-test-02.html"
+     "href": "tests/t2-test-02.html",
+     "written": true
     },
     {
      "id": "t2-lesson-03",
@@ -581,7 +622,8 @@ window.DA_REGISTRY = {
       "en": "Exact repeats and reposts, a canonical map instead of Title Case, whitespace and case, a boolean written six ways, and two date formats hiding in one column.",
       "ar": "التكرارات الحرفية وإعادات النشر، وخريطة أسماء معيارية بدل Title Case، والمسافات وحالة الأحرف، وقيمة منطقية مكتوبة بست صور، وصيغتا تاريخ تتخفّيان في عمود واحد."
      },
-     "href": "lessons/t2-lesson-03.html"
+     "href": "lessons/t2-lesson-03.html",
+     "written": true
     },
     {
      "id": "t2-test-03",
@@ -592,7 +634,8 @@ window.DA_REGISTRY = {
       "en": "Test 3 — Duplicates, Text and Types: Making Values Comparable",
       "ar": "اختبار 3 — التكرارات والنصوص والأنواع: جعل القيم قابلة للمقارنة"
      },
-     "href": "tests/t2-test-03.html"
+     "href": "tests/t2-test-03.html",
+     "written": true
     },
     {
      "id": "t2-lesson-04",
@@ -606,7 +649,8 @@ window.DA_REGISTRY = {
       "en": "From an eyeballed cut-off to the IQR fence, the z-score, the robust z and a domain rule — and when to flag, cap, transform or leave an extreme value exactly where it is.",
       "ar": "من حدٍّ مقدَّر بالنظر إلى سياج الربيعات ودرجة z ودرجة z الحصينة وقاعدة من الميدان — ومتى تعلّم القيمة المتطرفة أو تقصّها أو تحوّلها أو تتركها في موضعها تمامًا."
      },
-     "href": "lessons/t2-lesson-04.html"
+     "href": "lessons/t2-lesson-04.html",
+     "written": true
     },
     {
      "id": "t2-test-04",
@@ -617,7 +661,8 @@ window.DA_REGISTRY = {
       "en": "Test 4 — Outliers and Skew: Thresholds You Can Defend",
       "ar": "اختبار 4 — القيم الشاذة والالتواء: حدود تستطيع الدفاع عنها"
      },
-     "href": "tests/t2-test-04.html"
+     "href": "tests/t2-test-04.html",
+     "written": true
     },
     {
      "id": "t2-lesson-05",
@@ -631,7 +676,8 @@ window.DA_REGISTRY = {
       "en": "One-hot, ordinal and frequency encoding, the unseen-category trap, min-max against standard against robust scaling, and the leakage that fitting on every row quietly causes.",
       "ar": "الترميز الأحادي والترتيبي والترددي، وفخّ الفئة غير المرئية، والمقايسة الدنيا-العليا مقابل المعيارية مقابل الحصينة، والتسرّب الذي يسبّبه بهدوء ضبطُ الوسائط على كل الصفوف."
      },
-     "href": "lessons/t2-lesson-05.html"
+     "href": "lessons/t2-lesson-05.html",
+     "written": true
     },
     {
      "id": "t2-test-05",
@@ -642,7 +688,8 @@ window.DA_REGISTRY = {
       "en": "Test 5 — Encoding Categories, Scaling Numbers",
       "ar": "اختبار 5 — ترميز الفئات وتوحيد مقاييس الأرقام"
      },
-     "href": "tests/t2-test-05.html"
+     "href": "tests/t2-test-05.html",
+     "written": true
     },
     {
      "id": "t2-lesson-06",
@@ -656,7 +703,8 @@ window.DA_REGISTRY = {
       "en": "Long against wide, groupby-agg against transform, merge semantics and the row-count trap — then one fitted transform, with its report, that you can run again on next month's file.",
       "ar": "الطويل مقابل العريض، وتجميع groupby مقابل transform، ودلالات الدمج وفخّ عدد الصفوف — ثم تحويل واحد مضبوط الوسائط، مع تقريره، تستطيع إعادة تشغيله على ملف الشهر القادم."
      },
-     "href": "lessons/t2-lesson-06.html"
+     "href": "lessons/t2-lesson-06.html",
+     "written": true
     },
     {
      "id": "t2-test-06",
@@ -667,7 +715,8 @@ window.DA_REGISTRY = {
       "en": "Test 6 — Reshape, Combine, and the Pipeline",
       "ar": "اختبار 6 — إعادة التشكيل والدمج وخط التحويل"
      },
-     "href": "tests/t2-test-06.html"
+     "href": "tests/t2-test-06.html",
+     "written": false
     },
     {
      "id": "t2-lab",
@@ -676,7 +725,8 @@ window.DA_REGISTRY = {
       "en": "Execution Lab",
       "ar": "مختبر التنفيذ"
      },
-     "href": "labs/t2-lab.html"
+     "href": "labs/t2-lab.html",
+     "written": false
     },
     {
      "id": "t2-glossary",
@@ -685,7 +735,8 @@ window.DA_REGISTRY = {
       "en": "Glossary",
       "ar": "قاموس المصطلحات"
      },
-     "href": "glossary/t2-glossary.html"
+     "href": "glossary/t2-glossary.html",
+     "written": true
     },
     {
      "id": "t2-exam-a",
@@ -695,7 +746,8 @@ window.DA_REGISTRY = {
       "en": "Chapter Test A — Core",
       "ar": "اختبار الفصل أ — الأساسيات"
      },
-     "href": "exams/t2-exam-a.html"
+     "href": "exams/t2-exam-a.html",
+     "written": false
     },
     {
      "id": "t2-exam-b",
@@ -705,7 +757,8 @@ window.DA_REGISTRY = {
       "en": "Chapter Test B — Applied",
       "ar": "اختبار الفصل ب — التطبيق"
      },
-     "href": "exams/t2-exam-b.html"
+     "href": "exams/t2-exam-b.html",
+     "written": false
     },
     {
      "id": "t2-exam-c",
@@ -715,7 +768,8 @@ window.DA_REGISTRY = {
       "en": "Chapter Test C — Advanced",
       "ar": "اختبار الفصل ج — المتقدم"
      },
-     "href": "exams/t2-exam-c.html"
+     "href": "exams/t2-exam-c.html",
+     "written": false
     }
    ]
   }

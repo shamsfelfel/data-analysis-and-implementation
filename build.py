@@ -780,6 +780,21 @@ def build():
     if extra:
         raise SystemExit("content has sections no registry page claims: %s" % ", ".join(sorted(extra)))
 
+    # Record which pages actually have content, so the home page can report a
+    # chapter's progress instead of a flat "being written". A lesson or a lab
+    # is written when an author has filed its section; a test or an exam is
+    # written when its question bank exists; everything else is generated and
+    # therefore always ready. A finished chapter does not use this -- it goes
+    # in the grid -- but a chapter being written now says how far along it is.
+    for pid, (_ch, page) in owner.items():
+        k = page["kind"]
+        if k in ("lesson", "lab"):
+            page["written"] = pid in authored
+        elif page.get("bank"):
+            page["written"] = exists("assets/data/questions/%s.js" % page["bank"])
+        else:
+            page["written"] = True
+
     placement = {pid: pg["href"] for pid, (_c, pg) in owner.items()}
     anchors, headings = anchor_map(bodies, placement)
 

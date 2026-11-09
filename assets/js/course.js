@@ -40,6 +40,11 @@
     resume:   { en: "Continue where you stopped", ar: "تابع من حيث توقّفت" },
     start:    { en: "Start the chapter", ar: "ابدأ الفصل" },
     soon:     { en: "Being written", ar: "قيد الكتابة" },
+    /* A chapter being written, once some of it can be read. {a} of {b}
+       lessons are finished; the tests follow the lessons. */
+    partLessons: { en: "{a} of {b} lessons ready", ar: "{a} من {b} دروس جاهزة" },
+    partAll:     { en: "all {b} lessons ready · tests being written",
+                   ar: "الدروس الـ{b} جاهزة · الاختبارات قيد الكتابة" },
     top:      { en: "Back to top", ar: "إلى الأعلى" },
     lang:     { en: "العربية", ar: "English" },
     dark:     { en: "Dark", ar: "داكن" },
@@ -68,7 +73,7 @@
         var p = c.pages[j];
         var page = {
           id: p.id, kind: p.kind, n: p.n || null, of: p.of || null,
-          bank: p.bank || null, href: p.href,
+          bank: p.bank || null, href: p.href, written: p.written !== false,
           title: p.title, blurb: p.blurb || null,
           en: p.title ? p.title.en : p.id, ar: p.title ? p.title.ar : p.id
         };

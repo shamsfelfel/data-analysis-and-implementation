@@ -26,7 +26,7 @@
    that ships changes. A rebuild that changes nothing keeps the name,
    and this file stays byte-identical, so an installed reader
    re-downloads nothing: there are no timestamps in here on purpose. */
-var CACHE = 'da-6a5410ec27a9';
+var CACHE = 'da-693a46b94d65';
 
 /* THE INVARIANT ON THIS ORIGIN.
 
@@ -499,12 +499,12 @@ var HASHES = [
   'f65639c5ac6e',
   'b100340b81aa',
   'c3ed76fe07e0',
-  'f1a2840f3105',
+  'c6606203c7d7',
   'd78bfe355f49',
-  '98309f7ef272',
-  'bd5b7b249897',
+  '0941d8036b5d',
+  '9d179e222b9f',
   '397e7459526a',
-  '948e5b5fab91',
+  '8366bd9adafb',
   'f19f5d9227f8',
   '254147e71363',
   '1f8d00c7e714',
