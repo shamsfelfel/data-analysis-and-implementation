@@ -1196,7 +1196,56 @@ target encoding, smoothed m=10     1    61.1052       65.6126
     <p class="ar">يرمي دلو <code>Other</code> معلومةً عن قصد، وثلاثة من أثمانه تستحقّ التسمية. فهو <strong>يجمع وكالات غير متشابهة</strong>: فـ97 صفًّا تدريبيًّا من ثلاث عشرة وكالة مختلفة تحصل على معامل واحد، فتُتوسَّط وكالةٌ صغيرة غالية فعلًا مع رخيصة. ويجعل <strong>الحدّ وسيطًا</strong> &mdash; فلماذا خمس؟ فالخمس الأُول تغطّي 72% من صفوف التدريب، والثماني الأُول تغطّي 88%، ولا شيء في البيانات يختار؛ بل تختار أنت وتُبلغ عن ذلك. وهو <strong>غير مستقرّ بين الأشهر</strong>: فإذا انزاحت وكالات حزيران فقد لا تبقى «الخمس الأُول» المضبوطة في آذار هي الخمس الأُول، وهذا سلوك صحيح (فلا يجوز أن تعيد الضبط) وسيبدو خاطئًا في تقرير. وأخيرًا، الرقم الذي لا يطبعه أحد هو الذي يحسم المسألة: كم من الإيجار يفسّره <em>مَن يُعلن</em> لا <em>ما يُعلَن عنه</em>. وعلى 480 صفًّا لا يتميّز ذلك الرقم من الصفر، والجواب المهني أن تقول ذلك وتُسقط العمود، لا أن تجد مُرمِّزًا أذكى لإشارة غير موجودة.</p>
   </div>
 
-  <h2 id="t2l5-h6"><span class="en">Concept 6 &mdash; Scaling: three formulas, two parameters each</span><span class="ar">المفهوم 6 &mdash; توحيد المقاييس: ثلاث صيغ، لكل منها وسيطان</span></h2>
+    <h3 id="t2l5-s22b"><span class="en">Choosing an encoder, on one screen</span><span class="ar">اختيار المُرمِّز في شاشة واحدة</span></h3>
+  <p class="en">Six ways to turn a column of words into numbers, each with the risk that comes with it. Nothing here is new; it is the lesson's own six decisions in the order you would actually reach for them.</p>
+  <p class="ar">ستُّ طرق لتحويل عمود من الكلمات إلى أرقام، ولكلّ واحدة خطرُها الملازم لها. ولا جديد هنا؛ بل هي قراراتُ الدرس الستة بالترتيب الذي ستقصدها به فعلًا.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="en">Method</span><span class="ar">الطريقة</span></th>
+          <th><span class="en">Best for</span><span class="ar">أنسب لـ</span></th>
+          <th><span class="en">The main risk</span><span class="ar">الخطر الرئيس</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="#t2l5-h4"><span class="en">Ordered code</span><span class="ar">رمز مرتّب</span></a></td>
+          <td><span class="en">a column with a real order: <code>poor &lt; fair &lt; good &lt; excellent</code></span><span class="ar">عمود له ترتيبٌ حقيقي: <code>poor &lt; fair &lt; good &lt; excellent</code></span></td>
+          <td><span class="en">invents an order where there is none, and <code>cat.codes</code> numbers alphabetically</span><span class="ar">يختلق ترتيبًا حيث لا ترتيب، و<code>cat.codes</code> ترقّم أبجديًا</span></td>
+        </tr>
+        <tr>
+          <td><a href="#t2l5-h2"><span class="en">One-hot</span><span class="ar">ترميز أحادي</span></a></td>
+          <td><span class="en">unordered, up to about fifteen levels: the five cities</span><span class="ar">غير مرتّب، حتى نحو خمسة عشر مستوًى: المدن الخمس</span></td>
+          <td><span class="en">one column per level, and 95&nbsp;% zeros on the twenty agencies</span><span class="ar">عمودٌ لكل مستوًى، و 95&nbsp;% أصفار على الوكالات العشرين</span></td>
+        </tr>
+        <tr>
+          <td><a href="#t2l5-s19"><span class="en">Frequency</span><span class="ar">ترميز التكرار</span></a></td>
+          <td><span class="en">many levels, where how common a level is carries meaning</span><span class="ar">مستويات كثيرة، حيث تحمل شيوعيةُ المستوى معنًى</span></td>
+          <td><span class="en">two different levels with the same count collapse to one number</span><span class="ar">مستويان مختلفان بالعدد نفسه ينطويان على رقم واحد</span></td>
+        </tr>
+        <tr>
+          <td><a href="#t2l5-s20"><span class="en">Target (mean)</span><span class="ar">ترميز الهدف</span></a></td>
+          <td><span class="en">many levels, with a known target and a measurement that says it helps</span><span class="ar">مستويات كثيرة، مع هدف معلوم وقياس يقول إنه يفيد</span></td>
+          <td><span class="en">leaks the target, worst where a level has one row; needs out-of-fold fitting</span><span class="ar">يسرّب الهدف، وأسوأُ ما يكون حين يكون لمستوًى صفٌّ واحد؛ ويحتاج ضبطًا خارج الطيّة</span></td>
+        </tr>
+        <tr>
+          <td><span class="en">Merge by meaning</span><span class="ar">الدمج بالمعنى</span></td>
+          <td><span class="en">levels that domain knowledge says behave alike</span><span class="ar">مستويات تقول معرفةُ المجال إنها تتشابه سلوكًا</span></td>
+          <td><span class="en">hides a real difference; every group needs a stated reason</span><span class="ar">يخفي فرقًا حقيقيًّا؛ وكلُّ مجموعة تحتاج سببًا مذكورًا</span></td>
+        </tr>
+        <tr>
+          <td><a href="#t2l5-s22"><span class="en">Rare to <code>Other</code></span><span class="ar">النادر إلى <code>Other</code></span></a></td>
+          <td><span class="en">many rare levels, and new levels expected later</span><span class="ar">مستويات نادرة كثيرة، ومستويات جديدة متوقّعة لاحقًا</span></td>
+          <td><span class="en">mixes unlike levels, and the cut-off must be chosen on training data only</span><span class="ar">يخلط مستويات متباينة، ويجب اختيار الحدّ على بيانات التدريب وحدها</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="en">One line governs the whole table, and it is <a href="#t2l5-s3">the rule of Concept&nbsp;1</a>: the measurement level decides which rows of this table are legal, and every parameter in the right-hand column &mdash; the category list, the code map, the counts, the per-level means, the rare cut-off &mdash; is fitted on the training rows and stored.</p>
+  <p class="ar">سطرٌ واحد يحكم الجدولَ كلّه، وهو <a href="#t2l5-s3">قاعدةُ المفهوم 1</a>: فمستوى القياس يقرّر أيُّ صفوف هذا الجدول مشروعٌ، وكلُّ وسيط في العمود الأيمن &mdash; قائمةُ الفئات وخريطةُ الرموز والأعداد ومتوسطاتُ كل مستوًى وحدُّ الندرة &mdash; مضبوطٌ على صفوف التدريب ومحفوز.</p>
+
+<h2 id="t2l5-h6"><span class="en">Concept 6 &mdash; Scaling: three formulas, two parameters each</span><span class="ar">المفهوم 6 &mdash; توحيد المقاييس: ثلاث صيغ، لكل منها وسيطان</span></h2>
 
   <div class="problem">
     <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>

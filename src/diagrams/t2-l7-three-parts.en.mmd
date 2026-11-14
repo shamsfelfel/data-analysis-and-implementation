@@ -1,0 +1,19 @@
+%% alt: Flowchart of the three-way split and what each part is allowed to do. The 480 deduplicated flats enter at the top and are shuffled once with a recorded seed, then cut into three parts: 288 training rows, 96 validation rows and 96 test rows. Three arrows leave the training rows: every parameter is fitted there, which includes the median, the fence, the category lists and the band edges, and the arrow is labelled "fit here, many times". The validation rows receive those fitted parameters and are used to compare candidate recipes and choose one, labelled "read often, never fit on"; a loop returns from the validation rows to the training rows, because every comparison sends you back to change the recipe. The test rows sit apart behind a gate marked "read once, at the end", and the only thing allowed through the gate is the single recipe that validation already chose. A warning node states the rule the chapter broke: a number you optimised against is a training number wearing a disguise, so the held-out score of Lessons 1 to 6 was never a final score. A second note records what must be written down beside the three frames: the seed, the proportions and the as-of date, because a split nobody recorded cannot be repeated.
+flowchart TD
+  F[("480 flats<br/>one row per real flat")] --> SH["shuffle once<br/>`random_state` recorded"]
+  SH --> TR["**train** 288 rows<br/>291 rents"]
+  SH --> VA["**validation** 96 rows"]
+  SH --> TE["**test** 96 rows"]
+  TR -- "fit here, many times" --> P["fitted parameters:<br/>median, fence, category lists,<br/>band edges, scaler"]
+  P --> VA
+  VA -- "read often, never fit on" --> CH{"compare recipes<br/>choose one"}
+  CH -. "change the recipe" .-> TR
+  CH -- "the one chosen recipe" --> G{{"gate:<br/>read once, at the end"}}
+  G --> TE
+  TE --> N[["the number you report"]]
+  W["a score you optimised against<br/>is a training score in disguise"] -.-> CH
+  R[/"record beside the frames:<br/>seed, proportions, as-of date"/] -.-> SH
+  class TR dg-good
+  class TE dg-warn
+  class W dg-bad
+  class R dg-mute

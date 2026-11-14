@@ -719,6 +719,33 @@ window.DA_REGISTRY = {
      "written": true
     },
     {
+     "id": "t2-lesson-07",
+     "kind": "lesson",
+     "n": 7,
+     "title": {
+      "en": "The Split, the Leak, and the Order You Can Prove",
+      "ar": "التقسيم والتسريب والترتيب الذي تستطيع إثباته"
+     },
+     "blurb": {
+      "en": "Three parts with three jobs, the three ways a result leaks, and what a single split cannot tell you — then the two features worth creating, one of which turns out not to be.",
+      "ar": "ثلاثة أقسام لثلاث وظائف، والطرق الثلاث التي تتسرّب بها النتيجة، وما لا يستطيع تقسيم واحد أن يخبرك به — ثم السمتان الجديرتان بالإنشاء، وإحداهما تتبيّن أنها ليست كذلك."
+     },
+     "href": "lessons/t2-lesson-07.html",
+     "written": true
+    },
+    {
+     "id": "t2-test-07",
+     "kind": "test",
+     "of": 7,
+     "bank": "t2-test-07",
+     "title": {
+      "en": "Test 7 — The Split, the Leak, and the Order You Can Prove",
+      "ar": "اختبار 7 — التقسيم والتسريب والترتيب الذي تستطيع إثباته"
+     },
+     "href": "tests/t2-test-07.html",
+     "written": true
+    },
+    {
      "id": "t2-lab",
      "kind": "lab",
      "title": {

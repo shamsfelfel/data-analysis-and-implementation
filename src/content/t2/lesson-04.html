@@ -1069,7 +1069,51 @@ NaN       123
     <p class="ar">الحَجْب هو سبب عدم موثوقية كشف الشواذّ على الخصائص الخام على نطاق واسع، وهو يتعمّم إلى ما يتجاوز <code>|z| &gt; 3</code> كثيرًا. فكل طريقة يُبنى مفهومها لـ«البعيد» من مسافات مربَّعة ترث هذا الضعف: المُوحِّد المعياري، وk-means، وتحليل المكوّنات الأساسية، ومسافة ماهالانوبيس، وخطأ إعادة بناء المُرمِّز التلقائي. فكلها تقدّر مقياسًا من البيانات ثم تقيس البيانات به، فتحدّد أسوأ النقاط معنى «العادي» ثم تبدو عادية. ولهذا بالضبط يُبنى كشف الشذوذ الإنتاجي على البيانات الجدولية من إحصاءات حصينة أو مبنية على الرُّتب &mdash; الوسطاء والانحرافات المطلقة والمئينات وغابات العزل &mdash; لا من المتوسطات والانحرافات المعيارية. ولهذا لا تكون <a href="#t2l1-h2">المرحلة 2 قبل المرحلة 4</a> تفضيلًا أسلوبيًّا: فقيمةٌ حارسة واحدة غير ملقوطة في خاصية واحدة تستطيع أن تجعل طبقةَ كشفِ شذوذٍ كاملة تُبلّغ بأن كل شيء بخير، بأوثق صورة ممكنة، طالما بقيت القيمة الحارسة تصل.</p>
   </div>
 
-  <h2 id="t2l4-h6"><span class="en">Concept 6 &mdash; Four actions, four costs</span><span class="ar">المفهوم 6 &mdash; أربعة أعمال وأربعة أثمان</span></h2>
+    <h3 id="t2l4-s24b"><span class="en">The two rules side by side</span><span class="ar">القاعدتان جنبًا إلى جنب</span></h3>
+  <p class="en">Both are one line of pandas, and the choice between them is not a matter of taste. This is the whole comparison on one screen, with the last row measured on <code>monthly_rent</code>.</p>
+  <p class="ar">كلتاهما سطرٌ واحد من pandas، والاختيارُ بينهما ليس مسألةَ ذوق. وهذه المقارنةُ كلها في شاشة واحدة، والصفُ الأخير مقيسٌ على <code>monthly_rent</code>.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th><span class="en">The IQR fence</span><span class="ar">سياج IQR</span></th>
+          <th><span class="en">The z-score</span><span class="ar">الدرجة المعيارية z</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="en">Assumes</span><span class="ar">تفترض</span></td>
+          <td><span class="en">nothing about the shape of the distribution</span><span class="ar">لا شيء عن شكل التوزيع</span></td>
+          <td><span class="en">that the column is roughly symmetric</span><span class="ar">أن العمود متناظر تقريبًا</span></td>
+        </tr>
+        <tr>
+          <td><span class="en">Robust?</span><span class="ar">حصينة؟</span></td>
+          <td><span class="en">yes &mdash; the quartiles ignore the extremes entirely</span><span class="ar">نعم &mdash; فالأرباع تتجاهل الأطراف تمامًا</span></td>
+          <td><span class="en">no &mdash; one extreme value inflates the σ it is judged against, so it hides itself</span><span class="ar">لا &mdash; فقيمةٌ متطرّفة واحدة تضخّم الـσ التي تُحاكم مقابلها، فتُخفي نفسها</span></td>
+        </tr>
+        <tr>
+          <td><span class="en">The usual threshold</span><span class="ar">الحدُّ المعتاد</span></td>
+          <td><code>1.5 &times; IQR</code> <span class="en">(3 &times; for &ldquo;extreme&rdquo;)</span><span class="ar">(3 &times; لـ«المتطرّف»)</span></td>
+          <td><code>|z| &gt; 3</code> <span class="en">(2 to investigate)</span><span class="ar">(2 للتحقُّق)</span></td>
+        </tr>
+        <tr>
+          <td><span class="en">Best for</span><span class="ar">أنسب لـ</span></td>
+          <td><span class="en">skewed columns, small samples, money</span><span class="ar">الأعمدة الملتوية والعيّنات الصغيرة والمال</span></td>
+          <td><span class="en">symmetric, bell-shaped measurements</span><span class="ar">القياسات المتناظرة الجرسية</span></td>
+        </tr>
+        <tr>
+          <td><span class="en">On this column</span><span class="ar">على هذا العمود</span></td>
+          <td><span class="en">flags 12 rents, all of them high</span><span class="ar">تُعلِم 12 إيجارًا، كلُّها مرتفعة</span></td>
+          <td><span class="en">flags 1 of those 12, because the single 99999 inflates σ; void that typo and the fence flags 11 while <code>|z| &gt; 3</code> flags 6</span><span class="ar">تُعلِم واحدًا من تلك الـ 12، فالـ 99999 الواحدة تضخّم الـσ؛ وأبطِل تلك الغلطة يُعلِم السياج 11 وتُعلِم <code>|z| &gt; 3</code> ستةً</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="en">And the row the table cannot hold: <strong>neither rule finds the daily rate of 25.</strong> It sits inside the lower fence of 1.9 and its robust z is only &minus;2.36, so the only thing that reaches it is the <a href="#t2l4-s24">cross-column ratio</a> &mdash; which is why that section comes after this one and not before.</p>
+  <p class="ar">والصفُ الذي لا يحمله الجدول: <strong>لا تجد أيُّ القاعدتين السعرَ اليومي 25.</strong> فهو داخل السياج الأدنى 1.9 وz الحصينة له &minus;2.36 فقط، فالشيءُ الوحيد الذي يبلغه هو <a href="#t2l4-s24">نسبةُ العمودين</a> &mdash; ولهذا يأتي ذلك القسم بعد هذا لا قبله.</p>
+
+<h2 id="t2l4-h6"><span class="en">Concept 6 &mdash; Four actions, four costs</span><span class="ar">المفهوم 6 &mdash; أربعة أعمال وأربعة أثمان</span></h2>
 
   <div class="problem">
     <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>

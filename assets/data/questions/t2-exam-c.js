@@ -192,42 +192,6 @@ window.DABanks = window.DABanks || {};
       },
 
       /* ---------------------------------------------------------- 04 */
-      {
-        id: "t2cx04", type: "mcq", level: "hard",
-        topics: ["t2-target-encoding", "t2-other-bucket", "t2-held-out-check"],
-        q: {
-          en: "Six encodings of <code>agency</code>, each scored on rows nobody fitted anything on, and the whole comparison repeated for <code>random_state</code> 0 to 9 because a single split cannot separate numbers this close. Mean held-out MAE over the ten splits: <strong>one constant 61.26</strong>; leaky target encoding (fitted on all 459 labelled rows) 61.20; frequency encoding 62.11; one-hot of the top&nbsp;5 plus <code>Other</code> 62.20; full one-hot of all eighteen 63.58; honest out-of-fold target encoding 63.63. Against the constant, the four honest encodings win in 1, 2, 2 and 1 of the ten splits; the leaky one wins in 6. Which reading is correct?",
-          ar: "ستةُ ترميزات لـ<code>agency</code>، كلٌّ مقيسٌ على صفوف لم يضبط عليها أحدٌ شيئًا، وأُعيدت المقارنةُ كلها لـ<code>random_state</code> من 0 إلى 9 لأن تقسيمًا واحدًا لا يفرّق بين أرقامٍ بهذا التقارب. متوسطُ MAE المحجوز على التقسيمات العشر: <strong>ثابتٌ واحد 61.26</strong>؛ والترميزُ بالهدف المتسرّب (مضبوطًا على الصفوف الـ459 المُلافتة كلها) 61.20؛ والترميزُ بالتكرار 62.11؛ والترميزُ الأحادي لأكبر&nbsp;5 مع <code>Other</code> 62.20؛ والترميزُ الأحادي الكامل للثماني عشرة 63.58؛ والترميزُ بالهدف الأمين خارج الطيّة 63.63. ومقابل الثابت تفوز الترميزاتُ الأمينة الأربعة في 1 و2 و2 و1 من التقسيمات العشر؛ ويفوز المتسرّبُ في 6. أي قراءة صحيحة؟"
-        },
-        options: [
-          {
-            en: "Frequency encoding is the best honest encoder at 62.11, so it is the one to ship: one column, no leak, and its gap to the constant is well inside the ruler's noise.",
-            ar: "الترميزُ بالتكرار أفضلُ مُرمِّز أمين عند 62.11، فهو ما يُشحَن: عمودٌ واحد وبلا تسرّب، وفجوتُه إلى الثابت داخلَ ضجيج المسطرة جيدًا."
-          },
-          {
-            en: "The full one-hot lost at 63.58 because eighteen columns over 480 rows is too many parameters, and bucketing the tail fixes that &mdash; which is why top&nbsp;5 plus <code>Other</code> reads 62.20.",
-            ar: "خسر الترميزُ الأحادي الكامل عند 63.58 لأن ثمانية عشر عمودًا على 480 صفًّا وسائطُ أكثر من اللازم، ويُصلح ذلك جمعُ الذيل في دلو &mdash; ولهذا يقرأ أكبر&nbsp;5 مع <code>Other</code> 62.20."
-          },
-          {
-            en: "Ten splits cannot separate 61.20 from 61.26, so the leak left no trace in the measurement, and the honest conclusion is that leakage does not matter for a one-column encoder.",
-            ar: "عشرُ تقسيمات لا تفرّق 61.20 من 61.26، فلم يترك التسرّبُ أثرًا في القياس، والاستنتاجُ الأمين أن التسرّب لا يهمّ في مُرمِّزٍ بعمود واحد."
-          },
-          {
-            en: "The only row that beats predicting one constant is the one that is cheating, so the right answer for <code>agency</code> on this file is not to encode it at all. The leaky column is computed from the rents of the very rows it is applied to, so its 61.20 measures nothing; and the win counts are the trace of that &mdash; 6 of ten against 1 or 2. Lesson&nbsp;1 said the same thing from another direction (a median per agency moved the held-out error from 60.17 to 62.25) and so did Lesson&nbsp;2 (the deposit correlates 0.6034 with the rent and 0.1375 with its own agency's mean): the agency predicts <em>whether</em> a value is missing far better than it predicts what the value is.",
-            ar: "السطرُ الوحيد الذي يتغلّب على التنبؤ بثابتٍ واحد هو الذي يغشّ، فالجوابُ الصحيح لـ<code>agency</code> في هذا الملف ألّا تُرمَّز أصلًا. فالعمودُ المتسرّب محسوبٌ من إيجارات الصفوف نفسها التي يُطبَّق عليها، فـ61.20 عنده لا تقيس شيئًا؛ وأعدادُ الفوز هي أثرُ ذلك &mdash; 6 من عشر مقابل 1 أو 2. وقال الدرس&nbsp;1 الشيءَ نفسه من جهة أخرى (وسيطٌ لكل وكالة نقل الخطأ المحجوز من 60.17 إلى 62.25) وكذلك الدرس&nbsp;2 (يرتبط التأمينُ 0.6034 بالإيجار و0.1375 بمتوسط وكالته): فالوكالةُ تتنبأ <em>هل</em> القيمةُ مفقودة أحسنَ بكثير من تنبّئها بما هي القيمة."
-          }
-        ],
-        answer: 3,
-        hint: {
-          en: "Read the table as a ladder and notice where the constant sits in it. Then ask what the leaky encoder's column is a function of, and whether a number produced that way can be compared with the others at all.",
-          ar: "اقرأ الجدولَ سُلّمًا ولاحظ موضعَ الثابت فيه. ثم اسأل عن أيِّ شيء يكون عمودُ المُرمِّز المتسرّب دالةً، وهل يمكن مقارنةُ رقمٍ أُنتج هكذا بالبقية أصلًا."
-        },
-        explain: {
-          en: "Every honest encoding of <code>agency</code> in that table makes the held-out error <em>worse</em> than knowing nothing about the agency at all, and the one row that beats the constant beats it by cheating: target encoding fitted on all 459 labelled rows gives each flat a column built from its own rent, which is why its fitted line comes back as intercept 0.000000 and slope 1.000000 &mdash; the signature of the leak. So the lowest held-out number in the table is the fraud, and the right decision for this column on this file is to leave it out. The answer about frequency encoding is the tempting one because its first half is true &mdash; it is the best of the honest encoders, and that was not the prediction &mdash; but &ldquo;inside the noise&rdquo; is a reason not to add a column, never a reason to add one. The bucket answer gets the mechanism right and the conclusion wrong: pooling the tail does lift 63.58 to 62.20, and 62.20 still loses to encoding nothing. And the near-tie answer draws exactly the wrong lesson: a leaked measurement cannot detect leakage, which is why you prevent it by construction and never by inspection.",
-          ar: "كلُّ ترميزٍ أمين لـ<code>agency</code> في ذلك الجدول يجعل الخطأ المحجوز <em>أسوأ</em> من ألّا تعرف عن الوكالة شيئًا، والسطرُ الوحيد الذي يتغلّب على الثابت يتغلّب عليه بالغشّ: فالترميزُ بالهدف مضبوطًا على الصفوف الـ459 المُلافتة كلها يعطي كل شقة عمودًا مبنيًّا من إيجارها، ولهذا يعود خطُّه المضبوط بمقطع 0.000000 وميل 1.000000 &mdash; وهي بصمةُ التسرّب. فأدنى رقمٍ محجوز في الجدول هو الاحتيال، والقرارُ الصحيح لهذا العمود في هذا الملف تركُه خارجًا. والجوابُ عن الترميز بالتكرار هو المغري لأن نصفه الأول صحيح &mdash; فهو أفضلُ المُرمِّزات الأمينة، وما كان ذلك متوقعًا &mdash; لكن «داخل الضجيج» سببٌ لعدم إضافة عمود لا سببٌ لإضافته. وجوابُ الدلو يصيب الآليةَ ويخطئ الاستنتاج: فجمعُ الذيل يرفع 63.58 إلى 62.20 فعلًا، و62.20 ما زالت تخسر أمام ألّا ترمّز شيئًا. وجوابُ التعادل القريب يستخلص الدرسَ الخاطئ بعينه: فالقياسُ المتسرّب لا يكشف التسرّب، ولهذا تمنعه بالبناء لا بالتفتيش أبدًا."
-        }
-      },
-
       /* ---------------------------------------------------------- 05 */
       {
         id: "t2cx05", type: "error", level: "hard",
@@ -904,76 +868,6 @@ window.DABanks = window.DABanks || {};
       },
 
       /* ---------------------------------------------------------- 19 */
-      {
-        id: "t2cx19", type: "compare", level: "hard",
-        topics: ["t2-fitted-in-memory", "t2-group-imputation", "t2-pipeline-assertions"],
-        q: {
-          en: "Lesson&nbsp;6 ends by admitting that <code>fitted</code> is a dictionary in memory that nothing writes down. Two attempts to fix that. Both store the eighteen parameters, both load them back and re-run stage&nbsp;3 on the same 480 March flats, and both leave the matrix 480&nbsp;&times;&nbsp;18 with no blank cell and the same column names, so all three assertions pass in both. Which statement is correct?",
-          ar: "يُنهي الدرس&nbsp;6 بالإقرار بأن <code>fitted</code> قاموسٌ في الذاكرة لا يكتبه شيء. وهاتان محاولتان لإصلاح ذلك. وكلتاهما تخزّن الوسائطَ الثمانية عشر وتعيد تحميلها وتشغّل المرحلة&nbsp;3 على شقق آذار الـ480 نفسها، وكلتاهما تُبقي المصفوفةَ 480&nbsp;&times;&nbsp;18 بلا خليةٍ فارغة وبأسماء الأعمدة نفسها، فتنجح التأكيداتُ الثلاثة في كلتيهما."
-        },
-        codeA: code(
-          "import json",
-          "",
-          "json.dump(fitted, open(\"fitted.json\", \"w\"))      # 18 parameters, straight out of memory",
-          "f = json.load(open(\"fitted.json\"))",
-          "",
-          "out, row = impute_area(flats, f)                 # 26 blank areas among the 480 flats",
-          "print(\"filled from a rooms group:\", row[\"cells\"] - row[\"fell back\"])",
-          "print(\"fell back to the global median:\", row[\"fell back\"])",
-          "",
-          "# filled from a rooms group: 0",
-          "# fell back to the global median: 26"
-        ),
-        codeB: code(
-          "import json",
-          "",
-          "def plain(f):                                    # keys JSON can carry back unchanged",
-          "    g = {\"rooms=%g\" % k: v for k, v in f[\"area_by_rooms\"].items()}",
-          "    return dict(f, area_by_rooms=g, fitted_at=\"2026-06-30\", rows_fitted_on=480)",
-          "",
-          "def load_fitted(path):",
-          "    f = json.load(open(path))",
-          "    f[\"area_by_rooms\"] = {float(k.split(\"=\")[1]): v for k, v in f[\"area_by_rooms\"].items()}",
-          "    return f",
-          "",
-          "json.dump(plain(fitted), open(\"fitted.json\", \"w\"))",
-          "f = load_fitted(\"fitted.json\")",
-          "",
-          "out, row = impute_area(flats, f)",
-          "assert out[\"area_m2\"].equals(X[\"area_m2\"]), \"the loaded parameters do not reproduce the matrix\"",
-          "print(\"filled from a rooms group:\", row[\"cells\"] - row[\"fell back\"])",
-          "",
-          "# filled from a rooms group: 26"
-        ),
-        options: [
-          {
-            en: "A fails loudly and B is the ceremony around it: <code>.map()</code> with string keys against a float column raises a <code>TypeError</code>, which is the whole reason B's cast exists.",
-            ar: "‏A تفشل بصوت عالٍ وB هي الطقسُ حولها: فـ<code>.map()</code> بمفاتيح نصية في مقابل عمودٍ عشري ترفع <code>TypeError</code>، وهذا كلُّ سببِ وجود تحويل B."
-          },
-          {
-            en: "A is fine for this dictionary and would only break on a key JSON cannot represent, such as a tuple; the parameter to worry about is <code>rent_fence</code>, which comes back as a list instead of a tuple.",
-            ar: "‏A سليمةٌ لهذا القاموس ولن تنكسر إلا على مفتاح لا يستطيع JSON تمثيله، كالمجموعة المرتَّبة؛ والوسيطُ الذي يُقلق هو <code>rent_fence</code> الذي يعود قائمةً بدل مجموعة مرتَّبة."
-          },
-          {
-            en: "Both are equivalent once <code>fitted_at</code> and <code>rows_fitted_on</code> are written, because what the artefact was missing was a date and a row count, not a key format.",
-            ar: "كلتاهما متكافئتان متى كُتب <code>fitted_at</code> و<code>rows_fitted_on</code>، لأن ما كان ينقص الأثرَ تاريخٌ وعددُ صفوف لا صيغةُ مفاتيح."
-          },
-          {
-            en: "A is the trap inside the fix. JSON has no numeric keys, so <code>area_by_rooms</code>'s keys come back as the strings <code>'1.0'</code> &hellip; <code>'5.0'</code>, <code>.map()</code> matches nothing, and all 26 blank areas are filled with the global median instead of their room group's. Nothing raises, no shape changes, no cell is blank and the column set is unchanged &mdash; so none of the three assertions can see it. B is what makes an artefact trustworthy: keys that survive the round trip, a cast back on load, and an assertion that the loaded parameters reproduce the matrix they produced.",
-            ar: "‏A هي الفخُّ داخل الإصلاح. فليس في JSON مفاتيحُ عددية، فتعود مفاتيحُ <code>area_by_rooms</code> نصوصًا <code>'1.0'</code> &hellip; <code>'5.0'</code>، فلا توافق <code>.map()</code> شيئًا، فتُعبَّأ المساحاتُ الفارغة الـ26 كلها بالوسيط العامّ بدل وسيط مجموعة غرفها. ولا يرفع شيءٌ شيئًا ولا شكلَ يتغير ولا خليةَ فارغة ومجموعةُ الأعمدة كما هي &mdash; فلا يستطيع أيٌّ من التأكيدات الثلاثة أن يراه. وB هي ما يجعل الأثرَ موثوقًا: مفاتيحُ تنجو من الرحلة، وتحويلٌ عند التحميل، وتأكيدٌ أن الوسائطَ المحمَّلة تُنتج المصفوفةَ التي أنتجتها."
-          }
-        ],
-        answer: 3,
-        hint: {
-          en: "Read the two printed numbers in A: 0 and 26. The fill did happen, so nothing refused to run &mdash; what did the lookup fail to find? Then ask which of the pipeline's three assertions could possibly have noticed.",
-          ar: "اقرأ الرقمين المطبوعين في A: صفر و26. فالتعويضُ حدث، فلم يرفض شيءٌ أن يعمل &mdash; فماذا أخفق البحثُ في إيجاده؟ ثم اسأل أيُّ تأكيدات المسار الثلاثة كان يمكن أن يلاحظ."
-        },
-        explain: {
-          en: "JSON keys are strings, always, so <code>json.dump</code> quietly turns <code>{1.0: 38.5, &hellip;}</code> into <code>{\"1.0\": 38.5, &hellip;}</code> and the loaded dictionary can never match a float <code>rooms</code> value again. Every one of the 26 blank areas then takes the global median instead of its room group's, which is a real difference of about twelve square metres a cell and over thirty at the worst &mdash; and it is invisible to every check the pipeline has, because the shape, the dtypes, the blank count and the column names are all exactly what they were. That is the point of the question: an assertion guards the shape of an answer, not its correctness, and the three the chapter ships are deliberately cheap. The tuple answer is the tempting one because its second half is true &mdash; <code>rent_fence</code> does come back as a list &mdash; and harmless, since it is only ever unpacked; mistaking the harmless symptom for the damaging one is exactly how this bug survives review. The <code>TypeError</code> answer is wrong because <code>.map()</code> on a key it cannot find returns <code>NaN</code>; it does not complain. And a date and a row count are necessary and not sufficient: they make the artefact <em>auditable</em>, while the cast and the golden-matrix assertion are what make it <em>usable</em>.",
-          ar: "مفاتيحُ JSON نصوصٌ دائمًا، فتحوّل <code>json.dump</code> بهدوء <code>{1.0: 38.5، &hellip;}</code> إلى <code>{\"1.0\": 38.5، &hellip;}</code> فلا يستطيع القاموسُ المحمَّل أن يوافق قيمةَ <code>rooms</code> العشرية بعدها قط. فتأخذ كلُّ واحدة من المساحات الفارغة الـ26 الوسيطَ العامَّ بدل وسيط مجموعة غرفها، وذاك فرقٌ حقيقي نحو اثني عشر مترًا مربعًا للخلية وفوق الثلاثين في أسوأ حالة &mdash; وهو غيرُ مرئيّ لكل فحص في المسار، لأن الشكلَ والأنواعَ وعددَ الفراغات وأسماءَ الأعمدة كلها بالضبط كما كانت. وهذا هو مقصودُ السؤال: فالتأكيدُ يحرس شكلَ الجواب لا صوابه، والثلاثةُ التي يشحنها الفصل رخيصةٌ عن قصد. وجوابُ المجموعة المرتَّبة هو المغري لأن نصفه الثاني صحيح &mdash; فـ<code>rent_fence</code> يعود قائمةً فعلًا &mdash; وغيرُ ضار، إذ لا يُفكّ إلا تفكيكًا؛ وخلطُ العَرَض غير الضارّ بالضارّ هو بعينه كيف ينجو هذا العطبُ من المراجعة. وجوابُ <code>TypeError</code> خاطئ لأن <code>.map()</code> على مفتاح لا تجده تعيد <code>NaN</code>؛ ولا تشتكي. والتاريخُ وعددُ الصفوف لازمان لا كافيان: فهما يجعلان الأثرَ <em>قابلًا للتدقيق</em>، أما التحويلُ وتأكيدُ المصفوفة الذهبية فهما ما يجعله <em>قابلًا للاستعمال</em>."
-        }
-      },
-
       /* ---------------------------------------------------------- 20 */
       {
         id: "t2cx20", type: "mcq", level: "medium",
@@ -1214,6 +1108,69 @@ window.DABanks = window.DABanks || {};
         explain: {
           en: "This is the one check in the chapter that finds the daily rate of 25. Every rule built on the rent column alone reads listing&nbsp;5208 as slightly cheap and nothing more: the lower IQR fence is 1.8750 so it cannot flag from below at all, the robust z is &minus;2.3607 against a threshold of 3.5, and lowering the threshold to 2.3 to catch it would flag 24 rents for a human to read. A ratio across two columns settles it in one line, because <code>deposit / monthly_rent</code> is exactly 1, 2 or 3 in 378 of the 380 recorded pairs and the two exceptions are precisely the two rent errors. Three details are the difference between a step and a one-liner. Reading the multiples from <code>fitted</code> means a market that starts allowing four months is a parameter change, not a code change. Flagging instead of deleting is the chapter's rule for every stage-2 finding, and it is what lets Lesson&nbsp;6 assert that the row count has not moved since stage&nbsp;1. And the check has to run <em>before</em> stage&nbsp;3: Lesson&nbsp;2's deposit rule computes a blank deposit as <code>months &times; monthly_rent</code> for 117 flats, so afterwards the ratio would mostly be testing its own arithmetic. One honest caveat the lesson insists on: this is domain knowledge in an arithmetic disguise &mdash; nothing in any file says which columns relate, that the relation is a whole multiple, or how exact it has to be. And the check narrows without repairing: 135 shekels of deposit is two months of 67.5 or three of 45, both plausible Rafah rents, so the cell is voided and flagged and somebody rings the agency.",
           ar: "هذا هو الفحصُ الوحيد في الفصل الذي يجد الأجرةَ اليومية 25. فكلُّ قاعدة مبنيّة على عمود الإيجار وحده تقرأ الإعلان&nbsp;5208 رخيصًا قليلًا ولا شيء غير ذلك: فالسياجُ الربيعي الأدنى 1.8750 فلا يستطيع التعليمَ من أسفل أصلًا، وz الحصينة &minus;2.3607 مقابل عتبة 3.5، وإنزالُ العتبة إلى 2.3 لالتقاطه كان سيعلّم 24 إيجارًا ليقرأها إنسان. وتحسمه نسبةٌ بين عمودين في سطر واحد، لأن <code>deposit / monthly_rent</code> هي 1 أو 2 أو 3 بالضبط في 378 من الأزواج الـ380 المسجّلة، والاستثناءان هما بعينهما خطأا الإيجار. وثلاثةُ تفاصيل هي الفرقُ بين خطوةٍ وسطرٍ عابر. فقراءةُ المضاعفات من <code>fitted</code> تعني أن سوقًا تبدأ تسمح بأربعة شهور تغييرُ وسيط لا تغييرُ كود. والتعليمُ بدل الحذف هو قاعدةُ الفصل لكل نتيجة في المرحلة&nbsp;2، وهو ما يُمكّن الدرسَ&nbsp;6 من تأكيد أن عددَ الصفوف لم يتحرّك منذ المرحلة&nbsp;1. ولا بد أن يُشغَّل الفحصُ <em>قبل</em> المرحلة&nbsp;3: فقاعدةُ التأمين في الدرس&nbsp;2 تحسب التأمينَ الفارغ <code>months &times; monthly_rent</code> لـ117 شقة، فبعدها تكون النسبةُ في معظمها مختبرةً حسابَها هي. وتحذيرٌ أمين يُلحّ عليه الدرس: هذه معرفةٌ ميدانية في ثوب حساب &mdash; فليس في أي ملف ما يقول أيُّ الأعمدة يترابط، ولا أن العلاقةَ مضاعفٌ صحيح، ولا كم يلزم أن تكون مضبوطة. والفحصُ يضيّق ولا يُصلح: فـ135 شيكلًا تأمينًا هي شهران من 67.5 أو ثلاثة من 45، وكلاهما إيجارٌ معقول في رفح، فتُبطَل الخليةُ وتُعلَّم ويهاتف أحدٌ الوكالة."
+        }
+      },
+
+      /* ================ Lesson 7 ============================= */
+      {
+        id: "t2cx25",
+        type: "compare",
+        level: "hard",
+        topics: ["t2-as-of-date", "t2-time-leak"],
+        q: {
+          en: "Both versions build a recency feature. On this file they produce byte-identical columns under every seed anyone has tried. Which statement is true?",
+          ar: "تبني النسختان سمةَ حداثة. وفي هذا الملف تنتجان عمودين متطابقين حرفيًّا تحت كل بذرة جرّبها أحد. فأيُّ العبارات صادقة؟"
+        },
+        codeA: "as_of = flats[\"listed_dt\"].max()\nflats = flats.assign(recency=(as_of - flats[\"listed_dt\"]).dt.days)",
+        codeB: "AS_OF = pd.Timestamp(SPLIT[\"as_of\"])\nassert flats[\"listed_dt\"].max() <= AS_OF\nflats = flats.assign(recency=(AS_OF - flats[\"listed_dt\"]).dt.days)",
+        options: [
+          { en: "A reads its reference point out of rows that may include the test set, so it is leaking; it happens to be undetectable here because the newest advert lands in the training rows under every seed tried, which is an argument for B rather than against it.",
+            ar: "تقرأ أ نقطةَ مرجعها من صفوف قد تشمل مجموعةَ الاختبار، فهي تسرّب؛ ويصادف أنها غيرُ قابلة للكشف هنا لأن أحدث إعلان يقع في صفوف التدريب تحت كل بذرة جُرّبت، وهذه حجّةٌ لـب لا عليها." },
+          { en: "Since the two columns are identical on this data, the versions are equivalent and B's extra constant and assertion are ceremony.",
+            ar: "بما أن العمودين متطابقان في هذه البيانات فالنسختان مكافئتان، والثابتُ الزائد والتأكيدُ في ب شكليّان." },
+          { en: "B is the leaking version, because its assertion reads <code>max()</code> over the whole frame.",
+            ar: "ب هي النسخةُ المتسرِّبة، فتأكيدُها يقرأ <code>max()</code> على الإطار كله." },
+          { en: "Both are fine, because recency is derived from a date rather than from the target, and only target-derived columns can leak.",
+            ar: "كلتاهما سليمة، فالحداثةُ مشتقّةٌ من تاريخ لا من الهدف، ولا تسرّب إلا الأعمدةُ المشتقّة من الهدف." }
+        ],
+        answer: 0,
+        hint: {
+          en: "Ask what would change if one advert happened to land in the test part instead.",
+          ar: "اسأل: ماذا سيتغيّر لو صادف أن يقع إعلانٌ واحد في قسم الاختبار بدلًا من ذلك؟"
+        },
+        explain: {
+          en: "A's <code>as_of</code> is a parameter read out of whatever rows you hold, which is Concept 4's leak wearing a date; 27 of the first 60 seeds put the newest advert outside the training rows, so the agreement here is luck. The second option is the real trap, because &ldquo;identical output means equivalent code&rdquo; is how this class of bug survives review &mdash; a bug your tests cannot see is a bug you have not met yet. Calling B leaky inverts the rule: an assertion that compares the data against a declared bound reads the data to <em>check</em> a parameter, not to compute one. And the last option is false in general: a scaler's minimum leaks without going anywhere near the target.",
+          ar: "<code>as_of</code> في أ وسيطٌ مقروء من أيّ صفوف تملكها، وهو تسريبُ المفهوم 4 متلبّسًا بتاريخ؛ و27 من البذور الستين الأولى تضع أحدثَ إعلان خارج صفوف التدريب، فالتوافقُ هنا حظٌّ. والخيارُ الثاني هو الفخُّ الحقيقي، فـ«تطابقُ المخرج يعني تكافؤَ الكود» هو كيف ينجو هذا الصنفُ من العطب من المراجعة &mdash; فالعطبُ الذي لا تراه اختباراتُك عطبٌ لم تلقَه بعد. وتسميةُ ب متسرِّبةً تقلب القاعدة: فالتأكيدُ الذي يقارن البياناتَ بحدٍّ معلَن يقرأ البياناتَ لـ<em>يفحص</em> وسيطًا لا ليحسبه. والخيارُ الأخير كاذبٌ عمومًا: فأدنى المقياس يسرّب بلا أن يقترب من الهدف."
+        }
+      },
+
+      {
+        id: "t2cx26",
+        type: "mcq",
+        level: "hard",
+        topics: ["t2-small-leak-honest", "t2-fold-spread"],
+        q: {
+          en: "The 1.5&nbsp;&times;&nbsp;IQR fence fitted on all 480 flats is <code>[5.00, 405.00]</code>; fitted on the 288 training rows it is <code>[17.50, 397.50]</code>. Clip the training rents with each, fit a median per governorate, and the validation MAE is 72.1348 either way. What follows?",
+          ar: "سياج 1.5&nbsp;&times;&nbsp;IQR مضبوطًا على الشقق الـ480 هو <code>[5.00, 405.00]</code>؛ ومضبوطًا على صفوف التدريب الـ288 هو <code>[17.50, 397.50]</code>. اقصُص إيجاراتِ التدريب بكلٍّ، واضبط وسيطًا لكل محافظة، فيكون خطأ التحقّق 72.1348 في الحالتين. فماذا يتبع؟"
+        },
+        options: [
+          { en: "The leak is real and its cost on this predictor is zero; you still fix it, because the only way to learn the cost was to compute both, and the same leaky fence feeding a mean or a scaler would not have been free.",
+            ar: "التسريبُ حقيقي وكلفتُه على هذا المتنبِّئ صفر؛ وتُصلحه مع ذلك، فالسبيلُ الوحيد إلى معرفة الكلفة كان حسابَ الاثنين، والسياجُ المتسرِّب نفسه يغذّي متوسطًا أو مقياسًا لم يكن ليكون بالمجّان." },
+          { en: "There was no leak: identical scores prove the two fences carry the same information.",
+            ar: "لم يكن هناك تسريب: فتطابقُ النتيجتين يثبت أن السياجين يحملان المعلومةَ نفسها." },
+          { en: "The fence is a declared rule rather than a fitted parameter, so fitting it before the split was never a leak in the first place.",
+            ar: "السياجُ قاعدةٌ معلَنة لا وسيطٌ مضبوط، فضبطُه قبل التقسيم لم يكن تسريبًا من الأصل." },
+          { en: "The result is inside the fold spread of about 7 shekels, so nothing at all can be concluded and the comparison should be re-run with cross-validation.",
+            ar: "النتيجةُ داخل تشتُّت الطيّات البالغ نحو 7 شواكل، فلا يمكن استنتاج شيء على الإطلاق وينبغي إعادةُ المقارنة بتحقّق متقاطع." }
+        ],
+        answer: 0,
+        hint: {
+          en: "Two of the four confuse &ldquo;this leak cost nothing here&rdquo; with &ldquo;this was not a leak&rdquo;. They are different claims.",
+          ar: "اثنان من الأربعة يخلطان «لم يكلّف هذا التسريبُ شيئًا هنا» بـ«لم يكن هذا تسريبًا». وهما ادّعاءان مختلفان."
+        },
+        explain: {
+          en: "Clipping moves a handful of extreme rents and a median per governorate does not notice, because no group's middle value changes &mdash; so the cost here is exactly zero and the leak is exactly as real as it was. Options two and three both slide from one claim to the other; three adds the specific confusion the chapter warns about, since the <code>1.5</code> is declared but <code>Q1</code> and <code>Q3</code> are fitted. Option four misuses a real idea: the fold spread tells you when a <em>difference between two scores</em> is not evidence, and here the two scores are identical to four decimal places, which is not a difference inside the noise but no difference at all.",
+          ar: "القصُّ يحرّك حفنةً من الإيجارات المتطرّفة ووسيطُ المحافظة لا يلاحظ، فلا تتغيّر قيمةُ الوسط في أي مجموعة &mdash; فالكلفةُ هنا صفرٌ بالضبط والتسريبُ حقيقيٌّ بالضبط كما كان. والخياران الثاني والثالث ينزلقان كلاهما من ادّعاء إلى آخر؛ ويضيف الثالثُ الالتباسَ الذي يحذّر منه الفصل، فالـ<code>1.5</code> معلَنة لكنّ <code>Q1</code> و<code>Q3</code> مضبوطان. والخيارُ الرابع يسيء استعمال فكرة حقيقية: فتشتُّتُ الطيّات يخبرك متى لا يكون <em>الفرقُ بين نتيجتين</em> دليلًا، وهنا النتيجتان متطابقتان إلى أربع منازل عشرية، وهذا ليس فرقًا داخل الضجيج بل لا فرقَ على الإطلاق."
         }
       }
     ]

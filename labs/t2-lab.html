@@ -121,6 +121,14 @@
   <p class="en">A miniature of the chapter's pipeline, small enough to step through: one fit, three steps in the shape (frame, log_row), one assertion, and a run() that takes fitted=None the first time and the stored dictionary the second. Six March listings with one exact duplicate and one blank area go in; four June listings nobody has seen follow them through the same code with the same three numbers. Watch the call stack: every parameter is read, never recomputed, on the second pass.</p>
   <p class="ar">نموذج مصغَّر من خط الفصل، صغير بما يكفي للتنقّل خطوة خطوة: ضبطٌ واحد، وثلاث خطوات على الشكل (frame, log_row)، وتأكيد واحد، ودالة run() تأخذ fitted=None في المرة الأولى والقاموس المحفوظ في الثانية. تدخل ستة إعلانات من آذار فيها تكرار تامّ ومساحة فارغة؛ وتتبعها أربعة إعلانات من حزيران لم يرها أحد عبر الكود نفسه وبالأرقام الثلاثة نفسها. راقب مكدّس النداء: كل وسيط يُقرأ ولا يُعاد حسابه في الممرّ الثاني.</p>
   <div data-trace-id="t2-l6-pipeline"></div>
+  <h2 id="t2lab-h19"><span class="en">The same map, fitted twice</span><span class="ar">الخريطة نفسها، مضبوطةً مرتين</span></h2>
+  <p class="en">One city-median map fitted on all twelve rows and one fitted on the six training rows, applied to the same three test rows. Nothing in the code looks wrong, both maps are one line, and the one that saw everything predicts the held-out rents better — which is exactly how this mistake survives review.</p>
+  <p class="ar">خريطةُ وسيط مدينة مضبوطةً على الاثني عشر صفًّا وأخرى مضبوطةً على صفوف التدريب الستة، مطبَّقتين على صفوف الاختبار الثلاثة نفسها. ولا شيء في الكود يبدو خاطئًا، وكلتا الخريطتين سطرٌ واحد، والتي رأت كل شيء تتنبّأ بالإيجارات المحجوزة أحسنَ — وهكذا بالضبط ينجو هذا الخطأ من المراجعة.</p>
+  <div data-trace-id="t2-l7-leak"></div>
+  <h2 id="t2lab-h20"><span class="en">Three parts out of twelve rows</span><span class="ar">ثلاثة أقسام من اثني عشر صفًّا</span></h2>
+  <p class="en">Twelve real listings, shuffled once with a recorded seed and cut 50/25/25, so you can watch which row lands where and see the one parameter of this model — the median — being fitted on the training rows alone. The last line shows what the same median would have been if it had been allowed to see all twelve.</p>
+  <p class="ar">اثنا عشر إعلانًا حقيقيًّا، مخلوطةً مرة واحدة ببذرة مسجَّلة ومقطوعةً 50/25/25، لتشاهد أيّ صف يقع أين وترى الوسيطَ — وهو وسيط هذا النموذج الوحيد — يُضبَط على صفوف التدريب وحدها. ويبيّن السطر الأخير ما كان سيكون عليه الوسيط نفسه لو سُمح له برؤية الاثني عشر جميعًا.</p>
+  <div data-trace-id="t2-l7-split"></div>
 
 </section>
 <nav class="pager"></nav>
@@ -160,6 +168,8 @@
 <script src="../assets/data/traces/t2-l6-agg-vs-transform.js"></script>
 <script src="../assets/data/traces/t2-l6-merge-rowcount.js"></script>
 <script src="../assets/data/traces/t2-l6-pipeline.js"></script>
+<script src="../assets/data/traces/t2-l7-leak.js"></script>
+<script src="../assets/data/traces/t2-l7-split.js"></script>
 <script src="../assets/js/trace.js"></script>
 <script src="../assets/js/app.js"></script>
 </body>

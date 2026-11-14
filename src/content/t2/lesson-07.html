@@ -1,0 +1,1140 @@
+<section class="page" id="t2-lesson-07">
+
+  <span class="kicker">Lesson 7</span>
+  <h1><span class="en">The Split, the Leak, and the Order You Can Prove</span><span class="ar">التقسيم والتسريب والترتيب الذي تستطيع إثباته</span></h1>
+
+  <p class="lede en">By the end of this lesson you will be able to say why the held-out number this chapter has quoted since <a href="#t2l1-s25">Lesson&nbsp;1</a> stopped being an honest number around Lesson&nbsp;2, cut a file into three parts instead of two and name the job of each, recognise the three ways a result leaks and measure what each one is worth on this data, replace one split and one seed with five folds and read the spread instead of the number, and create two new columns &mdash; one that pays and one that does not &mdash; deciding which is which by measurement rather than by taste. The last concept is the honest one: the feature that looks cleverest here earns nothing at all, and the lesson says so with the figures.</p>
+  <p class="lede ar">بنهاية هذا الدرس ستستطيع أن تقول لماذا كفّ الرقمُ المحجوز الذي يذكره هذا الفصل منذ <a href="#t2l1-s25">الدرس 1</a> عن أن يكون رقمًا أمينًا عند الدرس 2 تقريبًا، وأن تقطع ملفًّا إلى ثلاثة أقسام بدل قسمين وتسمّي وظيفة كل قسم، وأن تتعرّف على الطرق الثلاث التي تتسرّب بها النتيجة وتقيس ما تساويه كلٌّ منها على هذه البيانات، وأن تستبدل بتقسيم واحد وبذرة واحدة خمسَ طيّات فتقرأ التشتُّت لا الرقم، وأن تُنشئ عمودين جديدين &mdash; أحدهما يكسب والآخر لا &mdash; فتحكم أيُّهما أيٌّ بالقياس لا بالذوق. والمفهوم الأخير هو الأمين: فالسمة التي تبدو أذكى ما هنا لا تكسب شيئًا على الإطلاق، والدرس يقول ذلك بالأرقام.</p>
+
+  <div class="note">
+    <h4><span class="en">The setting &mdash; the chapter audits itself</span><span class="ar">المقام &mdash; الفصل يراجع نفسه</span></h4>
+    <p class="en">Six lessons have each improved a number. <a href="#t2l1-s25">Lesson&nbsp;1</a> built the ruler: a median fitted on 75&nbsp;% of the rows and a mean absolute error read on the other 25&nbsp;%, which came out at 60.1667&nbsp;shekels. Every lesson since has used that ruler to choose &mdash; the deposit fill in <a href="#t2l2-s18">Lesson&nbsp;2</a>, the canonical map in <a href="#t2l3-s14">Lesson&nbsp;3</a>, the outlier rule in <a href="#t2l4-s23">Lesson&nbsp;4</a>, the encoder in <a href="#t2l5-s16">Lesson&nbsp;5</a>, the whole pipeline in <a href="#t2l6-s25">Lesson&nbsp;6</a>. That is six decisions taken by looking at the same held-out rows, and it is a mistake. The rows you choose with are rows you have learned from, whatever your code says. This lesson is the chapter turning its ruler on itself, and the first thing it finds is that <a href="#t2l6-s29">Lesson&nbsp;6 was right to flag it</a>.</p>
+    <p class="ar">حسّن كلُّ درس من الدروس الستة رقمًا. فبنى <a href="#t2l1-s25">الدرس 1</a> المسطرة: وسيطٌ مضبوط على 75&nbsp;% من الصفوف ومتوسطُ خطأ مطلق مقروء على الـ25&nbsp;% الباقية، فكان 60.1667&nbsp;شيكل. واستعمل كلُّ درس بعده تلك المسطرة ليختار &mdash; تعويضُ التأمين في <a href="#t2l2-s18">الدرس 2</a>، والخريطةُ القانونية في <a href="#t2l3-s14">الدرس 3</a>، وقاعدةُ الشواذ في <a href="#t2l4-s23">الدرس 4</a>، والمرمِّزُ في <a href="#t2l5-s16">الدرس 5</a>، والخطُّ كله في <a href="#t2l6-s25">الدرس 6</a>. فتلك ستة قرارات اتُّخذت بالنظر إلى الصفوف المحجوزة نفسها، وهي خطأ. فالصفوف التي تختار بها صفوفٌ تعلّمتَ منها، قال كودُك ما قال. وهذا الدرس هو الفصلُ يوجّه مسطرته إلى نفسه، وأول ما يجده أن <a href="#t2l6-s29">الدرس 6 كان محقًّا في التنبيه</a>.</p>
+  </div>
+
+  <div class="callout prereq">
+    <h4><span class="en">Before you start</span><span class="ar">قبل أن تبدأ</span></h4>
+    <p class="en">From this chapter: the <a href="#t2l1-s25">held-out ruler <code>mae</code></a> and the <a href="#t2l1-s10">fit/apply split</a>; <a href="#t2l3-s2">the fourteen exact duplicates</a>, <a href="#t2l3-s3">the nine reposts</a> and <a href="#t2l3-s6">the business key</a>; <a href="#t2l3-s28"><code>FORMATS</code> and <code>parse_dates</code></a>; <a href="#t2l4-s3">the five areas recorded in dunum</a>; <a href="#t2l4-s8">equal-width and equal-count bins</a>, which you met there as a way of <em>looking</em> at a column and will use here as a way of <em>feeding</em> one to a model; <a href="#t2l5-s20">target encoding and the leak inside it</a>, which is one third of this lesson seen early; and <a href="#t2l6-s21">the assembled pipeline</a>. From <a href="#t1-chapter">Theory Chapter&nbsp;1</a>: nothing new. No statistics beyond the median and a standard deviation of five numbers. <code>scikit-learn</code> appears only in <a href="#t2l7-s30">Appendix&nbsp;C</a>, which shows the same rule in library form and stops.</p>
+    <p class="ar">من هذا الفصل: <a href="#t2l1-s25">مسطرةُ الصفوف المحجوزة <code>mae</code></a> و<a href="#t2l1-s10">فصلُ الضبط عن التطبيق</a>؛ و<a href="#t2l3-s2">التكرارات الأربعة عشر التامّة</a> و<a href="#t2l3-s3">الإعلاناتُ التسعة المعادة</a> و<a href="#t2l3-s6">المفتاحُ العملي</a>؛ و<a href="#t2l3-s28"><code>FORMATS</code> و<code>parse_dates</code></a>؛ و<a href="#t2l4-s3">المساحاتُ الخمس المسجَّلة بالدونم</a>؛ و<a href="#t2l4-s8">النطاقاتُ متساوية العرض ومتساوية العدد</a>، وقد لقيتها هناك طريقةً <em>للنظر</em> إلى عمود وستستعملها هنا طريقةً <em>لتغذية</em> نموذج به؛ و<a href="#t2l5-s20">ترميزُ الهدف والتسريبُ داخله</a>، وهو ثلثُ هذا الدرس مرئيًّا مبكّرًا؛ و<a href="#t2l6-s21">الخطُّ المجمَّع</a>. ومن <a href="#t1-chapter">الفصل النظري الأول</a>: لا شيء جديد. ولا يلزمك من الإحصاء غير الوسيط وانحرافٍ معياري لخمسة أرقام. ولا يظهر <code>scikit-learn</code> إلا في <a href="#t2l7-s30">الملحق ج</a>، فيُظهر القاعدة نفسها بصورة المكتبة ويتوقّف.</p>
+  </div>
+
+  <div class="tip">
+    <h4><span class="en">How the code in this lesson runs, and which frame each number belongs to</span><span class="ar">كيف يعمل الكود في هذا الدرس، ولأيّ إطار يخصّ كل رقم</span></h4>
+    <p class="en">This lesson quotes four different row counts, and mixing them up is the easiest way to be confused by it. <strong>503</strong> is the raw file, duplicates and all; Concepts&nbsp;1 to&nbsp;4 run on it, because the point of those concepts is what a careless split does to a file nobody de-duplicated. <strong>480</strong> is the flats, one row per real flat, after <a href="#t2l3-s4">Lesson&nbsp;3's de-duplication</a>; Concepts&nbsp;5 to&nbsp;7 run on it. <strong>384</strong> is train plus validation, the rows cross-validation is allowed to touch. <strong>288&nbsp;/&nbsp;96&nbsp;/&nbsp;96</strong> is the three-way split of the 480. Where a number here differs from one you remember from an earlier lesson, check the frame before you check the arithmetic. Outputs were produced with pandas&nbsp;2.2, NumPy&nbsp;2.2 and Python&nbsp;3.13.</p>
+    <p class="ar">يذكر هذا الدرس أربعة أعداد صفوف مختلفة، وخلطُها أسهلُ طريق إلى الالتباس. فـ<strong>503</strong> هو الملفّ الخام بتكراراته كلها؛ وتعمل المفاهيم 1 إلى 4 عليه، فمغزى تلك المفاهيم هو ما يفعله تقسيمٌ متهاون بملفّ لم يُزل أحدٌ تكرارَه. و<strong>480</strong> هي الشقق، صفٌّ لكل شقة حقيقية، بعد <a href="#t2l3-s4">إزالةِ التكرار في الدرس 3</a>؛ وتعمل المفاهيم 5 إلى 7 عليها. و<strong>384</strong> هي التدريب مع التحقّق، وهي الصفوف التي يحقّ للتحقّق المتقاطع لمسها. و<strong>288&nbsp;/&nbsp;96&nbsp;/&nbsp;96</strong> هو التقسيم الثلاثي للـ480. وحيث يختلف رقمٌ هنا عن رقم تذكره من درس أسبق، فافحص الإطار قبل أن تفحص الحساب. وأُنتجت المخرجات بـ pandas 2.2 وNumPy 2.2 وPython 3.13.</p>
+    <pre class="code good" data-lang="python"><code>import pandas as pd
+import numpy as np
+
+from pipe import make_comparable, parse_dates, CITY_MAP, TARGET
+from pipe import mae                               # Lesson 1's ruler, unchanged
+
+raw   = pd.read_csv("listings_raw.csv")            # 503 rows, exactly as scraped
+flats, _ = make_comparable(raw)                    # 480 flats, one row per real flat
+
+# Lesson 4 voided the phone number in the rent box; nothing else is repaired yet
+rep = raw.assign(monthly_rent=raw["monthly_rent"].mask(raw["monthly_rent"] > 5000))
+
+print("raw %s | rents present %d | flats %s" % (raw.shape, rep["monthly_rent"].count(), flats.shape))</code></pre>
+<div class="output">raw (503, 13) | rents present 483 | flats (480, 23)</div>
+  </div>
+
+  <div class="objectives">
+    <h4><span class="en">By the end you can</span><span class="ar">بنهاية الدرس تستطيع</span></h4>
+    <ul>
+      <li><span class="en">Explain in one sentence why a score you chose a recipe with is a training score, and point to six places in this chapter where that happened.</span><span class="ar">تشرح في جملة لماذا تكون النتيجةُ التي اخترتَ بها وصفةً نتيجةَ تدريب، وتشير إلى ستة مواضع في هذا الفصل حدث فيها ذلك.</span></li>
+      <li><span class="en">Cut a file into train, validation and test, name what each part may be used for, and record the seed, the proportions and the as-of date beside them.</span><span class="ar">تقطع ملفًّا إلى تدريب وتحقّق واختبار، وتسمّي ما يجوز استعمال كل قسم له، وتسجّل البذرة والنسب وتاريخ الأساس بجانبها.</span></li>
+      <li><span class="en">Detect a train-test overlap from a row count, and say what the six overlapping rows of this file are worth in shekels.</span><span class="ar">تكشف تداخلَ التدريب والاختبار من عدد صفوف، وتقول ما تساويه صفوفُ هذا الملف الستة المتداخلة بالشواكل.</span></li>
+      <li><span class="en">Name every step of this chapter's pipeline that fits a parameter, and therefore every step that must run after the split.</span><span class="ar">تسمّي كل خطوة في خط هذا الفصل تضبط وسيطًا، ومن ثَمّ كل خطوة يجب أن تعمل بعد التقسيم.</span></li>
+      <li><span class="en">Split a dated file by time, and say honestly what that check cost and found on this data.</span><span class="ar">تقسّم ملفًّا مؤرَّخًا بالزمن، وتقول بأمانة ما كلّفه ذلك الفحص وما وجده في هذه البيانات.</span></li>
+      <li><span class="en">Read a five-fold result as a mean and a spread, and refuse a conclusion whose margin is smaller than the spread.</span><span class="ar">تقرأ نتيجةَ خمس طيّات متوسطًا وتشتُّتًا، وترفض استنتاجًا هامشُه أصغر من التشتُّت.</span></li>
+      <li><span class="en">Derive columns from a date and from a number, and reject the derivation that improves training while validation gets worse.</span><span class="ar">تشتقّ أعمدة من تاريخ ومن رقم، وترفض الاشتقاق الذي يحسّن التدريب بينما يسوء التحقّق.</span></li>
+      <li><span class="en">Fit band edges on the training rows, store them, apply them to rows you have never seen, and state what a band throws away.</span><span class="ar">تضبط حدودَ النطاقات على صفوف التدريب وتحفظها وتطبّقها على صفوف لم ترَها قط، وتذكر ما يرميه النطاق.</span></li>
+    </ul>
+  </div>
+
+  <figure class="diagram" data-diagram="t2-l7-three-parts">
+    <figcaption><span class="en">Three parts, three jobs: every parameter is fitted on the training rows, the validation rows choose the recipe, and the test rows sit behind a gate that opens once.</span><span class="ar">ثلاثة أقسام لثلاث وظائف: كل وسيط يُضبَط على صفوف التدريب، وصفوفُ التحقّق تختار الوصفة، وصفوفُ الاختبار خلف بوابة تُفتح مرة واحدة.</span></figcaption>
+  </figure>
+
+  <h2 id="t2l7-h1"><span class="en">Concept 1 &mdash; The held-out rows we have been spending</span><span class="ar">المفهوم 1 &mdash; الصفوف المحجوزة التي كنّا ننفقها</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">Your pipeline reports 36.9553&nbsp;shekels of held-out error against a baseline of 63.6726. You are about to write that in a report. Then somebody asks a question with no good answer: <em>how many times did you look at those held-out rows before you were happy?</em> Six, as it turns out &mdash; once per lesson. Each time you looked, you changed something and looked again. Nothing in the code is wrong. Every <code>fit</code> was on the training rows, every <code>apply</code> on the held-out ones, and the number is still not what you are about to claim it is.</p>
+    <p class="ar">يُبلّغ خطُّك 36.9553&nbsp;شيكلًا من الخطأ المحجوز مقابل خطٍّ أساس 63.6726. وأنت توشك أن تكتب ذلك في تقرير. ثم يسأل أحدهم سؤالًا لا جواب حسنًا له: <em>كم مرة نظرتَ إلى تلك الصفوف المحجوزة قبل أن ترضى؟</em> ستٌّ، كما يتبيّن &mdash; مرةً لكل درس. وفي كل مرة نظرتَ غيّرتَ شيئًا ونظرتَ مرة أخرى. ولا شيء في الكود خاطئ. فكل <code>fit</code> كان على صفوف التدريب وكل <code>apply</code> على المحجوزة، ومع ذلك فالرقم ليس ما توشك أن تدّعيه.</p>
+  </div>
+
+  <h3 id="t2l7-s1"><span class="en">The ruler the chapter has been reading</span><span class="ar">المسطرة التي كان الفصل يقرؤها</span></h3>
+  <p class="en">Here is <a href="#t2l1-s25">Lesson&nbsp;1's measurement</a> again, unchanged, so that the number in front of you is the number the chapter has been quoting. One parameter &mdash; a median &mdash; fitted on 377 of the 503 raw rows and read on the other 126.</p>
+  <p class="ar">هذا <a href="#t2l1-s25">قياسُ الدرس 1</a> مرة أخرى بلا تغيير، حتى يكون الرقمُ أمامك هو الرقمَ الذي كان الفصل يذكره. وسيطٌ واحد &mdash; وسيطٌ حسابي &mdash; مضبوط على 377 من الصفوف الخام الـ503 ومقروء على الـ126 الأخرى.</p>
+  <pre class="code" data-lang="python"><code>train = rep.sample(frac=0.75, random_state=3)
+test  = rep.drop(train.index)
+
+m = train["monthly_rent"].median()                 # the only parameter, fitted on train
+print("rows   train %d (rents %d) | held out %d (rents %d)"
+      % (len(train), train["monthly_rent"].count(), len(test), test["monthly_rent"].count()))
+print("median fitted on train: %.1f" % m)
+print("MAE train    %.4f" % mae(train["monthly_rent"], m))
+print("MAE held out %.4f" % mae(test["monthly_rent"], m))</code></pre>
+<div class="output">rows   train 377 (rents 363) | held out 126 (rents 120)
+median fitted on train: 200.0
+MAE train    61.7355
+MAE held out 60.1667</div>
+  <p class="en">60.1667. That is a clean measurement of one thing: how well a single median, chosen without looking at the held-out rows, predicts them. At that moment in the chapter it was honest, because nothing had yet been chosen by reading it.</p>
+  <p class="ar">60.1667. وهذا قياسٌ نظيف لشيء واحد: مدى جودة تنبّؤ وسيطٍ واحد، اختير بلا نظر إلى الصفوف المحجوزة، بها. وفي تلك اللحظة من الفصل كان أمينًا، إذ لم يكن قد اختير شيء بقراءته.</p>
+
+  <h3 id="t2l7-s2"><span class="en">Six decisions, one number</span><span class="ar">ستة قرارات ورقمٌ واحد</span></h3>
+  <p class="en">Then it was read again, and again. Every one of these is a real heading in this chapter, and every one of them chose between candidates by comparing held-out errors:</p>
+  <p class="ar">ثم قُرئ مرة أخرى، ومرة أخرى. وكلُّ واحد من هذه عنوانٌ حقيقي في هذا الفصل، وكلٌّ منها اختار بين مرشَّحين بمقارنة الأخطاء المحجوزة:</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="en">Where</span><span class="ar">الموضع</span></th>
+          <th><span class="en">What was chosen by reading the held-out rows</span><span class="ar">ما اختير بقراءة الصفوف المحجوزة</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><a href="#t2l2-s18">L2</a></td><td><span class="en">whether the deposit takes a per-agency median or a global one</span><span class="ar">هل يأخذ التأمين وسيطًا لكل وكالة أم وسيطًا عامًّا</span></td></tr>
+        <tr><td><a href="#t2l3-s14">L3</a></td><td><span class="en">the canonical city map against <code>.str.title()</code></span><span class="ar">الخريطةُ القانونية للمدن مقابل <code>.str.title()</code></span></td></tr>
+        <tr><td><a href="#t2l3-s23">L3</a></td><td><span class="en">whether the declared condition order pays at all</span><span class="ar">هل يكسب الترتيبُ المعلَن للحالة شيئًا</span></td></tr>
+        <tr><td><a href="#t2l4-s23">L4</a></td><td><span class="en">five versions of one outlier rule, compared</span><span class="ar">خمسُ نسخ من قاعدة شواذ واحدة، مقارنةً</span></td></tr>
+        <tr><td><a href="#t2l5-s25">L5</a></td><td><span class="en">four scalers on the real column</span><span class="ar">أربعةُ مقاييس على العمود الحقيقي</span></td></tr>
+        <tr><td><a href="#t2l6-s25">L6</a></td><td><span class="en">whether the whole pipeline helps</span><span class="ar">هل يُفيد الخطُّ كله</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="en">Six readings, six decisions. None of them fitted a parameter on the held-out rows &mdash; and that is precisely why the mistake is hard to see. The leak is not in the arithmetic, it is in the <em>choosing</em>. Each time a comparison came back, the chapter kept the version that scored better on those 120 rents. After six rounds of that, the version you are holding is the version those 120 rents preferred, and a number that preferred your recipe cannot also be an unbiased test of it.</p>
+  <p class="ar">ستُّ قراءات وستةُ قرارات. ولم يضبط أيٌّ منها وسيطًا على الصفوف المحجوزة &mdash; ولهذا بالضبط يصعب رؤية الخطأ. فالتسريب ليس في الحساب بل في <em>الاختيار</em>. فكلما عادت مقارنةٌ أبقى الفصلُ النسخةَ التي سجّلت أحسنَ على تلك الإيجارات الـ120. وبعد ستّ جولات من ذلك تكون النسخةُ التي بين يديك هي النسخةَ التي فضّلتها تلك الإيجارات الـ120، والرقمُ الذي فضّل وصفتك لا يمكن أن يكون في الوقت نفسه اختبارًا غير متحيّز لها.</p>
+
+  <h3 id="t2l7-s3"><span class="en">Why that makes the number optimistic, in one experiment</span><span class="ar">لماذا يجعل ذلك الرقمَ متفائلًا، في تجربة واحدة</span></h3>
+  <p class="en">The effect is easy to show and worth showing, because the size of it surprises people. Take four candidate predictors, none of them clever, and choose the winner by held-out error &mdash; the thing this chapter did six times. Then ask what the winner's held-out error means.</p>
+  <p class="ar">الأثرُ سهل الإظهار وجديرٌ به، فحجمُه يفاجئ الناس. خُذ أربعة مرشَّحين للتنبّؤ، لا ذكاء في أحدها، واختر الفائز بالخطأ المحجوز &mdash; وهو ما فعله هذا الفصل ستّ مرات. ثم اسأل: ماذا يعني الخطأ المحجوز للفائز؟</p>
+  <pre class="code bad" data-lang="python"><code>rows = [("one median for everyone", mae(train["monthly_rent"], m), mae(test["monthly_rent"], m))]
+
+for label, key in [("a median per governorate", "governorate"),
+                   ("a median per agency",      "agency"),
+                   ("a median per raw city",    "city")]:
+    table = train.groupby(key)["monthly_rent"].median()        # fitted on train, correctly
+    rows.append((label,
+                 mae(train["monthly_rent"], train[key].map(table).fillna(m)),
+                 mae(test["monthly_rent"],  test[key].map(table).fillna(m))))
+
+out = pd.DataFrame(rows, columns=["prediction", "MAE train", "MAE held out"])
+print(out.round(4).to_string(index=False))
+print("chosen by held-out error:", out.loc[out["MAE held out"].idxmin(), "prediction"])</code></pre>
+<div class="output">              prediction  MAE train  MAE held out
+ one median for everyone    61.7355       60.1667
+a median per governorate    55.6749       56.4167
+     a median per agency    59.4904       62.2500
+   a median per raw city    53.7879       58.0625
+chosen by held-out error: a median per governorate</div>
+  <p class="en">The governorate median wins, at 56.4167. Report that as the error you expect on next month's file and you will be disappointed, because 56.4167 is the <em>best of four</em> readings of the same 120 rents, and the best of four readings is lower than a single reading would have been by however much those four disagree &mdash; and they disagree by nearly six shekels, from 56.4167 to 62.2500. You cannot recover the size of the bias from this table. You can only stop producing tables like it.</p>
+  <p class="ar">يفوز وسيطُ المحافظة بـ56.4167. فأبلِغ عنه خطأً تتوقّعه في ملف الشهر القادم وستُصاب بخيبة، فـ56.4167 هو <em>أحسنُ أربع</em> قراءات للإيجارات الـ120 نفسها، وأحسنُ أربع قراءات أدنى مما كانت ستكون قراءةٌ واحدة بمقدار ما تختلف به تلك الأربع &mdash; وهي تختلف بنحو ستة شواكل، من 56.4167 إلى 62.2500. ولا تستطيع أن تستعيد حجمَ التحيّز من هذا الجدول. وكلّ ما تستطيعه أن تكفّ عن إنتاج جداول كهذا.</p>
+
+  <div class="warn">
+    <h4><span class="en">The sentence to carry out of this concept</span><span class="ar">الجملةُ التي تحملها من هذا المفهوم</span></h4>
+    <p class="en">A score you optimised against is a training score wearing a disguise. It does not matter that no parameter was fitted on those rows; the choice of recipe <em>is</em> a parameter, and you fitted it there. Nothing in pandas, <code>scikit-learn</code> or any pipeline will warn you, because from the code's point of view you did everything right.</p>
+    <p class="ar">النتيجةُ التي حسّنتَ مقابلها نتيجةُ تدريب متنكّرة. ولا يهمّ أنه لم يُضبَط وسيطٌ على تلك الصفوف؛ فاختيارُ الوصفة <em>هو</em> وسيط، وقد ضبطتَه هناك. ولن يحذّرك pandas ولا <code>scikit-learn</code> ولا أي خط تحويل، فمن وجهة نظر الكود فعلتَ كل شيء صحيحًا.</p>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">A colleague says: &ldquo;I never fitted anything on the held-out rows &mdash; I only used them to pick between my two cleaning recipes. So my held-out error is still unbiased.&rdquo; What is wrong with that?</span><span class="ar">يقول زميل: «لم أضبط شيئًا قط على الصفوف المحجوزة &mdash; استعملتُها فقط لأختار بين وصفتَي التنظيف. فخطئي المحجوز ما زال غير متحيّز». فما الخطأ في ذلك؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">Nothing is wrong: choosing between recipes is a judgement, not a fit, so the held-out rows were never used as training data.</span><span class="ar">لا خطأ: فالاختيار بين الوصفات حكمٌ لا ضبط، فلم تُستعمل الصفوف المحجوزة قط بيانات تدريب.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">The choice of recipe is itself a parameter, and it was selected to minimise the held-out error &mdash; so the reported error is the smaller of two draws and is biased downwards by however much the two recipes disagree.</span><span class="ar">اختيارُ الوصفة وسيطٌ بنفسه، وقد انتُقي ليصغّر الخطأ المحجوز &mdash; فالخطأ المبلَّغ عنه هو الأصغر من سحبتين ومتحيّزٌ إلى الأسفل بمقدار ما تختلف به الوصفتان.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">The problem is only the sample size: 120 rents is too few for a stable error, and with more rows the two recipes would agree.</span><span class="ar">المشكلةُ حجمُ العيّنة فقط: فـ120 إيجارًا أقلّ من أن تعطي خطأً مستقرًّا، ومع صفوف أكثر ستتّفق الوصفتان.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Comparing two recipes is fine, but only if both are fitted with the same <code>random_state</code>, which the colleague did not say they did.</span><span class="ar">مقارنةُ وصفتين لا بأس بها، لكن بشرط ضبطهما بالـ<code>random_state</code> نفسها، وهو ما لم يذكر الزميلُ أنه فعله.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <p class="en">The tempting answer is the first one, because it is true that no <code>fit</code> call touched those rows &mdash; and that is exactly the trap. Selection is fitting. Every comparison you resolve by reading a set of rows spends a little of that set's independence, and after enough comparisons it has none left. The sample-size answer describes a different and real problem (Concept&nbsp;6 measures it) but it is not what makes this number biased: a million held-out rows chosen between two recipes would still give you the smaller of two draws.</p>
+      <p class="ar">الجوابُ المغري هو الأول، فصحيحٌ أن أي نداء <code>fit</code> لم يلمس تلك الصفوف &mdash; وهذا هو الفخّ بعينه. فالانتقاءُ ضبطٌ. وكلُّ مقارنة تحلّها بقراءة مجموعة صفوف تُنفِق شيئًا من استقلال تلك المجموعة، وبعد مقارنات كافية لا يبقى لها منه شيء. وجوابُ حجم العيّنة يصف مشكلة أخرى حقيقية (يقيسها المفهوم 6) لكنه ليس ما يجعل هذا الرقم متحيّزًا: فمليون صف محجوز اختير بها بين وصفتين سيعطيك مع ذلك الأصغرَ من سحبتين.</p>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">This is the single most common reason a model that looked good in a notebook is mediocre in production, and it has a name in competition circles: <em>leaderboard overfitting</em>. A team improves its public score forty times, ships the best one, and lands far down the private leaderboard &mdash; not because anyone cheated, but because forty readings of one set turned that set into training data. The industrial fix is the one in Concept&nbsp;2: a set nobody is allowed to read until the decisions are over. The number you defend in a review is not the best number you ever saw; it is the first number you saw after you stopped choosing.</p>
+    <p class="ar">هذا أشيعُ سبب منفرد لأن يكون نموذجٌ بدا حسنًا في مفكّرة متوسطًا في الإنتاج، وله اسمٌ في أوساط المسابقات: <em>إفراطُ الملاءمة على لوحة الصدارة</em>. يحسّن فريقٌ نتيجته العامة أربعين مرة ويشحن أحسنها فيهبط بعيدًا في اللوحة الخاصة &mdash; لا لأن أحدًا غشّ، بل لأن أربعين قراءة لمجموعة واحدة حوّلت تلك المجموعة إلى بيانات تدريب. والعلاجُ الصناعي هو علاجُ المفهوم 2: مجموعةٌ لا يُسمح لأحد بقراءتها حتى تنتهي القرارات. فالرقمُ الذي تدافع عنه في مراجعة ليس أحسنَ رقم رأيتَه قط؛ بل أولَ رقم رأيتَه بعد أن كففتَ عن الاختيار.</p>
+  </div>
+
+  <h2 id="t2l7-h2"><span class="en">Concept 2 &mdash; Three parts, three jobs</span><span class="ar">المفهوم 2 &mdash; ثلاثة أقسام لثلاث وظائف</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">You need to do two incompatible things with the same rows: <em>choose</em> a recipe, which takes many readings, and <em>report</em> a number, which takes a reading nobody has influenced. Two parts cannot do both. There is no clever statistic that recovers an unbiased score from a set you have already read six times; the only fix is more parts.</p>
+    <p class="ar">تحتاج أن تفعل بالصفوف نفسها شيئين لا يتوافقان: أن <em>تختار</em> وصفةً، وهذا يأخذ قراءات كثيرة، وأن <em>تُبلّغ</em> رقمًا، وهذا يأخذ قراءةً لم يؤثّر فيها أحد. والقسمان لا يؤدّيان الأمرين. ولا توجد إحصاءة بارعة تستعيد نتيجةً غير متحيّزة من مجموعة قرأتها ستّ مرات؛ والعلاجُ الوحيد أقسامٌ أكثر.</p>
+  </div>
+
+  <h3 id="t2l7-s4"><span class="en">Practice problems, mock exams, and the final</span><span class="ar">تمارينُ التدريب والامتحاناتُ التجريبية والامتحانُ النهائي</span></h3>
+  <p class="en">The analogy is worth stating once because it fixes the vocabulary. The <span class="term" data-term="validation-set">training rows</span> are practice problems: you work through them as often as you like, and every parameter you have comes from them. The validation rows are mock exams: you sit them repeatedly, and what you change after each one is your <em>method</em> &mdash; which features, which fill, which encoder. The <span class="term" data-term="test-set">test rows</span> are the final: you sit it once, at the end, and the mark is the mark. A student who takes the final six times, revising in between, has not measured their knowledge; they have measured their knowledge of that paper.</p>
+  <p class="ar">يستحقّ التشبيه أن يُقال مرة واحدة لأنه يثبّت المصطلحات. فصفوفُ <span class="term" data-term="validation-set">التدريب</span> تمارينُ تدريب: تعمل فيها كما تشاء، وكلُّ وسيط تملكه يأتي منها. وصفوفُ التحقّق امتحاناتٌ تجريبية: تجلس لها مرارًا، وما تغيّره بعد كلٍّ منها هو <em>منهجُك</em> &mdash; أيُّ سمات وأيُّ تعويض وأيُّ مرمِّز. وصفوفُ <span class="term" data-term="test-set">الاختبار</span> هي النهائي: تجلس له مرة واحدة في النهاية، والدرجةُ هي الدرجة. والطالبُ الذي يجلس للنهائي ستّ مرات ويراجع بينها لم يقِس معرفته؛ بل قاس معرفته بتلك الورقة.</p>
+  <p class="en">Two rules follow, and they are the whole of this lesson's discipline:</p>
+  <p class="ar">وتنتج قاعدتان، وهما كلُّ انتظام هذا الدرس:</p>
+  <ul>
+    <li><span class="en"><strong>Fit only on train.</strong> Every median, mode, fence, category list, band edge and scaler parameter comes from the training rows and nowhere else.</span><span class="ar"><strong>لا تضبط إلا على التدريب.</strong> فكلُّ وسيط ومنوال وسياج وقائمة فئات وحدّ نطاق ووسيط مقياس يأتي من صفوف التدريب ولا من غيرها.</span></li>
+      <li><span class="en"><strong>Choose only on validation, and read test once.</strong> If you find yourself wanting to change something after seeing the test number, the honest move is to admit that the number is now a validation number and that you no longer have a test set.</span><span class="ar"><strong>لا تختر إلا على التحقّق، واقرأ الاختبار مرة واحدة.</strong> فإن وجدتَ نفسك تريد تغيير شيء بعد رؤية رقم الاختبار، فالحركةُ الأمينة أن تعترف بأن الرقم صار رقمَ تحقّق وأنك لم تعد تملك مجموعة اختبار.</span></li>
+  </ul>
+
+  <h3 id="t2l7-s5"><span class="en">A split is a parameter: the seed, the proportions, the as-of date</span><span class="ar">التقسيم وسيط: البذرة والنسب وتاريخ الأساس</span></h3>
+  <p class="en">Watch the mechanics on twelve real listings before running them on 503. The widget below shuffles once with a recorded seed, cuts 50&nbsp;/&nbsp;25&nbsp;/&nbsp;25 and fits the one parameter this model has. Note the last line: the same median computed over all twelve rows is 217.5 instead of 147.5. That is not a better estimate, it is a contaminated one, and <a href="#t2l7-h4">Concept&nbsp;4</a> is about exactly that line.</p>
+  <p class="ar">شاهِد الميكانيكا على اثني عشر إعلانًا حقيقيًّا قبل تشغيلها على 503. فالأداة أدناه تخلط مرة واحدة ببذرة مسجَّلة وتقطع 50&nbsp;/&nbsp;25&nbsp;/&nbsp;25 وتضبط الوسيطَ الوحيد الذي يملكه هذا النموذج. ولاحظ السطر الأخير: فالوسيطُ نفسه محسوبًا على الصفوف الاثني عشر كلها 217.5 بدل 147.5. وذاك ليس تقديرًا أحسن بل ملوَّثًا، و<a href="#t2l7-h4">المفهوم 4</a> عن ذلك السطر بعينه.</p>
+  <div data-trace-id="t2-l7-split"></div>
+
+  <h3 id="t2l7-s6"><span class="en">Choosing on validation, reading the test once</span><span class="ar">الاختيارُ على التحقّق وقراءةُ الاختبار مرة واحدة</span></h3>
+  <p class="en">Now the same four candidates as <a href="#t2l7-s3">Concept&nbsp;1</a>, on the same raw 503 rows, but with the decision taken on a set that is not the one being reported. The third column chooses. The fourth column is read after the choosing is over, and it is printed here only because this is a lesson about reading it.</p>
+  <p class="ar">الآن المرشَّحون الأربعة أنفسهم كما في <a href="#t2l7-s3">المفهوم 1</a>، على الصفوف الخام الـ503 نفسها، لكنّ القرار يُتّخذ على مجموعة ليست هي المُبلَّغ عنها. فالعمودُ الثالث يختار. والعمودُ الرابع يُقرأ بعد انتهاء الاختيار، ولا يُطبَع هنا إلا لأن هذا درسٌ عن قراءته.</p>
+  <pre class="code good" data-lang="python"><code>shuffled = rep.sample(frac=1.0, random_state=3)        # one shuffle, seed recorded
+n_train  = int(len(shuffled) * 0.60)
+n_valid  = int(len(shuffled) * 0.20)
+
+tr = shuffled.iloc[:n_train]
+va = shuffled.iloc[n_train:n_train + n_valid]
+te = shuffled.iloc[n_train + n_valid:]
+
+for name, part in [("train", tr), ("validation", va), ("test", te)]:
+    print("%-11s rows %3d  rents %3d" % (name, len(part), part["monthly_rent"].count()))
+
+m3 = tr["monthly_rent"].median()                       # fitted on train only
+print("median fitted on train: %.1f" % m3)
+
+rows = [("one median for everyone",
+         mae(tr["monthly_rent"], m3), mae(va["monthly_rent"], m3), mae(te["monthly_rent"], m3))]
+for label, key in [("median per governorate", "governorate"),
+                   ("median per agency",      "agency"),
+                   ("median per raw city",    "city")]:
+    t = tr.groupby(key)["monthly_rent"].median()
+    rows.append((label,
+                 mae(tr["monthly_rent"], tr[key].map(t).fillna(m3)),
+                 mae(va["monthly_rent"], va[key].map(t).fillna(m3)),
+                 mae(te["monthly_rent"], te[key].map(t).fillna(m3))))
+
+print(pd.DataFrame(rows, columns=["prediction", "train", "validation", "test"])
+        .round(4).to_string(index=False))</code></pre>
+<div class="output">train       rows 301  rents 291
+validation  rows 100  rents  93
+test        rows 102  rents  99
+median fitted on train: 195.0
+             prediction   train  validation    test
+one median for everyone 59.8625     64.9462 62.3737
+ median per governorate 53.0584     61.9086 58.4596
+      median per agency 57.6460     64.8118 63.5859
+    median per raw city 51.1340     63.0108 59.7475</div>
+  <p class="en">Read the first two columns together and the argument for the middle set is visible in one line. <strong>The raw-city grouping has the best training error of the four &mdash; 51.1340 &mdash; and the second-worst validation error.</strong> Twenty-six spellings of five cities give the model twenty-six tiny groups to memorise, which is wonderful for the rows it memorised and poor for everything else. A two-part split hides this: you would have seen 51.1340 and 59.7475 side by side with no way to tell whether the gap is overfitting or bad luck. With three parts you choose on 61.9086 against 63.0108, keep the governorate grouping, and the test column stays unspent.</p>
+  <p class="ar">اقرأ العمودين الأولين معًا فتظهر حجّةُ القسم الأوسط في سطر واحد. <strong>فتجميعُ المدينة الخام له أدنى خطأ تدريب بين الأربعة &mdash; 51.1340 &mdash; وثانيُ أسوأ خطأ تحقّق.</strong> فستٌّ وعشرون هجاءً لخمس مدن تعطي النموذجَ ستًّا وعشرين مجموعةً صغيرة يحفظها، وهذا رائعٌ للصفوف التي حفظها وضعيفٌ لكل ما سواها. والتقسيمُ الثنائي يخفي هذا: فكنتَ سترى 51.1340 و59.7475 جنبًا إلى جنب بلا سبيل إلى معرفة هل الفجوةُ إفراطُ ملاءمة أم سوءُ حظ. وبثلاثة أقسام تختار على 61.9086 مقابل 63.0108 فتُبقي تجميعَ المحافظة، ويبقى عمودُ الاختبار غيرَ مُنفَق.</p>
+
+  <h3 id="t2l7-s7"><span class="en">What the middle set costs you</span><span class="ar">ما يكلّفك القسمُ الأوسط</span></h3>
+  <p class="en">It is not free, and the chapter has argued against itself often enough that it should here too. Going from 75&nbsp;/&nbsp;25 to 60&nbsp;/&nbsp;20&nbsp;/&nbsp;20 took the training rows from 377 to 301 &mdash; 76 fewer rows to fit on, which is why the fitted median moved from 200.0 to 195.0 and every training error in the table above is computed on a smaller, noisier base. For a file of 503 rows that is a real price. Three ways to pay less of it: use 70&nbsp;/&nbsp;15&nbsp;/&nbsp;15 when rows are scarce; use <a href="#t2l7-h6">cross-validation</a> instead of a fixed validation set, which is what Concept&nbsp;6 does and is the right answer at this size; or keep two parts and accept, in writing, that your reported number is optimistic by an unknown amount. The one option that is not available is to keep two parts and call the number a test score.</p>
+  <p class="ar">وهو ليس بالمجّان، وقد جادل الفصلُ نفسه من المرات ما يكفي ليجادلها هنا أيضًا. فالانتقالُ من 75&nbsp;/&nbsp;25 إلى 60&nbsp;/&nbsp;20&nbsp;/&nbsp;20 أخذ صفوفَ التدريب من 377 إلى 301 &mdash; ستةٌ وسبعون صفًّا أقلّ للضبط عليها، ولهذا تحرّك الوسيطُ المضبوط من 200.0 إلى 195.0 وكلُّ خطأ تدريب في الجدول أعلاه محسوبٌ على قاعدة أصغر وأكثر ضجيجًا. ولملفٍّ من 503 صفوف ذاك ثمنٌ حقيقي. وثلاثُ طرق لدفع أقلّ منه: استعمل 70&nbsp;/&nbsp;15&nbsp;/&nbsp;15 حين تندر الصفوف؛ أو استعمل <a href="#t2l7-h6">التحقّقَ المتقاطع</a> بدل مجموعة تحقّق ثابتة، وهو ما يفعله المفهوم 6 وهو الجوابُ الصحيح في هذا الحجم؛ أو أبقِ قسمين واقبل، كتابةً، أن رقمك المبلَّغ عنه متفائلٌ بمقدار مجهول. والخيارُ الوحيد غير المتاح أن تُبقي قسمين وتسمّي الرقم نتيجةَ اختبار.</p>
+
+  <div class="evolve" id="t2l7-e1">
+    <div class="ver" data-title-en="Version 1 &mdash; two parts, and the chapter's mistake" data-title-ar="النسخة 1 &mdash; قسمان، وخطأُ الفصل">
+      <pre class="code bad" data-lang="python"><code>train = rep.sample(frac=0.75, random_state=3)
+test  = rep.drop(train.index)
+# ... six lessons of choosing by reading `test` ...</code></pre>
+      <p class="en">What this is: the split every lesson of this chapter used. What goes wrong: there is nowhere to choose except <code>test</code>, so the reported number is the smallest of however many comparisons you ran &mdash; six, here. The code is correct and the conclusion is not.</p>
+      <p class="ar">ما هذا: التقسيمُ الذي استعمله كلُّ درس في هذا الفصل. وما يخطئ فيه: لا مكان للاختيار إلا <code>test</code>، فالرقمُ المبلَّغ عنه هو أصغرُ ما أجريتَ من مقارنات &mdash; ستٌّ هنا. والكودُ صحيح والاستنتاجُ ليس كذلك.</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 &mdash; three parts" data-title-ar="النسخة 2 &mdash; ثلاثة أقسام">
+      <pre class="code" data-lang="python"><code>shuffled = rep.sample(frac=1.0, random_state=3)
+n_train, n_valid = int(len(shuffled) * 0.60), int(len(shuffled) * 0.20)
+tr = shuffled.iloc[:n_train]
+va = shuffled.iloc[n_train:n_train + n_valid]
+te = shuffled.iloc[n_train + n_valid:]</code></pre>
+      <p class="en">What changed: a third frame, so choosing and reporting happen on different rows. What it fixes: the named defect of Version&nbsp;1 &mdash; the reported score is no longer the one the recipe was selected on. What is still broken: this splits the <strong>raw 503 rows</strong>, which still contain <a href="#t2l3-s2">fourteen exact duplicates</a> and <a href="#t2l3-s3">nine reposts</a>, so the same flat can land in two parts. Concept&nbsp;3 measures what that is worth.</p>
+      <p class="ar">ما تغيّر: إطارٌ ثالث، فيحدث الاختيار والإبلاغ على صفوف مختلفة. وما يُصلحه: العطبَ المسمّى في النسخة 1 &mdash; فالنتيجةُ المبلَّغ عنها لم تعد هي التي انتُقيت عليها الوصفة. وما لا يزال معطوبًا: أن هذا يقسّم <strong>الصفوف الخام الـ503</strong>، وفيها بعدُ <a href="#t2l3-s2">أربعةَ عشرَ تكرارًا تامًّا</a> و<a href="#t2l3-s3">تسعةُ إعلانات معادة</a>، فقد تقع الشقةُ نفسها في قسمين. ويقيس المفهوم 3 ما يساويه ذلك.</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 &mdash; de-duplicate, then split" data-title-ar="النسخة 3 &mdash; أزِل التكرار ثم قسّم">
+      <pre class="code" data-lang="python"><code>flats = (rep.sort_values("listed_on")
+            .drop_duplicates(subset=["listing_id"], keep="last"))      # 503 -> 480
+
+shuffled = flats.sample(frac=1.0, random_state=3)
+n_train, n_valid = int(len(shuffled) * 0.60), int(len(shuffled) * 0.20)
+tr, va, te = (shuffled.iloc[:n_train],
+              shuffled.iloc[n_train:n_train + n_valid],
+              shuffled.iloc[n_train + n_valid:])
+print(len(tr), len(va), len(te))                                       # 288 96 96</code></pre>
+      <p class="en">What changed: the <a href="#t2l3-s6">business key</a> decides what one row is <em>before</em> anything is cut, so no flat can appear twice across the three parts. What it fixes: the straddling duplicate of Version&nbsp;2. What is still broken: the seed, the proportions and the ordering column are three literals sitting in whatever cell you last ran. Re-run this notebook after editing one of them and every number in your report silently refers to a different split.</p>
+      <p class="ar">ما تغيّر: <a href="#t2l3-s6">المفتاحُ العملي</a> يقرّر ما هو الصفُّ الواحد <em>قبل</em> أن يُقطَع شيء، فلا تستطيع شقةٌ أن تظهر مرتين في الأقسام الثلاثة. وما يُصلحه: التكرارَ المتخطّي في النسخة 2. وما لا يزال معطوبًا: أن البذرة والنسب وعمودَ الترتيب ثلاثةُ ثوابت حرفية تسكن في أيّ خلية شغّلتها أخيرًا. فأعد تشغيل هذه المفكّرة بعد تعديل واحد منها وكلُّ رقم في تقريرك يشير بصمت إلى تقسيم آخر.</p>
+    </div>
+    <div class="ver" data-title-en="Version 4 &mdash; the split as a recorded artefact" data-title-ar="النسخة 4 &mdash; التقسيم أثرًا مسجَّلًا">
+      <pre class="code good" data-lang="python"><code>SPLIT = {"seed": 3, "train": 0.60, "valid": 0.20, "key": "listing_id",
+         "order_by": "listed_on", "as_of": "2026-06-30"}
+
+def split_listings(df, spec=SPLIT):
+    """Three disjoint frames plus the specification that produced them."""
+    flats = (df.sort_values(spec["order_by"])
+               .drop_duplicates(subset=[spec["key"]], keep="last"))
+    shuffled = flats.sample(frac=1.0, random_state=spec["seed"])
+    n = len(shuffled)
+    a, b = int(n * spec["train"]), int(n * (spec["train"] + spec["valid"]))
+    parts = {"train": shuffled.iloc[:a], "valid": shuffled.iloc[a:b], "test": shuffled.iloc[b:]}
+
+    report = pd.DataFrame([(k, len(v), int(v[TARGET].count())) for k, v in parts.items()],
+                          columns=["part", "rows", "labelled"])
+    assert sum(len(v) for v in parts.values()) == len(flats)          # nothing lost
+    ids = [set(v[spec["key"]]) for v in parts.values()]
+    assert not (ids[0] & ids[1] or ids[0] & ids[2] or ids[1] & ids[2])  # nothing shared
+    return parts, {"spec": dict(spec), "report": report}
+
+parts, split_log = split_listings(rep)
+print(split_log["report"].to_string(index=False))
+print("median fitted on train: %.1f" % parts["train"][TARGET].median())</code></pre>
+<div class="output"> part  rows  labelled
+train   288       278
+valid    96        89
+ test    96        93
+median fitted on train: 200.0</div>
+      <p class="en">What changed: the seed, the proportions, the key, the ordering column and the as-of date are one dictionary, returned beside the frames, and two assertions make the two properties that matter &mdash; nothing lost, nothing shared &mdash; claims the code enforces rather than things you believe. What it fixes: the un-recorded split of Version&nbsp;3; this one can be repeated by somebody who has only your report. What is still open: one seed. Every number this function produces is one draw, and <a href="#t2l7-h6">Concept&nbsp;6</a> shows that one draw on this data carries about seven shekels of noise &mdash; enough to have decided the governorate-against-raw-city comparison above by luck.</p>
+      <p class="ar">ما تغيّر: البذرة والنسب والمفتاح وعمودُ الترتيب وتاريخُ الأساس قاموسٌ واحد يُرجَع بجانب الأطر، وتأكيدان يجعلان الخاصيتين المهمّتين &mdash; لا شيء مفقود ولا شيء مشترك &mdash; ادّعاءين يُلزِم الكودُ بهما لا أمرين تعتقدهما. وما يُصلحه: التقسيمَ غير المسجَّل في النسخة 3؛ فهذا يستطيع إعادته من لا يملك إلا تقريرك. وما لا يزال مفتوحًا: بذرةٌ واحدة. فكلُّ رقم تنتجه هذه الدالة سحبةٌ واحدة، ويُظهر <a href="#t2l7-h6">المفهوم 6</a> أن السحبة الواحدة في هذه البيانات تحمل نحو سبعة شواكل من الضجيج &mdash; وهو ما يكفي ليكون قد حسم مقارنةَ المحافظة بالمدينة الخام أعلاه بالحظّ.</p>
+    </div>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">You have train, validation and test. You try eleven feature sets, pick the best on validation, and report the test error. A reviewer asks whether your <em>validation</em> error is an unbiased estimate of future performance. What is the right answer?</span><span class="ar">تملك تدريبًا وتحقّقًا واختبارًا. تجرّب إحدى عشرة مجموعة سمات وتنتقي أحسنها على التحقّق وتُبلّغ خطأ الاختبار. يسأل مراجعٌ: هل خطأُ <em>التحقّق</em> عندك تقديرٌ غير متحيّز للأداء المستقبلي؟ فما الجواب الصحيح؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">Yes &mdash; validation rows were never fitted on, so the validation error is unbiased and the test set was an unnecessary precaution.</span><span class="ar">نعم &mdash; فصفوفُ التحقّق لم يُضبَط عليها قط، فخطأُ التحقّق غير متحيّز ومجموعةُ الاختبار كانت احتياطًا لا لزوم له.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">No &mdash; it is the best of eleven readings of one set, so it is biased low for exactly the reason Concept&nbsp;1 described; the test error is the unbiased one, and that is what the third part is for.</span><span class="ar">لا &mdash; فهو أحسنُ إحدى عشرة قراءة لمجموعة واحدة، فهو متحيّز إلى الأدنى للسبب الذي وصفه المفهوم 1 بعينه؛ وخطأُ الاختبار هو غير المتحيّز، ولهذا وُجد القسمُ الثالث.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Yes, provided the eleven feature sets were all fitted on the training rows, which is what separates selection from fitting.</span><span class="ar">نعم، بشرط أن تكون مجموعات السمات الإحدى عشرة كلها مضبوطةً على صفوف التدريب، وهذا ما يفصل الانتقاء عن الضبط.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">No, but only because eleven is a large number; up to about three comparisons the validation error stays unbiased.</span><span class="ar">لا، لكن فقط لأن أحدَ عشرَ عددٌ كبير؛ فحتى نحو ثلاث مقارنات يبقى خطأُ التحقّق غير متحيّز.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <p class="en">The validation set is <em>supposed</em> to become biased &mdash; that is its job, and it is why a third part exists. The two tempting wrong answers both rest on the idea that avoiding <code>fit</code> is enough; Concept&nbsp;1 showed it is not, because selection is fitting. The last option invents a threshold: there is no number of comparisons below which selection bias is zero. Two comparisons bias the estimate less than eleven do, but not to nothing.</p>
+      <p class="ar">مجموعةُ التحقّق <em>يُفترض</em> أن تصير متحيّزة &mdash; فتلك وظيفتها، ولهذا يوجد قسمٌ ثالث. والجوابان المغريان الخاطئان يقومان كلاهما على فكرة أن تجنّبَ <code>fit</code> كافٍ؛ وقد أظهر المفهوم 1 أنه ليس كذلك، فالانتقاءُ ضبطٌ. والخيارُ الأخير يختلق حدًّا: فلا يوجد عددُ مقارنات يكون تحتَه تحيّزُ الانتقاء صفرًا. فمقارنتان تحيّزان التقدير أقلّ من إحدى عشرة، لكن لا إلى العدم.</p>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">Every hyperparameter you have ever tuned &mdash; a learning rate, a tree depth, the <code>k</code> in kNN, the smoothing in <a href="#t2l5-s21">target encoding</a> &mdash; is chosen on validation, and the count of things being chosen is what decides how much the validation score lies. A sweep over 200 configurations needs a test set far more than a single hand-picked model does. The same arithmetic explains why published benchmark scores drift upwards over years without models genuinely improving by that much: a community reading one public test set thousands of times is one researcher reading it thousands of times, and the set wears out. When you build an evaluation set for your own system, the useful question is not &ldquo;is it big enough?&rdquo; but &ldquo;how many decisions will I spend it on, and what will I measure with when it is gone?&rdquo;</p>
+    <p class="ar">كلُّ وسيط فائق ضبطتَه قط &mdash; معدّلُ تعلّم أو عمقُ شجرة أو <code>k</code> في kNN أو التمهيدُ في <a href="#t2l5-s21">ترميز الهدف</a> &mdash; يُختار على التحقّق، وعددُ الأشياء المختارة هو ما يحدّد مقدار كذب نتيجة التحقّق. فمسحٌ على مئتَي تهيئة يحتاج مجموعةَ اختبار أكثرَ بكثير مما يحتاجها نموذجٌ واحد منتقًى باليد. والحسابُ نفسه يفسّر لماذا تنزاح نتائجُ المقاييس المنشورة صعودًا عبر السنين دون أن تتحسّن النماذجُ فعلًا بذلك المقدار: فمجتمعٌ يقرأ مجموعةَ اختبار عامة واحدة آلافَ المرات هو باحثٌ واحد يقرؤها آلافَ المرات، والمجموعةُ تبلى. وحين تبني مجموعةَ تقييم لنظامك فالسؤالُ المفيد ليس «هل هي كبيرة كفايةً؟» بل «كم قرارًا سأُنفقها عليه، وبماذا سأقيس إذا نفدت؟»</p>
+  </div>
+
+  <figure class="diagram" data-diagram="t2-l7-leak-types">
+    <figcaption><span class="en">Three questions to ask a score that looks better than it should, with what each leak is worth on this file.</span><span class="ar">ثلاثةُ أسئلة تسألها لنتيجة تبدو أحسن مما ينبغي، ومعها ما تساويه كلُّ تسريبة في هذا الملف.</span></figcaption>
+  </figure>
+
+  <h2 id="t2l7-h3"><span class="en">Concept 3 &mdash; Leak one: the same fact in both halves</span><span class="ar">المفهوم 3 &mdash; التسريب الأول: الحقيقة نفسها في النصفين</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">You split the raw file, score your model, and the error is pleasingly low. <a href="#t2l3-s2">Lesson&nbsp;3</a> told you this file holds fourteen byte-for-byte repeats and nine reposts of the same flat; you de-duplicated, reported 480 flats, and then went back to splitting the 503-row frame because that is what was in the variable. Nothing errors. Some of the rows you are being scored on are rows the model was fitted on, under a different index label &mdash; <span class="term" data-term="train-test-overlap">train-test overlap</span>, the first of this lesson's three leaks.</p>
+    <p class="ar">تقسّم الملفَّ الخام وتقيس نموذجك فيكون الخطأ منخفضًا بما يسرّ. وقد أخبرك <a href="#t2l3-s2">الدرس 3</a> أن هذا الملف يحمل أربعةَ عشرَ تكرارًا حرفيًّا وتسعةَ إعلانات معادة للشقة نفسها؛ فأزلتَ التكرار وأبلغتَ عن 480 شقة، ثم عدتَ إلى تقسيم الإطار ذي الـ503 صفوف لأن ذاك ما كان في المتغيّر. ولا شيء يُخطئ. وبعضُ الصفوف التي تُقاس عليها صفوفٌ ضُبط عليها النموذج تحت لافتة فهرس أخرى &mdash; وهو <span class="term" data-term="train-test-overlap">تداخلُ التدريب والاختبار</span>، أولُ تسريبات هذا الدرس الثلاث.</p>
+  </div>
+
+  <h3 id="t2l7-s8"><span class="en">Six rows the model has already met</span><span class="ar">ستةُ صفوف لقيها النموذج سلفًا</span></h3>
+  <p class="en">The detection is one line and costs nothing, so there is no excuse for not running it. Ask whether any <a href="#t2l3-s6">business key</a> appears in more than one part.</p>
+  <p class="ar">الكشفُ سطرٌ واحد ولا يكلّف شيئًا، فلا عذر في تركه. اسأل: هل يظهر أيُّ <a href="#t2l3-s6">مفتاح عملي</a> في أكثر من قسم؟</p>
+  <pre class="code" data-lang="python"><code>ids_tr = set(tr["listing_id"])
+seen   = te["listing_id"].isin(ids_tr)
+
+print("test rows whose listing_id is also in train: %d of %d" % (seen.sum(), len(te)))
+print("the offending ids:", sorted(te.loc[seen, "listing_id"].tolist()))</code></pre>
+<div class="output">test rows whose listing_id is also in train: 6 of 102
+the offending ids: [5076, 5142, 5285, 5387, 5413, 5436]</div>
+  <p class="en">Six. Not many, and that is the point: a leak does not need to be large to be fatal to a conclusion, because its effect is concentrated. Those six rows are not six random rows &mdash; they are six rows on which the model cannot be wrong.</p>
+  <p class="ar">ستة. وهي ليست كثيرة، وهذا هو المغزى: فالتسريبُ لا يحتاج أن يكون كبيرًا ليكون قاتلًا لاستنتاج، إذ أثرُه مركَّز. وتلك الصفوف الستة ليست ستةَ صفوف عشوائية &mdash; بل ستةُ صفوف لا يستطيع النموذج أن يخطئ فيها.</p>
+
+  <h3 id="t2l7-s9"><span class="en">Twenty-one shekels against sixty-two</span><span class="ar">أحدٌ وعشرون شيكلًا مقابل اثنين وستين</span></h3>
+  <p class="en">Split the test error by whether the row has a twin in training and the size of the effect stops being theoretical.</p>
+  <p class="ar">افصل خطأ الاختبار بحسب وجود توأم للصف في التدريب فيكفّ حجمُ الأثر عن أن يكون نظريًّا.</p>
+  <pre class="code bad" data-lang="python"><code>city_map = tr.groupby("city")["monthly_rent"].median()
+pred_te  = te["city"].map(city_map).fillna(m3)
+
+print("MAE on the %2d rows WITH a twin in train : %.4f" % (seen.sum(),  mae(te["monthly_rent"][seen],  pred_te[seen])))
+print("MAE on the %2d rows WITHOUT a twin       : %.4f" % ((~seen).sum(), mae(te["monthly_rent"][~seen], pred_te[~seen])))</code></pre>
+<div class="output">MAE on the  6 rows WITH a twin in train : 21.6667
+MAE on the 96 rows WITHOUT a twin       : 62.2043</div>
+  <p class="en">21.6667 against 62.2043 &mdash; the model is nearly three times as accurate on the rows it has already seen. And notice what the predictor is: a <em>median per city</em>. It has no memory, no capacity, no parameters beyond five numbers. Even a model this simple is flattered by an overlap, because the duplicated row contributed its own rent to the median it is then scored against. A model with real capacity would memorise those rows outright and the gap would be larger still.</p>
+  <p class="ar">21.6667 مقابل 62.2043 &mdash; فالنموذج أدقُّ بنحو ثلاثة أضعاف على الصفوف التي رآها سلفًا. ولاحظ ما هو المتنبِّئ: <em>وسيطٌ لكل مدينة</em>. لا ذاكرة له ولا سَعة ولا وسائط تزيد على خمسة أرقام. ومع ذلك فنموذجٌ بهذه البساطة يُجامَل بالتداخل، لأن الصفَّ المكرَّر أسهم بإيجاره في الوسيط الذي يُقاس مقابله بعدُ. ونموذجٌ ذو سَعة حقيقية كان سيحفظ تلك الصفوف حفظًا صريحًا ولكانت الفجوةُ أوسع.</p>
+
+  <div class="warn">
+    <h4><span class="en">Why averaging hides it</span><span class="ar">لماذا يخفيه المتوسّط</span></h4>
+    <p class="en">The overall test MAE on these 102 rows is a weighted average of 21.6667 and 62.2043, and with only six contaminated rows out of ninety-nine rents it lands at 59.7475 &mdash; a number that looks entirely ordinary. The leak is invisible in the headline and obvious the moment you group by it. That is the general shape of leakage: it does not announce itself, it just quietly moves the number you report in the direction you were hoping for.</p>
+    <p class="ar">خطأُ الاختبار الكلي على هذه الصفوف الـ102 متوسطٌ مرجَّح لـ21.6667 و62.2043، وبستة صفوف ملوَّثة فقط من تسعة وتسعين إيجارًا يحلّ عند 59.7475 &mdash; رقمٌ يبدو عاديًّا تمامًا. فالتسريبُ غيرُ مرئي في العنوان وبديهيٌّ لحظةَ تجمّع عليه. وهذه هي الصورةُ العامة للتسريب: فهو لا يعلن عن نفسه، بل يحرّك بهدوء الرقمَ الذي تُبلّغ عنه في الاتجاه الذي كنتَ ترجوه.</p>
+  </div>
+
+  <h3 id="t2l7-s10"><span class="en">De-duplicate before you split, never after</span><span class="ar">أزِل التكرار قبل أن تقسّم، لا بعده</span></h3>
+  <p class="en">The order matters and only one order is correct. De-duplicating after the split removes the second copy from whichever part it landed in and leaves the first copy in the other &mdash; the two parts still share the flat, and now you have also thrown a row away for nothing. De-duplicating first, on the business key, makes the overlap arithmetically impossible, which is why <a href="#t2l7-e1">Version&nbsp;3</a> put the <code>drop_duplicates</code> above the <code>sample</code>.</p>
+  <p class="ar">الترتيبُ مهمّ وترتيبٌ واحد فقط هو الصحيح. فإزالةُ التكرار بعد التقسيم تُخرج النسخةَ الثانية من القسم الذي وقعت فيه وتُبقي الأولى في الآخر &mdash; فيظلّ القسمان يتشاركان الشقة، وقد رميتَ الآن صفًّا بلا مقابل. أما إزالةُ التكرار أولًا على المفتاح العملي فتجعل التداخلَ مستحيلًا حسابيًّا، ولهذا وضعت <a href="#t2l7-e1">النسخةُ 3</a> <code>drop_duplicates</code> فوق <code>sample</code>.</p>
+  <pre class="code good" data-lang="python"><code>parts, split_log = split_listings(rep)                 # de-duplicates, then splits
+dtr, dva, dte = parts["train"], parts["valid"], parts["test"]
+
+overlap = set(dte["listing_id"]) & set(dtr["listing_id"])
+dm   = dtr["monthly_rent"].median()
+dmap = dtr.groupby("city")["monthly_rent"].median()
+
+print("rows 480 -> train %d / valid %d / test %d" % (len(dtr), len(dva), len(dte)))
+print("overlapping ids now:", len(overlap))
+print("MAE on the whole test set: %.4f" % mae(dte["monthly_rent"], dte["city"].map(dmap).fillna(dm)))</code></pre>
+<div class="output">rows 480 -> train 288 / valid 96 / test 96
+overlapping ids now: 0
+MAE on the whole test set: 60.9140</div>
+  <p class="en">60.9140, with nothing shared. Higher than the 59.8 the leaky split would have reported, which is the correct direction: removing a leak makes your number worse and your claim true. Every figure from here to the end of the lesson is measured on these three frames.</p>
+  <p class="ar">60.9140، ولا شيء مشترك. وهو أعلى من الـ59.8 التي كان سيبلّغها التقسيمُ المتسرِّب، وهذا هو الاتجاهُ الصحيح: فإزالةُ تسريبٍ تسوء رقمَك وتُصدِق ادّعاءك. وكلُّ رقم من هنا إلى نهاية الدرس مقيسٌ على هذه الأطر الثلاثة.</p>
+
+  <div class="thread">
+    <h4><span class="en">Thread &middot; P-CLEAN &mdash; remove the rows that should not be counted</span><span class="ar">خيط &middot; P-CLEAN &mdash; أزِل الصفوف التي لا ينبغي عدّها</span></h4>
+    <p class="en"><a href="#p1l4-s6">Practical&nbsp;1 Lesson&nbsp;4</a> removed duplicates in Excel by hand: destructive, silent, no record. <a href="#p1l6-s6">P1 Lesson&nbsp;6</a> wrote the rules down with a removal count. <a href="#t2l3-s4">Lesson&nbsp;3</a> of this chapter distinguished the fourteen exact repeats from the nine reposts and chose which copy survives, and <a href="#t2l3-s5">noticed</a> that a split can straddle a duplicate. What this lesson closes: that observation now has a price &mdash; 21.6667 against 62.2043 &mdash; and a structural fix, because <code>split_listings</code> asserts that no key is shared and therefore cannot return a contaminated split. What is still open: the business key is <code>listing_id</code>, and two <em>genuinely different</em> listing ids can still describe one flat advertised by two agencies. <a href="#t2l3-s9">Lesson&nbsp;3 found two such rows</a> and could not resolve them from the file; neither can this assertion, so the overlap it guarantees against is the overlap you can name.</p>
+    <p class="ar">أزال <a href="#p1l4-s6">الدرس 4 من العملي 1</a> التكرارات في إكسل باليد: مدمِّرًا وصامتًا وبلا سجلّ. وكتب <a href="#p1l6-s6">الدرس 6 من العملي 1</a> القواعدَ مع عددِ ما أُزيل. وفرّق <a href="#t2l3-s4">الدرس 3</a> من هذا الفصل بين التكرارات الأربعة عشر التامّة والإعلانات التسعة المعادة واختار أيَّ نسخة تبقى، و<a href="#t2l3-s5">لاحظ</a> أن التقسيم قد يتخطّى تكرارًا. وما يُغلقه هذا الدرس: أن تلك الملاحظة صار لها ثمنٌ &mdash; 21.6667 مقابل 62.2043 &mdash; وعلاجٌ بنيوي، فـ<code>split_listings</code> تؤكّد أن لا مفتاح مشترك فلا تستطيع أن تُرجع تقسيمًا ملوَّثًا. وما لا يزال مفتوحًا: أن المفتاح العملي <code>listing_id</code>، ورقما إعلان <em>مختلفان حقًّا</em> قد يصفان مع ذلك شقةً واحدة أعلنتها وكالتان. وقد <a href="#t2l3-s9">وجد الدرس 3 صفّين كهذين</a> ولم يستطع حلّهما من الملف؛ ولا يستطيع هذا التأكيد، فالتداخلُ الذي يضمن ضدّه هو التداخلُ الذي تستطيع تسميته.</p>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">A teammate splits first and de-duplicates afterwards, inside each part separately, and says the result is equivalent because &ldquo;no part contains a duplicate any more.&rdquo; What is the flaw?</span><span class="ar">يقسّم زميلٌ أولًا ثم يزيل التكرار بعد ذلك، داخل كل قسم على حدة، ويقول إن النتيجة مكافئة لأن «لا قسم يحتوي تكرارًا بعد الآن». فما الخلل؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">There is no flaw: once each part is internally unique, no row can be both fitted on and scored on.</span><span class="ar">لا خلل: فمتى صار كلُّ قسم فريدًا داخليًّا فلا يستطيع صفٌّ أن يُضبَط عليه ويُقاس عليه معًا.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">Uniqueness within a part says nothing about sharing between parts: the first copy can sit in train and the second in test, so both survive their own de-duplication and the flat is still in both halves.</span><span class="ar">التفرُّدُ داخل القسم لا يقول شيئًا عن الاشتراك بين الأقسام: فقد تقع النسخةُ الأولى في التدريب والثانية في الاختبار، فتنجو كلٌّ من إزالة التكرار في قسمها وتبقى الشقةُ في النصفين.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">The flaw is only efficiency: de-duplicating three frames costs three passes instead of one, and the result is the same.</span><span class="ar">الخللُ في الكفاءة فقط: فإزالةُ التكرار من ثلاثة أطر تكلّف ثلاث مرّات بدل مرة، والنتيجةُ نفسها.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">It works for the fourteen exact duplicates but not for the nine reposts, because <code>drop_duplicates()</code> with no <code>subset</code> cannot see a retyped advert.</span><span class="ar">ينفع في التكرارات الأربعة عشر التامّة لا في الإعلانات التسعة المعادة، فـ<code>drop_duplicates()</code> بلا <code>subset</code> لا ترى إعلانًا أُعيد كتابته.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <p class="en">The last option is a true statement about <code>drop_duplicates()</code> &mdash; Lesson&nbsp;3 made exactly that point &mdash; and it is still the wrong answer, because the flaw here survives even with a perfect <code>subset=["listing_id"]</code> inside each part. The property you need is <em>disjointness between</em> parts, and no amount of cleaning inside a part can establish it. That is why the assertion in <code>split_listings</code> compares sets across parts rather than counting duplicates within them.</p>
+      <p class="ar">الخيارُ الأخير جملةٌ صحيحة عن <code>drop_duplicates()</code> &mdash; وقد قال الدرس 3 ذلك بعينه &mdash; وهو مع ذلك الجوابُ الخاطئ، فالخللُ هنا ينجو حتى مع <code>subset=["listing_id"]</code> مثالية داخل كل قسم. فالخاصيةُ التي تحتاجها <em>عدمُ التقاطع بين</em> الأقسام، ولا يستطيع أيُّ قدر من التنظيف داخل قسم أن يُثبتها. ولهذا يقارن التأكيدُ في <code>split_listings</code> مجموعاتٍ عبر الأقسام لا يعدّ تكرارات داخلها.</p>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">This is the leak that has invalidated the most published results, because it scales with the dataset. Near-duplicate images across the train and test folds of a vision benchmark; the same sentence appearing in a pre-training corpus and in the evaluation set of a language model; one patient contributing several scans that land on both sides of a split. In each case the fix is the same and is not a cleaning step but a <em>grouping</em> step: split by the unit that must not be shared &mdash; the patient, the document, the flat &mdash; and not by the row. <code>scikit-learn</code> calls this <code>GroupShuffleSplit</code>, and the group is the business key you already identified in Lesson&nbsp;3. When somebody reports a suspiciously strong result, &ldquo;what did you split on?&rdquo; is the first question to ask.</p>
+    <p class="ar">هذا هو التسريبُ الذي أبطل أكثرَ النتائج المنشورة، لأنه يتضخّم مع البيانات. فصورٌ شبهُ مكرَّرة بين طيّتَي التدريب والاختبار في مقياس بصري؛ والجملةُ نفسها تظهر في مُدوَّنة تدريب أولي وفي مجموعة تقييم لنموذج لغوي؛ ومريضٌ واحد يسهم بعدّة مسوح تقع على جانبَي التقسيم. والعلاجُ في كل حالة هو نفسه وليس خطوةَ تنظيف بل خطوةَ <em>تجميع</em>: قسّم بالوحدة التي لا يجوز اشتراكها &mdash; المريض أو المستند أو الشقة &mdash; لا بالصفّ. ويسمّي <code>scikit-learn</code> هذا <code>GroupShuffleSplit</code>، والمجموعةُ هي المفتاحُ العملي الذي عيّنتَه في الدرس 3. وحين يُبلّغ أحدٌ عن نتيجة قوية مريبة فأولُ سؤال تسأله: «على أيّ شيء قسّمتَ؟»</p>
+  </div>
+
+  <h2 id="t2l7-h4"><span class="en">Concept 4 &mdash; Leak two: fitting before the split</span><span class="ar">المفهوم 4 &mdash; التسريب الثاني: الضبطُ قبل التقسيم</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">Cleaning comes first and splitting comes later &mdash; that is how everyone writes a notebook, and it is how this chapter's lessons are ordered. So the imputer, the scaler, the category list and the encoder are all fitted on the whole file, and then the file is split. Every one of those parameters now carries information from the rows you are about to be judged on, and not one line of code looks wrong.</p>
+    <p class="ar">التنظيفُ أولًا والتقسيمُ بعده &mdash; هكذا يكتب الجميعُ مفكّرةً، وهكذا رُتّبت دروسُ هذا الفصل. فالمعوِّضُ والمقياسُ وقائمةُ الفئات والمرمِّزُ كلُّها مضبوطة على الملف كله، ثم يُقسَّم الملف. فكلُّ وسيط من تلك الوسائط يحمل الآن معلومةً من الصفوف التي توشك أن تُحاكَم عليها، ولا سطرَ واحد من الكود يبدو خاطئًا.</p>
+  </div>
+
+  <h3 id="t2l7-s11"><span class="en">The agency median, taken over everything</span><span class="ar">وسيطُ الوكالة، مأخوذًا على كل شيء</span></h3>
+  <p class="en">Step through it on twelve rows first. The widget shows one map fitted on all twelve and one fitted on the six training rows, applied to the same three test flats. One word differs between the two lines.</p>
+  <p class="ar">اخطُ فيه على اثني عشر صفًّا أولًا. فالأداة تُظهر خريطةً مضبوطة على الاثني عشر وأخرى مضبوطة على صفوف التدريب الستة، مطبَّقتين على الشقق الثلاث نفسها. وكلمةٌ واحدة تفرق بين السطرين.</p>
+  <div data-trace-id="t2-l7-leak"></div>
+  <p class="en">Now the same mistake on the real frames, using <a href="#t2l5-s20">Lesson&nbsp;5's target encoding</a> of <code>agency</code> &mdash; the step that lesson already warned leaks, measured here for the first time.</p>
+  <p class="ar">الآن الخطأُ نفسه على الأطر الحقيقية، باستعمال <a href="#t2l5-s20">ترميز الهدف في الدرس 5</a> لـ<code>agency</code> &mdash; وهي الخطوة التي حذّر ذلك الدرس من تسريبها، مقيسةً هنا أول مرة.</p>
+  <pre class="code" data-lang="python"><code>leaky  = rep.groupby("agency")["monthly_rent"].median()     # WRONG: includes test rents
+honest = dtr.groupby("agency")["monthly_rent"].median()     # RIGHT: training rows only
+
+print("fitted on ALL rows   -> MAE test %.4f   (what you would report)"
+      % mae(dte["monthly_rent"], dte["agency"].map(leaky).fillna(dm)))
+print("fitted on TRAIN only -> MAE test %.4f   (the honest number)"
+      % mae(dte["monthly_rent"], dte["agency"].map(honest).fillna(dm)))</code></pre>
+<div class="output">fitted on ALL rows   -> MAE test 59.4892   (what you would report)
+fitted on TRAIN only -> MAE test 61.0215   (the honest number)</div>
+
+  <h3 id="t2l7-s12"><span class="en">A shekel and a half &mdash; and when it is not</span><span class="ar">شيكلٌ ونصف &mdash; ومتى لا يكون كذلك</span></h3>
+  <p class="en">1.5323&nbsp;shekels. That is the whole leak, and the honest thing is to say so plainly: on this column, with twenty agencies over 480 rows and a median as the statistic, fitting before the split buys you about two and a half per cent of the error. A median over roughly twenty-four rents barely moves when a few of those rents are ones you were not supposed to see. If a reviewer told you to re-run the whole analysis for 1.53&nbsp;shekels you would be entitled to ask why.</p>
+  <p class="ar">1.5323&nbsp;شيكل. ذاك هو التسريبُ كله، والأمانةُ أن يُقال ذلك صراحةً: فعلى هذا العمود، بعشرين وكالة على 480 صفًّا ووسيطٍ إحصاءةً، يكسبك الضبطُ قبل التقسيم نحوَ اثنين ونصف في المئة من الخطأ. فالوسيطُ على نحو أربعة وعشرين إيجارًا لا يتحرّك إلا قليلًا حين تكون بضعةٌ من تلك الإيجارات ممّا لم يكن ينبغي أن تراه. ولو أمرك مراجعٌ بإعادة التحليل كله من أجل 1.53&nbsp;شيكل لكان لك أن تسأل: لماذا؟</p>
+  <p class="en">The answer is that the size of this leak is a property of the statistic, not of the rule, and three changes to the statistic make it enormous:</p>
+  <p class="ar">والجوابُ أن حجمَ هذا التسريب خاصيةٌ للإحصاءة لا للقاعدة، وثلاثةُ تغييرات في الإحصاءة تجعله هائلًا:</p>
+  <ul>
+    <li><span class="en"><strong>A rare category.</strong> <a href="#t2l5-s18">Four of the twenty agencies appear exactly once.</a> For such an agency the &ldquo;median&rdquo; fitted on all rows <em>is</em> that row's own rent, so if the row is in test the encoder hands the model the answer. This is why <a href="#t2l5-s21">Lesson&nbsp;5 reached for out-of-fold encoding</a>, and it is the same fix as this lesson's.</span><span class="ar"><strong>فئةٌ نادرة.</strong> <a href="#t2l5-s18">أربعٌ من الوكالات العشرين تظهر مرة واحدة بالضبط.</a> ولوكالة كهذه يكون «الوسيطُ» المضبوط على كل الصفوف <em>هو</em> إيجارَ ذلك الصف نفسه، فإن كان الصفُّ في الاختبار سلّم المرمِّزُ النموذجَ الإجابة. ولهذا <a href="#t2l5-s21">قصد الدرس 5 الترميزَ خارج الطيّة</a>، وهو العلاجُ نفسه الذي في هذا الدرس.</span></li>
+    <li><span class="en"><strong>A statistic that is not robust.</strong> Swap the median for a mean and a single extreme test value drags the parameter visibly. <a href="#t2l4-s20">Lesson&nbsp;4</a> showed the 99999 moving a standard deviation by thousands; a min&ndash;max scaler fitted over the whole file takes its <em>maximum</em> from the test rows by construction, which is the classic textbook version of this leak.</span><span class="ar"><strong>إحصاءةٌ غير حصينة.</strong> استبدل بالوسيط متوسطًا فتجرّ قيمةٌ اختبار متطرّفة واحدة الوسيطَ جرًّا ظاهرًا. وقد أظهر <a href="#t2l4-s20">الدرس 4</a> الـ99999 تحرّك انحرافًا معياريًّا بالآلاف؛ ومقياسُ الحد الأدنى والأقصى المضبوط على الملف كله يأخذ <em>أقصاه</em> من صفوف الاختبار بحكم بنائه، وهذه هي النسخةُ المدرسية الكلاسيكية لهذا التسريب.</span></li>
+    <li><span class="en"><strong>Selection over many columns.</strong> Choosing the twenty features most correlated with the rent, over the whole file, is fitting a parameter with twenty degrees of freedom on every row you own. The leak then scales with the number of candidates, not with the size of one median.</span><span class="ar"><strong>الانتقاءُ على أعمدة كثيرة.</strong> فاختيارُ العشرين سمةً الأشدَّ ارتباطًا بالإيجار، على الملف كله، ضبطُ وسيطٍ بعشرين درجةَ حرية على كل صف تملكه. فيتضخّم التسريبُ حينئذ بعدد المرشَّحين لا بحجم وسيطٍ واحد.</span></li>
+  </ul>
+  <p class="en">So the rule is not &ldquo;fit after the split because the leak is big&rdquo;. It is &ldquo;fit after the split because you cannot tell in advance whether it is big, and checking costs one line.&rdquo;</p>
+  <p class="ar">فالقاعدةُ ليست «اضبط بعد التقسيم لأن التسريب كبير». بل «اضبط بعد التقسيم لأنك لا تستطيع أن تعرف سلفًا هل هو كبير، والفحصُ يكلّف سطرًا واحدًا».</p>
+
+  <h3 id="t2l7-s13"><span class="en">Every step of this chapter that fits something</span><span class="ar">كلُّ خطوة في هذا الفصل تضبط شيئًا</span></h3>
+  <p class="en">The practical form of the rule is a list, because you cannot apply &ldquo;fit on train only&rdquo; unless you know which steps fit. Here is the chapter's pipeline with the question asked of every stage.</p>
+  <p class="ar">الصورةُ العملية للقاعدة قائمةٌ، فلا تستطيع تطبيق «اضبط على التدريب وحده» إلا إذا عرفتَ أيَّ الخطوات تضبط. وهذا خطُّ الفصل والسؤالُ مطروحٌ على كل مرحلة.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th><span class="en">Step</span><span class="ar">الخطوة</span></th>
+          <th><span class="en">Fits a parameter?</span><span class="ar">تضبط وسيطًا؟</span></th>
+          <th><span class="en">Must run</span><span class="ar">يجب أن تعمل</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="en">de-duplicate on the business key</span><span class="ar">إزالةُ التكرار على المفتاح العملي</span></td><td><span class="en">no &mdash; a row-level rule</span><span class="ar">لا &mdash; قاعدةُ صفّ</span></td><td><strong><span class="en">before the split</span><span class="ar">قبل التقسيم</span></strong></td></tr>
+        <tr><td><span class="en"><code>CITY_MAP</code>, <code>BOOL_MAP</code>, <code>FLOOR_WORDS</code>, <code>FORMATS</code></span><span class="ar"><code>CITY_MAP</code> و<code>BOOL_MAP</code> و<code>FLOOR_WORDS</code> و<code>FORMATS</code></span></td><td><span class="en">no &mdash; declared literals, not learned</span><span class="ar">لا &mdash; ثوابتُ معلَنة لا مُتعلَّمة</span></td><td><span class="en">either side</span><span class="ar">أيُّ الجانبين</span></td></tr>
+        <tr><td><span class="en">the dunum unit repair, <code>LIMITS</code></span><span class="ar">إصلاحُ وحدة الدونم و<code>LIMITS</code></span></td><td><span class="en">no &mdash; domain knowledge</span><span class="ar">لا &mdash; معرفةٌ بالمجال</span></td><td><span class="en">either side</span><span class="ar">أيُّ الجانبين</span></td></tr>
+        <tr><td><span class="en">median / mode fills</span><span class="ar">تعويضاتُ الوسيط والمنوال</span></td><td><strong><span class="en">yes</span><span class="ar">نعم</span></strong></td><td><strong><span class="en">after</span><span class="ar">بعده</span></strong></td></tr>
+        <tr><td><span class="en">the IQR fence, the robust z</span><span class="ar">سياجُ IQR وz الحصينة</span></td><td><strong><span class="en">yes</span><span class="ar">نعم</span></strong></td><td><strong><span class="en">after</span><span class="ar">بعده</span></strong></td></tr>
+        <tr><td><span class="en">one-hot category lists, ordered codes</span><span class="ar">قوائمُ فئات الترميز الأحادي والرموزُ المرتَّبة</span></td><td><strong><span class="en">yes</span><span class="ar">نعم</span></strong></td><td><strong><span class="en">after</span><span class="ar">بعده</span></strong></td></tr>
+        <tr><td><span class="en">frequency and target encoding</span><span class="ar">ترميزُ التكرار وترميزُ الهدف</span></td><td><strong><span class="en">yes &mdash; and of the target</span><span class="ar">نعم &mdash; وللهدف</span></strong></td><td><strong><span class="en">after, out of fold</span><span class="ar">بعده، وخارج الطيّة</span></strong></td></tr>
+        <tr><td><span class="en">min&ndash;max, standard, robust scaling</span><span class="ar">توحيدُ المقياس بالحدّين والمعياري والحصين</span></td><td><strong><span class="en">yes</span><span class="ar">نعم</span></strong></td><td><strong><span class="en">after</span><span class="ar">بعده</span></strong></td></tr>
+        <tr><td><span class="en">band edges (<a href="#t2l7-s25">Concept&nbsp;7</a>)</span><span class="ar">حدودُ النطاقات (<a href="#t2l7-s25">المفهوم 7</a>)</span></td><td><strong><span class="en">yes</span><span class="ar">نعم</span></strong></td><td><strong><span class="en">after</span><span class="ar">بعده</span></strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="en">Read the middle column and the structure of <a href="#t2l6-s21">Lesson&nbsp;6's pipeline</a> suddenly looks like what it is: the <code>fitted</code> dictionary holds exactly the rows of this table marked <em>yes</em>. The chapter had the right architecture from <a href="#t2l1-s10">Lesson&nbsp;1</a>; what it did not have was a split early enough for that architecture to protect anything.</p>
+  <p class="ar">اقرأ العمودَ الأوسط فيبدو بناءُ <a href="#t2l6-s21">خط الدرس 6</a> فجأةً على ما هو عليه: فقاموسُ <code>fitted</code> يحمل بالضبط صفوفَ هذا الجدول الموسومةَ بـ<em>نعم</em>. فقد كان للفصل البناءُ الصحيح من <a href="#t2l1-s10">الدرس 1</a>؛ وما لم يكن له تقسيمٌ مبكّر بما يكفي ليحمي ذلك البناءُ شيئًا.</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">Which of these steps may safely run <em>before</em> the split?</span><span class="ar">أيُّ هذه الخطوات يجوز أن تعمل بأمان <em>قبل</em> التقسيم؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">Filling blank areas with the column median, because a median is robust and one value cannot move it much.</span><span class="ar">تعويضُ المساحات الفارغة بوسيط العمود، فالوسيطُ حصين ولا تستطيع قيمةٌ واحدة أن تحرّكه كثيرًا.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">Multiplying the five dunum areas by a thousand, because the rule comes from knowing what a dunum is and no number in the data is consulted.</span><span class="ar">ضربُ مساحات الدونم الخمس بألف، فالقاعدةُ تأتي من معرفة ما هو الدونم ولا يُستشار رقمٌ في البيانات.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Clipping rents to the 1.5&nbsp;&times;&nbsp;IQR fence, because the fence is a fixed multiple rather than a learned value.</span><span class="ar">قصُّ الإيجارات إلى سياج 1.5&nbsp;&times;&nbsp;IQR، فالسياجُ مضاعفٌ ثابت لا قيمةٌ مُتعلَّمة.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Dropping the twenty most-correlated-with-rent columns, because dropping columns removes information rather than adding it.</span><span class="ar">إسقاطُ العشرين عمودًا الأشدَّ ارتباطًا بالإيجار، فإسقاطُ الأعمدة يزيل معلومةً ولا يضيفها.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <p class="en">The test is not &ldquo;is this step gentle?&rdquo; but &ldquo;does this step read a number out of the data?&rdquo; The dunum repair reads nothing: a dunum is a thousand square metres whether or not you have the file, so the rule is knowledge you brought with you. The median fill and the IQR fence both read numbers &mdash; the fence's <em>multiplier</em> is fixed at 1.5 but <code>Q1</code> and <code>Q3</code> are fitted, which is the tempting confusion in that option. Dropping columns by correlation is the worst of the four: it consults the target on every row, which is the leak of Concept&nbsp;4 with twenty degrees of freedom.</p>
+      <p class="ar">المحكُّ ليس «هل هذه الخطوة لطيفة؟» بل «هل تقرأ هذه الخطوة رقمًا من البيانات؟» فإصلاحُ الدونم لا يقرأ شيئًا: فالدونمُ ألفُ متر مربع، ملكتَ الملفَّ أو لم تملكه، فالقاعدةُ معرفةٌ جئتَ بها معك. وتعويضُ الوسيط وسياجُ IQR يقرأان كلاهما أرقامًا &mdash; فـ<em>مضاعِفُ</em> السياج مثبَّت عند 1.5 لكنّ <code>Q1</code> و<code>Q3</code> مضبوطان، وهذا هو الالتباسُ المغري في ذلك الخيار. وإسقاطُ الأعمدة بالارتباط أسوأُ الأربعة: فهو يستشير الهدفَ في كل صف، وهو تسريبُ المفهوم 4 بعشرين درجةَ حرية.</p>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">The reason <code>scikit-learn</code> separates <code>fit</code> from <code>transform</code> at all is this leak, and the reason <code>Pipeline</code> exists is that humans forget. A <code>Pipeline</code> passed to <code>cross_val_score</code> re-fits every one of its steps inside each fold, so the imputer's median and the scaler's minimum are recomputed from that fold's training rows automatically &mdash; the thing almost nobody does correctly by hand. Call <code>scaler.fit_transform(X)</code> before <code>cross_val_score</code> and you have leaked into every fold at once, silently, with a perfectly conventional-looking two lines. <a href="#t2l7-s30">Appendix&nbsp;C</a> builds exactly that object for this chapter's data.</p>
+    <p class="ar">سببُ فصل <code>scikit-learn</code> بين <code>fit</code> و<code>transform</code> من أصله هو هذا التسريب، وسببُ وجود <code>Pipeline</code> أن البشر ينسون. فـ<code>Pipeline</code> ممرَّرًا إلى <code>cross_val_score</code> يعيد ضبطَ كل خطوة من خطواته داخل كل طيّة، فيُعاد حسابُ وسيطِ المعوِّض وأدنى المقياس من صفوف تدريب تلك الطيّة تلقائيًّا &mdash; وهو الشيءُ الذي لا يكاد أحد يفعله باليد صحيحًا. وادعُ <code>scaler.fit_transform(X)</code> قبل <code>cross_val_score</code> فقد سرّبتَ إلى كل طيّة في وقت واحد، بصمت، بسطرين يبدوان تقليديين تمامًا. ويبني <a href="#t2l7-s30">الملحق ج</a> ذلك الكائن بعينه لبيانات هذا الفصل.</p>
+  </div>
+
+  <h2 id="t2l7-h5"><span class="en">Concept 5 &mdash; Leak three: time, and the as-of date</span><span class="ar">المفهوم 5 &mdash; التسريب الثالث: الزمن وتاريخُ الأساس</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">Your 480 flats were advertised between February and June. A random split puts some June adverts in training and some February adverts in test, so the model is asked to predict the past from the future. In production it will never have that. That is <span class="term" data-term="time-leakage">time leakage</span>, and the split you have been using all lesson has it, because <code>split_listings</code> asserts nothing about dates.</p>
+    <p class="ar">أُعلنت شققك الـ480 بين شباط وحزيران. والتقسيمُ العشوائي يضع بعضَ إعلانات حزيران في التدريب وبعضَ إعلانات شباط في الاختبار، فيُطلب من النموذج أن يتنبّأ بالماضي من المستقبل. وفي الإنتاج لن يملك ذلك قط. وذاك هو <span class="term" data-term="time-leakage">التسريبُ الزمني</span>، والتقسيمُ الذي استعملتَه الدرسَ كلَّه فيه، إذ لا تؤكّد <code>split_listings</code> شيئًا عن التواريخ.</p>
+  </div>
+
+  <h3 id="t2l7-s14"><span class="en">Four months in one bag</span><span class="ar">أربعةُ أشهر في كيس واحد</span></h3>
+  <p class="en">First see the window, using <a href="#t2l3-s28">Lesson&nbsp;3's two-format parser</a> so the dates are real dates and not strings.</p>
+  <p class="ar">انظر النافذةَ أولًا، باستعمال <a href="#t2l3-s28">محلّل الصيغتين في الدرس 3</a> حتى تكون التواريخُ تواريخَ حقيقية لا نصوصًا.</p>
+  <pre class="code" data-lang="python"><code>flats = flats.assign(listed_dt=parse_dates(flats["listed_on"]))
+
+print("window: %s -> %s" % (flats["listed_dt"].min().date(), flats["listed_dt"].max().date()))
+print(flats["listed_dt"].dt.to_period("M").value_counts().sort_index().to_string())</code></pre>
+<div class="output">window: 2026-02-01 -> 2026-06-19
+listed_dt
+2026-02    101
+2026-03    109
+2026-04    130
+2026-05    139
+2026-06      1
+Freq: M</div>
+
+  <h3 id="t2l7-s15"><span class="en">Past and future, measured &mdash; and the answer is not the one you expect</span><span class="ar">الماضي والمستقبل مقيسين &mdash; والجوابُ ليس المتوقَّع</span></h3>
+  <p class="en">The honest split for dated data is chronological: fit on everything before a cut date, test on everything after it. Run it and compare.</p>
+  <p class="ar">التقسيمُ الأمين للبيانات المؤرَّخة زمنيٌّ: اضبط على كل ما قبل تاريخ قطع، واختبر على كل ما بعده.</p>
+  <pre class="code good" data-lang="python"><code>CUT = pd.Timestamp("2026-05-01")
+past, future = flats[flats["listed_dt"] &lt; CUT], flats[flats["listed_dt"] &gt;= CUT]
+
+pm   = past["monthly_rent"].median()
+pmap = past.groupby("city")["monthly_rent"].median()        # fitted on the past only
+
+print("past %d rows (rents %d) | future %d rows (rents %d)"
+      % (len(past), past["monthly_rent"].count(), len(future), future["monthly_rent"].count()))
+print("median per city, past -> future : MAE %.4f" % mae(future["monthly_rent"], future["city"].map(pmap).fillna(pm)))
+print("the same predictor, random split: MAE %.4f" % mae(dte["monthly_rent"], dte["city"].map(dmap).fillna(dm)))
+print("median rent  past %.1f | future %.1f" % (pm, future["monthly_rent"].median()))</code></pre>
+<div class="output">past 340 rows (rents 327) | future 140 rows (rents 133)
+median per city, past -> future : MAE 55.4511
+the same predictor, random split: MAE 60.9140
+median rent  past 200.0 | future 195.0</div>
+  <p class="en">55.4511 against 60.9140. The chronological split &mdash; the <em>harder</em>, honest one &mdash; scores <strong>better</strong>. That is not what this concept was supposed to demonstrate, and it is reported here because it is what happened. The reason is in the last line: the median rent moved from 200.0 to 195.0 over four months. The market held still, so predicting June from February&ndash;April is no harder than predicting a random June row from a random mixture, and the chronological test set happens to be slightly easier than the random one.</p>
+  <p class="ar">55.4511 مقابل 60.9140. فالتقسيمُ الزمني &mdash; وهو <em>الأصعب</em> الأمين &mdash; يسجّل <strong>أحسنَ</strong>. وهذا ليس ما كان يُفترض أن يبيّنه هذا المفهوم، وهو مذكورٌ هنا لأنه ما حدث. والسببُ في السطر الأخير: فالوسيطُ انتقل من 200.0 إلى 195.0 في أربعة أشهر. فالسوقُ ثبت، فالتنبّؤُ بحزيران من شباط&ndash;نيسان ليس أصعبَ من التنبّؤ بصفّ حزيراني عشوائي من خليط عشوائي، ومجموعةُ الاختبار الزمنية تصادف أن تكون أسهلَ قليلًا من العشوائية.</p>
+  <div class="warn">
+    <h4><span class="en">What to conclude from a check that found nothing</span><span class="ar">ماذا تستنتج من فحص لم يجد شيئًا</span></h4>
+    <p class="en">Two wrong conclusions and one right one. Wrong: &ldquo;time leakage is not a real problem.&rdquo; Wrong: &ldquo;random splits are fine for dated data.&rdquo; Right: <em>on this file, over this window, the cost of a random split was approximately nothing &mdash; and that is a finding, not an assumption.</em> You could not have known it without running the comparison, it took four lines, and if the next batch arrives after a currency revaluation or a change in what the site publishes, the same four lines will say something very different. A check that comes back clean is worth exactly as much as the one that comes back dirty; it is the running of it that you are paid for.</p>
+    <p class="ar">استنتاجان خاطئان وواحدٌ صحيح. الخاطئ: «التسريبُ الزمني ليس مشكلةً حقيقية». والخاطئ: «التقسيماتُ العشوائية لا بأس بها للبيانات المؤرَّخة». والصحيح: <em>في هذا الملف، على هذه النافذة، كان ثمنُ التقسيم العشوائي لا شيء تقريبًا &mdash; وهذا اكتشافٌ لا افتراض.</em> فلم يكن ممكنًا أن تعرفه بلا إجراء المقارنة، وقد أخذت أربعة أسطر، وإن وصلت الدفعةُ القادمة بعد إعادة تقييم للعملة أو تغيُّرٍ في ما ينشره الموقع فستقول الأسطرُ الأربعة نفسها شيئًا مختلفًا جدًّا. والفحصُ الذي يعود نظيفًا يساوي بالضبط ما يساويه الذي يعود ملوَّثًا؛ فإجراؤه هو ما تُؤجَر عليه.</p>
+  </div>
+
+  <h3 id="t2l7-s16"><span class="en">The as-of date is declared, not computed</span><span class="ar">تاريخُ الأساس يُعلَن ولا يُحسَب</span></h3>
+  <p class="en">There is a second, quieter version of this leak that survives even a chronological split, and it arrives the moment you build a <em>recency</em> feature &mdash; &ldquo;how old is this advert?&rdquo; To answer that you need an <span class="term" data-term="as-of-date">as-of date</span> to measure from, and where you get it decides whether the column is legitimate.</p>
+  <p class="ar">ولهذا التسريب نسخةٌ ثانية أهدأ تنجو حتى من تقسيم زمني، وتصل لحظةَ بنائك سمةَ <em>حداثة</em> &mdash; «كم عمرُ هذا الإعلان؟» وللجواب تحتاج <span class="term" data-term="as-of-date">تاريخَ أساس</span> تقيس منه، ومن حيث تأخذه يتحدّد هل العمودُ مشروع.</p>
+  <div class="evolve" id="t2l7-e2">
+    <div class="ver" data-title-en="Version 1 &mdash; today" data-title-ar="النسخة 1 &mdash; اليوم">
+      <pre class="code bad" data-lang="python"><code>flats["recency"] = (pd.Timestamp.today() - flats["listed_dt"]).dt.days</code></pre>
+      <p class="en">What goes wrong: the column depends on the day you ran the cell. Re-run the notebook next week and every value grows by seven, every fitted parameter shifts, and the number in your report cannot be reproduced by anyone, including you. This is not leakage, it is worse &mdash; it is non-determinism, and <a href="#p1l6-s6">Practical&nbsp;1 Lesson&nbsp;6</a> built a whole golden-answer check to catch exactly this class of bug.</p>
+      <p class="ar">ما يخطئ فيه: أن العمود يتبع اليومَ الذي شغّلتَ فيه الخلية. فأعد تشغيل المفكّرة الأسبوعَ القادم تكبُر كلُّ قيمة بسبعة، وينزاح كلُّ وسيط مضبوط، ولا يستطيع أحدٌ إعادةَ إنتاج الرقم في تقريرك، وأنت منهم. وهذا ليس تسريبًا بل أسوأ &mdash; إنه لا حتمية، وقد بنى <a href="#p1l6-s6">الدرس 6 من العملي 1</a> فحصَ إجابةٍ ذهبية كاملًا ليقتنص هذا الصنفَ من العطب بعينه.</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 &mdash; the newest row in the file" data-title-ar="النسخة 2 &mdash; أحدثُ صفّ في الملف">
+      <pre class="code bad" data-lang="python"><code>as_of = flats["listed_dt"].max()                       # 2026-06-19
+flats["recency"] = (as_of - flats["listed_dt"]).dt.days</code></pre>
+      <p class="en">What changed: the result no longer moves with the calendar, so Version&nbsp;1's non-determinism is fixed. What is still broken, and it is subtle: <code>as_of</code> is now <strong>a parameter read out of the whole frame</strong>, test rows included. It is the leak of <a href="#t2l7-h4">Concept&nbsp;4</a> wearing a date. If the newest advert happens to be a test row, every training value of <code>recency</code> was computed against a number you were not allowed to see.</p>
+      <p class="ar">ما تغيّر: لم تعد النتيجةُ تتحرّك مع التقويم، فانصلحت لا حتميةُ النسخة 1. وما لا يزال معطوبًا، وهو خفيّ: أن <code>as_of</code> صار الآن <strong>وسيطًا مقروءًا من الإطار كله</strong>، وصفوفُ الاختبار فيه. وهو تسريبُ <a href="#t2l7-h4">المفهوم 4</a> متلبّسًا بتاريخ. فإن صادف أن يكون أحدثُ إعلان صفَّ اختبار فكلُّ قيمة تدريب لـ<code>recency</code> حُسبت مقابل رقم لم يكن يحقّ لك رؤيته.</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 &mdash; declared, and checked" data-title-ar="النسخة 3 &mdash; معلَنًا ومفحوصًا">
+      <pre class="code good" data-lang="python"><code>AS_OF = pd.Timestamp(SPLIT["as_of"])                   # 2026-06-30, from the split spec
+
+def add_recency(df, as_of=AS_OF):
+    assert df["listed_dt"].max() &lt;= as_of, "an advert is newer than the as-of date"
+    return df.assign(recency=(as_of - df["listed_dt"]).dt.days)
+
+tr2 = add_recency(parts["train"].assign(listed_dt=parse_dates(parts["train"]["listed_on"])))
+print("recency on the training rows: min %d  max %d" % (tr2["recency"].min(), tr2["recency"].max()))</code></pre>
+      <p class="en">What changed: the reference point is a declared constant that travels with the split specification, so it is identical for all three parts and for next month's file, and an assertion refuses a frame that contains an advert newer than the date you declared. What it fixes: the read-from-the-data parameter of Version&nbsp;2. What is still open: <code>2026-06-30</code> is a human judgement about when this analysis is deemed to stand, and nothing can derive it from the file &mdash; which is the right outcome, because it is a business fact, not a statistic.</p>
+      <p class="ar">ما تغيّر: أن نقطة المرجع ثابتٌ معلَن يسافر مع مواصفة التقسيم، فهي واحدةٌ للأقسام الثلاثة ولملف الشهر القادم، وتأكيدٌ يرفض إطارًا فيه إعلانٌ أحدثُ من التاريخ الذي أعلنتَه. وما يُصلحه: الوسيطَ المقروء من البيانات في النسخة 2. وما لا يزال مفتوحًا: أن <code>2026-06-30</code> حكمٌ بشري عن الوقت الذي يُعتبر هذا التحليل قائمًا فيه، ولا شيء يستطيع استخراجه من الملف &mdash; وهذه هي النتيجةُ الصحيحة، فهو واقعةٌ عملية لا إحصاءة.</p>
+    </div>
+  </div>
+<div class="output">recency on the training rows: min 11  max 149</div>
+  <p class="en">Here is the part worth sitting with. On this file, Version&nbsp;2 would not have been caught by any test, because the newest advert lands in the training rows under every seed we tried:</p>
+  <p class="ar">وهذا هو الجزءُ الجديرُ بالتأمّل. فعلى هذا الملف لم يكن أيُّ اختبار سيقتنص النسخة 2، إذ يقع أحدثُ إعلان في صفوف التدريب تحت كل بذرة جرّبناها:</p>
+  <pre class="code" data-lang="python"><code>newest = flats["listed_dt"].max()
+for seed in (3, 7, 11, 42):
+    p, _ = split_listings(rep, dict(SPLIT, seed=seed))
+    where = next(k for k, v in p.items() if (parse_dates(v["listed_on"]) == newest).any())
+    print("seed %-3d newest advert (%s) falls in %s" % (seed, newest.date(), where))</code></pre>
+<div class="output">seed 3   newest advert (2026-06-19) falls in train
+seed 7   newest advert (2026-06-19) falls in train
+seed 11  newest advert (2026-06-19) falls in train
+seed 42  newest advert (2026-06-19) falls in train</div>
+  <p class="en">Four seeds, four times in training, so <code>as_of = flats["listed_dt"].max()</code> would have produced the same numbers as the declared constant every time you checked. A bug that your tests cannot see is not a bug you have avoided; it is a bug you have not met yet. Writing <code>AS_OF</code> down costs one line and removes the question permanently, which is the only reason that line is worth defending in a review where somebody will reasonably say &ldquo;but it gives the same answer&rdquo;.</p>
+  <p class="ar">أربعُ بذور، وأربعُ مرات في التدريب، فكان <code>as_of = flats["listed_dt"].max()</code> سينتج الأرقامَ نفسها التي ينتجها الثابتُ المعلَن في كل مرة تفحص. والعطبُ الذي لا تستطيع اختباراتُك رؤيته ليس عطبًا تجنّبتَه؛ بل عطبًا لم تلقَه بعد. وكتابةُ <code>AS_OF</code> تكلّف سطرًا واحدًا وتُزيل السؤالَ إلى الأبد، وهذا هو السببُ الوحيد لاستحقاق ذلك السطر دفاعًا في مراجعة سيقول فيها أحدهم بحقّ: «لكنه يعطي الجوابَ نفسه».</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">You are predicting whether a listing will be re-posted next month. Which of these candidate features is leaking, regardless of how you split?</span><span class="ar">تتنبّأ هل سيُعاد نشرُ إعلان الشهرَ القادم. فأيٌّ من هذه السمات المرشَّحة تسرّب، أيًّا كان تقسيمُك؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en"><code>recency</code> &mdash; days between the advert's date and a declared as-of date before the prediction window.</span><span class="ar"><code>recency</code> &mdash; الأيامُ بين تاريخ الإعلان وتاريخِ أساس معلَن قبل نافذة التنبؤ.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en"><code>times_posted</code> &mdash; the number of rows in the file sharing this <code>listing_id</code>, which already counts the re-post you are trying to predict.</span><span class="ar"><code>times_posted</code> &mdash; عددُ الصفوف في الملف التي تشارك هذا <code>listing_id</code>، وهو يعدّ سلفًا إعادةَ النشر التي تحاول التنبّؤ بها.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>agency</code> &mdash; high-cardinality and in need of encoding, which Lesson&nbsp;5 showed can leak the target.</span><span class="ar"><code>agency</code> &mdash; عاليةُ العدّية وتحتاج ترميزًا، وقد أظهر الدرس 5 أنه قد يسرّب الهدف.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>condition</code> &mdash; ordinal, with 36 blanks whose fill must be fitted on the training rows.</span><span class="ar"><code>condition</code> &mdash; رُتبية، وفيها 36 فراغًا يجب ضبط تعويضها على صفوف التدريب.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <p class="en"><code>times_posted</code> is computed from the whole file, and the file already contains the future: counting the rows that share a <code>listing_id</code> is counting the re-posts, which is the label. No split rescues it, because the column is wrong on every row including the training ones &mdash; this is the &ldquo;a feature that nearly copies the target&rdquo; case, and it is the leak the first gate of the feature diagram catches. The <code>agency</code> option is tempting because Lesson&nbsp;5 really did find a leak there, but that leak is in how you <em>encode</em> it and is fixed by fitting on train; the column itself is knowable at prediction time. The same is true of <code>condition</code>.</p>
+      <p class="ar"><code>times_posted</code> محسوبٌ من الملف كله، والملفُّ يحتوي المستقبلَ سلفًا: فعدُّ الصفوف التي تشارك <code>listing_id</code> هو عدُّ إعادات النشر، وهي اللافتة. ولا ينجيه تقسيم، فالعمودُ خاطئ في كل صف وفيها صفوفُ التدريب &mdash; وهذه حالةُ «سمةٍ تكاد تنسخ الهدف»، وهو التسريبُ الذي تقتنصه البوابةُ الأولى في مخطط السمات. وخيارُ <code>agency</code> مغرٍ لأن الدرس 5 وجد هناك تسريبًا حقًّا، لكنّ ذلك التسريب في كيفية <em>ترميزك</em> له ويُصلَح بالضبط على التدريب؛ أما العمودُ نفسه فمعلوم وقت التنبؤ. والأمرُ نفسه في <code>condition</code>.</p>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">Every production model lives in time, and the two questions this concept asks are the ones that decide whether an offline score predicts an online one. First, <em>will this value exist at prediction time?</em> A feature built from a column that is filled in later &mdash; a resolution code, a final price, a churn flag &mdash; is the commonest fatal leak in industry, and the giveaway is an offline metric that looks too good followed by an online result that looks like chance. Second, <em>has the world moved?</em> A model trained on pre-event data and tested on post-event data measures drift, which is the thing a random split is structurally unable to measure. Time-series data is a chapter of its own for this reason, and the forecasting equivalent of <code>cross_val_score</code> is <code>TimeSeriesSplit</code>, which only ever trains on the past.</p>
+    <p class="ar">كلُّ نموذج إنتاجي يسكن الزمن، والسؤالان اللذان يسألهما هذا المفهوم هما ما يحدّد هل تتنبّأ نتيجةٌ غير متّصلة بنتيجة متّصلة. الأول: <em>هل ستوجد هذه القيمة وقت التنبؤ؟</em> فالسمةُ المبنيّة على عمود يُملأ لاحقًا &mdash; رمزُ حلّ أو سعرٌ نهائي أو علامةُ انصراف &mdash; أشيعُ تسريب قاتل في الصناعة، ودليلُها مقياسٌ غير متّصل يبدو حسنًا جدًّا تتبعه نتيجةٌ متّصلة تبدو كالحظّ. والثاني: <em>هل تحرّك العالم؟</em> فالنموذجُ المدرَّب على بيانات ما قبل حدث والمختبَر على بيانات ما بعده يقيس الانزياح، وهو ما لا يستطيع تقسيمٌ عشوائي قياسه بنيويًّا. ولهذا السبب تكون السلاسلُ الزمنية فصلًا قائمًا بذاته، ومكافئُ <code>cross_val_score</code> في التنبؤ هو <code>TimeSeriesSplit</code>، وهو لا يدرّب إلا على الماضي.</p>
+  </div>
+
+  <h2 id="t2l7-h6"><span class="en">Concept 6 &mdash; One split, one seed, and what it cannot tell you</span><span class="ar">المفهوم 6 &mdash; تقسيمٌ واحد وبذرةٌ واحدة، وما لا يستطيع أن يخبرك به</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en">In <a href="#t2l7-s6">Concept&nbsp;2</a> the governorate grouping beat the raw-city grouping on validation, 61.9086 against 63.0108, and you kept the governorate. A gap of 1.1&nbsp;shekels out of 62 decided it. Nothing so far tells you whether 1.1 shekels is a difference or a draw.</p>
+    <p class="ar">في <a href="#t2l7-s6">المفهوم 2</a> تغلّب تجميعُ المحافظة على تجميع المدينة الخام في التحقّق، 61.9086 مقابل 63.0108، فأبقيتَ المحافظة. ففجوةٌ من 1.1&nbsp;شيكل من 62 حسمت الأمر. ولا شيء حتى الآن يخبرك هل 1.1 شيكل فرقٌ أم تعادل.</p>
+  </div>
+
+  <h3 id="t2l7-s17"><span class="en">Five folds instead of one split</span><span class="ar">خمسُ طيّات بدل تقسيم واحد</span></h3>
+  <p class="en"><span class="term" data-term="cross-validation">Cross-validation</span> answers it by refusing to hold one set out. Pool the rows you are allowed to fit and choose on &mdash; train plus validation, 384 of the 480; the test rows stay untouched &mdash; cut them into five <span class="term" data-term="fold">folds</span>, and score five times, each fold held out once while the other four do the fitting. You get five numbers instead of one, and the five numbers are the result.</p>
+  <p class="ar">يجيبه <span class="term" data-term="cross-validation">التحقّقُ المتقاطع</span> برفضه حجزَ مجموعة واحدة. فاجمع الصفوف التي يحقّ لك الضبطُ والاختيارُ عليها &mdash; التدريب مع التحقّق، 384 من الـ480؛ وتبقى صفوفُ الاختبار بلا مَساس &mdash; واقطعها إلى خمس <span class="term" data-term="fold">طيّات</span>، وقِس خمس مرات، تُحجَز كلُّ طيّة مرة واحدة وتؤدّي الأربعُ الأخرى الضبط. فتحصل على خمسة أرقام بدل واحد، والأرقامُ الخمسة هي النتيجة.</p>
+  <pre class="code good" data-lang="python"><code>pool  = pd.concat([parts["train"], parts["valid"]])             # 384 rows; test untouched
+folds = np.array_split(np.array(pool.sample(frac=1.0, random_state=7).index), 5)
+
+for label, key in [("one median for everyone", None),
+                   ("median per governorate", "governorate"),
+                   ("median per raw city",    "city")]:
+    scores = []
+    for i in range(5):
+        hold, fit = pool.loc[folds[i]], pool.drop(folds[i])
+        fm   = fit["monthly_rent"].median()                     # refitted inside every fold
+        pred = fm if key is None else hold[key].map(fit.groupby(key)["monthly_rent"].median()).fillna(fm)
+        scores.append(mae(hold["monthly_rent"], pred))
+    s = np.array(scores)
+    print("%-24s folds %s  mean %.4f  sd %.4f"
+          % (label, np.round(s, 2).tolist(), s.mean(), s.std(ddof=1)))</code></pre>
+<div class="output">one median for everyone  folds [58.33, 70.14, 56.6, 69.73, 56.22]  mean 62.2042  sd 7.1056
+median per governorate   folds [55.53, 62.92, 53.75, 64.67, 47.43]  mean 56.8610  sd 7.0358
+median per raw city      folds [60.53, 66.55, 55.28, 61.83, 48.38]  mean 58.5144  sd 6.9438</div>
+
+  <h3 id="t2l7-s18"><span class="en">Seven shekels of fold-to-fold spread</span><span class="ar">سبعةُ شواكل من تشتُّت الطيّات</span></h3>
+  <p class="en">Look at one row before you compare rows. The governorate predictor scores 47.43 on its best fold and 64.67 on its worst &mdash; a range of 17&nbsp;shekels for <em>the same recipe on the same data</em>, differing only in which 77 rows were held out. The standard deviation is 7.0358. That number is the measuring error of this whole chapter, and until now nobody had computed it.</p>
+  <p class="ar">انظر صفًّا واحدًا قبل أن تقارن الصفوف. فمتنبِّئُ المحافظة يسجّل 47.43 في أحسن طيّاته و64.67 في أسوئها &mdash; مدًى من 17&nbsp;شيكلًا <em>للوصفة نفسها على البيانات نفسها</em>، ولا تختلفان إلا في أيّ 77 صفًّا حُجزت. والانحرافُ المعياري 7.0358. وذاك الرقمُ هو خطأُ القياس لهذا الفصل كله، ولم يحسبه أحدٌ حتى الآن.</p>
+
+  <h3 id="t2l7-s19"><span class="en">The retraction: a decision that was inside the noise</span><span class="ar">التصحيح: قرارٌ كان داخل الضجيج</span></h3>
+  <p class="en">Now compare. Governorate 56.8610, raw city 58.5144 &mdash; a gap of 1.6534 shekels, against a fold-to-fold spread of about 7. The gap is a quarter of the noise. <strong>Concept&nbsp;2 presented that comparison as a decision, and it was not one.</strong> The chapter should say so in plain words: the sentence &ldquo;the governorate grouping wins on validation&rdquo; was over-stated, and the defensible version is &ldquo;the two groupings are indistinguishable at this sample size, and the governorate one is preferable because it has five parameters instead of twenty-six.&rdquo; The conclusion survives; the reasoning that produced it does not.</p>
+  <p class="ar">قارِن الآن. المحافظة 56.8610، والمدينةُ الخام 58.5144 &mdash; فجوةٌ من 1.6534 شيكل، مقابل تشتُّتِ طيّات نحو 7. فالفجوةُ رُبعُ الضجيج. <strong>وقد عرض المفهوم 2 تلك المقارنةَ قرارًا، ولم تكن قرارًا.</strong> وينبغي للفصل أن يقول ذلك بكلام صريح: فجملةُ «تجميعُ المحافظة يفوز في التحقّق» مُبالَغٌ فيها، والنسخةُ القابلة للدفاع: «التجميعان لا يُفرَّق بينهما في هذا الحجم، وتجميعُ المحافظة أفضلُ لأن له خمسةَ وسائط بدل ستة وعشرين». فالاستنتاجُ يصمد؛ والتعليلُ الذي أنتجه لا يصمد.</p>
+  <p class="en">There is a sharper version of the same embarrassment. Re-read <a href="#t2l7-s6">Concept&nbsp;2's table</a> and then measure the same two groupings on the de-duplicated 480-row split this lesson has used since <a href="#t2l7-s10">Concept&nbsp;3</a>:</p>
+  <p class="ar">ولهذا الإحراج نسخةٌ أحدّ. أعد قراءة <a href="#t2l7-s6">جدول المفهوم 2</a> ثم قِس التجميعين نفسيهما على تقسيم الـ480 المنزوعِ التكرار الذي استعمله هذا الدرس منذ <a href="#t2l7-s10">المفهوم 3</a>:</p>
+  <pre class="code bad" data-lang="python"><code>for key in ("governorate", "city"):
+    t = dtr.groupby(key)["monthly_rent"].median()
+    print("median per %-12s validation MAE %.4f" % (key, mae(dva["monthly_rent"], dva[key].map(t).fillna(dm))))</code></pre>
+<div class="output">median per governorate  validation MAE 72.1348
+median per city         validation MAE 70.8708</div>
+  <p class="en">On this split the raw-city grouping <em>wins</em>, 70.8708 against 72.1348 &mdash; the opposite verdict to Concept&nbsp;2's, from the same two recipes on the same 480 flats, changed only by removing twenty-three duplicate rows. Two single splits, two answers. That is what a standard deviation of 7 looks like when you meet it without having measured it, and it is the reason this concept exists.</p>
+  <p class="ar">في هذا التقسيم <em>يفوز</em> تجميعُ المدينة الخام، 70.8708 مقابل 72.1348 &mdash; الحكمُ المعاكس لحكم المفهوم 2، من الوصفتين نفسيهما على الشقق الـ480 نفسها، ولم يتغيّر إلا بإزالة ثلاثة وعشرين صفًّا مكرَّرًا. تقسيمان منفردان وجوابان. وهكذا يبدو انحرافٌ معياري من 7 حين تلقاه بلا أن تكون قستَه، وهذا هو سببُ وجود هذا المفهوم.</p>
+
+  <h3 id="t2l7-s20"><span class="en">What cross-validation costs, and when to skip it</span><span class="ar">ما يكلّفه التحقّقُ المتقاطع ومتى تتركه</span></h3>
+  <p class="en">Five folds means five fits, so everything takes five times as long &mdash; nothing here, minutes on a real model, and genuinely prohibitive on a large neural network, which is exactly why large models are usually evaluated on a single held-out set and why their reported numbers deserve more suspicion, not less. Three honest guides. Use cross-validation when rows are few, because the fold spread is then large and a single split is close to meaningless &mdash; this file, at 480 rows, is firmly in that case. Keep a single fixed validation set when fitting is expensive and rows are plentiful, and report the spread you measured once at the start. And whatever you choose, keep the test set out of it: <code>pool</code> above is train plus validation precisely so that the 96 test rows are still unread when <a href="#t2l7-s27">Concept&nbsp;7</a> finally reads them.</p>
+  <p class="ar">خمسُ طيّات تعني خمسَ ضبطات، فيأخذ كلُّ شيء خمسةَ أضعاف الوقت &mdash; لا شيء هنا، ودقائقُ في نموذج حقيقي، ومانعٌ حقًّا في شبكة عصبية كبيرة، ولهذا بالضبط تُقيَّم النماذجُ الكبيرة عادةً على مجموعة محجوزة واحدة ولهذا تستحقّ أرقامُها المبلَّغ عنها مزيدًا من الشكّ لا أقلّ. وثلاثةُ أدلّة أمينة. استعمل التحقّقَ المتقاطع حين تقلّ الصفوف، فتشتُّتُ الطيّات يكون كبيرًا حينئذ والتقسيمُ المنفرد قريبٌ من اللامعنى &mdash; وهذا الملف، بـ480 صفًّا، في تلك الحالة بثبات. وأبقِ مجموعةَ تحقّق ثابتة واحدة حين يكون الضبطُ مكلفًا والصفوفُ كثيرة، وأبلِغ عن التشتُّت الذي قستَه مرة واحدة في البداية. وأيًّا اخترتَ فأبقِ مجموعةَ الاختبار خارجَه: فـ<code>pool</code> أعلاه هو التدريبُ مع التحقّق بالضبط حتى تبقى صفوفُ الاختبار الـ96 غيرَ مقروءة حين يقرؤها <a href="#t2l7-s27">المفهومُ 7</a> أخيرًا.</p>
+
+  <div class="quiz">
+    <p class="q"><span class="en">Five-fold cross-validation gives recipe&nbsp;A a mean of 56.86 with a standard deviation of 7.04, and recipe&nbsp;B a mean of 58.51 with a standard deviation of 6.94. What may you conclude?</span><span class="ar">يعطي التحقّقُ المتقاطع بخمس طيّات الوصفةَ&nbsp;أ متوسطًا 56.86 وانحرافًا معياريًّا 7.04، والوصفةَ&nbsp;ب متوسطًا 58.51 وانحرافًا 6.94. فماذا يجوز أن تستنتج؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="false"><span class="en">A is better than B, because 56.86 is lower than 58.51 and both were measured the same way on the same folds.</span><span class="ar">أ أحسنُ من ب، فـ56.86 أدنى من 58.51 وقد قِيسا بالطريقة نفسها على الطيّات نفسها.</span></button></li>
+      <li><button class="opt" data-correct="true"><span class="en">That the data cannot separate them: the 1.65 gap is a quarter of the fold-to-fold spread, so prefer A for a reason other than its score &mdash; it has fewer parameters &mdash; and say so.</span><span class="ar">أن البياناتَ لا تفرّق بينهما: فالفجوةُ 1.65 رُبعُ تشتُّت الطيّات، ففضّل أ لسبب غير نتيجته &mdash; فوسائطُه أقلّ &mdash; وقُل ذلك.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">Nothing at all, because a standard deviation above 5&nbsp;% of the mean means the cross-validation was set up wrongly and must be re-run with more folds.</span><span class="ar">لا شيء على الإطلاق، فانحرافٌ معياري يزيد على 5&nbsp;% من المتوسط يعني أن التحقّق المتقاطع أُعِدّ خطأً ويجب إعادته بطيّات أكثر.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">That B is better, because its standard deviation is lower and a more stable recipe should be preferred over a slightly more accurate one.</span><span class="ar">أن ب أحسن، فانحرافُه المعياري أدنى، والوصفةُ الأثبتُ ينبغي تفضيلُها على الأدقّ قليلًا.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <p class="en">The first option is the habit this concept exists to break: comparing two means without looking at the spread beside them. The last option makes the mirror-image mistake &mdash; 6.94 against 7.04 is also well inside the noise, so &ldquo;B is more stable&rdquo; is not a finding either. The third option invents a rule; a large fold spread on 384 rows is information about the sample size, not evidence of a broken setup, and adding folds would reduce the spread of the <em>mean</em> while leaving the underlying variability exactly where it is. The useful move when two recipes tie is to choose on something you can defend without the data: simplicity, cost, or how it behaves on the unseen categories of <a href="#t2l5-s11">Lesson&nbsp;5</a>.</p>
+      <p class="ar">الخيارُ الأول هو العادةُ التي وُجد هذا المفهوم لكسرها: مقارنةُ متوسطين بلا نظر إلى التشتُّت بجانبهما. والخيارُ الأخير يرتكب الخطأَ المعاكس &mdash; فـ6.94 مقابل 7.04 داخلَ الضجيج أيضًا بوضوح، فـ«ب أثبت» ليست اكتشافًا كذلك. والخيارُ الثالث يختلق قاعدةً؛ فتشتُّتُ طيّات كبير على 384 صفًّا معلومةٌ عن حجم العيّنة لا دليلٌ على إعدادٍ معطوب، وزيادةُ الطيّات تقلّل تشتُّتَ <em>المتوسط</em> وتترك التغيُّرَ الكامن حيث هو بالضبط. والحركةُ المفيدة حين تتعادل وصفتان أن تختار على شيء تستطيع الدفاع عنه بلا البيانات: البساطة أو الكلفة أو سلوكُها على الفئات غير المرئية في <a href="#t2l5-s11">الدرس 5</a>.</p>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">Almost every claim of the form &ldquo;model A beats model B by 0.4&nbsp;%&rdquo; is this mistake. If the evaluation set is small, or the result comes from one seed, the difference is often inside the variation you would get by re-splitting or re-initialising &mdash; which is why serious papers now report a mean and a spread over several seeds, and why a leaderboard ordering by the third decimal place is mostly ordering noise. In your own work the discipline is cheap: whenever you are about to prefer one approach over another, ask what the spread is. If you have not measured it, you do not yet know whether you have a result, and the honest sentence is &ldquo;these two are the same as far as this data can tell, and I chose the simpler one.&rdquo;</p>
+    <p class="ar">كلُّ ادّعاء تقريبًا من صيغة «النموذجُ أ يتغلّب على ب بـ0.4&nbsp;%» هو هذا الخطأ. فإن كانت مجموعةُ التقييم صغيرة أو جاءت النتيجةُ من بذرة واحدة فالفرقُ غالبًا داخلَ التغيُّر الذي ستحصل عليه بإعادة التقسيم أو إعادة التهيئة &mdash; ولهذا تُبلّغ الأوراقُ الجادّة اليوم عن متوسط وتشتُّت على بذور عدّة، ولهذا يكون ترتيبُ لوحةِ صدارة بالمنزلة العشرية الثالثة ترتيبًا للضجيج في معظمه. والانتظامُ في عملك رخيص: فكلّما أوشكتَ أن تفضّل نهجًا على آخر فاسأل: ما التشتُّت؟ فإن لم تكن قستَه فأنت لا تعرف بعدُ هل تملك نتيجةً، والجملةُ الأمينة: «هذان سواءٌ بقدر ما تستطيع هذه البيانات أن تقول، واخترتُ الأبسط».</p>
+  </div>
+
+  <h2 id="t2l7-h7"><span class="en">Concept 7 &mdash; Feature creation, under the rule</span><span class="ar">المفهوم 7 &mdash; إنشاءُ السمات، تحت القاعدة</span></h2>
+
+  <div class="problem">
+    <h4><span class="en">The problem</span><span class="ar">المشكلة</span></h4>
+    <p class="en"><a href="#t2l6-s30">Lesson&nbsp;6 closed by admitting that feature engineering has not started.</a> Two obvious columns are sitting there unused: <code>listed_on</code>, a date the model currently cannot read at all, and <code>area_m2</code>, a number whose relationship with rent is probably not a straight line. Making new columns out of them &mdash; <span class="term" data-term="feature-engineering">feature engineering</span> &mdash; takes four lines each. Knowing whether to keep them is the entire difficulty, and it is a difficulty you cannot address without the three parts of this lesson.</p>
+    <p class="ar"><a href="#t2l6-s30">أُغلق الدرس 6 باعتراف أن هندسة السمات لم تبدأ.</a> وعمودان بديهيان هناك بلا استعمال: <code>listed_on</code>، وهو تاريخٌ لا يستطيع النموذج قراءته أصلًا، و<code>area_m2</code>، وهو رقمٌ علاقتُه بالإيجار ليست خطًّا مستقيمًا على الأرجح. وصناعةُ أعمدة جديدة منهما &mdash; وهي <span class="term" data-term="feature-engineering">هندسةُ السمات</span> &mdash; تأخذ أربعة أسطر لكلٍّ. ومعرفةُ هل تُبقيها هي الصعوبةُ كلها، وهي صعوبةٌ لا تستطيع التصدّي لها بلا أقسام هذا الدرس الثلاثة.</p>
+  </div>
+
+  <figure class="diagram" data-diagram="t2-l7-feature-gate">
+    <figcaption><span class="en">Four gates a candidate column must pass: known at prediction time, its parameter fitted on train, a validation improvement, and a gain bigger than the fold spread.</span><span class="ar">أربعُ بوابات يجب أن يمرّ بها عمودٌ مرشَّح: معلومٌ وقت التنبؤ، ووسيطُه مضبوط على التدريب، وتحسُّنٌ في التحقّق، ومكسبٌ أكبر من تشتُّت الطيّات.</span></figcaption>
+  </figure>
+
+  <h3 id="t2l7-s21"><span class="en">Five columns out of one date</span><span class="ar">خمسةُ أعمدة من تاريخ واحد</span></h3>
+  <p class="en">A parsed date is not one fact, it is a handful. The <code>.dt</code> accessor reaches inside it the way <code>.str</code> reaches inside text, and each attribute is a legitimate column: the month, the day's name, whether the day was a weekend, and &mdash; with a declared as-of date from <a href="#t2l7-s16">Concept&nbsp;5</a> &mdash; how old the advert is.</p>
+  <p class="ar">التاريخُ المحلَّل ليس واقعةً واحدة بل حفنةً. و<code>.dt</code> يصل إلى داخله كما يصل <code>.str</code> إلى داخل النص، وكلُّ خاصية عمودٌ مشروع: الشهر واسمُ اليوم وهل كان اليومُ نهايةَ أسبوع و&mdash; بتاريخ أساس معلَن من <a href="#t2l7-s16">المفهوم 5</a> &mdash; كم عمرُ الإعلان.</p>
+  <pre class="code" data-lang="python"><code>def date_features(df, as_of=AS_OF):
+    d = df["listed_dt"]
+    return pd.DataFrame({
+        "month":       d.dt.month,                      # 2..6
+        "weekday":     d.dt.day_name(),                 # 'Sunday' ... 'Saturday'
+        "wknd_satsun": d.dt.weekday &gt;= 5,               # the line you will find in every tutorial
+        "wknd_frisat": d.dt.weekday.isin([4, 5]),       # the weekend this data actually has
+        "recency":     (as_of - d).dt.days,
+    }, index=df.index)
+
+ftr, fva = date_features(dtr), date_features(dva)
+print("weekday counts on the training rows:")
+print(ftr["weekday"].value_counts().to_string())</code></pre>
+<div class="output">weekday counts on the training rows:
+weekday
+Wednesday    47
+Monday       46
+Thursday     43
+Sunday       43
+Friday       43
+Saturday     40
+Tuesday      26
+Name: count, dtype: int64</div>
+
+  <div class="warn">
+    <h4><span class="en">The weekend is not where the tutorial put it</span><span class="ar">نهايةُ الأسبوع ليست حيث وضعها الدرسُ المنقول</span></h4>
+    <p class="en"><code>d.dt.weekday &gt;= 5</code> is the line in every introduction to date features, and it is <strong>wrong for this data</strong>. In pandas Monday is 0, so <code>&gt;= 5</code> means Saturday and Sunday &mdash; a European working week. In Gaza the weekend is Friday and Saturday, which is <code>isin([4, 5])</code>. Both columns are 28.82&nbsp;% true on the training rows, so no count, no histogram and no `info()` will tell you which one you have; the only thing that differs is <em>which 83 rows</em>, and the only way to notice is to know the calendar your data came from. A column that is plausibly wrong and statistically invisible is the most expensive kind of mistake in this chapter, and it arrives by copying.</p>
+    <p class="ar"><code>d.dt.weekday &gt;= 5</code> هو السطرُ في كل مقدّمة لسمات التواريخ، وهو <strong>خاطئ لهذه البيانات</strong>. ففي pandas الاثنينُ صفر، فـ<code>&gt;= 5</code> تعني السبتَ والأحد &mdash; أسبوعَ عملٍ أوروبيًّا. وفي غزة نهايةُ الأسبوع الجمعةُ والسبت، وهي <code>isin([4, 5])</code>. والعمودان صادقان في 28.82&nbsp;% من صفوف التدريب، فلا عدٌّ ولا مدرَّجٌ ولا `info()` يخبرك أيَّهما تملك؛ والشيءُ الوحيد المختلف <em>أيُّ 83 صفًّا</em>، والسبيلُ الوحيد إلى الملاحظة أن تعرف التقويمَ الذي جاءت منه بياناتك. والعمودُ الخاطئ على وجه معقول والخفيُّ إحصائيًّا أغلى صنف من الخطأ في هذا الفصل، وهو يصل بالنقل.</p>
+  </div>
+
+  <h3 id="t2l7-s22"><span class="en">The dates earn nothing, measured</span><span class="ar">التواريخُ لا تكسب شيئًا، مقيسةً</span></h3>
+  <p class="en">Predict before you read. Four derived columns, each used as a grouping key for a median, fitted on train and read on validation.</p>
+  <p class="ar">تنبّأ قبل أن تقرأ. أربعةُ أعمدة مشتقّة، كلٌّ منها مفتاحُ تجميع لوسيط، مضبوطًا على التدريب ومقروءًا على التحقّق.</p>
+  <pre class="code" data-lang="python"><code>rows = [("baseline: one median", mae(dtr["monthly_rent"], dm), mae(dva["monthly_rent"], dm))]
+
+for label, col in [("median per month",                "month"),
+                   ("median per weekday name",         "weekday"),
+                   ("median per is_weekend (Sat/Sun)", "wknd_satsun"),
+                   ("median per is_weekend (Fri/Sat)", "wknd_frisat")]:
+    t = dtr["monthly_rent"].groupby(ftr[col]).median()
+    rows.append((label,
+                 mae(dtr["monthly_rent"], ftr[col].map(t).fillna(dm)),
+                 mae(dva["monthly_rent"], fva[col].map(t).fillna(dm))))
+
+print(pd.DataFrame(rows, columns=["prediction", "train", "validation"]).round(4).to_string(index=False))</code></pre>
+<div class="output">                     prediction   train  validation
+           baseline: one median 57.0863     77.6404
+               median per month 55.9173     77.8652
+        median per weekday name 55.9712     79.7753
+median per is_weekend (Sat/Sun) 56.9424     77.9775
+median per is_weekend (Fri/Sat) 56.9065     77.4719</div>
+  <p class="en">Every one of them improves training and three of the four make validation worse. The weekday name is the clearest case: training falls from 57.0863 to 55.9712 and validation rises from 77.6404 to 79.7753. That column did not learn when rents are higher; it learned seven arbitrary groups, one of which (Tuesday) has 26 rows. This is <span class="term" data-term="overfitting">overfitting</span> in its purest form, and a two-part split would have shown you only the 55.9712 and left you pleased.</p>
+  <p class="ar">كلٌّ منها يحسّن التدريب وثلاثةٌ من الأربعة تُسيء إلى التحقّق. واسمُ اليوم أوضحُ الحالات: فالتدريبُ يهبط من 57.0863 إلى 55.9712 والتحقّقُ يصعد من 77.6404 إلى 79.7753. فلم يتعلّم ذلك العمودُ متى تكون الإيجاراتُ أعلى؛ بل تعلّم سبعَ مجموعات اعتباطية، لإحداها (الثلاثاء) 26 صفًّا. وهذا <span class="term" data-term="overfitting">إفراطُ الملاءمة</span> في أصفى صوره، وكان التقسيمُ الثنائي سيُظهر لك 55.9712 وحدها ويتركك مسرورًا.</p>
+  <p class="en">The honest reading of the one that improved: <code>wknd_frisat</code> takes validation from 77.6404 to 77.4719, a gain of 0.1685&nbsp;shekels against a <a href="#t2l7-s18">fold spread of about 7</a>. It is not a result. The correct conclusion for all four is the same sentence: <em>a date column on four months of adverts does not predict rent in this market, and the right move is to drop all four and say that you tried.</em> Reporting a feature that failed is worth as much as reporting one that worked, because the next person will otherwise spend the same afternoon.</p>
+  <p class="ar">والقراءةُ الأمينة للذي تحسّن: <code>wknd_frisat</code> يأخذ التحقّقَ من 77.6404 إلى 77.4719، مكسبًا من 0.1685&nbsp;شيكل مقابل <a href="#t2l7-s18">تشتُّتِ طيّات نحو 7</a>. وهو ليس نتيجة. والاستنتاجُ الصحيح للأربعة كلها جملةٌ واحدة: <em>عمودُ تاريخ على أربعة أشهر من الإعلانات لا يتنبّأ بالإيجار في هذا السوق، والحركةُ الصحيحة أن تُسقط الأربعةَ وتقول إنك جرّبت.</em> والإبلاغُ عن سمة فشلت يساوي ما يساويه الإبلاغُ عن سمة نجحت، فسوف يُنفق التاليُ العصرَ نفسه بغير ذلك.</p>
+
+  <h3 id="t2l7-s23"><span class="en">Binning: equal width against equal count</span><span class="ar">التنطيق: عرضٌ متساوٍ مقابل عددٍ متساوٍ</span></h3>
+  <p class="en">Now the derivation that works. <span class="term" data-term="binning">Binning</span> turns a number into a small set of ranges. You met both kinds in <a href="#t2l4-s8">Lesson&nbsp;4</a> as a way of looking at a distribution; here they become a column the model reads. <code>pd.cut</code> cuts the <em>range</em> into equal slices, so the counts come out however the data falls. <code>pd.qcut</code> cuts the <em>rows</em> into equal groups, so the widths come out however the data falls. They answer different questions and they are not interchangeable.</p>
+  <p class="ar">الآن الاشتقاقُ الذي ينجح. <span class="term" data-term="binning">التنطيقُ</span> يحوّل رقمًا إلى مجموعة صغيرة من المجالات. وقد لقيتَ الصنفين في <a href="#t2l4-s8">الدرس 4</a> طريقةً للنظر إلى توزيع؛ وهما يصيران هنا عمودًا يقرؤه النموذج. فـ<code>pd.cut</code> يقطع <em>المدى</em> إلى شرائح متساوية، فتخرج الأعدادُ كما يقع الحظُّ بالبيانات. و<code>pd.qcut</code> يقطع <em>الصفوف</em> إلى مجموعات متساوية، فتخرج العروضُ كما يقع الحظُّ بالبيانات. وهما يجيبان سؤالين مختلفين وليسا متبادلين.</p>
+
+  <h3 id="t2l7-s24"><span class="en">The bands you get if you bin before repairing the units</span><span class="ar">النطاقاتُ التي تحصل عليها إن نطّقتَ قبل إصلاح الوحدات</span></h3>
+  <div class="evolve" id="t2l7-e3">
+    <div class="ver" data-title-en="Version 1 &mdash; cut the raw column" data-title-ar="النسخة 1 &mdash; اقطع العمود الخام">
+      <pre class="code bad" data-lang="python"><code>a = dtr["area_m2"]
+print("area_m2 on train: min %.1f  max %.1f  blanks %d" % (a.min(), a.max(), a.isna().sum()))
+bands, edges = pd.cut(a, bins=4, retbins=True)
+print("counts:", [int(v) for v in bands.value_counts().sort_index()])</code></pre>
+<div class="output">area_m2 on train: min 0.1  max 113.6  blanks 16
+counts: [4, 55, 140, 73]</div>
+      <p class="en">What goes wrong: 4, 55, 140, 73. The first band holds four rows and the third holds 140, because the <a href="#t2l4-s3">five areas recorded in dunum</a> read 0.0379 instead of 37.9 and drag the minimum to 0.1. One quarter of the band structure is spent on five broken rows, and the three remaining bands have to cover the whole real range between them. Nothing errors; the column is simply much less useful than it looks.</p>
+      <p class="ar">ما يخطئ فيه: 4 و55 و140 و73. فالنطاقُ الأول يحمل أربعةَ صفوف والثالثُ يحمل 140، لأن <a href="#t2l4-s3">المساحاتِ الخمس المسجَّلة بالدونم</a> تُقرأ 0.0379 بدل 37.9 فتجرّ الأدنى إلى 0.1. فرُبعُ بناء النطاقات يُنفَق على خمسة صفوف معطوبة، وعلى النطاقات الثلاثة الباقية أن تغطّي المدى الحقيقي كلَّه بينها. ولا شيء يُخطئ؛ وإنما العمودُ أقلُّ نفعًا بكثير مما يبدو.</p>
+    </div>
+    <div class="ver" data-title-en="Version 2 &mdash; repair the units first" data-title-ar="النسخة 2 &mdash; أصلِح الوحدات أولًا">
+      <pre class="code" data-lang="python"><code>DUNUM = [5015, 5099, 5167, 5290, 5403]                 # Lesson 4's five rows
+
+def repair_area(df):
+    out = df.copy()
+    rows = out["listing_id"].isin(DUNUM)
+    out.loc[rows, "area_m2"] = out.loc[rows, "area_m2"] * 1000
+    return out
+
+dtr, dva, dte = repair_area(dtr), repair_area(dva), repair_area(dte)
+bands, edges = pd.cut(dtr["area_m2"], bins=4, retbins=True)
+print("min %.1f | counts:" % dtr["area_m2"].min(), [int(v) for v in bands.value_counts().sort_index()])</code></pre>
+<div class="output">min 32.3 | counts: [45, 91, 94, 42]</div>
+      <p class="en">What changed: the repair is a <a href="#t2l7-s13">domain rule, not a fitted parameter</a>, so it may run on all three parts. The bands become 45, 91, 94, 42 &mdash; a shape you would actually choose. What it fixes: the wasted band of Version&nbsp;1. What is still broken: <code>edges</code> was computed from <code>dtr</code> here, but nothing stores it, so applying this band to June's file means re-running <code>pd.cut</code> on June and getting <em>different edges</em> &mdash; the same silent failure <a href="#t2l5-s9">Lesson&nbsp;5 found with <code>get_dummies</code></a>.</p>
+      <p class="ar">ما تغيّر: الإصلاحُ <a href="#t2l7-s13">قاعدةُ مجال لا وسيطٌ مضبوط</a>، فيجوز أن يعمل على الأقسام الثلاثة. فتصير النطاقاتُ 45 و91 و94 و42 &mdash; شكلًا كنتَ ستختاره فعلًا. وما يُصلحه: النطاقَ المهدور في النسخة 1. وما لا يزال معطوبًا: أن <code>edges</code> حُسبت من <code>dtr</code> هنا، ولا شيء يحفظها، فتطبيقُ هذا النطاق على ملف حزيران يعني إعادةَ تشغيل <code>pd.cut</code> على حزيران والحصولَ على <em>حدود مختلفة</em> &mdash; وهو الفشلُ الصامت نفسه الذي <a href="#t2l5-s9">وجده الدرس 5 مع <code>get_dummies</code></a>.</p>
+    </div>
+    <div class="ver" data-title-en="Version 3 &mdash; equal count, edges fitted on train" data-title-ar="النسخة 3 &mdash; عددٌ متساوٍ، وحدودٌ مضبوطة على التدريب">
+      <pre class="code" data-lang="python"><code>edges = pd.qcut(dtr["area_m2"], q=4, retbins=True)[1]      # FIT: on the training rows only
+
+def area_band(s, edges=edges):                             # APPLY: pd.cut, never pd.qcut again
+    return pd.cut(s, bins=edges, include_lowest=True)
+
+bva = area_band(dva["area_m2"])
+print("edges fitted on train:", np.round(edges, 2).tolist())
+print("validation rows with no band      :", int(bva.isna().sum()))
+print("of which blank areas              :", int(dva["area_m2"].isna().sum()))
+print("of which outside the fitted range :", int(((dva["area_m2"] &lt; edges[0]) | (dva["area_m2"] &gt; edges[-1])).sum()))</code></pre>
+<div class="output">edges fitted on train: [32.3, 61.82, 72.95, 86.72, 113.6]
+validation rows with no band      : 4
+of which blank areas              : 4
+of which outside the fitted range : 0</div>
+      <p class="en">What changed: <code>qcut</code> on train produces the edges, and every other frame is cut with <code>pd.cut</code> against <em>those</em> edges. Running <code>qcut</code> on validation would give validation its own quartiles, which is <a href="#t2l7-h4">Concept&nbsp;4's leak</a> in its least obvious costume. What it fixes: the unstored edges of Version&nbsp;2. What is still broken: four validation rows come back with no band at all. All four are blank areas this time and none is outside the fitted range &mdash; but that is luck, not design: an area above 113.6 would become a silent <code>NaN</code> by exactly the same mechanism, and next month's file is where you would meet it.</p>
+      <p class="ar">ما تغيّر: <code>qcut</code> على التدريب ينتج الحدود، وكلُّ إطار آخر يُقطَع بـ<code>pd.cut</code> مقابل <em>تلك</em> الحدود. فتشغيلُ <code>qcut</code> على التحقّق سيعطي التحقّقَ أرباعَه الخاصة، وهو <a href="#t2l7-h4">تسريبُ المفهوم 4</a> في أقلّ أزيائه بديهيةً. وما يُصلحه: الحدودَ غير المحفوظة في النسخة 2. وما لا يزال معطوبًا: أن أربعةَ صفوف تحقّق تعود بلا نطاق أصلًا. وأربعتُها مساحاتٌ فارغة هذه المرة ولا واحد منها خارج المدى المضبوط &mdash; لكنّ ذاك حظٌّ لا تصميم: فمساحةٌ تزيد على 113.6 كانت ستصير <code>NaN</code> صامتًا بالآلية نفسها بالضبط، وملفُّ الشهر القادم هو حيث ستلقاها.</p>
+    </div>
+    <div class="ver" data-title-en="Version 4 &mdash; a fitted feature, stored and applied" data-title-ar="النسخة 4 &mdash; سمةٌ مضبوطة محفوظةٌ ومطبَّقة">
+      <pre class="code good" data-lang="python"><code>def fit_area_band(df, q=4):
+    edges = pd.qcut(df["area_m2"], q=q, retbins=True)[1]
+    return {"area_edges": edges, "area_band_fallback": float(df["area_m2"].median())}
+
+def apply_area_band(df, fitted):
+    e = fitted["area_edges"]
+    band = pd.cut(df["area_m2"].clip(e[0], e[-1]),          # an unseen extreme joins the end band
+                  bins=e, include_lowest=True)
+    return df.assign(area_band=band.astype(str),            # a label, including "nan" for a blank area
+                     area_mid=[iv.mid if pd.notna(iv) else fitted["area_band_fallback"] for iv in band])
+
+fitted = fit_area_band(dtr)
+dtr, dva, dte = (apply_area_band(d, fitted) for d in (dtr, dva, dte))
+
+print("band labels:", sorted(dtr["area_band"].unique().tolist()))
+print("values of area_mid:", sorted(set(round(v, 3) for v in dtr["area_mid"])))
+print("stored keys:", list(fitted))</code></pre>
+<div class="output">band labels: ['(32.299, 61.825]', '(61.825, 72.95]', '(72.95, 86.725]', '(86.725, 113.6]', 'nan']
+values of area_mid: [47.062, 67.388, 72.95, 79.838, 100.162]
+stored keys: ['area_edges', 'area_band_fallback']</div>
+      <p class="en">What changed: three things. The edges and the blank-area fallback are <code>fitted</code> entries. <code>clip</code> sends a value outside the fitted range into the nearest end band instead of to the silent <code>NaN</code> of Version&nbsp;3 &mdash; the same move <a href="#t2l4-s26">Lesson&nbsp;4</a> called winsorising, used here for a different purpose. And the band arrives twice: as a label a human can read, and as an <span class="term" data-term="interval-midpoint">interval midpoint</span> a model can multiply. Read the two output lines together and notice <code>72.95</code> appears among the midpoints without being one: it is <code>area_band_fallback</code>, the training median area, standing in for the sixteen blank areas whose label is the string <code>"nan"</code>. That is deliberate &mdash; a blank area becomes its own group rather than being quietly merged into the middle, which is <a href="#t2l2-s20">Lesson&nbsp;2's missing indicator</a> arriving by a side door. What is still open: four, not three, is a human choice, and no measurement in this lesson defends it against three or six. <code>q=4</code> looks like a fact and is a preference.</p>
+      <p class="ar">ما تغيّر: ثلاثةُ أمور. فالحدودُ ومرتدُّ المساحة الفارغة مدخلانِ في <code>fitted</code>. و<code>clip</code> يُرسل قيمةً خارج المدى المضبوط إلى أقرب نطاق طرفي بدل <code>NaN</code> الصامت في النسخة 3 &mdash; وهي الحركةُ نفسها التي سمّاها <a href="#t2l4-s26">الدرس 4</a> قصًّا، مستعملةً هنا لغرض آخر. والنطاقُ يأتي مرتين: لافتةً يقرؤها الإنسان، و<span class="term" data-term="interval-midpoint">نقطةَ منتصف مجال</span> يضربها النموذج. واقرأ سطرَي المخرج معًا ولاحظ <code>72.95</code> يظهر بين نقاط المنتصف وهو ليس واحدةً منها: فهو <code>area_band_fallback</code>، وسيطُ مساحة التدريب، ينوب عن المساحات الفارغة الستّ عشرة التي لافتتُها النصُّ <code>"nan"</code>. وذاك متعمَّد &mdash; فالمساحةُ الفارغة تصير مجموعتها الخاصة بدل أن تُدمَج بهدوء في الوسط، وهو <a href="#t2l2-s20">مؤشِّرُ النقص في الدرس 2</a> يصل من باب جانبي. وما لا يزال مفتوحًا: أن أربعةً، لا ثلاثة، اختيارٌ بشري، ولا قياسَ في هذا الدرس يدافع عنه مقابل ثلاثة أو ستة. فـ<code>q=4</code> يبدو واقعةً وهو تفضيل.</p>
+    </div>
+  </div>
+
+  <h3 id="t2l7-s25"><span class="en">Band edges are a fitted parameter</span><span class="ar">حدودُ النطاقات وسيطٌ مضبوط</span></h3>
+  <p class="en">It is worth stating separately because it is the single most-missed item on <a href="#t2l7-s13">the table of things that fit</a>. <code>pd.qcut</code> reads quartiles out of the column you hand it. Hand it the whole file and the quartiles know the test rows; hand it validation and you have fitted on validation. The pattern &mdash; <code>qcut</code> once to learn, <code>cut</code> forever to apply &mdash; is the same shape as <a href="#t2l5-s11">Lesson&nbsp;5's fitted category list</a> and <a href="#t2l4-s17">Lesson&nbsp;4's fitted fence</a>. Three lessons, three different objects, one rule.</p>
+  <p class="ar">يستحقّ أن يُقال منفصلًا لأنه أكثرُ بندٍ منفرد يُنسى في <a href="#t2l7-s13">جدول ما يضبط</a>. فـ<code>pd.qcut</code> يقرأ الأرباعَ من العمود الذي تسلّمه له. فسلّمه الملفَّ كله تعرفِ الأرباعُ صفوفَ الاختبار؛ وسلّمه التحقّقَ تكن قد ضبطتَ على التحقّق. والنمطُ &mdash; <code>qcut</code> مرةً للتعلّم و<code>cut</code> دائمًا للتطبيق &mdash; هو شكلُ <a href="#t2l5-s11">قائمةِ الفئات المضبوطة في الدرس 5</a> و<a href="#t2l4-s17">السياجِ المضبوط في الدرس 4</a> نفسه. ثلاثةُ دروس وثلاثةُ كائنات مختلفة وقاعدةٌ واحدة.</p>
+
+  <h3 id="t2l7-s26"><span class="en">The midpoint, and what a band throws away</span><span class="ar">نقطةُ المنتصف وما يرميه النطاق</span></h3>
+  <p class="en">A band is a label, and a model that wants numbers needs the band expressed as one. The midpoint of the interval is the standard answer: the four bands become 47.062, 67.388, 79.838 and 100.162 square metres. The cost is exact and worth naming: <strong>every area inside one band collapses to the same number.</strong> Two flats of 62&nbsp;m&sup2; and 72&nbsp;m&sup2; both become 67.388 and receive the same prediction, and the ten square metres between them &mdash; which the raw column knew about &mdash; are gone. You traded resolution for robustness; whether that was a good trade is what the validation column answers.</p>
+  <p class="ar">النطاقُ لافتةٌ، والنموذجُ الذي يريد أرقامًا يحتاج النطاقَ معبَّرًا عنه برقم. ونقطةُ منتصف المجال هي الجوابُ المعتاد: فالنطاقاتُ الأربعة تصير 47.062 و67.388 و79.838 و100.162 مترًا مربعًا. والثمنُ محدَّدٌ ويستحقّ التسمية: <strong>كلُّ مساحة داخل نطاق واحد تنطوي على الرقم نفسه.</strong> فشقتان من 62&nbsp;م&sup2; و72&nbsp;م&sup2; تصيران كلتاهما 67.388 وتتلقّيان التنبّؤَ نفسه، والأمتارُ العشرة بينهما &mdash; وقد كان العمودُ الخام يعرفها &mdash; ذهبت. فقد بادلتَ الدقّةَ بالحصانة؛ وهل كانت مبادلةً حسنة فذاك ما يجيبه عمودُ التحقّق.</p>
+
+  <h3 id="t2l7-s27"><span class="en">Governorate &times; band, and the test read once</span><span class="ar">المحافظة × النطاق، والاختبارُ مقروءًا مرة واحدة</span></h3>
+  <p class="en">Four predictors, chosen on validation, and then &mdash; once, at the end of the lesson and the end of the chapter &mdash; the test column.</p>
+  <p class="ar">أربعةُ متنبِّئين، مختارين على التحقّق، ثم &mdash; مرةً واحدة، في نهاية الدرس ونهاية الفصل &mdash; عمودُ الاختبار.</p>
+  <pre class="code good" data-lang="python"><code>rows = [("baseline: one median", mae(dtr[TARGET], dm), mae(dva[TARGET], dm), mae(dte[TARGET], dm))]
+
+g = dtr.groupby("governorate")[TARGET].median()
+rows.append(("median per governorate",
+             mae(dtr[TARGET], dtr["governorate"].map(g).fillna(dm)),
+             mae(dva[TARGET], dva["governorate"].map(g).fillna(dm)),
+             mae(dte[TARGET], dte["governorate"].map(g).fillna(dm))))
+
+b = dtr.groupby("area_band")[TARGET].median()
+rows.append(("median per area band",
+             mae(dtr[TARGET], dtr["area_band"].map(b).fillna(dm)),
+             mae(dva[TARGET], dva["area_band"].map(b).fillna(dm)),
+             mae(dte[TARGET], dte["area_band"].map(b).fillna(dm))))
+
+both = dtr.groupby(["governorate", "area_band"])[TARGET].median()
+def pair(d):
+    return pd.Series(list(zip(d["governorate"], d["area_band"])), index=d.index).map(both).astype(float).fillna(dm)
+rows.append(("governorate x area band", mae(dtr[TARGET], pair(dtr)), mae(dva[TARGET], pair(dva)), mae(dte[TARGET], pair(dte))))
+
+print(pd.DataFrame(rows, columns=["prediction", "train", "validation", "test"]).round(4).to_string(index=False))</code></pre>
+<div class="output">             prediction   train  validation    test
+   baseline: one median 57.0863     77.6404 60.9140
+ median per governorate 51.6906     72.1348 57.9570
+   median per area band 49.3525     63.2584 53.0376
+governorate x area band 37.9137     54.5787 46.9355</div>
+  <p class="en">Validation chooses the interaction, 54.5787, and the test column agrees: <strong>60.9140 &rarr; 46.9355 shekels</strong>, a 22.9&nbsp;% reduction, on 96 flats that have been read exactly once. That is the number this chapter is entitled to report, and it is the first number in seven lessons that the word <em>test</em> honestly applies to.</p>
+  <p class="ar">يختار التحقّقُ التقاطع، 54.5787، ويوافق عمودُ الاختبار: <strong>60.9140 &rarr; 46.9355 شيكلًا</strong>، انخفاضًا بـ22.9&nbsp;%، على 96 شقة قُرئت مرة واحدة بالضبط. وذاك هو الرقمُ الذي يحقّ لهذا الفصل الإبلاغُ عنه، وهو أولُ رقم في سبعة دروس تنطبق عليه كلمةُ <em>اختبار</em> بأمانة.</p>
+  <p class="en">And the honest footnote, because the training column is in the table for a reason. The interaction scores 37.9137 on train against 54.5787 on validation &mdash; a gap of 16.7&nbsp;shekels, far wider than any other row. Crossing five governorates with four bands asks for twenty medians from 288 rows, some of them fitted on a handful. It is the best of the four <em>and</em> it is the closest to the edge; another band or another column and it would start losing on validation while still improving on train. The table does not tell you to stop here, but it tells you that here is where you would find out.</p>
+  <p class="ar">والحاشيةُ الأمينة، فعمودُ التدريب في الجدول لسبب. فالتقاطعُ يسجّل 37.9137 على التدريب مقابل 54.5787 على التحقّق &mdash; فجوةً من 16.7&nbsp;شيكلًا، أوسعَ بكثير من أي صف آخر. فتقاطعُ خمس محافظات بأربعة نطاقات يطلب عشرين وسيطًا من 288 صفًّا، بعضُها مضبوطٌ على حفنة. فهو أحسنُ الأربعة <em>و</em>هو أقربُها إلى الحدّ؛ فنطاقٌ آخر أو عمودٌ آخر وسيبدأ يخسر على التحقّق وهو لا يزال يتحسّن على التدريب. ولا يقول لك الجدولُ أن تتوقّف هنا، لكنه يقول لك إن هنا حيث ستكتشف.</p>
+
+  <div class="thread">
+    <h4><span class="en">Thread &middot; P-REPRO &mdash; run it again next month and get the same answer</span><span class="ar">خيط &middot; P-REPRO &mdash; شغّله الشهرَ القادم واحصل على الجواب نفسه</span></h4>
+    <p class="en"><a href="#p1l1-s9">Practical&nbsp;1 Lesson&nbsp;1</a> wrote a decision log in prose, which could go stale. <a href="#p1l6-s6">P1 Lesson&nbsp;6</a> added a dated golden answer. <a href="#t2l1-s21">Lesson&nbsp;1</a> made the log a thing the code produces. <a href="#t2l6-s21">Lesson&nbsp;6</a> reached one function, seventeen steps, eighteen fitted parameters and three assertions &mdash; and <a href="#t2l6-s27">admitted</a> that <code>fitted</code> is a dictionary in memory nobody dates, that the row order is not reproducible, and that one seed decided everything. What this lesson closes: the split is now itself a recorded artefact (<a href="#t2l7-e1">the <code>SPLIT</code> spec</a>), the as-of date is declared rather than read from the data, the band edges join <code>fitted</code>, and the one-seed problem is answered by a measured fold spread of 7.0358 shekels that retires at least one earlier conclusion. What is still open, and it is the same gap P1 L6 still wins on: nothing <em>dates</em> any of it. <code>SPLIT</code>, <code>AS_OF</code> and <code>fitted</code> are literals in a module, so changing <code>q=4</code> to <code>q=5</code> re-bins every flat with every assertion still passing and no record that the answer moved.</p>
+    <p class="ar">كتب <a href="#p1l1-s9">الدرس 1 من العملي 1</a> سجلَّ قرارات نثرًا، وكان قد يبلى. وأضاف <a href="#p1l6-s6">الدرس 6 من العملي 1</a> إجابةً ذهبية مؤرَّخة. وجعل <a href="#t2l1-s21">الدرس 1</a> السجلَّ شيئًا يُنتجه الكود. وبلغ <a href="#t2l6-s21">الدرس 6</a> دالةً واحدة وسبعَ عشرةَ خطوة وثمانيةَ عشرَ وسيطًا مضبوطًا وثلاثةَ تأكيدات &mdash; و<a href="#t2l6-s27">أقرّ</a> بأن <code>fitted</code> قاموسٌ في الذاكرة لا يؤرّخه أحد، وأن ترتيبَ الصفوف غيرُ قابل للإعادة، وأن بذرةً واحدة حسمت كلَّ شيء. وما يُغلقه هذا الدرس: أن التقسيمَ صار هو نفسه أثرًا مسجَّلًا (<a href="#t2l7-e1">مواصفةُ <code>SPLIT</code></a>)، وأن تاريخَ الأساس معلَنٌ لا مقروءًا من البيانات، وأن حدودَ النطاقات تنضمّ إلى <code>fitted</code>، وأن مشكلةَ البذرة الواحدة يجيبها تشتُّتُ طيّات مقيسٌ من 7.0358 شيكل يُقيل استنتاجًا أسبقَ واحدًا على الأقلّ. وما لا يزال مفتوحًا، وهو الثغرةُ نفسها التي ما زال الدرس 6 من العملي 1 يتفوّق فيها: أن لا شيء <em>يؤرّخ</em> أيَّ ذلك. فـ<code>SPLIT</code> و<code>AS_OF</code> و<code>fitted</code> ثوابتُ في وحدة، فتغييرُ <code>q=4</code> إلى <code>q=5</code> يعيد تنطيقَ كل شقة وكلُّ التأكيدات ما زالت تنجح ولا سجلَّ بأن الجوابَ تحرّك.</p>
+  </div>
+
+  <div class="quiz">
+    <p class="q"><span class="en">You fit <code>qcut</code> quartile edges on the training rows and store them. Next month's file arrives and its largest flat is 140&nbsp;m&sup2;, bigger than anything in training. With <code>pd.cut(s, bins=edges)</code> and the stored edges unmodified, what happens to that row?</span><span class="ar">تضبط حدودَ أرباع <code>qcut</code> على صفوف التدريب وتحفظها. فيصل ملفُّ الشهر القادم وأكبرُ شقة فيه 140&nbsp;م&sup2;، أكبرُ من كل ما في التدريب. فبـ<code>pd.cut(s, bins=edges)</code> والحدودِ المحفوظة بلا تعديل، ماذا يحدث لذلك الصف؟</span></p>
+    <ul class="options">
+      <li><button class="opt" data-correct="true"><span class="en">It gets <code>NaN</code> for its band, silently, because it is outside the outermost stored edge &mdash; which is why Version&nbsp;3 pushed the outer edges to infinity.</span><span class="ar">يأخذ <code>NaN</code> نطاقًا له، بصمت، لأنه خارج أقصى حدٍّ محفوظ &mdash; ولهذا دفعت النسخةُ 3 الحدودَ الخارجية إلى اللانهاية.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">It is placed in the top band, because <code>pd.cut</code> clamps values beyond the last edge into the nearest interval.</span><span class="ar">يوضَع في النطاق الأعلى، فـ<code>pd.cut</code> تحصر القيمَ بعد الحدّ الأخير في أقرب مجال.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en"><code>pd.cut</code> raises a <code>ValueError</code>, so the pipeline stops and you are told about it.</span><span class="ar">ترفع <code>pd.cut</code> خطأ <code>ValueError</code>، فيتوقّف الخط وتُخبَر بالأمر.</span></button></li>
+      <li><button class="opt" data-correct="false"><span class="en">The edges are re-fitted from the new file automatically, because <code>bins</code> is treated as a hint rather than a fixed boundary list.</span><span class="ar">تُعاد ضبطُ الحدود من الملف الجديد تلقائيًّا، فـ<code>bins</code> تُعامَل تلميحًا لا قائمةَ حدود ثابتة.</span></button></li>
+    </ul>
+    <div class="feedback" hidden>
+      <p class="en">Silent <code>NaN</code> &mdash; the same failure mode as <a href="#t2l5-s12">Lesson&nbsp;5's unseen category</a> and <a href="#t2l3-s13">Lesson&nbsp;3's unmatched city</a>, which is three lessons finding the same shape of bug in three different objects. The clamping answer is the one to be careful about, because it is what you would want to happen and it is not what happens. Raising would at least be loud; <code>pd.cut</code> is quieter than that. And the last option describes <code>qcut</code>'s behaviour, which is exactly the thing you must not do on a later file, because re-fitting is the leak.</p>
+      <p class="ar"><code>NaN</code> صامت &mdash; وهو نمطُ الفشل نفسه في <a href="#t2l5-s12">الفئة غير المرئية في الدرس 5</a> و<a href="#t2l3-s13">المدينة غير المطابَقة في الدرس 3</a>، فثلاثةُ دروس تجد شكلَ العطب نفسه في ثلاثة كائنات مختلفة. وجوابُ الحصر هو ما ينبغي الحذرُ منه، فهو ما كنتَ تتمنّى حدوثه وليس ما يحدث. ورفعُ خطأ كان سيكون صاخبًا على الأقل؛ و<code>pd.cut</code> أهدأُ من ذلك. والخيارُ الأخير يصف سلوكَ <code>qcut</code>، وهو بالضبط ما لا يجوز أن تفعله على ملف لاحق، فإعادةُ الضبط هي التسريب.</p>
+    </div>
+  </div>
+
+  <div class="ai-lens">
+    <h4><span class="en">AI lens</span><span class="ar">منظور الذكاء الاصطناعي</span></h4>
+    <p class="en">Binning is how you give a model a relationship it cannot otherwise express. A linear model can only multiply <code>area_m2</code> by one coefficient, so it cannot learn that rent rises steeply up to about 70&nbsp;m&sup2; and flattens afterwards; four band columns let it learn a different level for each range. A tree model does not need the bands at all, because splitting on a threshold is what a tree does &mdash; which is why the same feature helps one model and is pure overhead for another, and why &ldquo;good features&rdquo; is never a property of the data alone. The discipline that transfers to every model is the one in this concept's diagram: known at prediction time, fitted on train, improves validation, and by more than the fold spread. Four gates, in that order, and the third one is where most ideas die.</p>
+    <p class="ar">التنطيقُ هو كيف تعطي نموذجًا علاقةً لا يستطيع التعبيرَ عنها بغير ذلك. فالنموذجُ الخطي لا يستطيع إلا ضربَ <code>area_m2</code> بمعامل واحد، فلا يستطيع أن يتعلّم أن الإيجارَ يصعد بحدّة حتى نحو 70&nbsp;م&sup2; ثم يستوي؛ وأربعةُ أعمدة نطاقات تتيح له تعلّمَ مستوى مختلف لكل مدى. والنموذجُ الشجري لا يحتاج النطاقات أصلًا، فالانقسامُ على حدٍّ هو ما تفعله الشجرة &mdash; ولهذا تُفيد السمةُ نفسها نموذجًا وتكون كلفةً خالصة لآخر، ولهذا لا تكون «السماتُ الحسنة» خاصيةً للبيانات وحدها. والانتظامُ الذي ينتقل إلى كل نموذج هو الذي في مخطط هذا المفهوم: معلومٌ وقت التنبؤ، ومضبوطٌ على التدريب، ويحسّن التحقّق، وبأكثرَ من تشتُّت الطيّات. أربعُ بوابات بذلك الترتيب، والثالثةُ هي حيث تموت معظمُ الأفكار.</p>
+  </div>
+
+  <h2 id="t2l7-h8"><span class="en">Exercises</span><span class="ar">تمارين</span></h2>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 1 &mdash; A leak that costs nothing, and why you fix it anyway</span><span class="ar">التمرين 1 &mdash; تسريبٌ لا يكلّف شيئًا، ولماذا تُصلحه مع ذلك</span></h4>
+    <p class="en">Fit <a href="#t2l4-s16">Lesson&nbsp;4's 1.5&nbsp;&times;&nbsp;IQR fence</a> on the rent column twice &mdash; once over all 480 flats, once over the 288 training rows &mdash; and print both fences. Then clip the training rents with each fence, fit a median per governorate, and report the validation MAE for both. Predict the two numbers before you run it, then explain the result in one sentence.</p>
+    <p class="ar">اضبط <a href="#t2l4-s16">سياجَ 1.5&nbsp;&times;&nbsp;IQR في الدرس 4</a> على عمود الإيجار مرتين &mdash; مرةً على الشقق الـ480 كلها ومرةً على صفوف التدريب الـ288 &mdash; واطبع السياجين. ثم اقصُص إيجاراتِ التدريب بكل سياج، واضبط وسيطًا لكل محافظة، وأبلِغ عن خطأ التحقّق للحالتين. تنبّأ بالرقمين قبل أن تشغّل، ثم اشرح النتيجة في جملة.</p>
+    <pre class="code" data-lang="python"><code>def fence(s, k=1.5):
+    q1, q3 = s.quantile(.25), s.quantile(.75)
+    # return the low and high fence
+# fence over flats[TARGET]  -> the leaky one
+# fence over dtr[TARGET]    -> the honest one
+# for each: clip dtr's rents, groupby governorate, median, score on dva</code></pre>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">اعرض الحلّ</span></summary>
+      <pre class="code good" data-lang="python"><code>def fence(s, k=1.5):
+    q1, q3 = s.quantile(.25), s.quantile(.75)
+    iqr = q3 - q1
+    return q1 - k * iqr, q3 + k * iqr
+
+lo_all, hi_all = fence(flats[TARGET])        # leaky: includes validation and test rents
+lo_tr,  hi_tr  = fence(dtr[TARGET])          # honest: training rows only
+print("fence on all rows : [%.2f, %.2f]" % (lo_all, hi_all))
+print("fence on train    : [%.2f, %.2f]" % (lo_tr,  hi_tr))
+
+for name, (lo, hi) in [("all", (lo_all, hi_all)), ("train", (lo_tr, hi_tr))]:
+    clipped = dtr.assign(**{TARGET: dtr[TARGET].clip(lo, hi)})
+    g = clipped.groupby("governorate")[TARGET].median()
+    print("  clipped with the %-5s fence -> validation MAE %.4f"
+          % (name, mae(dva[TARGET], dva["governorate"].map(g).fillna(clipped[TARGET].median()))))</code></pre>
+<div class="output">fence on all rows : [5.00, 405.00]
+fence on train    : [17.50, 397.50]
+  clipped with the all   fence -> validation MAE 72.1348
+  clipped with the train fence -> validation MAE 72.1348</div>
+      <p class="en">The two fences genuinely differ &mdash; the leaky one is wider at the bottom by 12.5 shekels and higher at the top by 7.5 &mdash; and the validation MAE is <em>identical to four decimal places</em>. The reason is that clipping moves a handful of extreme rents and a median per governorate barely notices: no group's middle value changes. So this leak cost exactly nothing on this predictor, and the answer to &ldquo;why fix it then?&rdquo; is the one from <a href="#t2l7-s12">Concept&nbsp;4</a>: you could only find that out by computing both, the fix costs one word, and the same leaky fence feeding a mean, a scaler or a linear model would not have been free. A leak whose cost happens to be zero is still a number you cannot defend.</p>
+      <p class="ar">السياجان مختلفان حقًّا &mdash; فالمتسرِّب أوسعُ في الأسفل بـ12.5 شيكلًا وأعلى في القمة بـ7.5 &mdash; وخطأُ التحقّق <em>مطابقٌ إلى أربع منازل عشرية</em>. والسببُ أن القصَّ يحرّك حفنةً من الإيجارات المتطرّفة ووسيطُ المحافظة لا يكاد يلاحظ: فلا تتغيّر قيمةُ الوسط في أي مجموعة. فلم يكلّف هذا التسريبُ شيئًا على هذا المتنبِّئ، وجوابُ «فلماذا تُصلحه؟» هو جوابُ <a href="#t2l7-s12">المفهوم 4</a>: فلم تكن لتعرف ذلك إلا بحساب الاثنين، والإصلاحُ يكلّف كلمةً واحدة، والسياجُ المتسرِّب نفسه يغذّي متوسطًا أو مقياسًا أو نموذجًا خطيًّا لم يكن ليكون بالمجّان. والتسريبُ الذي تصادف كلفتُه أن تكون صفرًا رقمٌ لا تستطيع الدفاع عنه مع ذلك.</p>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 2 &mdash; A three-way split by time</span><span class="ar">التمرين 2 &mdash; تقسيمٌ ثلاثي بالزمن</span></h4>
+    <p class="en">Replace the random shuffle in <code>split_listings</code> with a chronological cut: sort by <code>listed_dt</code> and take the first 60&nbsp;% as train, the next 20&nbsp;% as validation and the last 20&nbsp;% as test. Print the date range and row count of each part, then score a median per governorate on validation and on test. Compare with the random split's 72.1348 and 57.9570 and say which of the two arrangements you would report to a landlord, and why.</p>
+    <p class="ar">استبدل بالخلط العشوائي في <code>split_listings</code> قطعًا زمنيًّا: افرز بـ<code>listed_dt</code> وخُذ أول 60&nbsp;% تدريبًا والـ20&nbsp;% التالية تحقّقًا والـ20&nbsp;% الأخيرة اختبارًا. واطبع مدى التواريخ وعددَ الصفوف لكل قسم، ثم قِس وسيطًا لكل محافظة على التحقّق وعلى الاختبار. وقارن بـ72.1348 و57.9570 للتقسيم العشوائي وقل أيَّ الترتيبين كنتَ ستُبلّغ به مالكَ عقار، ولماذا.</p>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">اعرض الحلّ</span></summary>
+      <pre class="code good" data-lang="python"><code>f = flats.sort_values("listed_dt")
+n = len(f)
+ctr, cva, cte = f.iloc[:int(n * .60)], f.iloc[int(n * .60):int(n * .80)], f.iloc[int(n * .80):]
+
+for name, part in [("train", ctr), ("valid", cva), ("test", cte)]:
+    print("%-6s %s .. %s  (%d rows)" % (name, part["listed_dt"].min().date(),
+                                        part["listed_dt"].max().date(), len(part)))
+
+cm = ctr[TARGET].median()
+cg = ctr.groupby("governorate")[TARGET].median()
+print("median per governorate: validation %.4f | test %.4f"
+      % (mae(cva[TARGET], cva["governorate"].map(cg).fillna(cm)),
+         mae(cte[TARGET], cte["governorate"].map(cg).fillna(cm))))</code></pre>
+<div class="output">train  2026-02-01 .. 2026-04-19  (288 rows)
+valid  2026-04-19 .. 2026-05-11  (96 rows)
+test   2026-05-12 .. 2026-06-19  (96 rows)
+median per governorate: validation 60.6117 | test 51.8258</div>
+      <p class="en">60.6117 and 51.8258, against 72.1348 and 57.9570 from the random split &mdash; the chronological arrangement looks better on both, for the reason <a href="#t2l7-s15">Concept&nbsp;5</a> found: the later months are slightly easier, not harder. Which to report? The chronological one, and not because the numbers are nicer. It answers the question the landlord is actually asking &mdash; <em>what will this cost me on next month's adverts?</em> &mdash; whereas the random split answers &ldquo;what would it cost on a random advert from a period I have already seen?&rdquo;, which nobody needs. Note also that the validation range ends and the test range begins on consecutive days, which is exactly the property a forecast needs and the random split destroys.</p>
+      <p class="ar">60.6117 و51.8258، مقابل 72.1348 و57.9570 من التقسيم العشوائي &mdash; فالترتيبُ الزمني يبدو أحسنَ في الاثنين، للسبب الذي وجده <a href="#t2l7-s15">المفهوم 5</a>: فالأشهرُ المتأخّرة أسهلُ قليلًا لا أصعب. فأيُّهما تُبلّغ؟ الزمنيّ، ولا لأن الأرقام أجمل. فهو يجيب السؤالَ الذي يسأله مالكُ العقار فعلًا &mdash; <em>كم سيكلّفني هذا على إعلانات الشهر القادم؟</em> &mdash; بينما يجيب العشوائيُّ «كم سيكلّف على إعلان عشوائي من فترة رأيتُها سلفًا؟»، ولا أحدَ يحتاج ذلك. ولاحظ أيضًا أن مدى التحقّق ينتهي ومدى الاختبار يبدأ في يومين متتاليين، وهي بالضبط الخاصيةُ التي يحتاجها التنبؤ ويهدمها التقسيمُ العشوائي.</p>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 3 &mdash; Two candidate features: one legitimate, one disqualified</span><span class="ar">التمرين 3 &mdash; سمتان مرشَّحتان: واحدة مشروعة وأخرى مستبعَدة</span></h4>
+    <p class="en">Two ideas arrive in the same meeting. (a) Band <code>rooms</code> into three equal-count groups and use the median per band. (b) Use <code>deposit / monthly_rent</code>, the ratio <a href="#t2l4-s24">Lesson&nbsp;4</a> found so informative, as a feature. Put each through <a href="#t2l7-s27">the four gates</a>. Measure (a) on validation; for (b), decide at which gate it fails and explain in one sentence why no amount of careful fitting rescues it.</p>
+    <p class="ar">تصل فكرتان في الاجتماع نفسه. (أ) نطّق <code>rooms</code> إلى ثلاث مجموعات متساوية العدد واستعمل الوسيطَ لكل نطاق. (ب) استعمل <code>deposit / monthly_rent</code>، النسبةَ التي وجدها <a href="#t2l4-s24">الدرس 4</a> شديدةَ الإفادة، سمةً. أمرِر كلًّا منهما على <a href="#t2l7-s27">البوابات الأربع</a>. وقِس (أ) على التحقّق؛ وللـ(ب) حدّد عند أي بوابة تفشل واشرح في جملة لماذا لا ينجيها أيُّ قدر من الضبط المتأنّي.</p>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">اعرض الحلّ</span></summary>
+      <pre class="code good" data-lang="python"><code># (a) rooms, banded into three equal-count groups, edges fitted on train
+edges = pd.qcut(dtr["rooms"], q=3, retbins=True, duplicates="drop")[1]
+print("rooms qcut edges on train:", np.round(edges, 2).tolist())
+
+btr = pd.cut(dtr["rooms"], bins=edges, include_lowest=True).astype(str)
+bva = pd.cut(dva["rooms"], bins=edges, include_lowest=True).astype(str)
+t   = dtr[TARGET].groupby(btr).median()
+print("median per rooms band -> train %.4f | validation %.4f"
+      % (mae(dtr[TARGET], btr.map(t).astype(float).fillna(dm)),
+         mae(dva[TARGET], bva.map(t).astype(float).fillna(dm))))
+
+# (b) the ratio
+print("deposit correlates with rent at %.4f" % flats[["deposit", TARGET]].corr().iloc[0, 1])</code></pre>
+<div class="output">rooms qcut edges on train: [0.0, 3.0, 4.0, 12.0]
+median per rooms band -> train 51.0432 | validation 71.7416
+deposit correlates with rent at 0.6054</div>
+      <p class="en"><strong>(a) passes.</strong> Validation improves from 77.6404 to 71.7416, a gain of 5.9&nbsp;shekels &mdash; smaller than the <a href="#t2l7-s27">area band's</a> 14.4 and close to the <a href="#t2l7-s18">fold spread of 7</a>, so the honest verdict is &ldquo;probably real, worth cross-validating before you commit&rdquo;. Note the edges: <code>[0.0, 3.0, 4.0, 12.0]</code>, which is what equal-count binning does to a column holding only eight distinct values &mdash; and the <code>0.0</code> is <a href="#t2l4-s2">Lesson&nbsp;4's impossible zero-room flat</a>, still in the data, now quietly anchoring a band.</p>
+      <p class="ar"><strong>(أ) تمرّ.</strong> فالتحقّقُ يتحسّن من 77.6404 إلى 71.7416، مكسبًا من 5.9&nbsp;شواكل &mdash; أصغرَ من 14.4 لـ<a href="#t2l7-s27">نطاق المساحة</a> وقريبًا من <a href="#t2l7-s18">تشتُّت الطيّات 7</a>، فالحكمُ الأمين «حقيقيٌّ على الأرجح، ويستحقّ تحقّقًا متقاطعًا قبل أن تلتزم». ولاحظ الحدود: <code>[0.0, 3.0, 4.0, 12.0]</code>، وهو ما يفعله التنطيقُ متساوي العدد بعمود لا يحمل غير ثماني قيم متمايزة &mdash; و<code>0.0</code> هي <a href="#t2l4-s2">شقةُ الصفر غرفة المستحيلة في الدرس 4</a>، ما زالت في البيانات، وترسي الآن نطاقًا بهدوء.</p>
+      <p class="en"><strong>(b) fails at the first gate, and fails fatally.</strong> <code>deposit / monthly_rent</code> contains <code>monthly_rent</code>, which is the target. The gate asks &ldquo;will this value be known at prediction time?&rdquo; and the answer is no: if you knew the rent you would not be predicting it. No fitting discipline helps, because the column is not <em>leaking</em> information about the target &mdash; it is arithmetically built from it, so a model given it would simply invert the division. This is the trap behind the first leakage type, and it is why <a href="#t2l4-s24">Lesson&nbsp;4 could use the ratio</a> while this lesson cannot: there it was a <em>diagnostic</em>, computed by an analyst looking at rows that already had rents, and here it would be a <em>feature</em>, required for rows whose rent is the unknown. The same expression, legitimate in one role and disqualified in the other.</p>
+      <p class="ar"><strong>(ب) تفشل عند البوابة الأولى، وتفشل فشلًا قاتلًا.</strong> فـ<code>deposit / monthly_rent</code> يحتوي <code>monthly_rent</code>، وهو الهدف. والبوابةُ تسأل «هل ستكون هذه القيمة معلومةً وقت التنبؤ؟» والجوابُ لا: فلو عرفتَ الإيجارَ لما كنتَ تتنبّأ به. ولا ينفع انتظامُ ضبط، فالعمودُ لا <em>يسرّب</em> معلومةً عن الهدف &mdash; بل مبنيٌّ منه حسابيًّا، فالنموذجُ المُعطى له سيعكس القسمةَ ببساطة. وهذا هو الفخُّ خلف نوع التسريب الأول، ولهذا <a href="#t2l4-s24">استطاع الدرس 4 استعمالَ النسبة</a> ولا يستطيع هذا الدرس: فهي هناك <em>تشخيصٌ</em> يحسبه محلّلٌ ينظر إلى صفوف لها إيجاراتٌ سلفًا، وهي هنا <em>سمةٌ</em> مطلوبة لصفوف إيجارُها هو المجهول. التعبيرُ نفسه، مشروعًا في دور ومستبعَدًا في آخر.</p>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 4 &mdash; Does the interaction survive the fold spread?</span><span class="ar">التمرين 4 &mdash; هل يصمد التقاطعُ أمام تشتُّت الطيّات؟</span></h4>
+    <p class="en"><a href="#t2l7-s27">Concept&nbsp;7</a> chose <code>governorate &times; area band</code> over the band alone on a gap of 8.6&nbsp;shekels of validation error, and <a href="#t2l7-s19">Concept&nbsp;6</a> warned that a gap smaller than the fold spread is not a result. Settle it: cross-validate both predictors over the 384 train-plus-validation rows, re-fitting the band edges inside every fold, and report each one's five folds, mean and standard deviation. Then say whether the choice stands.</p>
+    <p class="ar">اختار <a href="#t2l7-s27">المفهوم 7</a> <code>المحافظة &times; نطاق المساحة</code> على النطاق وحده بفجوة 8.6&nbsp;شواكل من خطأ التحقّق، وحذّر <a href="#t2l7-s19">المفهوم 6</a> من أن فجوةً أصغر من تشتُّت الطيّات ليست نتيجة. فاحسمها: تحقّق تقاطعيًّا من المتنبِّئين على صفوف التدريب والتحقّق الـ384، وأعد ضبطَ حدود النطاقات داخل كل طيّة، وأبلِغ عن طيّات كلٍّ الخمس ومتوسطه وانحرافه المعياري. ثم قل هل يصمد الاختيار.</p>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">اعرض الحلّ</span></summary>
+      <pre class="code good" data-lang="python"><code>pool  = pd.concat([dtr, dva])
+folds = np.array_split(np.array(pool.sample(frac=1.0, random_state=7).index), 5)
+
+def band_of(s, e):
+    return pd.cut(s.clip(e[0], e[-1]), bins=e, include_lowest=True).astype(str)
+
+for label in ("area band", "governorate x area band"):
+    scores = []
+    for i in range(5):
+        hold, fit = pool.loc[folds[i]], pool.drop(folds[i])
+        e  = pd.qcut(fit["area_m2"], q=4, retbins=True)[1]      # REFITTED inside the fold
+        fm = fit[TARGET].median()
+        bf, bh = band_of(fit["area_m2"], e), band_of(hold["area_m2"], e)
+        if label == "area band":
+            t = fit[TARGET].groupby(bf).median()
+            pred = bh.map(t).astype(float).fillna(fm)
+        else:
+            t = fit[TARGET].groupby([fit["governorate"], bf]).median()
+            pred = pd.Series(list(zip(hold["governorate"], bh)), index=hold.index).map(t).astype(float).fillna(fm)
+        scores.append(mae(hold[TARGET], pred))
+    s = np.array(scores)
+    print("%-24s folds %s mean %.4f sd %.4f" % (label, np.round(s, 2).tolist(), s.mean(), s.std(ddof=1)))</code></pre>
+<div class="output">area band                folds [48.47, 58.66, 46.53, 60.7, 53.21] mean 53.5132 sd 6.1749
+governorate x area band  folds [39.27, 45.32, 43.19, 52.4, 38.99] mean 43.8329 sd 5.4851</div>
+      <p class="en"><strong>The choice stands.</strong> The gap between the means is 9.6803&nbsp;shekels against standard deviations of 6.17 and 5.49, and &mdash; the stronger evidence &mdash; the interaction wins on <em>every one of the five folds</em>, including the fold where both do worst. Compare that with <a href="#t2l7-s19">Concept&nbsp;6's</a> governorate-against-raw-city, where the gap was 1.65 and the fold ordering swapped with the split: there the conclusion had to be retracted, here it does not. Note also that re-fitting <code>qcut</code> inside each fold is what makes this honest, and that the hand-rolled answer of 43.8329 lands within half a shekel of the library pipeline in <a href="#t2l7-s30">Appendix&nbsp;C</a>, which is a useful sign that neither has an obvious bug.</p>
+      <p class="ar"><strong>الاختيارُ يصمد.</strong> فالفجوةُ بين المتوسطين 9.6803&nbsp;شواكل مقابل انحرافين معياريين 6.17 و5.49، و&mdash; وهذا الدليلُ الأقوى &mdash; يفوز التقاطعُ في <em>كل طيّة من الطيّات الخمس</em>، وفيها الطيّةُ التي يسوء فيها الاثنان أكثر. قارِن ذلك بالمحافظة مقابل المدينة الخام في <a href="#t2l7-s19">المفهوم 6</a>، حيث كانت الفجوة 1.65 وانقلب ترتيبُ الطيّات مع التقسيم: فهناك وجب سحبُ الاستنتاج، وهنا لا يجب. ولاحظ أيضًا أن إعادةَ ضبط <code>qcut</code> داخل كل طيّة هي ما يجعل هذا أمينًا، وأن الجوابَ المكتوب باليد 43.8329 يحلّ في حدود نصف شيكل من خط المكتبة في <a href="#t2l7-s30">الملحق ج</a>، وهي علامةٌ مفيدة على أن لا عطبَ بديهيًّا في أيٍّ منهما.</p>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <h4><span class="en">Exercise 5 &mdash; Find the seed that would have caught the bug</span><span class="ar">التمرين 5 &mdash; اعثر على البذرة التي كانت ستقتنص العطب</span></h4>
+    <p class="en"><a href="#t2l7-s16">Concept&nbsp;5</a> showed that the newest advert falls in the training rows under seeds 3, 7, 11 and 42, so <code>as_of = max(listed_on)</code> would have passed every test. Search seeds 1 to 60 and report how many put the newest advert outside the training rows, with the first two examples. Then say what this tells you about relying on a test suite to find leakage.</p>
+    <p class="ar">أظهر <a href="#t2l7-s16">المفهوم 5</a> أن أحدث إعلان يقع في صفوف التدريب تحت البذور 3 و7 و11 و42، فكان <code>as_of = max(listed_on)</code> سينجح في كل اختبار. فابحث في البذور 1 إلى 60 وأبلِغ كم منها يضع أحدثَ إعلان خارج صفوف التدريب، مع أول مثالين. ثم قل ماذا يخبرك هذا عن الاعتماد على حزمة اختبارات لاكتشاف التسريب.</p>
+    <details class="solution">
+      <summary><span class="en">Show solution</span><span class="ar">اعرض الحلّ</span></summary>
+      <pre class="code good" data-lang="python"><code>newest = flats["listed_dt"].max()
+outside = []
+for seed in range(1, 61):
+    p, _ = split_listings(rep, dict(SPLIT, seed=seed))
+    for name, part in p.items():
+        if (parse_dates(part["listed_on"]) == newest).any():
+            if name != "train":
+                outside.append((seed, name))
+            break
+
+print("seeds 1..60 with the newest advert outside train: %d" % len(outside))
+print("first two:", outside[:2])</code></pre>
+<div class="output">seeds 1..60 with the newest advert outside train: 27
+first two: [(1, 'valid'), (2, 'test')]</div>
+      <p class="en">Twenty-seven of sixty &mdash; 45&nbsp;%, which is roughly the 40&nbsp;% you would expect from a 60&nbsp;% training share. So the bug was not unlikely; it was a coin flip, and the four seeds <a href="#t2l7-s16">Concept&nbsp;5</a> happened to try all landed on the safe side. Seed&nbsp;1 would have put it in validation and seed&nbsp;2 in test. The lesson about testing is uncomfortable: a test suite can only report what its fixtures happen to exercise, so a leak that depends on which rows landed where will pass on most runs and fail on some, which is indistinguishable from flakiness and usually gets a retry rather than an investigation. Leakage is prevented by structure &mdash; a declared <code>AS_OF</code>, an assertion that no key is shared &mdash; not by hoping a test will catch it.</p>
+      <p class="ar">سبعٌ وعشرون من ستين &mdash; 45&nbsp;%، وهي نحوُ الـ40&nbsp;% التي تتوقّعها من حصة تدريب 60&nbsp;%. فلم يكن العطبُ مستبعدًا؛ بل كان رميَ عملة، والبذورُ الأربع التي صادف <a href="#t2l7-s16">المفهوم 5</a> تجربتَها وقعت كلُّها في الجانب الآمن. وكانت البذرةُ 1 ستضعه في التحقّق والبذرةُ 2 في الاختبار. والدرسُ عن الاختبار مزعج: فحزمةُ الاختبارات لا تستطيع أن تُبلّغ إلا بما تصادف تجهيزاتُها أن تمارسه، فالتسريبُ الذي يتبع أيَّ الصفوف وقعت أين سينجح في معظم التشغيلات ويفشل في بعضها، وهذا لا يُفرَّق عن التقلّب ويحظى عادةً بإعادة محاولة لا بتحقيق. فالتسريبُ يُمنَع بالبنية &mdash; <code>AS_OF</code> معلَنة وتأكيدٌ بأن لا مفتاح مشترك &mdash; لا بأمل أن يقتنصه اختبار.</p>
+    </details>
+  </div>
+
+  <h2 id="t2l7-h9"><span class="en">Appendix &mdash; the arithmetic behind the numbers on this page, and the library form</span><span class="ar">ملحق &mdash; الحسابُ خلف الأرقام في هذه الصفحة، وصورةُ المكتبة</span></h2>
+
+  <h3 id="t2l7-s28"><span class="en">A. What a validation set costs, in rows and in noise</span><span class="ar">أ. ما تكلّفه مجموعةُ التحقّق، صفوفًا وضجيجًا</span></h3>
+  <p class="en">Going from two parts to three moved 76 rows out of training (377 &rarr; 301 on the raw frame). The cost is not linear and it has two separate parts. First, <em>the fit gets worse</em>: a median over 291 rents instead of 363 is a noisier estimate, and you can see it in the fitted value moving 200.0 &rarr; 195.0 for no reason except the sample. Second, and usually larger, <em>the estimate of the error gets worse</em>: an error measured on 93 validation rents has a standard error of roughly the spread of the errors divided by the square root of 93, which on this data is about 7 shekels &mdash; exactly the <a href="#t2l7-s18">fold spread Concept&nbsp;6 measured</a>, arriving from a second direction. That is why cross-validation is the right answer at 480 rows: it spends no rows at all on holding out, because every row takes a turn in both roles, at the price of five fits instead of one.</p>
+  <p class="ar">نقل الانتقالُ من قسمين إلى ثلاثة 76 صفًّا خارج التدريب (377 &rarr; 301 على الإطار الخام). والكلفةُ ليست خطّية ولها جزآن منفصلان. أولًا، <em>يسوء الضبط</em>: فوسيطٌ على 291 إيجارًا بدل 363 تقديرٌ أكثر ضجيجًا، وترى ذلك في القيمة المضبوطة تنتقل 200.0 &rarr; 195.0 بلا سبب غير العيّنة. وثانيًا، وهو الأكبرُ عادةً، <em>يسوء تقديرُ الخطأ</em>: فخطأٌ مقيسٌ على 93 إيجار تحقّق له خطأٌ معياري يقارب تشتُّتَ الأخطاء مقسومًا على الجذر التربيعي لـ93، وهو في هذه البيانات نحو 7 شواكل &mdash; وهو بالضبط <a href="#t2l7-s18">تشتُّتُ الطيّات الذي قاسه المفهوم 6</a>، آتيًا من جهة ثانية. ولهذا يكون التحقّقُ المتقاطع الجوابَ الصحيح عند 480 صفًّا: فهو لا يُنفق صفوفًا على الحجز أصلًا، إذ يأخذ كلُّ صف دورَه في الوظيفتين، بثمن خمس ضبطات بدل واحدة.</p>
+
+  <h3 id="t2l7-s29"><span class="en">B. The interval midpoint, and the three ways a band can become a number</span><span class="ar">ب. نقطةُ منتصف المجال، والطرقُ الثلاث لأن يصير النطاقُ رقمًا</span></h3>
+  <p class="en">A <code>pd.cut</code> result is a <code>Categorical</code> of <code>Interval</code> objects, and an <code>Interval</code> carries <code>.left</code>, <code>.right</code> and <code>.mid</code>. Three encodings are defensible and they are not equivalent. The <strong>midpoint</strong> (<code>iv.mid</code>) keeps the column numeric and roughly on the original scale, which is what this lesson used: 47.062, 67.388, 79.838, 100.162. <strong>One-hot</strong> on the band label gives a model a free level per band and is the right choice for a linear model, at the cost of four columns and no ordering. An <strong>ordinal code</strong> (0, 1, 2, 3) is the most compact and the most dangerous, because it asserts that the step from band&nbsp;0 to band&nbsp;1 equals the step from band&nbsp;2 to band&nbsp;3 &mdash; which here is false: the first band spans 29.5&nbsp;m&sup2; and the third 13.8. That is <a href="#t2l5-s3">Lesson&nbsp;5's one rule</a> &mdash; an encoding may not invent an order or a spacing &mdash; arriving in a place you might not have expected it, because the bands <em>are</em> genuinely ordered and it is only the <em>distances</em> that are a fiction.</p>
+  <p class="ar">ناتجُ <code>pd.cut</code> فئويٌّ من كائنات <code>Interval</code>، و<code>Interval</code> يحمل <code>.left</code> و<code>.right</code> و<code>.mid</code>. وثلاثةُ ترميزات قابلة للدفاع وهي غيرُ مكافئة. فـ<strong>نقطةُ المنتصف</strong> (<code>iv.mid</code>) تُبقي العمودَ رقميًّا وعلى المقياس الأصلي تقريبًا، وهو ما استعمله هذا الدرس: 47.062 و67.388 و79.838 و100.162. و<strong>الترميزُ الأحادي</strong> على لافتة النطاق يعطي النموذجَ مستوًى حرًّا لكل نطاق وهو الخيارُ الصحيح لنموذج خطي، بثمن أربعة أعمدة وبلا ترتيب. و<strong>الرمزُ الرُتبي</strong> (0 و1 و2 و3) أكثرُها إيجازًا وأخطرُها، فهو يدّعي أن الخطوةَ من النطاق 0 إلى 1 تساوي الخطوةَ من 2 إلى 3 &mdash; وهذا كاذبٌ هنا: فالنطاقُ الأول يمتدّ 29.5&nbsp;م&sup2; والثالثُ 13.8. وتلك <a href="#t2l5-s3">قاعدةُ الدرس 5 الواحدة</a> &mdash; لا يجوز للترميز أن يختلق ترتيبًا ولا تباعدًا &mdash; تصل في موضع ربما لم تتوقّعها فيه، فالنطاقاتُ <em>مرتَّبة</em> حقًّا وإنما <em>المسافاتُ</em> هي الخيال.</p>
+
+  <h3 id="t2l7-s30"><span class="en">C. The <code>scikit-learn</code> form, built and run</span><span class="ar">ج. صورةُ <code>scikit-learn</code> مبنيّةً ومشغَّلة</span></h3>
+  <p class="en">Everything in this lesson has a library object, and the reason to see them side by side is that the library makes the rule structural: a <code>Pipeline</code> inside <code>cross_val_score</code> re-fits every step inside every fold, so the imputer's median and the discretiser's edges cannot leak even if you forget the rule.</p>
+  <p class="ar">لكلّ ما في هذا الدرس كائنٌ في المكتبة، وسببُ رؤيتهما جنبًا إلى جنب أن المكتبةَ تجعل القاعدةَ بنيويةً: فـ<code>Pipeline</code> داخل <code>cross_val_score</code> يعيد ضبطَ كل خطوة داخل كل طيّة، فلا يستطيع وسيطُ المعوِّض ولا حدودُ المنطِّق أن تتسرّب وإن نسيتَ القاعدة.</p>
+  <pre class="code good" data-lang="python"><code>from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder, KBinsDiscretizer, RobustScaler, StandardScaler
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import cross_val_score, KFold
+
+lab = flats[flats[TARGET].notna()]                     # 460 labelled flats
+NUM, CAT = ["area_m2", "rooms"], ["governorate"]
+X, y = lab[NUM + CAT], lab[TARGET]
+
+pre = ColumnTransformer([
+    ("band", Pipeline([("imp", SimpleImputer(strategy="median")),
+                       ("bin", KBinsDiscretizer(n_bins=4, encode="onehot-dense",
+                                                strategy="quantile"))]), ["area_m2"]),
+    ("num",  Pipeline([("imp", SimpleImputer(strategy="median")),
+                       ("sc",  RobustScaler())]), NUM),
+    ("cat",  OneHotEncoder(handle_unknown="ignore"), CAT),
+])
+model = Pipeline([("pre", pre), ("est", Ridge(alpha=1.0))])
+cv = KFold(n_splits=5, shuffle=True, random_state=7)
+
+s = -cross_val_score(model, X, y, cv=cv, scoring="neg_mean_absolute_error")
+print("Ridge + bands       folds", np.round(s, 2).tolist(), "mean %.4f sd %.4f" % (s.mean(), s.std(ddof=1)))
+
+numbers_only = Pipeline([("pre", ColumnTransformer([("num", Pipeline(
+    [("imp", SimpleImputer(strategy="median")), ("sc", RobustScaler())]), NUM)])),
+    ("est", Ridge(alpha=1.0))])
+b = -cross_val_score(numbers_only, X, y, cv=cv, scoring="neg_mean_absolute_error")
+print("Ridge, numbers only folds", np.round(b, 2).tolist(), "mean %.4f sd %.4f" % (b.mean(), b.std(ddof=1)))
+
+# and the leak, in its two most ordinary lines
+leaked = StandardScaler().fit_transform(lab[NUM].fillna(lab[NUM].median()))
+l = -cross_val_score(Ridge(alpha=1.0), leaked, y, cv=cv, scoring="neg_mean_absolute_error")
+print("scaled BEFORE the cv: mean %.4f" % l.mean())</code></pre>
+<div class="output">Ridge + bands       folds [42.61, 47.52, 40.67, 41.0, 45.38] mean 43.4387 sd 2.9477
+Ridge, numbers only folds [49.14, 60.29, 47.5, 58.27, 49.35] mean 52.9097 sd 5.9023
+scaled BEFORE the cv: mean 52.9439</div>
+  <p class="en">Three things in that output are worth more than the code. <strong>The bands pay in the library too</strong>: 43.4387 against 52.9097, and the hand-rolled interaction of <a href="#t2l7-h8">Exercise&nbsp;4</a> reached 43.8329 &mdash; two independent implementations landing within half a shekel, which is the best evidence either of them is right. <strong>The fold spread falls</strong> from 5.90 to 2.95 once the bands are in, so the better model is also the more stable one. And <strong>the leaked version scored 52.9439 against the honest 52.9097</strong> &mdash; very slightly <em>worse</em>. That is the most useful line on the page: a leak does not promise you a better number, it promises a number whose meaning you cannot state. People look for leakage by watching for suspiciously good results, and this one would have escaped that check entirely.</p>
+  <p class="ar">ثلاثةُ أمور في ذلك المخرج تساوي أكثرَ من الكود. <strong>النطاقاتُ تكسب في المكتبة أيضًا</strong>: 43.4387 مقابل 52.9097، وقد بلغ التقاطعُ المكتوب باليد في <a href="#t2l7-h8">التمرين 4</a> رقمَ 43.8329 &mdash; تنفيذان مستقلّان يحلّان في حدود نصف شيكل، وهذا أحسنُ دليل على صواب أيٍّ منهما. و<strong>تشتُّتُ الطيّات يهبط</strong> من 5.90 إلى 2.95 متى دخلت النطاقات، فالنموذجُ الأحسن هو الأثبتُ أيضًا. و<strong>النسخةُ المتسرِّبة سجّلت 52.9439 مقابل 52.9097 الأمينة</strong> &mdash; أسوأَ قليلًا جدًّا. وذاك أنفعُ سطر في الصفحة: فالتسريبُ لا يَعِدك برقم أحسن، بل برقم لا تستطيع ذكرَ معناه. والناسُ يبحثون عن التسريب بمراقبة النتائج الحسنة المريبة، وهذا كان سيُفلت من ذلك الفحص تمامًا.</p>
+  <p class="en">Two objects this lesson named and did not build: <code>GroupShuffleSplit</code>, which does <a href="#t2l7-h3">Concept&nbsp;3's</a> job by splitting on a group key instead of a row, and <code>TimeSeriesSplit</code>, which does <a href="#t2l7-h5">Concept&nbsp;5's</a> by only ever training on earlier folds. Both take the place of <code>KFold</code> in the call above and change nothing else, which is the whole argument for writing the discipline as structure rather than as care.</p>
+  <p class="ar">كائنان سمّاهما هذا الدرس ولم يبنِهما: <code>GroupShuffleSplit</code>، ويؤدّي وظيفةَ <a href="#t2l7-h3">المفهوم 3</a> بالتقسيم على مفتاح مجموعة بدل صفّ، و<code>TimeSeriesSplit</code>، ويؤدّي وظيفةَ <a href="#t2l7-h5">المفهوم 5</a> بألّا يدرّب إلا على طيّات أسبق. وكلاهما يأخذ مكانَ <code>KFold</code> في النداء أعلاه ولا يغيّر شيئًا غيره، وهذه هي الحجّةُ كلها لكتابة الانتظام بنيةً لا عنايةً.</p>
+
+  <h3 id="t2l7-s31"><span class="en">Key takeaways, and the mistakes cheat-sheet</span><span class="ar">الخلاصةُ وورقةُ الأخطاء</span></h3>
+  <div class="card takeaways">
+    <h4><span class="en">Carry these out of the lesson</span><span class="ar">احمل هذه من الدرس</span></h4>
+    <ul>
+      <li><span class="en"><strong>A score you optimised against is a training score.</strong> No <code>fit</code> has to touch the rows; choosing a recipe by reading them is enough. This chapter did it six times.</span><span class="ar"><strong>النتيجةُ التي حسّنتَ مقابلها نتيجةُ تدريب.</strong> ولا يلزم أن يلمس <code>fit</code> الصفوف؛ فاختيارُ وصفة بقراءتها كافٍ. وقد فعل هذا الفصلُ ذلك ستَّ مرات.</span></li>
+      <li><span class="en"><strong>Three parts, three jobs.</strong> Fit on train, choose on validation, read test once. If you change anything after reading test, you no longer have a test set &mdash; say so rather than pretend.</span><span class="ar"><strong>ثلاثةُ أقسام لثلاث وظائف.</strong> اضبط على التدريب واختر على التحقّق واقرأ الاختبار مرة. فإن غيّرتَ شيئًا بعد قراءة الاختبار فلم تعد تملك مجموعةَ اختبار &mdash; فقُل ذلك ولا تتظاهر.</span></li>
+      <li><span class="en"><strong>De-duplicate on the business key before you split.</strong> Six shared rows out of 102 scored 21.6667 against 62.2043. Uniqueness inside a part is not disjointness between parts.</span><span class="ar"><strong>أزِل التكرار على المفتاح العملي قبل أن تقسّم.</strong> فستةُ صفوف مشتركة من 102 سجّلت 21.6667 مقابل 62.2043. والتفرُّدُ داخل القسم ليس عدمَ تقاطع بين الأقسام.</span></li>
+      <li><span class="en"><strong>The test is &ldquo;does this step read a number out of the data?&rdquo;</strong> Medians, modes, fences, category lists, band edges and scaler parameters all do, so they run after the split. A dunum is still a thousand square metres, so that repair does not.</span><span class="ar"><strong>المحكُّ: «هل تقرأ هذه الخطوة رقمًا من البيانات؟»</strong> فالوسائطُ والمنوالات والسياجات وقوائمُ الفئات وحدودُ النطاقات ووسائطُ المقياس تفعل كلُّها، فتعمل بعد التقسيم. والدونمُ ما زال ألفَ متر مربع، فإصلاحُه لا يفعل.</span></li>
+      <li><span class="en"><strong>Declare the as-of date; never read it from <code>max()</code>.</strong> On this file the bug was invisible under four seeds and live under 27 of 60.</span><span class="ar"><strong>أعلِن تاريخَ الأساس؛ ولا تقرأه قط من <code>max()</code>.</strong> فعلى هذا الملف كان العطبُ خفيًّا تحت أربع بذور وحيًّا تحت 27 من 60.</span></li>
+      <li><span class="en"><strong>Read the spread, not the number.</strong> Five folds here differ by about 7 shekels, so the 1.65-shekel gap Concept&nbsp;2 treated as a decision was not one, and the 9.68-shekel gap of Exercise&nbsp;4 was.</span><span class="ar"><strong>اقرأ التشتُّت لا الرقم.</strong> فالطيّاتُ الخمس هنا تختلف بنحو 7 شواكل، ففجوةُ 1.65 شيكل التي عدّها المفهومُ 2 قرارًا لم تكن قرارًا، وفجوةُ 9.68 شيكلًا في التمرين 4 كانت.</span></li>
+      <li><span class="en"><strong>A new feature must pass four gates:</strong> known at prediction time, its parameter fitted on train, improves validation, and by more than the fold spread. The weekday name passed the first two and failed the third.</span><span class="ar"><strong>على السمة الجديدة أن تمرّ بأربع بوابات:</strong> معلومةٌ وقت التنبؤ، ووسيطُها مضبوط على التدريب، وتحسّن التحقّق، وبأكثرَ من تشتُّت الطيّات. فاسمُ اليوم مرّ بالأولَيين وفشل في الثالثة.</span></li>
+      <li><span class="en"><strong><code>qcut</code> once to learn, <code>cut</code> forever to apply.</strong> Band edges are a fitted parameter, exactly like <a href="#t2l5-s11">a category list</a> and <a href="#t2l4-s17">a fence</a>, and re-running <code>qcut</code> on a later file is the leak wearing its least obvious costume.</span><span class="ar"><strong><code>qcut</code> مرةً للتعلّم و<code>cut</code> دائمًا للتطبيق.</strong> فحدودُ النطاقات وسيطٌ مضبوط، كـ<a href="#t2l5-s11">قائمةِ فئات</a> و<a href="#t2l4-s17">سياجٍ</a> بالضبط، وإعادةُ تشغيل <code>qcut</code> على ملف لاحق هي التسريبُ في أقلّ أزيائه بديهيةً.</span></li>
+      <li><span class="en"><strong>A leak does not promise a better number.</strong> The library version in Appendix&nbsp;C leaked and scored 0.03 shekels <em>worse</em>. Hunting leakage by watching for suspiciously good results misses it.</span><span class="ar"><strong>التسريبُ لا يَعِد برقم أحسن.</strong> فنسخةُ المكتبة في الملحق ج سرّبت وسجّلت 0.03 شيكل <em>أسوأ</em>. فاقتناصُ التسريب بمراقبة النتائج الحسنة المريبة يُفلته.</span></li>
+      <li><span class="en"><strong>Report the features that failed.</strong> Four date columns earned nothing here; writing that down is what stops the next person spending the same afternoon.</span><span class="ar"><strong>أبلِغ عن السمات التي فشلت.</strong> فأربعةُ أعمدة تاريخ لم تكسب شيئًا هنا؛ وكتابةُ ذلك هي ما يمنع التاليَ من إنفاق العصر نفسه.</span></li>
+    </ul>
+    <h4><span class="en">The mistakes cheat-sheet</span><span class="ar">ورقةُ الأخطاء</span></h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th><span class="en">What you wrote</span><span class="ar">ما كتبتَه</span></th>
+            <th><span class="en">What it does</span><span class="ar">ما يفعله</span></th>
+            <th><span class="en">Write instead</span><span class="ar">اكتب بدلًا منه</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>scaler.fit_transform(X)</code> before the split</td><td><span class="en">takes the min and max from the test rows</span><span class="ar">يأخذ الأدنى والأقصى من صفوف الاختبار</span></td><td><code>Pipeline</code> inside <code>cross_val_score</code></td></tr>
+          <tr><td><code>pd.qcut</code> on the file you are scoring</td><td><span class="en">refits the edges per frame, silently</span><span class="ar">يعيد ضبط الحدود لكل إطار بصمت</span></td><td><code>qcut</code> on train, then <code>cut</code> with the stored edges</td></tr>
+          <tr><td><code>drop_duplicates()</code> after the split</td><td><span class="en">leaves the flat in both halves</span><span class="ar">يُبقي الشقة في النصفين</span></td><td><span class="en">de-duplicate on the key, then split</span><span class="ar">أزِل التكرار على المفتاح ثم قسّم</span></td></tr>
+          <tr><td><code>(pd.Timestamp.today() - d).dt.days</code></td><td><span class="en">a different answer every week</span><span class="ar">جوابٌ مختلف كل أسبوع</span></td><td><code>(AS_OF - d).dt.days</code></td></tr>
+          <tr><td><code>d.dt.weekday &gt;= 5</code></td><td><span class="en">a Saturday&ndash;Sunday weekend, wrong here</span><span class="ar">نهايةُ أسبوع سبت&ndash;أحد، وهي خاطئة هنا</span></td><td><code>d.dt.weekday.isin([4, 5])</code></td></tr>
+          <tr><td><span class="en">&ldquo;A beats B by 1.6&rdquo;</span><span class="ar">«أ يتغلّب على ب بـ1.6»</span></td><td><span class="en">reports a quarter of the noise as a result</span><span class="ar">يُبلّغ رُبعَ الضجيج نتيجةً</span></td><td><span class="en">report the mean and the sd over folds</span><span class="ar">أبلِغ المتوسطَ والانحرافَ على الطيّات</span></td></tr>
+          <tr><td><code>deposit / monthly_rent</code> <span class="en">as a feature</span><span class="ar">سمةً</span></td><td><span class="en">contains the target; the model inverts it</span><span class="ar">يحتوي الهدف؛ فيعكسه النموذج</span></td><td><span class="en">use it as a diagnostic only</span><span class="ar">استعملها تشخيصًا فقط</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="callout ahead">
+    <h4><span class="en">Where to go next</span><span class="ar">إلى أين بعد</span></h4>
+    <p class="en"><a href="#t2-test-07">Test&nbsp;7</a> covers this lesson: the three parts and their jobs, the three leaks and what each is worth here, the fold spread, and the four gates a feature must pass. It is also the last lesson test of the chapter, so the three chapter tests &mdash; <a href="#t2-exam-a">A, core</a>, <a href="#t2-exam-b">B, applied</a> and <a href="#t2-exam-c">C, advanced</a> &mdash; are next, and all three now include this lesson. If you want the chapter's own summary of what it still gets wrong, it is in <a href="#t2l6-h6">Lesson&nbsp;6's last concept</a>, with two of its items now closed and one &mdash; nothing dates <code>fitted</code> &mdash; still open and waiting for a later chapter.</p>
+    <p class="ar">يغطّي <a href="#t2-test-07">الاختبار 7</a> هذا الدرس: الأقسامَ الثلاثة ووظائفها، والتسريباتِ الثلاث وما تساويه كلٌّ هنا، وتشتُّتَ الطيّات، والبواباتِ الأربع التي يجب أن تمرّ بها السمة. وهو أيضًا آخرُ اختبار درس في الفصل، فاختباراتُ الفصل الثلاثة &mdash; <a href="#t2-exam-a">أ للأساسيات</a> و<a href="#t2-exam-b">ب للتطبيق</a> و<a href="#t2-exam-c">ج للمتقدّم</a> &mdash; هي التالية، وثلاثتُها تضمّ الآن هذا الدرس. وإن أردتَ خلاصةَ الفصل نفسه لما يخطئ فيه إلى الآن فهي في <a href="#t2l6-h6">المفهوم الأخير من الدرس 6</a>، وقد أُغلق بندان منها وبقي واحد &mdash; لا شيء يؤرّخ <code>fitted</code> &mdash; مفتوحًا ينتظر فصلًا لاحقًا.</p>
+  </div>
+
+</section>

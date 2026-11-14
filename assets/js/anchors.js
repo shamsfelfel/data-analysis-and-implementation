@@ -598,12 +598,14 @@ window.DAAnchors = {
 "t2-lesson-04": "lessons/t2-lesson-04.html",
 "t2-lesson-05": "lessons/t2-lesson-05.html",
 "t2-lesson-06": "lessons/t2-lesson-06.html",
+"t2-lesson-07": "lessons/t2-lesson-07.html",
 "t2-test-01": "tests/t2-test-01.html",
 "t2-test-02": "tests/t2-test-02.html",
 "t2-test-03": "tests/t2-test-03.html",
 "t2-test-04": "tests/t2-test-04.html",
 "t2-test-05": "tests/t2-test-05.html",
 "t2-test-06": "tests/t2-test-06.html",
+"t2-test-07": "tests/t2-test-07.html",
 "t2idx-h1": "chapters/t2.html",
 "t2idx-h2": "chapters/t2.html",
 "t2idx-s1": "chapters/t2.html",
@@ -772,6 +774,7 @@ window.DAAnchors = {
 "t2l4-s22": "lessons/t2-lesson-04.html",
 "t2l4-s23": "lessons/t2-lesson-04.html",
 "t2l4-s24": "lessons/t2-lesson-04.html",
+"t2l4-s24b": "lessons/t2-lesson-04.html",
 "t2l4-s25": "lessons/t2-lesson-04.html",
 "t2l4-s26": "lessons/t2-lesson-04.html",
 "t2l4-s27": "lessons/t2-lesson-04.html",
@@ -824,6 +827,7 @@ window.DAAnchors = {
 "t2l5-s20": "lessons/t2-lesson-05.html",
 "t2l5-s21": "lessons/t2-lesson-05.html",
 "t2l5-s22": "lessons/t2-lesson-05.html",
+"t2l5-s22b": "lessons/t2-lesson-05.html",
 "t2l5-s23": "lessons/t2-lesson-05.html",
 "t2l5-s24": "lessons/t2-lesson-05.html",
 "t2l5-s25": "lessons/t2-lesson-05.html",
@@ -892,6 +896,49 @@ window.DAAnchors = {
 "t2l6-s7": "lessons/t2-lesson-06.html",
 "t2l6-s8": "lessons/t2-lesson-06.html",
 "t2l6-s9": "lessons/t2-lesson-06.html",
+"t2l7-e1": "lessons/t2-lesson-07.html",
+"t2l7-e2": "lessons/t2-lesson-07.html",
+"t2l7-e3": "lessons/t2-lesson-07.html",
+"t2l7-h1": "lessons/t2-lesson-07.html",
+"t2l7-h2": "lessons/t2-lesson-07.html",
+"t2l7-h3": "lessons/t2-lesson-07.html",
+"t2l7-h4": "lessons/t2-lesson-07.html",
+"t2l7-h5": "lessons/t2-lesson-07.html",
+"t2l7-h6": "lessons/t2-lesson-07.html",
+"t2l7-h7": "lessons/t2-lesson-07.html",
+"t2l7-h8": "lessons/t2-lesson-07.html",
+"t2l7-h9": "lessons/t2-lesson-07.html",
+"t2l7-s1": "lessons/t2-lesson-07.html",
+"t2l7-s10": "lessons/t2-lesson-07.html",
+"t2l7-s11": "lessons/t2-lesson-07.html",
+"t2l7-s12": "lessons/t2-lesson-07.html",
+"t2l7-s13": "lessons/t2-lesson-07.html",
+"t2l7-s14": "lessons/t2-lesson-07.html",
+"t2l7-s15": "lessons/t2-lesson-07.html",
+"t2l7-s16": "lessons/t2-lesson-07.html",
+"t2l7-s17": "lessons/t2-lesson-07.html",
+"t2l7-s18": "lessons/t2-lesson-07.html",
+"t2l7-s19": "lessons/t2-lesson-07.html",
+"t2l7-s2": "lessons/t2-lesson-07.html",
+"t2l7-s20": "lessons/t2-lesson-07.html",
+"t2l7-s21": "lessons/t2-lesson-07.html",
+"t2l7-s22": "lessons/t2-lesson-07.html",
+"t2l7-s23": "lessons/t2-lesson-07.html",
+"t2l7-s24": "lessons/t2-lesson-07.html",
+"t2l7-s25": "lessons/t2-lesson-07.html",
+"t2l7-s26": "lessons/t2-lesson-07.html",
+"t2l7-s27": "lessons/t2-lesson-07.html",
+"t2l7-s28": "lessons/t2-lesson-07.html",
+"t2l7-s29": "lessons/t2-lesson-07.html",
+"t2l7-s3": "lessons/t2-lesson-07.html",
+"t2l7-s30": "lessons/t2-lesson-07.html",
+"t2l7-s31": "lessons/t2-lesson-07.html",
+"t2l7-s4": "lessons/t2-lesson-07.html",
+"t2l7-s5": "lessons/t2-lesson-07.html",
+"t2l7-s6": "lessons/t2-lesson-07.html",
+"t2l7-s7": "lessons/t2-lesson-07.html",
+"t2l7-s8": "lessons/t2-lesson-07.html",
+"t2l7-s9": "lessons/t2-lesson-07.html",
 "t2lab-h1": "labs/t2-lab.html",
 "t2lab-h10": "labs/t2-lab.html",
 "t2lab-h11": "labs/t2-lab.html",
@@ -902,7 +949,9 @@ window.DAAnchors = {
 "t2lab-h16": "labs/t2-lab.html",
 "t2lab-h17": "labs/t2-lab.html",
 "t2lab-h18": "labs/t2-lab.html",
+"t2lab-h19": "labs/t2-lab.html",
 "t2lab-h2": "labs/t2-lab.html",
+"t2lab-h20": "labs/t2-lab.html",
 "t2lab-h3": "labs/t2-lab.html",
 "t2lab-h4": "labs/t2-lab.html",
 "t2lab-h5": "labs/t2-lab.html",
@@ -3530,6 +3579,10 @@ window.DAHeadings = {
 "ar": "ما لا تجده أيٌّ منها، والشيء الواحد الذي يجده",
 "en": "What none of them finds, and the one thing that does"
 },
+"t2l4-s24b": {
+"ar": "القاعدتان جنبًا إلى جنب",
+"en": "The two rules side by side"
+},
 "t2l4-s25": {
 "ar": "الإزالة وثمنها",
 "en": "Remove, and what it costs"
@@ -3721,6 +3774,10 @@ window.DAHeadings = {
 "t2l5-s22": {
 "ar": "دلو Other والقياس الذي يحسمه",
 "en": "The Other bucket, and the measurement that settles it"
+},
+"t2l5-s22b": {
+"ar": "اختيار المُرمِّز في شاشة واحدة",
+"en": "Choosing an encoder, on one screen"
 },
 "t2l5-s23": {
 "ar": "لماذا يهمّ المقياس أصلًا",
@@ -3959,8 +4016,8 @@ window.DAHeadings = {
 "en": "D. The scikit-learn equivalent, built and run"
 },
 "t2l6-s36": {
-"ar": "خلاصات — الدرس والفصل",
-"en": "Key takeaways — the lesson, and the chapter"
+"ar": "خلاصات — الدرس وموضعُ الفصل الآن",
+"en": "Key takeaways — the lesson, and where the chapter stands"
 },
 "t2l6-s4": {
 "ar": "pivot_table وaggfunc والمكرَّرات التي تحسب متوسطها دون أن تخبرك",
@@ -3985,6 +4042,166 @@ window.DAHeadings = {
 "t2l6-s9": {
 "ar": "transform: قيمةٌ لكل صف أصلي",
 "en": "transform: one value per original row"
+},
+"t2l7-h1": {
+"ar": "المفهوم 1 — الصفوف المحجوزة التي كنّا ننفقها",
+"en": "Concept 1 — The held-out rows we have been spending"
+},
+"t2l7-h2": {
+"ar": "المفهوم 2 — ثلاثة أقسام لثلاث وظائف",
+"en": "Concept 2 — Three parts, three jobs"
+},
+"t2l7-h3": {
+"ar": "المفهوم 3 — التسريب الأول: الحقيقة نفسها في النصفين",
+"en": "Concept 3 — Leak one: the same fact in both halves"
+},
+"t2l7-h4": {
+"ar": "المفهوم 4 — التسريب الثاني: الضبطُ قبل التقسيم",
+"en": "Concept 4 — Leak two: fitting before the split"
+},
+"t2l7-h5": {
+"ar": "المفهوم 5 — التسريب الثالث: الزمن وتاريخُ الأساس",
+"en": "Concept 5 — Leak three: time, and the as-of date"
+},
+"t2l7-h6": {
+"ar": "المفهوم 6 — تقسيمٌ واحد وبذرةٌ واحدة، وما لا يستطيع أن يخبرك به",
+"en": "Concept 6 — One split, one seed, and what it cannot tell you"
+},
+"t2l7-h7": {
+"ar": "المفهوم 7 — إنشاءُ السمات، تحت القاعدة",
+"en": "Concept 7 — Feature creation, under the rule"
+},
+"t2l7-h8": {
+"ar": "تمارين",
+"en": "Exercises"
+},
+"t2l7-h9": {
+"ar": "ملحق — الحسابُ خلف الأرقام في هذه الصفحة، وصورةُ المكتبة",
+"en": "Appendix — the arithmetic behind the numbers on this page, and the library form"
+},
+"t2l7-s1": {
+"ar": "المسطرة التي كان الفصل يقرؤها",
+"en": "The ruler the chapter has been reading"
+},
+"t2l7-s10": {
+"ar": "أزِل التكرار قبل أن تقسّم، لا بعده",
+"en": "De-duplicate before you split, never after"
+},
+"t2l7-s11": {
+"ar": "وسيطُ الوكالة، مأخوذًا على كل شيء",
+"en": "The agency median, taken over everything"
+},
+"t2l7-s12": {
+"ar": "شيكلٌ ونصف — ومتى لا يكون كذلك",
+"en": "A shekel and a half — and when it is not"
+},
+"t2l7-s13": {
+"ar": "كلُّ خطوة في هذا الفصل تضبط شيئًا",
+"en": "Every step of this chapter that fits something"
+},
+"t2l7-s14": {
+"ar": "أربعةُ أشهر في كيس واحد",
+"en": "Four months in one bag"
+},
+"t2l7-s15": {
+"ar": "الماضي والمستقبل مقيسين — والجوابُ ليس المتوقَّع",
+"en": "Past and future, measured — and the answer is not the one you expect"
+},
+"t2l7-s16": {
+"ar": "تاريخُ الأساس يُعلَن ولا يُحسَب",
+"en": "The as-of date is declared, not computed"
+},
+"t2l7-s17": {
+"ar": "خمسُ طيّات بدل تقسيم واحد",
+"en": "Five folds instead of one split"
+},
+"t2l7-s18": {
+"ar": "سبعةُ شواكل من تشتُّت الطيّات",
+"en": "Seven shekels of fold-to-fold spread"
+},
+"t2l7-s19": {
+"ar": "التصحيح: قرارٌ كان داخل الضجيج",
+"en": "The retraction: a decision that was inside the noise"
+},
+"t2l7-s2": {
+"ar": "ستة قرارات ورقمٌ واحد",
+"en": "Six decisions, one number"
+},
+"t2l7-s20": {
+"ar": "ما يكلّفه التحقّقُ المتقاطع ومتى تتركه",
+"en": "What cross-validation costs, and when to skip it"
+},
+"t2l7-s21": {
+"ar": "خمسةُ أعمدة من تاريخ واحد",
+"en": "Five columns out of one date"
+},
+"t2l7-s22": {
+"ar": "التواريخُ لا تكسب شيئًا، مقيسةً",
+"en": "The dates earn nothing, measured"
+},
+"t2l7-s23": {
+"ar": "التنطيق: عرضٌ متساوٍ مقابل عددٍ متساوٍ",
+"en": "Binning: equal width against equal count"
+},
+"t2l7-s24": {
+"ar": "النطاقاتُ التي تحصل عليها إن نطّقتَ قبل إصلاح الوحدات",
+"en": "The bands you get if you bin before repairing the units"
+},
+"t2l7-s25": {
+"ar": "حدودُ النطاقات وسيطٌ مضبوط",
+"en": "Band edges are a fitted parameter"
+},
+"t2l7-s26": {
+"ar": "نقطةُ المنتصف وما يرميه النطاق",
+"en": "The midpoint, and what a band throws away"
+},
+"t2l7-s27": {
+"ar": "المحافظة × النطاق، والاختبارُ مقروءًا مرة واحدة",
+"en": "Governorate × band, and the test read once"
+},
+"t2l7-s28": {
+"ar": "أ. ما تكلّفه مجموعةُ التحقّق، صفوفًا وضجيجًا",
+"en": "A. What a validation set costs, in rows and in noise"
+},
+"t2l7-s29": {
+"ar": "ب. نقطةُ منتصف المجال، والطرقُ الثلاث لأن يصير النطاقُ رقمًا",
+"en": "B. The interval midpoint, and the three ways a band can become a number"
+},
+"t2l7-s3": {
+"ar": "لماذا يجعل ذلك الرقمَ متفائلًا، في تجربة واحدة",
+"en": "Why that makes the number optimistic, in one experiment"
+},
+"t2l7-s30": {
+"ar": "ج. صورةُ scikit-learn مبنيّةً ومشغَّلة",
+"en": "C. The scikit-learn form, built and run"
+},
+"t2l7-s31": {
+"ar": "الخلاصةُ وورقةُ الأخطاء",
+"en": "Key takeaways, and the mistakes cheat-sheet"
+},
+"t2l7-s4": {
+"ar": "تمارينُ التدريب والامتحاناتُ التجريبية والامتحانُ النهائي",
+"en": "Practice problems, mock exams, and the final"
+},
+"t2l7-s5": {
+"ar": "التقسيم وسيط: البذرة والنسب وتاريخ الأساس",
+"en": "A split is a parameter: the seed, the proportions, the as-of date"
+},
+"t2l7-s6": {
+"ar": "الاختيارُ على التحقّق وقراءةُ الاختبار مرة واحدة",
+"en": "Choosing on validation, reading the test once"
+},
+"t2l7-s7": {
+"ar": "ما يكلّفك القسمُ الأوسط",
+"en": "What the middle set costs you"
+},
+"t2l7-s8": {
+"ar": "ستةُ صفوف لقيها النموذج سلفًا",
+"en": "Six rows the model has already met"
+},
+"t2l7-s9": {
+"ar": "أحدٌ وعشرون شيكلًا مقابل اثنين وستين",
+"en": "Twenty-one shekels against sixty-two"
 },
 "t2lab-h1": {
 "ar": "اضبط مرة، وطبّق في أي مكان: وسيط مُتعلَّم يلاقي ملف الشهر القادم",
@@ -4026,9 +4243,17 @@ window.DAHeadings = {
 "ar": "الشكل كله في أربعين سطرًا: اضبط مرة، وطبّق مرتين، وأبلِغ عنهما، وأكّد قبل الإرجاع",
 "en": "The whole shape in forty lines: fit once, apply twice, report both, assert before returning"
 },
+"t2lab-h19": {
+"ar": "الخريطة نفسها، مضبوطةً مرتين",
+"en": "The same map, fitted twice"
+},
 "t2lab-h2": {
 "ar": "ترتيبان، جدولان: عوِّض ثم احذف المكرّر، أو احذف المكرّر ثم عوِّض",
 "en": "Two orders, two tables: impute then dedupe, or dedupe then impute"
+},
+"t2lab-h20": {
+"ar": "ثلاثة أقسام من اثني عشر صفًّا",
+"en": "Three parts out of twelve rows"
 },
 "t2lab-h3": {
 "ar": "كتابةٌ لا تصل: قطعة ونسخة و.loc",

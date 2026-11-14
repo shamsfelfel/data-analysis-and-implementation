@@ -46,6 +46,28 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "as-of-date",
+  "term": {
+   "en": "As-of date",
+   "ar": "تاريخ الأساس (as-of date)"
+  },
+  "def": {
+   "en": "The moment a feature is allowed to know about, declared as a parameter rather than read out of the data. A recency column built from max(listed_on) over the whole frame takes its reference point from rows the training half may not touch. On this file the newest advert (2026-06-19) happens to land in the training rows under every seed tried, so the bug would never show up in a test — which is the reason to declare the date instead of trusting the luck.",
+   "ar": "اللحظة التي يُسمح للسمة بمعرفتها، معلنةً وسيطًا لا مقروءةً من البيانات. فعمود الحداثة المبنيّ على max(listed_on) على الإطار كله يأخذ نقطة مرجعه من صفوف لا يحقّ لنصف التدريب لمسها. وفي هذا الملف يصادف أن أحدث إعلان (2026-06-19) يقع في صفوف التدريب تحت كل بذرة جُرّبت، فلن يظهر العطب في اختبار قط — وهذا هو سبب إعلان التاريخ بدل الاتّكال على الحظّ."
+  },
+  "cat": {
+   "en": "Leakage",
+   "ar": "التسريب"
+  },
+  "see": [
+   "time-leakage",
+   "model-artefact"
+  ],
+  "used": [
+   "t2l7-s16"
+  ]
+ },
+ {
   "id": "baseline",
   "term": {
    "en": "Baseline",
@@ -65,6 +87,29 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l1-s24"
+  ]
+ },
+ {
+  "id": "binning",
+  "term": {
+   "en": "Binning",
+   "ar": "التنطيق (binning)"
+  },
+  "def": {
+   "en": "Turning a number into a small set of ranges, with pd.cut for equal-width bands and pd.qcut for equal-count ones. Four equal-count bands of area_m2, fitted on the training rows, have edges [32.3, 61.82, 72.95, 86.72, 113.6] and take the validation error from 77.6404 to 63.3989.",
+   "ar": "تحويل رقم إلى مجموعة صغيرة من المجالات، بـpd.cut للنطاقات متساوية العرض وبـpd.qcut لمتساوية العدد. فأربعة نطاقات متساوية العدد من area_m2، مضبوطةً على صفوف التدريب، حدودها [32.3, 61.82, 72.95, 86.72, 113.6] وتأخذ خطأ التحقّق من 77.6404 إلى 63.3989."
+  },
+  "cat": {
+   "en": "Features",
+   "ar": "السمات"
+  },
+  "see": [
+   "interval-midpoint",
+   "feature-engineering",
+   "fit"
+  ],
+  "used": [
+   "t2l7-s23"
   ]
  },
  {
@@ -246,6 +291,29 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "cross-validation",
+  "term": {
+   "en": "Cross-validation",
+   "ar": "التحقّق المتقاطع (cross-validation)"
+  },
+  "def": {
+   "en": "Splitting the fitting rows into k folds and scoring k times, each fold held out once, so that the answer comes with a spread instead of a single number. Five folds over the 384 train-and-validation rows give the governorate grouping a mean of 56.8610 and a standard deviation of 7.0358 shekels.",
+   "ar": "تقسيم صفوف الضبط إلى k طيّات والقياس k مرة، تُحجَز كل طيّة مرة واحدة، فتأتي الإجابة بتشتُّت لا برقم واحد. فخمس طيّات على صفوف التدريب والتحقّق الـ384 تعطي تجميعَ المحافظة متوسطًا 56.8610 وانحرافًا معياريًّا 7.0358 شيكل."
+  },
+  "cat": {
+   "en": "Measurement",
+   "ar": "القياس"
+  },
+  "see": [
+   "fold",
+   "validation-set",
+   "mae"
+  ],
+  "used": [
+   "t2l7-s17"
+  ]
+ },
+ {
   "id": "decision-log",
   "term": {
    "en": "Decision log",
@@ -334,6 +402,30 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "feature-engineering",
+  "term": {
+   "en": "Feature engineering",
+   "ar": "هندسة السمات (feature engineering)"
+  },
+  "def": {
+   "en": "Making new columns out of the ones you have, so that a pattern the model cannot reach becomes a column it can. It is not free: of the two derivations in this lesson, the area band takes validation error from 77.6404 to 63.3989 and the date columns make it worse, and only a validation measurement tells the two apart.",
+   "ar": "صناعة أعمدة جديدة من الأعمدة التي تملكها، حتى يصير النمطُ الذي لا يبلغه النموذج عمودًا يبلغه. وهي ليست بالمجّان: فمن الاشتقاقين في هذا الدرس يأخذ نطاقُ المساحة خطأ التحقّق من 77.6404 إلى 63.3989، وتُسيء إليه أعمدةُ التاريخ، ولا يفرّق بينهما إلا قياسٌ على التحقّق."
+  },
+  "cat": {
+   "en": "Features",
+   "ar": "السمات"
+  },
+  "see": [
+   "binning",
+   "interval-midpoint",
+   "overfitting",
+   "feature-matrix"
+  ],
+  "used": [
+   "t2l7-h7"
+  ]
+ },
+ {
   "id": "feature-matrix",
   "term": {
    "en": "Feature matrix",
@@ -399,6 +491,27 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l1-s10"
+  ]
+ },
+ {
+  "id": "fold",
+  "term": {
+   "en": "Fold",
+   "ar": "الطيّة (fold)"
+  },
+  "def": {
+   "en": "One of the k equal parts cross-validation cuts its rows into; each is held out exactly once while the other k−1 do the fitting. The five folds here score 55.53, 62.92, 53.75, 64.67 and 47.43 for the same recipe, and that spread is the point: a difference smaller than it is not a result.",
+   "ar": "واحدةٌ من الأقسام الـk المتساوية التي يقطع إليها التحقّق المتقاطع صفوفه؛ تُحجَز كلٌّ منها مرة واحدة بالضبط بينما تؤدّي الـk−1 الأخرى الضبط. والطيّات الخمس هنا تسجّل 55.53 و62.92 و53.75 و64.67 و47.43 للوصفة نفسها، وهذا التشتُّت هو المغزى: فالفرق الأصغر منه ليس نتيجة."
+  },
+  "cat": {
+   "en": "Measurement",
+   "ar": "القياس"
+  },
+  "see": [
+   "cross-validation"
+  ],
+  "used": [
+   "t2l7-s17"
   ]
  },
  {
@@ -578,6 +691,28 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l4-s15"
+  ]
+ },
+ {
+  "id": "interval-midpoint",
+  "term": {
+   "en": "Interval midpoint",
+   "ar": "نقطة منتصف المجال (interval midpoint)"
+  },
+  "def": {
+   "en": "The single number that stands for a band, halfway between its edges, which is how a band becomes usable by a model that needs numbers rather than labels. It is also where the cost of binning is visible: areas of 70.1 and 89.9 fall in different bands but any two areas inside one band collapse to the same midpoint and therefore to the same prediction.",
+   "ar": "الرقمُ الواحد الذي ينوب عن النطاق، في منتصف المسافة بين حدَّيه، وبه يصير النطاق قابلًا للاستعمال في نموذج يحتاج أرقامًا لا لافتات. وفيه أيضًا يظهر ثمن التنطيق: فمساحتا 70.1 و89.9 تقعان في نطاقين مختلفين، لكن أي مساحتين داخل نطاق واحد تنطويان على نقطة المنتصف نفسها ومن ثَمّ على التنبؤ نفسه."
+  },
+  "cat": {
+   "en": "Features",
+   "ar": "السمات"
+  },
+  "see": [
+   "binning",
+   "feature-engineering"
+  ],
+  "used": [
+   "t2l7-s24"
   ]
  },
  {
@@ -1144,6 +1279,29 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "overfitting",
+  "term": {
+   "en": "Overfitting",
+   "ar": "إفراط الملاءمة (overfitting)"
+  },
+  "def": {
+   "en": "Fitting the particular rows in front of you rather than the pattern behind them, recognisable as a training score that improves while a validation score does not. A median per weekday moves the training error from 57.0863 to 55.9712 and the validation error from 77.6404 to 79.7753: the column learned seven days of noise.",
+   "ar": "ملاءمة الصفوف التي بين يديك بعينها لا النمطِ الذي خلفها، ويُعرَف بنتيجة تدريب تتحسّن ونتيجة تحقّق لا تتحسّن. فالوسيط لكل يوم من الأسبوع ينقل خطأ التدريب من 57.0863 إلى 55.9712 وخطأ التحقّق من 77.6404 إلى 79.7753: فقد تعلّم العمود سبعة أيام من الضجيج."
+  },
+  "cat": {
+   "en": "Measurement",
+   "ar": "القياس"
+  },
+  "see": [
+   "validation-set",
+   "feature-engineering",
+   "cross-validation"
+  ],
+  "used": [
+   "t2l7-s22"
+  ]
+ },
+ {
   "id": "pipeline",
   "term": {
    "en": "Pipeline",
@@ -1389,6 +1547,29 @@ window.DAGlossary["t2"] = [
   ]
  },
  {
+  "id": "test-set",
+  "term": {
+   "en": "Test set",
+   "ar": "مجموعة الاختبار (test set)"
+  },
+  "def": {
+   "en": "The part held back to be read once, at the end, after every choice has already been made elsewhere. 96 of the 480 flats here. Reading it twice turns it into a validation set, which is precisely what Lessons 1 to 6 did to their held-out rows without noticing.",
+   "ar": "القسم المحجوز ليُقرأ مرة واحدة في النهاية، بعد أن تكون كل الاختيارات اتُّخذت في مكان آخر. وهو 96 من الشقق الـ480 هنا. وقراءته مرتين تحوّله إلى مجموعة تحقّق، وهو بالضبط ما فعلته الدروس 1 إلى 6 بصفوفها المحجوزة دون أن تنتبه."
+  },
+  "cat": {
+   "en": "Measurement",
+   "ar": "القياس"
+  },
+  "see": [
+   "validation-set",
+   "train-test-split",
+   "leakage"
+  ],
+  "used": [
+   "t2l7-s4"
+  ]
+ },
+ {
   "id": "text-flag",
   "term": {
    "en": "Text flag",
@@ -1430,6 +1611,52 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l6-s1"
+  ]
+ },
+ {
+  "id": "time-leakage",
+  "term": {
+   "en": "Time leakage",
+   "ar": "التسريب الزمني (time leakage)"
+  },
+  "def": {
+   "en": "The leak in which a model is trained on rows that came after the rows it is tested on, so it learns from a future it would not have had. A random split over adverts dated 2026-02-01 to 2026-06-19 mixes May into the training of June. On this file the honest chronological split scores 55.4511 against the random split's 60.9140 — better, because the market barely moved, which you could not have known in advance.",
+   "ar": "التسريب الذي يُدرَّب فيه النموذج على صفوف جاءت بعد الصفوف التي يُختبَر عليها، فيتعلّم من مستقبل لم يكن ليملكه. فالتقسيم العشوائي على إعلانات مؤرَّخة من 2026-02-01 إلى 2026-06-19 يخلط أيار في تدريب حزيران. وفي هذا الملف يسجّل التقسيم الزمني الأمين 55.4511 مقابل 60.9140 للتقسيم العشوائي — أحسنَ، لأن السوق لم يتحرّك إلا قليلًا، وهو ما لم يكن ممكنًا أن تعرفه سلفًا."
+  },
+  "cat": {
+   "en": "Leakage",
+   "ar": "التسريب"
+  },
+  "see": [
+   "leakage",
+   "as-of-date"
+  ],
+  "used": [
+   "t2l7-h5"
+  ]
+ },
+ {
+  "id": "train-test-overlap",
+  "term": {
+   "en": "Train-test overlap",
+   "ar": "تداخل التدريب والاختبار (train-test overlap)"
+  },
+  "def": {
+   "en": "The leak in which the same fact appears in both halves of a split, so the model is scored on rows it has already learned. Six of the 96 test rows here share a listing_id with a training row, and the error on those six is 21.6667 against 62.2043 on the rest. The cure is to de-duplicate on the business key before splitting, not after.",
+   "ar": "التسريب الذي تظهر فيه الحقيقة نفسها في نصفَي التقسيم، فيُقاس النموذج على صفوف تعلّمها سلفًا. فستة من صفوف الاختبار الـ96 هنا تشارك صفًّا تدريبيًّا في رقم الإعلان، والخطأ على تلك الستة 21.6667 مقابل 62.2043 على الباقي. والعلاج إزالة التكرار على المفتاح العملي قبل التقسيم لا بعده."
+  },
+  "cat": {
+   "en": "Leakage",
+   "ar": "التسريب"
+  },
+  "see": [
+   "leakage",
+   "exact-duplicate",
+   "business-key",
+   "repost"
+  ],
+  "used": [
+   "t2l7-h3"
   ]
  },
  {
@@ -1543,6 +1770,29 @@ window.DAGlossary["t2"] = [
   ],
   "used": [
    "t2l5-s11"
+  ]
+ },
+ {
+  "id": "validation-set",
+  "term": {
+   "en": "Validation set",
+   "ar": "مجموعة التحقّق (validation set)"
+  },
+  "def": {
+   "en": "The middle part of a split, read many times to compare candidate recipes and choose one, and never fitted on. On the 480 flats it holds 96 rows. It exists because the part you choose with stops being an honest final score: the raw-city grouping has the best training error (51.1340) and the validation rows are what reveal that it loses to the governorate grouping.",
+   "ar": "القسم الأوسط من التقسيم، يُقرأ مرات كثيرة لمقارنة الوصفات المرشَّحة واختيار واحدة، ولا يُضبَط عليه قط. ويضمّ 96 صفًّا من الشقق الـ480. ووجوده لأن القسم الذي تختار به يكفّ عن أن يكون نتيجة نهائية أمينة: فتجميع المدينة الخام له أدنى خطأ تدريب (51.1340)، وصفوفُ التحقّق هي ما يكشف أنه يخسر أمام تجميع المحافظة."
+  },
+  "cat": {
+   "en": "Measurement",
+   "ar": "القياس"
+  },
+  "see": [
+   "test-set",
+   "cross-validation",
+   "overfitting"
+  ],
+  "used": [
+   "t2l7-s4"
   ]
  },
  {

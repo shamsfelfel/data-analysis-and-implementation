@@ -109,66 +109,6 @@ window.DABanks = window.DABanks || {};
       },
 
       /* ---------------------------------------------------------- 03 */
-      {
-        id: "t2bx03", type: "compare", level: "hard",
-        topics: ["t2-leakage", "t2-fit-apply", "t2-pipeline-order"],
-        q: {
-          en: "Two programs fill the blank deposits of the 503 scraped rows and hold a quarter of them back. A prints <code>deposit fill 287.5 | rent fill 200.0</code> and <code>blank deposits: 0 0</code>; B prints <code>deposit fill 295.0 | rent fill 200.0</code> and <code>blank deposits: 0 0</code>. Which statement is correct?",
-          ar: "برنامجان يعبّئان التأمينات الفارغة في الصفوف الـ503 المسحوبة ويحجزان ربعَها. يطبع «أ» ‏<code>deposit fill 287.5 | rent fill 200.0</code> و<code>blank deposits: 0 0</code>؛ ويطبع «ب» ‏<code>deposit fill 295.0 | rent fill 200.0</code> و<code>blank deposits: 0 0</code>. فأيُّ العبارات صحيح؟"
-        },
-        codeA: code(
-          "raw = pd.read_csv(\"listings_raw.csv\")        # 503 rows, 380 recorded deposits",
-          "par = raw.median(numeric_only=True)",
-          "out = raw.fillna(par)",
-          "",
-          "train = out.sample(frac=0.75, random_state=3)",
-          "test  = out.drop(train.index)",
-          "print(\"deposit fill %.1f | rent fill %.1f\" % (par[\"deposit\"], par[\"monthly_rent\"]))",
-          "print(\"blank deposits:\", int(train[\"deposit\"].isna().sum()),",
-          "      int(test[\"deposit\"].isna().sum()))"
-        ),
-        codeB: code(
-          "raw   = pd.read_csv(\"listings_raw.csv\")      # 503 rows, 380 recorded deposits",
-          "train = raw.sample(frac=0.75, random_state=3)",
-          "test  = raw.drop(train.index)",
-          "",
-          "par = {\"deposit\": float(train[\"deposit\"].median()),",
-          "       \"monthly_rent\": float(train[\"monthly_rent\"].median())}",
-          "train = train.assign(deposit=train[\"deposit\"].fillna(par[\"deposit\"]))",
-          "test  = test.assign(deposit=test[\"deposit\"].fillna(par[\"deposit\"]))",
-          "print(\"deposit fill %.1f | rent fill %.1f\" % (par[\"deposit\"], par[\"monthly_rent\"]))",
-          "print(\"blank deposits:\", int(train[\"deposit\"].isna().sum()),",
-          "      int(test[\"deposit\"].isna().sum()))"
-        ),
-        options: [
-          {
-            en: "B is the honest one. A computes both fills before the split, so 84 of the 380 deposits and 121 of the 484 rents behind A's two numbers are rows nothing is allowed to learn from; B measures its fills on the 377 training rows and then applies the same two numbers to both sides, which is also the only shape that can be re-run on June's file without refitting.",
-            ar: "«ب» هو الأمين. فـ«أ» يحسب التعبئتين قبل القسمة، فيكون 84 من التأمينات الـ380 و121 من الإيجارات الـ484 خلف رقمَي «أ» صفوفًا لا يحقّ لشيء أن يتعلّم منها؛ وأما «ب» فيقيس تعبئتيه على صفوف التدريب الـ377 ثم يطبّق الرقمين نفسيهما على الجانبين، وهذا أيضًا الشكلُ الوحيد الذي يمكن تشغيله على ملف حزيران بلا إعادة ضبط."
-          },
-          {
-            en: "Neither leaks, because the rent fill is 200.0 in both programs and the deposit fills differ by only 7.5 shekels &mdash; a difference that small cannot change a conclusion.",
-            ar: "لا يتسرّب أيٌّ منهما، لأن تعبئةَ الإيجار 200.0 في البرنامجين وتعبئتا التأمين لا تفترقان إلا بـ7.5 شيكلًا &mdash; وفرقٌ بهذا الصغر لا يستطيع أن يغيّر استنتاجًا."
-          },
-          {
-            en: "A is the honest one: a fill value should be measured on every row available, because 380 deposits estimate the centre of the column better than 296 do, and B deliberately throws a quarter of the evidence away.",
-            ar: "«أ» هو الأمين: فينبغي أن تُقاس قيمةُ التعبئة على كل صفٍّ متاح، لأن 380 تأمينًا تقدّر مركزَ العمود خيرًا من 296، و«ب» يرمي ربعَ الدليل عن قصد."
-          },
-          {
-            en: "A is safe here because <code>deposit</code> is a feature rather than the target; only a fill of <code>monthly_rent</code> computed before the split would be a leak.",
-            ar: "«أ» سليم هنا لأن <code>deposit</code> خاصيةٌ لا هدف؛ فلا يكون تسرّبًا إلا تعبئةُ <code>monthly_rent</code> محسوبةً قبل القسمة."
-          }
-        ],
-        answer: 0,
-        hint: {
-          en: "Both programs end with no blank deposits, so the output cannot separate them. Ask instead which rows each of the two fill values was <em>measured on</em>, and whether either program could score a single new listing in July.",
-          ar: "ينتهي البرنامجان بلا تأمينات فارغة، فلا يستطيع الخَرجُ أن يفرّق بينهما. فاسأل عوضًا عن ذلك: أيَّ الصفوف <em>قيست عليها</em> كلُّ واحدة من قيمتي التعبئة؟ وهل يستطيع أيٌّ من البرنامجين أن يُقيّم إعلانًا جديدًا واحدًا في تموز؟"
-        },
-        explain: {
-          en: "A leak is a fact about where a parameter came from, not about how big it is. A's 287.5 is the median of all 380 recorded deposits, 84 of which are in the quarter it then holds back, so the held-out rows helped choose the number they are later scored with; B's 295.0 comes from the 377 training rows alone. The answer that calls them both honest because the rent fill is 200.0 either way is the most tempting one and it is the chapter's standing warning: the same number can be two different claims, so leakage is prevented by construction and never by inspecting the output. The answer that prefers A for using more rows has the purpose of the split backwards &mdash; the held-out rows are not evidence, they are the measurement. And the answer that excuses A because <code>deposit</code> is a feature misses that a feature fitted on held-out rows flatters the held-out error just as surely as a target does. Notice also what B's shape buys beyond honesty: two stored numbers that June's 85 listings can be filled with, and one listing on its own can be filled with, which A's shape cannot do at all.",
-          ar: "التسرّبُ واقعةٌ عن مصدر الوسيط لا عن حجمه. فـ287.5 في «أ» وسيطُ التأمينات الـ380 المسجَّلة كلها، و84 منها في الربع الذي يحجزه بعد ذلك، فتكون الصفوفُ المحجوزة قد أعانت على اختيار الرقم الذي ستُقيَّم به؛ وأما 295.0 في «ب» فمن صفوف التدريب الـ377 وحدها. والجوابُ الذي يسمّيهما أمينَين لأن تعبئةَ الإيجار 200.0 في الحالتين هو أغراها، وهو تحذيرُ الفصل الدائم: فالرقمُ الواحد قد يكون ادّعاءين مختلفين، فيُمنع التسرّبُ بالبناء لا بتفتيش الخَرج قط. والجوابُ الذي يُفضّل «أ» لاستعماله صفوفًا أكثرَ يقلب غرضَ القسمة &mdash; فالصفوفُ المحجوزة ليست دليلًا بل هي القياس. والجوابُ الذي يعذر «أ» لأن <code>deposit</code> خاصيةٌ يُفوّت أن الخاصيةَ المضبوطة على صفوفٍ محجوزة تُجمّل الخطأَ المحجوز كما يُجمّله الهدفُ بعينه. ولاحظ أيضًا ما يشتريه شكلُ «ب» فوق الأمانة: رقمان مخزَّنان تُعبَّأ بهما إعلاناتُ حزيران الـ85، ويُعبَّأ بهما إعلانٌ واحد وحده، وهذا ما لا يستطيعه شكلُ «أ» أصلًا."
-        }
-      },
-
       /* ---------------------------------------------------------- 04 */
       {
         id: "t2bx04", type: "match", level: "easy",
@@ -679,37 +619,6 @@ window.DABanks = window.DABanks || {};
       },
 
       /* ---------------------------------------------------------- 14 */
-      {
-        id: "t2bx14", type: "output", level: "easy",
-        topics: ["t2-unit-error", "t2-filter-drops-blanks"],
-        q: {
-          en: "Write exactly what the program prints. <code>clean</code> is Lesson 4's 480-flat frame, one row per real flat. Five of its areas were recorded in dunum, so they read 0.0x instead of 5x&ndash;9x square metres. <code>AREA_MIN_M2</code> is 5 and <code>DUNUM_M2</code> is 1000. The last line is the one-liner a colleague reached for instead.",
-          ar: "اكتب بالضبط ما يطبعه البرنامج. و<code>clean</code> هو جدولُ الشقق الـ480 في الدرس 4، لكل شقة حقيقية صفٌّ واحد. وقد سُجّلت خمسٌ من مساحاته بالدونم، فتُقرأ 0.0س بدل 5س&ndash;9س مترًا مربعًا. و<code>AREA_MIN_M2</code> تساوي 5 و<code>DUNUM_M2</code> تساوي 1000. والسطرُ الأخير هو السطرُ الواحد الذي لجأ إليه زميلٌ عوضًا عن ذلك."
-        },
-        code: code(
-          "s = clean[\"area_m2\"]",
-          "",
-          "is_dunum = (s < AREA_MIN_M2).fillna(False)",
-          "fixed    = s.mask(is_dunum, s * DUNUM_M2)",
-          "",
-          "print(int(is_dunum.sum()), int(s.isna().sum()))",
-          "print(round(float(fixed[is_dunum].min()), 1), round(float(fixed[is_dunum].max()), 1))",
-          "print(round(float(s.min()), 4), round(float(fixed.min()), 1))",
-          "print(len(clean), len(clean[clean[\"area_m2\"] > AREA_MIN_M2]))"
-        ),
-        blanks: [
-          { accept: ["5 26\n37.9 87.8\n0.0379 30.5\n480 449"], lines: 4 }
-        ],
-        hint: {
-          en: "The first three lines are about the five converted cells: how many there are, what they become, and what the column's smallest value was before and after. The last line counts what survives a comparison &mdash; and <code>clean</code> has blank areas too.",
-          ar: "الأسطرُ الثلاثة الأولى عن الخلايا الخمس المحوَّلة: كم عددها، وإلى ماذا تصير، وما كانت أصغرُ قيمة في العمود قبلها وبعدها. والسطرُ الأخير يعدّ ما ينجو من مقارنة &mdash; ولـ<code>clean</code> مساحاتٌ فارغة أيضًا."
-        },
-        explain: {
-          en: "Five cells are below 5 m&sup2; and 26 areas are blank. Multiplying the five by 1000 turns them into 37.9 to 87.8 m&sup2; &mdash; ordinary flats, which is the evidence that the diagnosis was right rather than a guess: a dunum reading of 0.0507 is a 50.7 m&sup2; flat, and the assertion the lesson writes next to the conversion is that no converted area may still be impossible. The third line is the repair in one comparison: the column's minimum goes from 0.0379 to 30.5. The fourth line is the cost of the shortcut. <code>clean[clean[\"area_m2\"] > 5]</code> keeps 449 of 480 rows, so it deletes 31: the 5 unit errors it was aimed at and the 26 blank areas it was not, because <code>NaN > 5</code> is <code>False</code> and a filter silently drops every row that could not answer. The repair keeps all 480 rows and fixes 5 cells; the filter deletes 31 rows and fixes nothing.",
-          ar: "خمسُ خلايا تحت 5 م² و26 مساحةً فارغة. وضربُ الخمس في 1000 يحوّلها إلى 37.9 حتى 87.8 م² &mdash; أي شققًا عادية، وهذا هو الدليلُ على أن التشخيصَ كان صحيحًا لا تخمينًا: فقراءةُ الدونم 0.0507 شقةٌ بـ50.7 م²، والتأكيدُ الذي يكتبه الدرسُ بجانب التحويل أنه لا يجوز لمساحةٍ محوَّلة أن تظلّ مستحيلة. والسطرُ الثالث هو الإصلاحُ في مقارنةٍ واحدة: فأصغرُ قيمة في العمود تنتقل من 0.0379 إلى 30.5. والسطرُ الرابع هو ثمنُ المختصر. فـ<code>clean[clean[\"area_m2\"] > 5]</code> تُبقي 449 من 480 صفًّا، فتحذف 31: أخطاءَ الوحدة الخمسة التي قُصدت والمساحاتِ الفارغةَ الستَّ والعشرين التي لم تُقصد، لأن <code>NaN > 5</code> تساوي <code>False</code> والمرشّحُ يُسقط بصمتٍ كلَّ صفٍّ لم يستطع أن يجيب. فالإصلاحُ يُبقي الصفوفَ الـ480 كلها ويُصلح خمسَ خلايا؛ والمرشّحُ يحذف 31 صفًّا ولا يُصلح شيئًا."
-        }
-      },
-
       /* ---------------------------------------------------------- 15 */
       {
         id: "t2bx15", type: "fill", level: "medium",
@@ -1218,7 +1127,64 @@ window.DABanks = window.DABanks || {};
           ar: "يطبع <code>join=\"inner\"</code> ‏588 صفًّا و11 عمودًا ولا فراغات، وهذا يبدو نتيجةً نظيفة وهو أسوأُ الثلاثة. فثلاثةُ أرباع الأعمدة ذهبت، وفيها العمودان اللذان كانا السجلَّ الوحيد لمدينة حزيران الجديدة ومستوى حالته الجديد، وتخلط الصفوفُ الصفرية الـ189 في المدينة تهجئاتِ آذار الخاطئة الـ187 بشقتَي Beit Lahia الحقيقيتين فلا يستطيع شيءٌ في الجدول أن يفصلهما. وجوابُ <code>fillna(0)</code> هو الأغرى لأن الصفرَ صادقٌ في معظم الخلايا: فآذار ليس في Beit Lahia حقًّا. لكن الصفرَ في <code>condition_very good</code> لشقةٍ من آذار هو الادّعاءُ الموجب «هذه الشقة ليست في حالٍ جيدة جدًّا»، وآذار لم يعرض ذلك الخيارَ قط، فيكون الادّعاءُ بلا أساس في الـ503 كلها &mdash; فالفراغُ في عمودٍ مؤشِّر يعني <em>غيرَ معروف</em> لا <em>لا</em>. ويقول النوعُ الشيءَ نفسه مجانًا: فـ<code>city_Gaza</code> ما زال <code>int8</code> لأنه موجود على الجانبين، أما كلُّ عمودٍ من جانبٍ واحد فقد رُقّي إلى <code>float64</code> ليحمل <code>NaN</code>. وجوابُ الفهرس يسمّي عطبًا ثانيًا حقيقيًّا &mdash; 85 وسمًا مكرَّرًا، فتعيد <code>stacked.loc[3]</code> صفّين &mdash; ثم يدّعي علاجًا لمشكلةٍ أخرى: فإعادةُ ترقيم الصفوف لا تستطيع اختلاقَ عمود. والمربّعُ الثالث لا يفقد صفّي Beit Lahia: بل يُبقيهما، ومربّعُ مدينتهما خمسةُ أصفار، وتعدّهما الخطوة، وهذا هو مقصودُ الترميز في مقابل قائمةٍ مضبوطة لا في مقابل ما يحتويه ملفٌّ اتفاقًا."
         }
       }
+,
 
+      /* ================ Lesson 7 ============================= */
+      {
+        id: "t2bx25",
+        type: "compare",
+        level: "hard",
+        topics: ["t2-fit-before-split", "t2-what-fits"],
+        q: {
+          en: "Both versions fill the blank areas with a median per <code>rooms</code> &mdash; Lesson 2's rule &mdash; and apply the same fill to all three parts. Which statement is true?",
+          ar: "تعوّض النسختان المساحاتِ الفارغة بوسيطٍ لكل <code>rooms</code> &mdash; قاعدةُ الدرس 2 &mdash; وتطبّقان التعويضَ نفسه على الأقسام الثلاثة. فأيُّ العبارات صادقة؟"
+        },
+        codeA: "fill = flats.groupby(\"rooms\")[\"area_m2\"].median()\nparts, _ = split_listings(rep)\nfor k in parts:\n    parts[k] = parts[k].assign(area_m2=parts[k][\"area_m2\"].fillna(parts[k][\"rooms\"].map(fill)))",
+        codeB: "parts, _ = split_listings(rep)\nfill = parts[\"train\"].groupby(\"rooms\")[\"area_m2\"].median()\nfor k in parts:\n    parts[k] = parts[k].assign(area_m2=parts[k][\"area_m2\"].fillna(parts[k][\"rooms\"].map(fill)))",
+        options: [
+          { en: "Only B can be reported: A's per-rooms medians were computed from a frame that includes the validation and test areas, and applying one fill to all three parts does not undo where that fill came from.",
+            ar: "ب وحدها يمكن الإبلاغ عنها: فوسائط أ لكل عدد غرف حُسبت من إطار يشمل مساحات التحقّق والاختبار، وتطبيقُ تعويض واحد على الأقسام الثلاثة لا يُلغي من أين جاء ذلك التعويض." },
+          { en: "The two are equivalent, because both apply exactly the same fill to exactly the same rows.",
+            ar: "الاثنان مكافئان، فكلتاهما تطبّق التعويضَ نفسه بعينه على الصفوف نفسها بعينها." },
+          { en: "A is preferable, because a median over 480 rows is a better estimate than one over 288 and the fill is not the thing being predicted.",
+            ar: "أ أفضلُ، فالوسيطُ على 480 صفًّا تقديرٌ أحسن من وسيط على 288، والتعويضُ ليس الشيءَ المتنبَّأ به." },
+          { en: "Both leak, because the fill is applied to the test rows at all; a leak-free version would leave their areas blank.",
+            ar: "كلتاهما تسرّب، فالتعويضُ يُطبَّق على صفوف الاختبار أصلًا؛ والنسخةُ بلا تسريب ستترك مساحاتها فارغة." }
+        ],
+        answer: 0,
+        hint: {
+          en: "The question is never where a parameter is applied. It is where the parameter was computed.",
+          ar: "السؤالُ ليس قط أين يُطبَّق الوسيط. بل أين حُسب الوسيط."
+        },
+        explain: {
+          en: "Applying a fitted parameter to the test rows is not merely allowed, it is the whole point of storing one &mdash; which is what makes the last option wrong, and tempting, because it sounds maximally careful. The leak in A is upstream: <code>flats</code> is all 480 rows, so each per-rooms median already contains the areas it will later be used to fill. Option three is the most dangerous distractor because its statistics are correct: 480 rows really do give a steadier median than 288. That is the cost you accept in exchange for a number you can defend, and it is the same trade Lesson 7 names when it moves 76 rows out of training.",
+          ar: "تطبيقُ وسيط مضبوط على صفوف الاختبار ليس مباحًا فقط بل هو مغزى حفظه كلُّه &mdash; وهذا ما يجعل الخيارَ الأخير خاطئًا ومغريًا، فهو يبدو أقصى ما يكون من الحذر. والتسريبُ في أ أعلى من ذلك: فـ<code>flats</code> هي الصفوف الـ480 كلها، فكلُّ وسيط لكل عدد غرف يحتوي سلفًا المساحاتِ التي سيُستعمل لتعويضها لاحقًا. والخيارُ الثالث أخطرُ المضلّلات فإحصاؤه صحيح: فـ480 صفًّا تعطي فعلًا وسيطًا أثبتَ من 288. وتلك هي الكلفةُ التي تقبلها مقابل رقم تستطيع الدفاع عنه، وهي المبادلةُ نفسها التي يسمّيها الدرس 7 حين ينقل 76 صفًّا خارج التدريب."
+        }
+      },
+
+      {
+        id: "t2bx26",
+        type: "output",
+        level: "easy",
+        topics: ["t2-overlap-leak", "t2-dedupe-then-split"],
+        q: {
+          en: "The 503 raw rows are split 60/20/20 without de-duplicating first. Type the two numbers this prints.",
+          ar: "تُقسَّم الصفوف الخام الـ503 بنسبة 60/20/20 بلا إزالة التكرار أولًا. اكتب الرقمين الذين يطبعهما هذا."
+        },
+        code: "shuffled = rep.sample(frac=1.0, random_state=3)\nn_train, n_valid = int(len(shuffled) * 0.60), int(len(shuffled) * 0.20)\ntr = shuffled.iloc[:n_train]\nte = shuffled.iloc[n_train + n_valid:]\n\nseen = te[\"listing_id\"].isin(set(tr[\"listing_id\"]))\nprint(\"%d of %d\" % (seen.sum(), len(te)))",
+        blanks: [
+          { accept: ["6"], label: { en: "test rows with a twin in train", ar: "صفوف اختبار لها توأم في التدريب" } },
+          { accept: ["102"], label: { en: "test rows in total", ar: "صفوف الاختبار كلها" } }
+        ],
+        hint: {
+          en: "Lesson 3 counted fourteen byte-identical repeats and nine reposts. Only some of the 23 can straddle this particular cut.",
+          ar: "عدّ الدرس 3 أربعةَ عشرَ تكرارًا متطابقًا حرفيًّا وتسعةَ إعلانات معادة. وبعضُ الـ23 فقط يستطيع تخطّي هذا القطع بعينه."
+        },
+        explain: {
+          en: "6 of 102. Six is small and that is the point: the model is scored on those six rows at 21.6667 shekels against 62.2043 on the other 96, so the overall figure of 59.7475 looks entirely ordinary while being wrong. The leak is invisible in the headline and obvious the moment you group by it, which is why the one-line <code>isin</code> check belongs in every split you write. De-duplicating on <code>listing_id</code> first takes the file to 480 rows and makes the count zero by construction.",
+          ar: "6 من 102. والستةُ قليلة وهذا هو المغزى: فالنموذجُ يُقاس على تلك الصفوف الستة بـ21.6667 شيكل مقابل 62.2043 على الـ96 الأخرى، فيبدو الرقمُ الكلي 59.7475 عاديًّا تمامًا وهو خاطئ. والتسريبُ غيرُ مرئي في العنوان وبديهيٌّ لحظةَ تجمّع عليه، ولهذا ينتمي فحصُ <code>isin</code> ذو السطر الواحد إلى كل تقسيم تكتبه. وإزالةُ التكرار على <code>listing_id</code> أولًا تأخذ الملفَّ إلى 480 صفًّا وتجعل العددَ صفرًا بحكم البناء."
+        }
+      }
     ]
   };
 })();

@@ -1,0 +1,20 @@
+%% alt: Decision tree for diagnosing a result that looks too good, organised as the three ways a score leaks. The tree starts from a suspiciously good score and asks three questions in turn. First: does the same fact appear in both halves? On this file six of the hundred and two test rows carry a listing_id that also sits in training, and the error on those six rows is 21.67 shekels against 62.20 on the other ninety-six, so the cure is to de-duplicate on the business key before splitting, never after. Second: was any parameter fitted before the split? Target-encoding the agency with a median taken over every row reports 59.49 where the honest number fitted on training alone is 61.02, and the cure is that every fit, including imputation, scaling, encoding, band edges and feature selection, happens inside the training rows only. Third: can a feature see the future? A random split over four months of adverts mixes May into the training of June, and a recency feature built from the newest date in the whole file reads a parameter out of rows you are not allowed to touch; the cure is to split by time when time matters and to declare the as-of date as a parameter. A closing node names the honest result on this dataset: the chronological split scored 55.45 against the random split's 60.91, better rather than worse, because the market barely moved over the window, so this particular check cost nothing here and still had to be run, because nobody can know that in advance.
+flowchart TD
+  S{{"a score that looks<br/>better than it should"}} --> Q1{"does the same fact sit<br/>in both halves?"}
+  Q1 -- "yes" --> L1["**leak 1 - overlap**<br/>6 of 102 test rows have<br/>a twin in train"]
+  L1 --> M1["21.67 on those 6<br/>vs 62.20 on the other 96"]
+  M1 --> C1["de-duplicate on the business key<br/>**before** the split"]
+  Q1 -- "no" --> Q2{"was anything fitted<br/>before the split?"}
+  Q2 -- "yes" --> L2["**leak 2 - fit before split**<br/>agency median over all rows"]
+  L2 --> M2["reports 59.49<br/>honest number 61.02"]
+  M2 --> C2["fit impute, scale, encode,<br/>edges, selection on train only"]
+  Q2 -- "no" --> Q3{"can a feature<br/>see the future?"}
+  Q3 -- "yes" --> L3["**leak 3 - time**<br/>random split over four months;<br/>as-of date from the whole file"]
+  L3 --> C3["split by time;<br/>declare the as-of date"]
+  Q3 -- "no" --> OK["the number may be real -<br/>now check the fold spread"]
+  H[/"honest on this file: the time split<br/>scored 55.45 against 60.91 -<br/>better, because the market held still"/] -.-> C3
+  class L1 dg-bad
+  class L2 dg-bad
+  class L3 dg-bad
+  class OK dg-good
+  class H dg-mute

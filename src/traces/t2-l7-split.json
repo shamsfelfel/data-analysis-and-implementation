@@ -1,0 +1,48 @@
+{
+  "id": "t2-l7-split",
+  "title": {
+    "en": "Three parts out of twelve rows",
+    "ar": "ثلاثة أقسام من اثني عشر صفًّا"
+  },
+  "lede": {
+    "en": "Twelve real listings, shuffled once with a recorded seed and cut 50/25/25, so you can watch which row lands where and see the one parameter of this model — the median — being fitted on the training rows alone. The last line shows what the same median would have been if it had been allowed to see all twelve.",
+    "ar": "اثنا عشر إعلانًا حقيقيًّا، مخلوطةً مرة واحدة ببذرة مسجَّلة ومقطوعةً 50/25/25، لتشاهد أيّ صف يقع أين وترى الوسيطَ — وهو وسيط هذا النموذج الوحيد — يُضبَط على صفوف التدريب وحدها. ويبيّن السطر الأخير ما كان سيكون عليه الوسيط نفسه لو سُمح له برؤية الاثني عشر جميعًا."
+  },
+  "files": {
+    "excerpt.csv": "listing_id,city,area_m2,monthly_rent\n5001,Khan Younis,66.4,235\n5002,Deir al-Balah,37.0,110\n5003,Khan Younis,68.6,200\n5004,Deir al-Balah,71.2,195\n5005,Khan Younis,48.0,135\n5006,Khan Younis,76.9,160\n5007,Rafah,46.8,50\n5008,Deir al-Balah,69.0,300\n5009,Khan Younis,90.3,275\n5010,Gaza,88.5,300\n5011,Khan Younis,91.3,295\n5012,Gaza,66.9,300\n"
+  },
+  "code": "import pandas as pd\n\nrows = pd.read_csv(\"excerpt.csv\")\nshuffled = rows.sample(frac=1.0, random_state=3)\nn_train = int(len(shuffled) * 0.50)\nn_valid = int(len(shuffled) * 0.25)\ntrain = shuffled.iloc[:n_train]\nvalid = shuffled.iloc[n_train:n_train + n_valid]\ntest = shuffled.iloc[n_train + n_valid:]\nmedian = train[\"monthly_rent\"].median()\nprint(\"train %d | valid %d | test %d\" % (len(train), len(valid), len(test)))\nprint(\"median fitted on the training rows only: %.1f\" % median)\nprint(\"the same median over all twelve rows   : %.1f\" % rows[\"monthly_rent\"].median())\n",
+  "notes": {
+    "3": {
+      "en": "Twelve listings in the order the file holds them, rents from 50 to 300 shekels. Nothing is split yet.",
+      "ar": "اثنا عشر إعلانًا بالترتيب الذي يحفظها به الملف، وإيجارات من 50 إلى 300 شيكل. ولم يُقسَّم شيء بعد."
+    },
+    "4": {
+      "en": "One shuffle, with the seed written down. Watch the index: it is no longer 0..11, and those original labels are the only record of where each row came from.",
+      "ar": "خلطةٌ واحدة والبذرةُ مكتوبة. راقب الفهرس: لم يبقَ 0..11، وتلك اللافتات الأصلية هي السجلّ الوحيد لمنشأ كل صف."
+    },
+    "7": {
+      "en": "The first six rows become the training set. Every parameter the model has will come from these rows and from nothing else.",
+      "ar": "الصفوف الستة الأولى تصير مجموعة التدريب. وكل وسيط يملكه النموذج سيأتي من هذه الصفوف ولا شيء غيرها."
+    },
+    "9": {
+      "en": "Rows seven to nine are the validation set and the last three are the test set. The slices do not overlap, which is the only property that matters here.",
+      "ar": "الصفوف من السابع إلى التاسع هي مجموعة التحقّق، والثلاثة الأخيرة هي مجموعة الاختبار. والمقاطع لا تتداخل، وهذه هي الخاصية الوحيدة المهمّة هنا."
+    },
+    "10": {
+      "en": "The whole model: one number. It is 147.5 because it is the median of six rents, and those six rents are the only thing it is allowed to see.",
+      "ar": "النموذج كله: رقم واحد. وهو 147.5 لأنه وسيط ستة إيجارات، وتلك الإيجارات الستة هي كل ما يُسمح له برؤيته."
+    },
+    "13": {
+      "en": "217.5 against 147.5. The second number is not better, it is contaminated: it was computed from rows that the model is about to be scored on.",
+      "ar": "217.5 مقابل 147.5. والرقم الثاني ليس أحسن بل ملوَّثًا: فقد حُسب من صفوف يوشك النموذج أن يُقاس عليها."
+    },
+    "end": {
+      "en": "Three frames, no row in two of them, and one fitted parameter whose provenance you can name. That is the whole discipline of this lesson on twelve rows; Concept 2 runs it on 480.",
+      "ar": "ثلاثة أطر، ولا صفّ في اثنين منها، ووسيطٌ مضبوط واحد تستطيع تسمية منشئه. هذا هو انتظام الدرس كله على اثني عشر صفًّا؛ ويشغّله المفهوم 2 على 480."
+    }
+  },
+  "watch": ["rows", "shuffled", "train", "valid", "test", "median"],
+  "viz": { "rows": "table", "shuffled": "table", "train": "table", "valid": "table", "test": "table" },
+  "max_steps": 60
+}

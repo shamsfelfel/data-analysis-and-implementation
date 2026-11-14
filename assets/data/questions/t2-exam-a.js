@@ -16,44 +16,6 @@ window.DABanks = window.DABanks || {};
 
       /* ============================= Lesson 1 ============================= */
       {
-        id: "t2ax01",
-        type: "mcq",
-        level: "easy",
-        topics: ["t2-transformation", "t2-transform-vs-aggregate"],
-        q: {
-          en: "A step fills the 19 blank rents of <code>listings_raw.csv</code> with the median of the column and hands back a frame. <code>raw.shape</code> is <code>(503, 13)</code> before it and <code>(503, 13)</code> after it. Which statement about that step is true?",
-          ar: "خطوة تعبّئ الإيجارات الفارغة الـ19 في <code>listings_raw.csv</code> بوسيط العمود وتُعيد إطارًا. <code>raw.shape</code> يساوي <code>(503, 13)</code> قبلها و<code>(503, 13)</code> بعدها. أي العبارات صحيح عن هذه الخطوة؟"
-        },
-        options: [
-          {
-            en: "It is an aggregation, because a median collapses 484 rents into one number, and an aggregation can only ever end a pipeline rather than be followed by another step.",
-            ar: "إنها تجميع (aggregation)، لأن الوسيط يضغط 484 إيجارًا في رقم واحد، والتجميع لا يمكن إلا أن يُنهي خطّ الأنابيب لا أن تتبعه خطوة أخرى."
-          },
-          {
-            en: "It is neither: filling a blank repairs the file rather than the table, so it belongs with loading.",
-            ar: "إنها لا هذا ولا ذاك: تعبئة الفراغ ترميم للملف لا للجدول، فموضعها مع القراءة (loading)."
-          },
-          {
-            en: "It is a transformation — one row still means one flat — and the median inside it is an aggregation, so ask which rows it read.",
-            ar: "إنها تحويل (transformation) — فالصف ما زال يعني شقة واحدة — والوسيط داخلها تجميع، فاسأل أي الصفوف قرأ."
-          },
-          {
-            en: "It is a transformation, and since the row count did not move from 503, no parameter inside it can leak into a later step of the pipeline.",
-            ar: "إنها تحويل، وبما أن عدد الصفوف لم يتحرّك عن 503 فلا يمكن لأي وسيط داخلها أن يتسرّب إلى خطوة لاحقة في خطّ الأنابيب."
-          }
-        ],
-        answer: 2,
-        hint: {
-          en: "The test is the unit of a row, not the number of rows. Then ask the second question Concept 1 insists on: where did that single number come from?",
-          ar: "المحك هو وحدة الصف لا عدد الصفوف. ثم اطرح السؤال الثاني الذي يُصرّ عليه المفهوم 1: من أين جاء ذلك الرقم الواحد؟"
-        },
-        explain: {
-          en: "A transformation returns a table in which one row still means the same kind of thing, and here it does: one advert for one flat, still identified by <code>listing_id</code>. The answer that calls it an aggregation is the tempting one, because a median really is an aggregation — but it is an aggregation <em>inside</em> the step, not the step's output, which is why Lesson 1 warns that most real steps hide a tiny aggregation and that this is exactly where the chapter's two worst bugs live. The answer that declares the step leak-free because the row count held is the misconception the warning exists for: the median was computed from 484 rents, and whether those rents included the rows you promised to hold back is a question the shape cannot answer. Carry away the two-part test: does one row still mean one flat, and which rows did the number come from?",
-          ar: "التحويل يُعيد جدولًا يبقى فيه معنى الصف من النوع نفسه، وهذا ما يحدث هنا: إعلان واحد لشقة واحدة، ولا يزال <code>listing_id</code> يعرّفه. والجواب الذي يسمّيها تجميعًا هو المغري، لأن الوسيط تجميع بالفعل — لكنه تجميع <em>داخل</em> الخطوة لا ناتجها، ولهذا يحذّر الدرس 1 من أن معظم الخطوات الواقعية تُخفي تجميعًا صغيرًا، وأن في هذا الموضع بالضبط يسكن أسوأ خطأين في الفصل. أما الجواب الذي يُبرّئ الخطوة من التسرّب لأن عدد الصفوف ثبت فهو المفهوم الخاطئ الذي وُضع التحذير من أجله: الوسيط حُسب من 484 إيجارًا، وهل كانت تلك الإيجارات تضمّ الصفوف التي وعدت بحجزها؟ سؤال لا يجيب عنه الشكل. فاحمل معك الاختبار المزدوج: هل ما زال الصف يعني شقة واحدة، ومن أي الصفوف جاء الرقم؟"
-        }
-      },
-
-      {
         id: "t2ax02",
         type: "order",
         level: "easy",
@@ -361,80 +323,6 @@ window.DABanks = window.DABanks || {};
       },
 
       /* ============================= Lesson 3 ============================= */
-      {
-        id: "t2ax09",
-        type: "contrast",
-        level: "easy",
-        topics: ["t2-exact-duplicate", "t2-repost"],
-        q: {
-          en: "The 503 rows of <code>listings_raw.csv</code> describe 480 real flats, and they contain two different kinds of duplicate. Place each statement under <em>an exact duplicate</em>, under <em>a repost</em>, or under both.",
-          ar: "تصف الصفوف الـ503 في <code>listings_raw.csv</code> 480 شقة حقيقية، وفيها نوعان مختلفان من التكرار. ضع كل عبارة تحت <em>تكرار تامّ</em>، أو تحت <em>إعادة نشر</em>، أو تحت كلتيهما."
-        },
-        concepts: [
-          { en: "An exact duplicate", ar: "تكرار تامّ (exact duplicate)" },
-          { en: "A repost", ar: "إعادة نشر (repost)" }
-        ],
-        rows: [
-          {
-            s: {
-              en: "<code>df.duplicated()</code> returns <code>True</code> for it",
-              ar: "تُعيد <code>df.duplicated()</code> القيمة <code>True</code> له"
-            },
-            a: 0
-          },
-          {
-            s: {
-              en: "There are nine of them in this file",
-              ar: "يوجد تسعة منها في هذا الملف"
-            },
-            a: 1
-          },
-          {
-            s: {
-              en: "<code>drop_duplicates()</code> leaves it in the frame",
-              ar: "تُبقيه <code>drop_duplicates()</code> في الإطار"
-            },
-            a: 1
-          },
-          {
-            s: {
-              en: "Its <code>listing_id</code> appears more than once in the file",
-              ar: "يظهر <code>listing_id</code> الخاصّ به أكثر من مرة في الملف"
-            },
-            a: 2
-          },
-          {
-            s: {
-              en: "All thirteen of its cells match another row's",
-              ar: "خلاياه الثلاث عشرة كلها مطابقة لخلايا صف آخر"
-            },
-            a: 0
-          },
-          {
-            s: {
-              en: "<code>drop_duplicates(subset=[\"listing_id\"])</code> removes it",
-              ar: "تحذفه <code>drop_duplicates(subset=[\"listing_id\"])</code>"
-            },
-            a: 2
-          },
-          {
-            s: {
-              en: "Which copy survives has to be decided by a parsed date, not by a row position",
-              ar: "يجب أن يُقرّر أي نسخة تبقى بتاريخ محلَّل لا بموضع صف"
-            },
-            a: 1
-          }
-        ],
-        hint: {
-          en: "Count: 503 rows, 489 after <code>drop_duplicates()</code>, 480 after <code>drop_duplicates(subset=[\"listing_id\"])</code>. Each of those two gaps is one kind of duplicate.",
-          ar: "عُدّ: 503 صفوف، و489 بعد <code>drop_duplicates()</code>، و480 بعد <code>drop_duplicates(subset=[\"listing_id\"])</code>. وكل فرق من هذين الفرقين نوعٌ من التكرار."
-        },
-        explain: {
-          en: "<code>duplicated()</code> compares whole rows, so it sees only the 14 byte-for-byte repeats: 503 goes to 489. The other nine flats were advertised twice, with a later <code>listed_on</code> and the advert retyped, so not every column matches and <code>drop_duplicates()</code> cannot see them at all — which is why the test that stage 1 has finished is <code>df.set_index(\"listing_id\").index.is_unique</code> rather than “zero duplicates”. Both kinds share the business key, so both show up as a repeated <code>listing_id</code> and both are removed by <code>subset=[\"listing_id\"]</code>, which takes 489 to 480, the number of real flats. The row about the date is the repost's own problem: <code>keep=\"last\"</code> keeps the last <em>row</em>, not the latest date, and on this file it keeps the older advert for three of the nine — and sorting the raw strings is right here only by luck, because <code>'13/05/2026' &lt; '2026-05-28'</code>.",
-          ar: "تقارن <code>duplicated()</code> الصفوف كاملة، فلا ترى إلا التكرارات الـ14 المتطابقة بايتًا ببايت: 503 تصير 489. أما الشقق التسع الأخرى فقد أُعلن عنها مرتين، بتاريخ <code>listed_on</code> لاحق وإعلان أُعيدت كتابته، فلا تتطابق كل الأعمدة ولا تستطيع <code>drop_duplicates()</code> رؤيتها قطّ — ولذلك فإن اختبار انتهاء المرحلة 1 هو <code>df.set_index(\"listing_id\").index.is_unique</code> لا «صفر مكرّرات». والنوعان يشتركان في المفتاح التجاري، فيظهران كلاهما كـ<code>listing_id</code> متكرّر، ويحذفهما كليهما <code>subset=[\"listing_id\"]</code> الذي يأخذ 489 إلى 480، وهو عدد الشقق الحقيقية. أما سطر التاريخ فهو مشكلة إعادة النشر وحدها: <code>keep=\"last\"</code> تُبقي <em>الصف</em> الأخير لا أحدث تاريخ، وهي في هذا الملف تُبقي الإعلان الأقدم لثلاث من التسع — وترتيب النصوص الخام صحيح هنا بالحظ فقط، لأن <code>'13/05/2026' &lt; '2026-05-28'</code>."
-        }
-      },
-
       {
         id: "t2ax10",
         type: "output",
@@ -1168,6 +1056,68 @@ window.DABanks = window.DABanks || {};
         explain: {
           en: "A pipeline that passes its assertions can still be wrong, and the lesson proves it three ways. <code>fitted</code> lives in memory, so the parameters and the module constants can disagree: swap <code>COND_ORDER</code> for a five-level list and 75 <code>excellent</code> flats go from code 3 to code 4 — 15.6% of the file, worth 25.05 shekels each — while the matrix stays 480 × 18 with no blanks and the right column names, so all three assertions pass. <code>dep_months_all</code> is the subtler one, and worse than an eyeballed threshold precisely because it looks measured: 185 ones against 176 above one means the median flips between 1.0 and 2.0 with the sample, and it is applied to 97 of the 117 blank deposits. And every figure in the final table is one split with one seed on 113 rents, so the recommendation to drop the agency block rests on its being free rather than on 36.96 beating 37.09. The answer trusting the assertions inverts the concept: they check the width, the blanks and the column set, which is exactly why none of the three failures above touches them. And the JSON answer is the trap inside the fix — <code>json.dumps</code> turns every dictionary key into a string, so <code>area_by_rooms</code> comes back with keys <code>\"1.0\"</code>, <code>\"2.0\"</code>, …, <code>d[\"rooms\"].map(...)</code> looks up a float and matches none of them, and all 26 blank areas fall silently through to the global fallback, 12.05 m² out on average. Nothing raises, because the matrix is still the right shape.",
           ar: "خطّ الأنابيب الذي ينجح في تأكيداته قد يكون خاطئًا مع ذلك، ويُثبت الدرس هذا بثلاث طرق. فـ<code>fitted</code> يسكن الذاكرة، فيمكن أن تتعارض الوسائط وثوابت الوحدة: استبدل <code>COND_ORDER</code> بقائمة من خمسة مستويات فتنتقل 75 شقة <code>excellent</code> من الرمز 3 إلى الرمز 4 — 15.6% من الملف، بقيمة 25.05 شيكلًا لكل واحدة — وتبقى المصفوفة 480 × 18 بلا فراغات وبأسماء الأعمدة الصحيحة، فتنجح التأكيدات الثلاثة كلها. و<code>dep_months_all</code> هو الأدقّ، وهو أسوأ من حدٍّ مقدَّر بالنظر لأنه يبدو مقيسًا بالضبط: فـ185 واحدًا مقابل 176 فوق الواحد يعني أن الوسيط يتقلّب بين 1.0 و2.0 بتقلّب العيّنة، وهو يُطبَّق على 97 من التأمينات الفارغة الـ117. وكل رقم في الجدول النهائي تقسيمٌ واحد ببذرة واحدة على 113 إيجارًا، فتوصية حذف كتلة الوكالة تقوم على كونها مجانية لا على تغلّب 36.96 على 37.09. والجواب الذي يثق بالتأكيدات يقلب المفهوم: فهي تتحقّق من العرض والفراغات ومجموعة الأعمدة، ولهذا بالضبط لا يمسّها أي من الأعطال الثلاثة أعلاه. أما جواب JSON فهو الفخّ الكامن في العلاج — فـ<code>json.dumps</code> تحوّل كل مفاتيح القاموس إلى نصوص، فيعود <code>area_by_rooms</code> بمفاتيح <code>\"1.0\"</code> و<code>\"2.0\"</code> وهكذا، وتبحث <code>d[\"rooms\"].map(...)</code> عن عدد عشري فلا تطابق واحدًا منها، فتهبط المساحات الفارغة الـ26 كلها بصمت إلى البديل العامّ، بفارق 12.05 م² في المتوسط. ولا يُثار شيء، لأن المصفوفة ما زالت بالشكل الصحيح."
+        }
+      },
+
+      /* ================ Lesson 7 ============================= */
+      {
+        id: "t2ax25",
+        type: "mcq",
+        level: "easy",
+        topics: ["t2-three-parts", "t2-optimised-score"],
+        q: {
+          en: "Lesson 1 fitted a median on 75&nbsp;% of the rows and read the error on the other 25&nbsp;%, and Lessons 2 to 6 each chose something by reading that same held-out number. In the vocabulary of a three-way split, which part was the chapter actually using?",
+          ar: "ضبط الدرس 1 وسيطًا على 75&nbsp;% من الصفوف وقرأ الخطأ على الـ25&nbsp;% الأخرى، واختار كلٌّ من الدروس 2 إلى 6 شيئًا بقراءة ذلك الرقم المحجوز نفسه. فبمصطلحات التقسيم الثلاثي، أيَّ قسم كان الفصل يستعمل فعلًا؟"
+        },
+        options: [
+          { en: "A validation set, because it was read repeatedly to choose between candidates.",
+            ar: "مجموعةَ تحقّق، فقد قُرئت تكرارًا للاختيار بين مرشَّحين." },
+          { en: "A test set, because no parameter was ever fitted on it.",
+            ar: "مجموعةَ اختبار، فلم يُضبَط عليها وسيطٌ قط." },
+          { en: "A second training set, because choosing a recipe is a kind of fitting and so those rows were trained on.",
+            ar: "مجموعةَ تدريب ثانية، فاختيار الوصفة نوعٌ من الضبط فتلك الصفوف دُرِّب عليها." },
+          { en: "Neither: with only two parts the question does not apply, and the number was unbiased throughout.",
+            ar: "لا هذه ولا تلك: فبقسمين فقط لا ينطبق السؤال، وكان الرقم غير متحيّز طوال الوقت." }
+        ],
+        answer: 0,
+        hint: {
+          en: "Ask what the rows were used for, not what was done to them.",
+          ar: "اسأل: فيم استُعملت الصفوف؟ لا: ماذا فُعل بها؟"
+        },
+        explain: {
+          en: "A set you read many times to choose between candidates is a validation set, whatever you called it. The chapter had no test set at all from Lesson 2 onwards, which is why Lesson 7 builds a third part rather than arguing about the second. The third option is the interesting near-miss: selection really does behave like fitting, but the rows still were not used to estimate a parameter, so calling them training rows overstates it &mdash; the precise statement is that the <em>number</em> is a training number, not that the rows are training rows.",
+          ar: "المجموعةُ التي تقرؤها مرات كثيرة للاختيار بين مرشَّحين مجموعةُ تحقّق، سمّيتَها ما سمّيت. ولم يكن للفصل مجموعةُ اختبار على الإطلاق من الدرس 2 فصاعدًا، ولهذا يبني الدرس 7 قسمًا ثالثًا بدل أن يجادل في الثاني. والخيارُ الثالث هو الإخفاقُ القريب الطريف: فالانتقاءُ يسلك فعلًا سلوكَ الضبط، لكنّ الصفوف لم تُستعمل مع ذلك لتقدير وسيط، فتسميتُها صفوفَ تدريب مبالغةٌ &mdash; والعبارةُ الدقيقة أن <em>الرقم</em> رقمُ تدريب، لا أن الصفوف صفوفُ تدريب."
+        }
+      },
+
+      {
+        id: "t2ax26",
+        type: "contrast",
+        level: "easy",
+        topics: ["t2-what-fits", "t2-fit-before-split"],
+        q: {
+          en: "A step either brings its rule with it or reads a number out of the rows. Place each one.",
+          ar: "الخطوةُ إمّا تأتي بقاعدتها معها وإمّا تقرأ رقمًا من الصفوف. ضع كلًّا منها."
+        },
+        concepts: [
+          { en: "A declared rule", ar: "قاعدة معلَنة" },
+          { en: "A fitted parameter", ar: "وسيط مضبوط" }
+        ],
+        rows: [
+          { s: { en: "<code>CITY_MAP</code>, turning 26 spellings into 5 names", ar: "<code>CITY_MAP</code>، يحوّل 26 هجاءً إلى 5 أسماء" }, a: 0 },
+          { s: { en: "The median that fills the blank areas", ar: "الوسيط الذي يعوّض المساحات الفارغة" }, a: 1 },
+          { s: { en: "Multiplying the five dunum areas by a thousand", ar: "ضرب مساحات الدونم الخمس بألف" }, a: 0 },
+          { s: { en: "The quartile edges that band <code>area_m2</code>", ar: "حدود الأرباع التي تنطّق <code>area_m2</code>" }, a: 1 },
+          { s: { en: "The <code>1.5</code> in the IQR fence", ar: "الـ<code>1.5</code> في سياج IQR" }, a: 0 },
+          { s: { en: "The <code>Q1</code> and <code>Q3</code> the same fence is built from", ar: "الـ<code>Q1</code> والـ<code>Q3</code> اللذان يُبنى منهما السياج نفسه" }, a: 1 }
+        ],
+        hint: {
+          en: "Two rows describe the same fence. They do not belong in the same column.",
+          ar: "صفّان يصفان السياج نفسه. وهما لا ينتميان إلى العمود نفسه."
+        },
+        explain: {
+          en: "A declared rule is knowledge you brought: a dunum is a thousand square metres, the eleven keys of <code>CITY_MAP</code> were typed by a person, and <code>1.5</code> is a convention. A fitted parameter is a number the code read out of rows, so it must be computed after the split and stored. The fence is the pair worth remembering, because it is <em>both</em>: its multiplier is declared and its quartiles are fitted, which is exactly why &ldquo;the fence is just a constant&rdquo; is a tempting and wrong defence of computing it before the split.",
+          ar: "القاعدةُ المعلَنة معرفةٌ جئتَ بها: فالدونمُ ألفُ متر مربع، ومفاتيحُ <code>CITY_MAP</code> الأحد عشر كتبها إنسان، و<code>1.5</code> اصطلاح. والوسيطُ المضبوط رقمٌ قرأه الكودُ من صفوف، فيجب حسابُه بعد التقسيم وحفظُه. والسياجُ هو الزوجُ الجديرُ بالتذكّر، فهو <em>الاثنان</em>: مضاعِفُه معلَن وأرباعُه مضبوطة، ولهذا بالضبط يكون «السياجُ مجرَّدُ ثابت» دفاعًا مغريًا وخاطئًا عن حسابه قبل التقسيم."
         }
       }
     ]

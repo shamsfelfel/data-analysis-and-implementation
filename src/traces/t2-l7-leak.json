@@ -1,0 +1,48 @@
+{
+  "id": "t2-l7-leak",
+  "title": {
+    "en": "The same map, fitted twice",
+    "ar": "الخريطة نفسها، مضبوطةً مرتين"
+  },
+  "lede": {
+    "en": "One city-median map fitted on all twelve rows and one fitted on the six training rows, applied to the same three test rows. Nothing in the code looks wrong, both maps are one line, and the one that saw everything predicts the held-out rents better — which is exactly how this mistake survives review.",
+    "ar": "خريطةُ وسيط مدينة مضبوطةً على الاثني عشر صفًّا وأخرى مضبوطةً على صفوف التدريب الستة، مطبَّقتين على صفوف الاختبار الثلاثة نفسها. ولا شيء في الكود يبدو خاطئًا، وكلتا الخريطتين سطرٌ واحد، والتي رأت كل شيء تتنبّأ بالإيجارات المحجوزة أحسنَ — وهكذا بالضبط ينجو هذا الخطأ من المراجعة."
+  },
+  "files": {
+    "excerpt.csv": "listing_id,city,area_m2,monthly_rent\n5001,Khan Younis,66.4,235\n5002,Deir al-Balah,37.0,110\n5003,Khan Younis,68.6,200\n5004,Deir al-Balah,71.2,195\n5005,Khan Younis,48.0,135\n5006,Khan Younis,76.9,160\n5007,Rafah,46.8,50\n5008,Deir al-Balah,69.0,300\n5009,Khan Younis,90.3,275\n5010,Gaza,88.5,300\n5011,Khan Younis,91.3,295\n5012,Gaza,66.9,300\n"
+  },
+  "code": "import pandas as pd\n\nrows = pd.read_csv(\"excerpt.csv\")\nshuffled = rows.sample(frac=1.0, random_state=3)\ntrain = shuffled.iloc[:6]\ntest = shuffled.iloc[9:]\nfallback = train[\"monthly_rent\"].median()\nleaky = rows.groupby(\"city\")[\"monthly_rent\"].median()\nhonest = train.groupby(\"city\")[\"monthly_rent\"].median()\nreport = pd.DataFrame({\"city\": test[\"city\"],\n                       \"rent\": test[\"monthly_rent\"],\n                       \"leaky\": test[\"city\"].map(leaky).fillna(fallback),\n                       \"honest\": test[\"city\"].map(honest).fillna(fallback)})\nprint(report.to_string(index=False))\n",
+  "notes": {
+    "3": {
+      "en": "The twelve rows again, and the same recorded seed, so the three frames are the ones you stepped through in the previous trace.",
+      "ar": "الصفوف الاثنا عشر مرة أخرى والبذرةُ المسجَّلة نفسها، فالأطر الثلاثة هي التي خطوتَ فيها في التتبُّع السابق."
+    },
+    "5": {
+      "en": "Six training rows. From here on, anything fitted on `rows` instead of `train` is a leak, however innocent the line looks.",
+      "ar": "ستة صفوف تدريب. ومن هنا، كل ما يُضبَط على `rows` بدل `train` تسريبٌ، وإن بدا السطر بريئًا."
+    },
+    "8": {
+      "en": "The leak, in one line: `rows` is the whole file, so this median already contains the rents of the three test flats.",
+      "ar": "التسريب في سطر واحد: `rows` هو الملف كله، فهذا الوسيط يحتوي سلفًا على إيجارات الشقق الثلاث المحجوزة."
+    },
+    "9": {
+      "en": "The same expression with `train` in place of `rows`. One word apart, and only this one is a parameter you could have had before seeing the test rows.",
+      "ar": "التعبير نفسه بـ`train` مكان `rows`. كلمةٌ واحدة فرقًا، وهذا وحده وسيطٌ كان يمكن أن تملكه قبل رؤية صفوف الاختبار."
+    },
+    "10": {
+      "en": "Both maps applied to the same three rows. Predict the two columns before you press Next.",
+      "ar": "الخريطتان مطبَّقتان على الصفوف الثلاثة نفسها. تنبّأ بالعمودين قبل أن تضغط «التالي»."
+    },
+    "14": {
+      "en": "For the two Khan Younis flats the leaky map says 217.5 and the honest one says 160.0, against true rents of 275 and 295. The leaky map is closer — because the 275 and the 295 are two of the six numbers it took the median of.",
+      "ar": "في شقتَي خان يونس تقول الخريطة المتسرِّبة 217.5 وتقول الأمينة 160.0، مقابل إيجارين حقيقيين 275 و295. والخريطة المتسرِّبة أقرب — لأن الـ275 والـ295 اثنان من الأرقام الستة التي أخذت وسيطها."
+    },
+    "end": {
+      "en": "The honest map is worse on these rows and it is the only one you may report. The leaky number is not a measurement of the model, it is a measurement of the model plus the answer key.",
+      "ar": "الخريطة الأمينة أسوأ على هذه الصفوف وهي الوحيدة التي يحقّ لك الإبلاغ عنها. فالرقم المتسرِّب ليس قياسًا للنموذج بل قياسًا للنموذج ومعه ورقةُ الإجابات."
+    }
+  },
+  "watch": ["rows", "train", "test", "fallback", "leaky", "honest", "report"],
+  "viz": { "rows": "table", "train": "table", "test": "table", "report": "table" },
+  "max_steps": 60
+}

@@ -1,0 +1,22 @@
+%% alt: Decision tree a candidate feature must pass before it is allowed into the matrix. A proposed new column enters at the top and meets four gates in order. Gate one asks whether the value would be known at the moment the prediction is needed; a column that would not be available then is dropped, because knowing it is the definition of leakage. Gate two asks whether the column needs a parameter, such as band edges, a category list, a mean or an as-of date; if it does, that parameter is fitted on the training rows and stored, and if it is instead computed over the whole frame the feature is rejected and sent back. Gate three asks whether the feature improves the validation score, not the training score; the two worked examples divide here. Month, weekday and is_weekend improve training from 57.09 to about 55.9 and make validation worse, moving 77.64 to 77.87 for month and 79.78 for weekday, so they are rejected as overfitting dressed as feature engineering. The area band improves validation from 77.64 to 63.26, so it passes, and crossing it with the governorate reaches 54.58 on validation and 46.94 on test. Gate four asks whether the gain survives the fold spread measured by cross-validation, which is about seven shekels on this data; a gain smaller than that is not evidence. A feature that passes all four is written into the fitted dictionary with its parameter, and a closing note records the price of binning: areas of 62 and 72 square metres share one band, collapse to the same midpoint of 67.388 and therefore receive one prediction.
+flowchart TD
+  C{{"a candidate column"}} --> G1{"known at prediction time?"}
+  G1 -- "no" --> D1["drop it -<br/>that is what leakage **is**"]
+  G1 -- "yes" --> G2{"does it need a parameter?<br/>edges, category list, mean, as-of"}
+  G2 -- "fitted on train, stored" --> G3
+  G2 -- "computed over the whole frame" --> D2["reject:<br/>leak 2 in disguise"]
+  D2 -. "refit on train" .-> G2
+  G3{"does **validation** improve?"} -- "no" --> D3["month, weekday, is_weekend<br/>train 57.09 to 55.9<br/>validation 77.64 to 79.78"]
+  G3 -- "yes" --> P1["area band<br/>validation 77.64 to 63.26"]
+  P1 --> G4{"is the gain bigger<br/>than the fold spread?"}
+  D3 --> R["rejected: overfitting<br/>dressed as engineering"]
+  G4 -- "no, under ~7 shekels" --> R2["not evidence -<br/>say so, keep the simpler column"]
+  G4 -- "yes" --> OK[["into the matrix,<br/>parameter into `fitted`"]]
+  OK --> X["governorate x area band<br/>validation 54.58 - test 46.94"]
+  N[/"the price of a band: 62 and 72 m2<br/>share a midpoint, so share a prediction"/] -.-> OK
+  class D1 dg-bad
+  class D2 dg-bad
+  class R dg-bad
+  class OK dg-good
+  class X dg-good
+  class N dg-mute
